@@ -3,32 +3,34 @@ import { FC, ReactElement, useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
 import get from "lodash.get";
 
-export const List: FC<{
-  className: string;
+type ListProp = {
   on_load: (arg: { params: any }) => Promise<any[]>;
   map_val: (item: any) => any;
   row: ReactElement;
   props: any;
   PassProp: any;
-}> = ({ className, row, props, on_load, PassProp, map_val }) => {
+  mode: "responsive" | "list" | "table";
+};
+
+export const List: FC<ListProp> = (_arg) => {
+  const { row, on_load, PassProp, map_val } = _arg;
   const local = useLocal({
+    pathname: "",
     status: "init" as "init" | "loading" | "ready",
     params: {
-      skip: 0,
-      take: 3,
+      // skip: 0,
+      // take: 3,
     },
     list: [] as any[],
   });
 
   if (isEditor) {
-    return (
-      <ListDummy
-        row={row}
-        props={props}
-        PassProp={PassProp}
-        map_val={map_val}
-      />
-    );
+    return <ListDummy {..._arg} />;
+  }
+
+  if (location.pathname !== local.pathname) {
+    local.status = "init";
+    local.pathname = location.pathname;
   }
 
   useEffect(() => {
@@ -46,12 +48,7 @@ export const List: FC<{
   }, [on_load]);
 
   return (
-    <div
-      className="c-flex c-flex-1 c-w-full c-h-full c-relative c-overflow-auto"
-      onPointerDown={props.onPointerDown}
-      onPointerLeave={props.onPointerLeave}
-      onPointerEnter={props.onPointerEnter}
-    >
+    <div className="c-flex c-flex-1 c-w-full c-h-full c-relative c-overflow-auto">
       <div className="c-absolute c-inset-0 c-flex c-flex-col c-items-stretch">
         {local.status !== "ready" ? (
           <div className="c-p-2 c-flex c-flex-col c-space-y-2 c-flex-1 c-items-start">
@@ -61,12 +58,7 @@ export const List: FC<{
         ) : (
           <>
             {local.list === null ? (
-              <ListDummy
-                row={row}
-                props={props}
-                PassProp={PassProp}
-                map_val={map_val}
-              />
+              <ListDummy {..._arg} />
             ) : (
               local.list.map((item, idx) => {
                 const val = (...arg: any[]) => {
@@ -84,10 +76,10 @@ export const List: FC<{
         )}
       </div>
     </div>
-  );
-};
+  ); 
+}; 
 
-const ListDummy = ({ props, row, PassProp, map_val }: any) => {
+const ListDummy = ({ props, row, PassProp, map_val, mode }: ListProp) => {
   const item = (...arg: string[]) => {
     if (map_val) {
       const value = get(map_val({}), `${arg.join("")}`);
@@ -107,8 +99,6 @@ const ListDummy = ({ props, row, PassProp, map_val }: any) => {
         <div className="c-border-b ">
           <PassProp item={item}>{row}</PassProp>
         </div>
-        <div className="c-border-b px-2"> ...</div>
-        <div className="c-border-b px-2"> ...</div>
       </div>
     </div>
   );
