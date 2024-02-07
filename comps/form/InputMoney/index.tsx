@@ -44,13 +44,11 @@ export const InputMoney: FC<{
 };
 
 export const formatMoney = (num: any) => {
-  // add comma
   if (!!num) {
     let str = num;
     if (typeof num === "number") str = num.toString();
     if (typeof str === "string")
       return str.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-    return "";
   }
+  return "-";
 };

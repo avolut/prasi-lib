@@ -71,7 +71,7 @@ export const Card: FC<{
   }
 
   return (
-    <card.Card className="c-flex c-flex-1">
+    <card.Card className="c-flex c-flex-1 c-items-center">
       <div className={cn("c-p-3 c-text-[14px] c-flex-1")}>
         {!!title && (title.left || title.right) && (
           <div className="c-tracking-tight c-text-sm c-font-medium c-flex c-justify-between c-space-x-1 mb-1 c-items-center">
@@ -81,16 +81,18 @@ export const Card: FC<{
             )}
           </div>
         )}
-        <card.CardTitle className="c-whitespace-nowrap pb-1 h-[28px] c-overflow-hidden">
-          {local.status_value === "ready" ? (
-            formatObject(local.value)
-          ) : (
-            <div className="flex flex-col space-y-1">
-              <Skeleton className="h-[10px] c-w-[50px]" />
-              <Skeleton className="h-[10px] c-w-[40px]" />
-            </div>
-          )}
-        </card.CardTitle>
+        {!!value && (
+          <card.CardTitle className="c-whitespace-nowrap pb-1 h-[28px] c-overflow-hidden">
+            {local.status_value === "ready" ? (
+              formatObject(local.value)
+            ) : (
+              <div className="flex flex-col space-y-1">
+                <Skeleton className="h-[10px] c-w-[50px]" />
+                <Skeleton className="h-[10px] c-w-[40px]" />
+              </div>
+            )}
+          </card.CardTitle>
+        )}
         <card.CardDescription className="c-text-xs c-whitespace-pre-wrap">
           {local.status_desc === "ready" ? (
             formatObject(local.desc)

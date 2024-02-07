@@ -18,11 +18,14 @@ export const Tab: FC<{
 }> = ({ tabs, active, body, PassProp, on_load }) => {
   const local = useLocal(
     {
-      active,
+      activeIndex: active,
       count: [] as (number | string)[],
+      mode: "number" as "number" | "hash",
       status: "init" as "init" | "load" | "ready",
     },
     () => {
+      if (local.mode === "hash") {
+      }
       if (local.status === "init") {
         if (typeof on_load === "function" && !isEditor) {
           local.status = "load";
@@ -46,14 +49,25 @@ export const Tab: FC<{
 
   const all_tabs = tabs({ count: local.count || [] });
 
-  if (!parseInt(local.active)) {
-    local.active = "0";
+  if (local.activeIndex === "#") {
+    local.mode = "hash";
+  }
+
+  if (!parseInt(local.activeIndex)) {
+    if (local.mode === "hash") {
+      local.activeIndex = location.hash.substring(1);
+      if (!parseInt(local.activeIndex)) {
+        local.activeIndex = "0";
+      }
+    } else {
+      local.activeIndex = "0";
+    }
   }
 
   return (
     <div className="c-flex c-flex-1 c-w-full c-flex-col c-items-stretch">
       <Tabs
-        value={local.active}
+        value={local.activeIndex}
         className={cx(
           css`
             padding: 0;
@@ -84,7 +98,7 @@ export const Tab: FC<{
               <TabsTrigger
                 value={idx + ""}
                 onClick={() => {
-                  local.active = idx.toString();
+                  local.activeIndex = idx.toString();
                   local.render();
                   if (e.navigate) {
                     navigate(e.navigate);
@@ -108,7 +122,7 @@ export const Tab: FC<{
                     "c-p-1 c-h-10 c-flex c-items-center",
                     e.width ? "" : " c-flex-1 ",
                     e.count ? " c-justify-between" : "",
-                    local.active === idx.toString()
+                    local.activeIndex === idx.toString()
                       ? css`
                           border-bottom: 2px solid
                             ${e.color ? e.color : "#3c82f6"};
@@ -116,7 +130,9 @@ export const Tab: FC<{
                       : "border-b-transparent"
                   )}
                 >
-                  <div className={cx("c-mr-1 c-flex-1 c-px-1 c-flex")}>{e.label}</div>
+                  <div className={cx("c-mr-1 c-flex-1 c-px-1 c-flex")}>
+                    {e.label}
+                  </div>
                   {has_count && (
                     <div
                       className={cx(
@@ -138,7 +154,7 @@ export const Tab: FC<{
         </TabsList>
       </Tabs>
       <div className="c-flex-1 c-flex c-flex-col">
-        <PassProp activeIndex={parseInt(local.active)}>{body}</PassProp>
+        <PassProp activeIndex={parseInt(local.activeIndex)}>{body}</PassProp>
       </div>
     </div>
   );

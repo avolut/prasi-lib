@@ -5,7 +5,7 @@ if (typeof isEditor === "undefined") {
     location.pathname.startsWith("/ed")
   ) {
     w.isEditor = true;
-  } else {
+  } else { 
     w.isEditor = false;
   }
 }

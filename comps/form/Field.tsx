@@ -83,6 +83,7 @@ export const Field: FC<{
           local.render();
           (async () => {
             const res = await slider_options();
+
             local.slider.opt = res;
             local.render();
           })();
@@ -144,7 +145,7 @@ export const Field: FC<{
                         min={local.slider.opt.min.value}
                         max={local.slider.opt.max.value}
                       />
-                      <div className="c-w-full c-bg-slate-200 c-mx-auto c-text-center">
+                      <div className="c-w-full c-mx-auto c-text-center">
                         {local.slider.value}
                       </div>
                     </div>
