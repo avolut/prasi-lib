@@ -119,9 +119,10 @@ export const Detail: FC<{
             <div
               key={idx}
               className={cx(
-                "c-flex c-flex-col c-items-stretch mr-1",
-                !is_last && `border-r pr-2`,
-                !is_first && `ml-1`
+                "c-flex c-flex-col c-items-stretch",
+                !is_last && `c-border-r c-pr-2 c-mr-2`,
+                !is_first && `c-ml-1`,
+
               )}
             >
               <div className={"c-flex c-font-bold"}>{label}</div>
