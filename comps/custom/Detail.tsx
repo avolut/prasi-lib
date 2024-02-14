@@ -1,9 +1,8 @@
 import { useLocal } from "@/utils/use-local";
 import { cx } from "class-variance-authority";
+import { ArrowRight } from "lucide-react";
 import { FC, useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
-import { ArrowRight, ArrowRightCircle, ChevronRight } from "lucide-react";
-import { IconRight } from "react-day-picker";
 
 export const Detail: FC<{
   detail: (item: any) => Record<string, [string, string, string]>;
@@ -13,14 +12,33 @@ export const Detail: FC<{
   const local = useLocal({
     status: "init" as "init" | "loading" | "ready",
     detail: null as any,
+    pathname: "",
+    mode: mode,
+    on_load,
   });
 
   if (!isEditor) {
+    if (
+      location.pathname !== local.pathname ||
+      mode !== local.mode ||
+      local.on_load !== on_load
+    ) {
+      local.status = "init";
+      local.on_load = on_load;
+      local.mode = mode;
+    }
+
     useEffect(() => {
       if (local.status === "init" && typeof on_load === "function") {
         local.status = "loading";
-        local.detail = detail({});
+        if (location.pathname === "") {
+          local.detail = detail({});
+        } else {
+          local.detail = detail({});
+          local.pathname = location.pathname;
+        }
         local.render();
+
         const res = on_load({ params: {} });
         if (typeof res === "object" && res instanceof Promise) {
           res.then((item) => {
@@ -34,7 +52,7 @@ export const Detail: FC<{
           local.render();
         }
       }
-    }, [on_load]);
+    }, [local.status]);
   }
   let values = {};
 
@@ -121,8 +139,7 @@ export const Detail: FC<{
               className={cx(
                 "c-flex c-flex-col c-items-stretch",
                 !is_last && `c-border-r c-pr-2 c-mr-2`,
-                !is_first && `c-ml-1`,
-
+                !is_first && `c-ml-1`
               )}
             >
               <div className={"c-flex c-font-bold"}>{label}</div>
@@ -174,6 +191,9 @@ const Linkable: FC<{
         mode !== "standard" && "text-sm"
       )}
       onClick={() => {
+        if (link.startsWith("http://") || link.startsWith("https://")) {
+          window.open(link, "_blank");
+        }
         if (!isEditor) {
           navigate(link);
         }

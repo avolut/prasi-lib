@@ -9,3 +9,4 @@ export { List } from "@/comps/list/List";
 export { Slider } from "@/comps/ui/slider";
 export { longDate, shortDate } from "@/utils/date";
 export { Button } from "@/comps/ui/button";
+export { getPathname } from "@/utils/pathname";
