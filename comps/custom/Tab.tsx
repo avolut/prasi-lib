@@ -99,6 +99,9 @@ export const Tab: FC<{
                 value={idx + ""}
                 onClick={() => {
                   local.activeIndex = idx.toString();
+                  if (local.mode === "hash") {
+                    location.hash = `#${local.activeIndex}`;
+                  }
                   local.render();
                   if (e.navigate) {
                     navigate(e.navigate);

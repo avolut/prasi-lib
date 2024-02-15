@@ -60,7 +60,7 @@ export const List: FC<ListProp> = (_arg) => {
             {local.list === null ? (
               <ListDummy {..._arg} />
             ) : (
-              local.list.map((item, idx) => {
+              (local.list || []).map((item, idx) => {
                 const val = (...arg: any[]) => {
                   const value = get(map_val(item), `${arg.join("")}`);
                   return value;

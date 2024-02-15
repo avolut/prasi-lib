@@ -17,10 +17,15 @@ export const Form: FC<{
 
   return (
     <FForm {...form_hook}>
-      <div
+      <form
         className={
           "flex-1 flex flex-col w-full items-stretch relative overflow-auto"
         }
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          on_submit({ form: form.hook.getValues(), error: {} });
+        }}
       >
         <div className="absolute inset-0">
           <PassProp
@@ -31,7 +36,7 @@ export const Form: FC<{
             {body}
           </PassProp>
         </div>
-      </div>
+      </form>
     </FForm>
   );
 };
