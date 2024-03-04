@@ -6,31 +6,25 @@ import {
   FormLabel,
   FormMessage,
 } from "@/comps/ui/form";
+import { useLocal } from "@/utils/use-local";
+import autosize from "autosize";
 import { FC, useEffect, useRef } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { Input } from "../ui/input";
-import { useLocal } from "@/utils/use-local";
 import { Button } from "../ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/comps/ui/popover";
-import { format } from "date-fns";
-import { Calendar } from "@/comps/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { PopUpDropdown } from "./PopUpDropdown";
-import { ButtonOptions } from "./ButtonOptions";
+import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import autosize from "autosize";
-import { InputMoney } from "./InputMoney";
+import { ButtonOptions } from "./ButtonOptions";
 import { Date } from "./Date";
 import { Datetime } from "./Datetime";
-import { Slider } from "@radix-ui/react-slider";
+import { InputMoney } from "./InputMoney";
+import { PopUpDropdown } from "./PopUpDropdown";
 import { SliderOptions } from "./Slider/types";
-import { cn } from "@/utils";
 
 export const Field: FC<{
   name: string;
   label: string;
   desc?: string;
-  form: { hook: UseFormReturn<any, any, undefined>; render: () => void };
+  form?: { hook: UseFormReturn<any, any, undefined>; render: () => void };
   type:
     | "text"
     | "textarea"
@@ -46,7 +40,7 @@ export const Field: FC<{
   options: () => Promise<{ value: string; label: string }[]>;
   slider_options: () => Promise<SliderOptions>;
 }> = ({ name, form, desc, label, type, required, options, slider_options }) => {
-  const value = form.hook.getValues()[name];
+  const value = form?.hook.getValues()[name];
   const local = useLocal({
     dropdown: {
       popup: false,
@@ -104,14 +98,14 @@ export const Field: FC<{
             local.render();
           }}
           on_select={(value: any) => {
-            form.hook.setValue(name, value);
+            form?.hook.setValue(name, value);
           }}
           title={label}
           options={options}
         />
       )}
       <FormField
-        control={form.hook.control}
+        control={form?.hook.control || {} as any}
         name={name}
         render={({ field }) => (
           <FormItem className="c-flex c-flex-1 c-flex-col">
@@ -138,7 +132,7 @@ export const Field: FC<{
                             value,
                             local.slider.opt
                           );
-                          form.hook.setValue(name, value);
+                          form?.hook.setValue(name, value);
                           local.render();
                         }}
                         value={local.slider.value}
@@ -180,7 +174,7 @@ export const Field: FC<{
                 {type === "date" && (
                   <Date
                     on_select={(value: any) => {
-                      form.hook.setValue(name, value);
+                      form?.hook.setValue(name, value);
                     }}
                   />
                 )}
@@ -188,7 +182,7 @@ export const Field: FC<{
                 {type === "datetime" && (
                   <Datetime
                     on_select={(value: any) => {
-                      form.hook.setValue(name, value);
+                      form?.hook.setValue(name, value);
                     }}
                   />
                 )}
@@ -198,7 +192,7 @@ export const Field: FC<{
                     options={options}
                     value={field.value}
                     on_select={(value: any) => {
-                      form.hook.setValue(name, value);
+                      form?.hook.setValue(name, value);
                     }}
                   />
                 )}
@@ -207,7 +201,7 @@ export const Field: FC<{
                   <InputMoney
                     value={field.value}
                     on_select={(value: any) => {
-                      form.hook.setValue(name, value);
+                      form?.hook.setValue(name, value);
                     }}
                   />
                 )}

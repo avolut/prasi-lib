@@ -5,7 +5,13 @@ export const getPathname = () => {
       location.pathname.startsWith("/prod") ||
       location.pathname.startsWith("/deploy")
     ) {
-      return "/" + location.pathname.split("/").slice(3).join("/");
+      const hash = location.hash;
+
+      if (hash !== "") {
+        return "/" + location.pathname.split("/").slice(3).join("/") + hash;
+      } else {
+        return "/" + location.pathname.split("/").slice(3).join("/");
+      }
     }
   }
   return location.pathname;

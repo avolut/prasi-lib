@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { useLocal } from "@/utils/use-local";
 
@@ -64,6 +64,17 @@ export const Tab: FC<{
     }
   }
 
+  if (!isEditor) {
+    useEffect(() => {
+      if (local.mode === "hash") {
+        local.activeIndex = location.hash.substring(1);
+        if (!parseInt(local.activeIndex)) {
+          local.activeIndex = "0";
+        }
+        local.render();
+      }
+    }, [location.hash]);
+  }
   return (
     <div className="c-flex c-flex-1 c-w-full c-flex-col c-items-stretch">
       <Tabs

@@ -24,7 +24,7 @@ export const List: FC<ListProp> = (_arg) => {
     list: [] as any[],
   });
 
-  if (isEditor) {
+  if (isEditor || typeof on_load !== 'function') {
     return <ListDummy {..._arg} />;
   }
 
@@ -35,14 +35,16 @@ export const List: FC<ListProp> = (_arg) => {
 
   useEffect(() => {
     (async () => {
-      if (local.status === "init") {
-        local.status = "loading";
-        local.render();
+      if (typeof on_load === "function") {
+        if (local.status === "init") {
+          local.status = "loading";
+          local.render();
 
-        local.list = await on_load({ params: local.params });
+          local.list = await on_load({ params: local.params });
 
-        local.status = "ready";
-        local.render();
+          local.status = "ready";
+          local.render();
+        }
       }
     })();
   }, [on_load]);
@@ -61,13 +63,16 @@ export const List: FC<ListProp> = (_arg) => {
               <ListDummy {..._arg} />
             ) : (
               (local.list || []).map((item, idx) => {
+                const mapped = map_val(item);
                 const val = (...arg: any[]) => {
-                  const value = get(map_val(item), `${arg.join("")}`);
+                  const value = get(mapped, `${arg.join("")}`);
                   return value;
                 };
                 return (
                   <div key={item} className="c-border-b">
-                    <PassProp item={val}>{row}</PassProp>
+                    <PassProp item={val} row={mapped}>
+                      {row}
+                    </PassProp>
                   </div>
                 );
               })
@@ -76,8 +81,8 @@ export const List: FC<ListProp> = (_arg) => {
         )}
       </div>
     </div>
-  ); 
-}; 
+  );
+};
 
 const ListDummy = ({ props, row, PassProp, map_val, mode }: ListProp) => {
   const item = (...arg: string[]) => {

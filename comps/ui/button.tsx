@@ -56,4 +56,21 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+const FloatButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant, className, ...props }, ref) => {
+    return (
+      <button
+        className={cn(
+          buttonVariants({ variant, className }),
+          `btn-${
+            variant || "default"
+          } btn c-transition-all c-duration-300 c-w-10 c-h-10 c-rounded-full c-z-50 c-absolute c-bottom-7 c-right-6 c-shadow-sm`
+        )}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+
+export { Button, buttonVariants, FloatButton };

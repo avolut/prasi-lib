@@ -1,4 +1,48 @@
-import { Bell, Calendar, ChevronRight, UsersRound, ChevronDown, Contact2, Drill, HelpCircle, Home, LayoutList, ListChecks, ListTodo, PenBoxIcon, QrCode, UserCog, Workflow, Settings, Newspaper, PanelRightOpen, PanelLeftOpen, LayoutDashboard, Building, Box, Package, Blocks, Megaphone, MousePointerSquare, Siren, Ship, HeartHandshake, StickyNote, Volume2, Wallet, FileDown, Menu, X, LogOut, Rocket, BookOpen } from "lucide-react";
+import {
+  Bell,
+  Calendar,
+  ChevronRight,
+  UsersRound,
+  ChevronDown,
+  Contact2,
+  Drill,
+  HelpCircle,
+  Home,
+  LayoutList,
+  ListChecks,
+  ListTodo,
+  PenBoxIcon,
+  QrCode,
+  UserCog,
+  Workflow,
+  Settings,
+  Newspaper,
+  PanelRightOpen,
+  PanelLeftOpen,
+  LayoutDashboard,
+  Building,
+  Box,
+  Package,
+  Blocks,
+  Megaphone,
+  MousePointerSquare,
+  Siren,
+  Ship,
+  HeartHandshake,
+  StickyNote,
+  Volume2,
+  Wallet,
+  FileDown,
+  Menu,
+  X,
+  LogOut,
+  Rocket,
+  BookOpen,
+  Pencil,
+  Plus,
+  Delete,
+  Edit,
+} from "lucide-react";
 
 export const icon = {
   home: <Home />,
@@ -14,8 +58,10 @@ export const icon = {
   manage_user: <UserCog />,
   notification: <Bell />,
   profile: <Contact2 />,
+  pencil: <Pencil />,
+  plus: <Plus />,
   bell: <Bell />,
-  bellSmall: <Bell className={`c-w-4`} fill="currentColor"  />,
+  bellSmall: <Bell className={`c-w-4`} fill="currentColor" />,
   bellSmallTransparent: <Bell className={`c-w-4`} />,
   help: <HelpCircle />,
   user: <UsersRound />,
@@ -53,6 +99,20 @@ export const icon = {
   releaseSmallTransparent: <Rocket className={`c-w-4`} />,
   newsSmall: <BookOpen className={`c-w-4`} fill="currentColor" />,
   newsSmallTransparent: <BookOpen className={`c-w-4`} />,
+  scan: (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M27.5 20V27.5H0.5V20H3.5V24.5H24.5V20H27.5ZM0.5 12.5H27.5V15.5H0.5V12.5ZM27.5 8H24.5V3.5H3.5V8H0.5V0.5H27.5V8Z"
+        fill="white"
+      />
+    </svg>
+  ),
+  delete: <Delete />,
+  update: <Edit />
 };
-
-

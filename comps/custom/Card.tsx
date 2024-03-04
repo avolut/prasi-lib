@@ -6,7 +6,9 @@ import { Skeleton } from "../ui/skeleton";
 
 export const Card: FC<{
   title: { left: ReactNode; right: ReactNode };
-  desc: (() => Promise<ReactNode>) | ReactNode;
+  desc:
+    | ((arg: { setOnClick: (fn: any) => void }) => Promise<ReactNode>)
+    | ReactNode;
   value: (() => Promise<ReactNode>) | ReactNode;
 }> = ({ title, desc, value }) => {
   const local = useLocal({
@@ -14,6 +16,7 @@ export const Card: FC<{
     desc: "" as any,
     status_value: "init" as "init" | "loading" | "ready",
     status_desc: "init" as "init" | "loading" | "ready",
+    onClick: null as null | (() => void),
   });
 
   useEffect(() => {
@@ -38,7 +41,12 @@ export const Card: FC<{
       if (!!desc && typeof desc === "function") {
         local.status_desc = "loading";
         local.render();
-        const result = desc();
+        const result = desc({
+          setOnClick: (fn) => {
+            local.onClick = fn;
+            local.render();
+          },
+        });
         if (typeof result === "object" && result instanceof Promise) {
           result.then((val) => {
             local.desc = val;
@@ -71,7 +79,14 @@ export const Card: FC<{
   }
 
   return (
-    <card.Card className="c-flex c-flex-1 c-items-center">
+    <card.Card
+      className="c-flex c-flex-1 c-items-center"
+      onClick={() => {
+        if (local.onClick) {
+          local.onClick();
+        }
+      }}
+    >
       <div className={cn("c-p-3 c-text-[14px] c-flex-1")}>
         {!!title && (title.left || title.right) && (
           <div className="c-tracking-tight c-text-sm c-font-medium c-flex c-justify-between c-space-x-1 mb-1 c-items-center">

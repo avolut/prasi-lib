@@ -6,7 +6,10 @@ import { Skeleton } from "../ui/skeleton";
 
 export const Detail: FC<{
   detail: (item: any) => Record<string, [string, string, string]>;
-  on_load: (arg: { params: any }) => Promise<any>;
+  on_load: (arg: {
+    params: any;
+    bind: (fn: (on_load: any) => void) => void;
+  }) => Promise<any>;
   mode: "standard" | "compact" | "inline";
 }> = ({ detail, mode, on_load }) => {
   const local = useLocal({
@@ -15,6 +18,7 @@ export const Detail: FC<{
     pathname: "",
     mode: mode,
     on_load,
+    bound: false,
   });
 
   if (!isEditor) {
@@ -39,7 +43,24 @@ export const Detail: FC<{
         }
         local.render();
 
-        const res = on_load({ params: {} });
+        const res = on_load({
+          params: {},
+          bind: (fn) => {
+            if (!local.bound) {
+              local.bound = true;
+              local.render();
+
+              fn(async () => {
+                local.status = "loading";
+                local.render();
+                const item = await on_load({} as any);
+                local.detail = detail(item);
+                local.status = "ready";
+                local.render();
+              });
+            }
+          },
+        });
         if (typeof res === "object" && res instanceof Promise) {
           res.then((item) => {
             local.detail = detail(item);
@@ -70,7 +91,34 @@ export const Detail: FC<{
         "c-flex c-relative items-stretch",
         mode === "inline"
           ? "c-flex-row c-my-2"
-          : "c-flex-col  c-flex-1  c-w-full c-h-full "
+          : "c-flex-col  c-flex-1  c-w-full c-h-full ",
+        isDesktop &&
+          entries.length > 3 &&
+          mode === "compact" &&
+          css`
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+
+            &::before {
+              content: " ";
+              position: absolute;
+              left: 49%;
+              bottom: 0px;
+              top: 0px;
+              border-right: 1px solid #ddd;
+            }
+
+            > div {
+              border-top: 0px;
+              padding-right: 10px;
+              padding-left: 10px;
+              width: 49% !important;
+            }
+          `
       )}
     >
       {entries.map(([name, data], idx) => {
@@ -90,7 +138,7 @@ export const Detail: FC<{
 
         if (mode === "standard") {
           return (
-            <div key={idx} className="c-flex c-flex-col c-items-stretch">
+            <div key={idx} className="c-flex c-flex-col c-items-stretch c-pt-3">
               <div className="c-flex c-font-bold">{label}</div>
               <div className="c-flex">
                 <Linkable
