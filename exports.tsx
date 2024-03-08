@@ -12,4 +12,4 @@ export { Button, FloatButton } from "@/comps/ui/button";
 export { getPathname } from "@/utils/pathname";
 export { Breadcrumb } from "./comps/custom/Breadcrumb";
 export { Header } from "./comps/custom/Header";
-export { Table } from "./comps/custom/Table";
+export { TableList } from "./comps/custom/TableList";

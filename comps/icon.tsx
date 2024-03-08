@@ -42,10 +42,16 @@ import {
   Plus,
   Delete,
   Edit,
+  BetweenHorizontalEnd,
+  BetweenHorizontalStart,
+  Outdent,
+  Indent,
 } from "lucide-react";
 
 export const icon = {
   home: <Home />,
+  in: <Indent />,
+  out: <Outdent />,
   dashboard: <LayoutDashboard />,
   dashboardSmall: <LayoutDashboard className={`c-w-4`} fill="currentColor" />,
   dashboardSmallTransparent: <LayoutDashboard className={`c-w-4`} />,

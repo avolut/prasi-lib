@@ -35,11 +35,22 @@ export const Field: FC<{
     | "datetime"
     | "money"
     | "slider"
-    | "master-linkF";
+    | "master-link";
   required: "y" | "n";
   options: () => Promise<{ value: string; label: string }[]>;
-  slider_options: () => Promise<SliderOptions>;
-}> = ({ name, form, desc, label, type, required, options, slider_options }) => {
+  slider: () => Promise<SliderOptions>;
+  on_change: (arg: { value: any }) => void | Promise<void>;
+}> = ({
+  name,
+  form,
+  desc,
+  label,
+  type,
+  required,
+  options,
+  slider,
+  on_change,
+}) => {
   const value = form?.hook.getValues()[name];
   const local = useLocal({
     dropdown: {
@@ -71,12 +82,12 @@ export const Field: FC<{
   useEffect(() => {
     if (type === "slider") {
       local.slider.value = parseSliderValue(value, local.slider.opt);
-      if (typeof slider_options === "function") {
+      if (typeof slider === "function") {
         if (local.slider.status === "init") {
           local.slider.status = "ready";
           local.render();
           (async () => {
-            const res = await slider_options();
+            const res = await slider();
 
             local.slider.opt = res;
             local.render();
@@ -105,7 +116,7 @@ export const Field: FC<{
         />
       )}
       <FormField
-        control={form?.hook.control || {} as any}
+        control={form?.hook.control || ({} as any)}
         name={name}
         render={({ field }) => (
           <FormItem className="c-flex c-flex-1 c-flex-col">
@@ -152,7 +163,18 @@ export const Field: FC<{
                 )}
 
                 {["text", "password"].includes(type) && (
-                  <Input {...field} type={type} />
+                  <Input
+                    {...field}
+                    type={type}
+                    onChangeCapture={
+                      typeof on_change === "function"
+                        ? (e) => {
+                            console.log(e.currentTarget.value);
+                            on_change({ value: e.currentTarget.value });
+                          }
+                        : undefined
+                    }
+                  />
                 )}
 
                 {type === "textarea" && (
