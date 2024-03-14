@@ -14,6 +14,7 @@ export const Tree = <T extends TreeItem>({
   tree,
   renderRow,
   className,
+  rowHeight,
   onChange,
   drag,
 }: {
@@ -21,6 +22,7 @@ export const Tree = <T extends TreeItem>({
   tree: T[];
   drag?: boolean;
   onChange?: (rows: T[]) => Promise<void> | void;
+  rowHeight?: number;
   renderRow: (arg: { row: T; style: any; dragHandle: any }) => ReactNode;
 }) => {
   const local = useLocal({
@@ -29,8 +31,8 @@ export const Tree = <T extends TreeItem>({
     children: generateTreeChildren({
       renderRow,
       updateNode: (data, arg) => {
-        if (typeof arg.sort_idx === "number") {
-          data.sort_idx = arg.sort_idx;
+        for (const [k, v] of Object.entries(arg)) {
+          (data as any)[k] = v;
         }
         local.update[data.id] = { ...data };
 
@@ -86,10 +88,12 @@ export const Tree = <T extends TreeItem>({
         }
       }}
     >
-      {local.width && local.height && (
+      {local.width > 0 && local.height > 0 && (
         <Arborist
           initialData={local.tree}
           width={local.width}
+          indent={10}
+          rowHeight={rowHeight}
           height={local.height}
           disableDrag={drag === false}
           children={local.children}
@@ -120,8 +124,10 @@ const formatTree = <T extends TreeItem>(tree: T[]) => {
           parent.children = [];
         }
 
-        parent.children.push(s);
-        scan(s.id, s as T);
+        if (!parent.children.find((e) => e.id === s.id)) {
+          parent.children.push(s);
+          scan(s.id, s as T);
+        }
       }
     }
   };
@@ -145,8 +151,16 @@ const generateTreeChildren = <T extends TreeItem>(arg: {
   return (({ node, style, dragHandle }) => {
     let sort_idx = node.data.sort_idx;
     if (typeof sort_idx === "string") sort_idx = parseInt(sort_idx);
-    if (!node.isDragging && sort_idx !== node.rowIndex) {
-      updateNode(node.data, { sort_idx: node.rowIndex } as Partial<T>);
+
+    let parent_id: any = node.parent?.id;
+    if (parent_id === "__REACT_ARBORIST_INTERNAL_ROOT__") parent_id = null;
+    if (!node.isDragging) {
+      if (sort_idx !== node.rowIndex) {
+        updateNode(node.data, { sort_idx: node.rowIndex } as Partial<T>);
+      }
+      if (parent_id !== node.data.id_parent) {
+        updateNode(node.data, { id_parent: parent_id } as Partial<T>);
+      }
     }
 
     return renderRow({ row: node.data, style, dragHandle });

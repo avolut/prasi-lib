@@ -6,3 +6,4 @@ declare var params: any;
 declare var cx: any;
 declare var preload: (urls: string[] | string) => any;
 declare var navigate: (link: string) => void;
+declare var siteurl: (path: string) => string;
