@@ -138,9 +138,12 @@ export const Detail: FC<{
 
         if (mode === "standard") {
           return (
-            <div key={idx} className="c-flex c-flex-col c-items-stretch c-pt-3">
-              <div className="c-flex c-font-bold">{label}</div>
-              <div className="c-flex">
+            <div
+              key={idx}
+              className="detail-row c-flex c-flex-col c-items-stretch c-pt-3"
+            >
+              <div className="detail-label c-flex c-font-bold">{label}</div>
+              <div className="detail-value c-flex">
                 <Linkable
                   sample={sample}
                   mode={mode}
@@ -155,7 +158,7 @@ export const Detail: FC<{
             <div
               key={idx}
               className={cx(
-                "c-flex c-flex-row c-items-center",
+                "detail-row c-flex c-flex-row c-items-center",
                 !is_first && "border-t",
                 css`
                   min-height: 30px;
@@ -163,11 +166,13 @@ export const Detail: FC<{
                 isMobile && "c-justify-between"
               )}
             >
-              <div className="c-flex c-font-bold c-min-w-[30%] c-overflow-hidden c-text-sm">
+              <div className="detail-label c-flex c-font-bold c-min-w-[30%] c-overflow-hidden c-text-sm">
                 {label}
               </div>
               <div
-                className={cx("c-flex c-flex-1 c-ml-2 c-flex-col c-items-end ")}
+                className={cx(
+                  "detail-value c-flex c-flex-1 c-ml-2 c-flex-col c-items-end "
+                )}
               >
                 <div>
                   <Linkable
@@ -185,13 +190,13 @@ export const Detail: FC<{
             <div
               key={idx}
               className={cx(
-                "c-flex c-flex-col c-items-stretch",
+                "detail-row c-flex c-flex-col c-items-stretch",
                 !is_last && `c-border-r c-pr-2 c-mr-2`,
                 !is_first && `c-ml-1`
               )}
             >
-              <div className={"c-flex c-font-bold"}>{label}</div>
-              <div className="c-flex">
+              <div className={"detail-label c-flex c-font-bold"}>{label}</div>
+              <div className="detail-value c-flex">
                 <Linkable
                   mode={mode}
                   sample={sample}
