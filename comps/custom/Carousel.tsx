@@ -12,7 +12,7 @@ export const Carousel: FC<{ list: any[] }> = ({ list }) => {
   return (
     <div
       className={cx(
-        "c-flex c-flex-1 c-overflow-hidden",
+        "carousel c-flex c-flex-1 c-overflow-hidden",
         css`
           .carousel-next {
             right: 0px;
