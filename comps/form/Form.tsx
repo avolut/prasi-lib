@@ -17,6 +17,7 @@ export const Form: FC<{
 
   const local = useLocal({
     el: null as any,
+    submit_timeout: null as any,
     layout: "unknown" as "unknown" | "2-col" | "1-col",
   });
 
@@ -34,7 +35,11 @@ export const Form: FC<{
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          on_submit({ form: form.hook.getValues(), error: {} });
+
+          clearTimeout(local.submit_timeout);
+          local.submit_timeout = setTimeout(() => {
+            on_submit({ form: form.hook.getValues(), error: {} });
+          }, 300);
         }}
       >
         <div
@@ -77,7 +82,10 @@ export const Form: FC<{
         >
           <PassProp
             submit={() => {
-              on_submit({ form: form.hook.getValues(), error: {} });
+              clearTimeout(local.submit_timeout);
+              local.submit_timeout = setTimeout(() => {
+                on_submit({ form: form.hook.getValues(), error: {} });
+              }, 300);
             }}
           >
             {body}

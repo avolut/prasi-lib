@@ -169,7 +169,6 @@ export const Field: FC<{
                     onChangeCapture={
                       typeof on_change === "function"
                         ? (e) => {
-                            console.log(e.currentTarget.value);
                             on_change({ value: e.currentTarget.value });
                           }
                         : undefined
