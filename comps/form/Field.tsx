@@ -8,7 +8,7 @@ import {
 } from "@/comps/ui/form";
 import { useLocal } from "@/utils/use-local";
 import autosize from "autosize";
-import { FC, useEffect, useRef } from "react";
+import { FC, ReactNode, useEffect, useRef } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -43,6 +43,7 @@ export const Field: FC<{
   PassProp: any;
   custom: "y" | "n";
   child: any;
+  label_alt: ReactNode | (() => ReactNode);
 }> = ({
   name,
   form,
@@ -56,6 +57,7 @@ export const Field: FC<{
   PassProp,
   custom,
   child,
+  label_alt,
 }) => {
   const value = form?.hook.getValues()[name];
   const local = useLocal({
@@ -126,9 +128,16 @@ export const Field: FC<{
         name={name}
         render={({ field }) => (
           <FormItem className="c-flex c-flex-1 c-flex-col">
-            <FormLabel className="flex">
-              {label}
-              {required === "y" && <h1 className="c-ml-1 c-text-red-500">*</h1>}
+            <FormLabel className="c-flex c-justify-between">
+              <div>
+                {label}
+                {required === "y" && (
+                  <h1 className="c-ml-1 c-text-red-500">*</h1>
+                )}
+              </div>
+              <div>
+                {typeof label_alt === "function" ? label_alt() : label_alt}
+              </div>
             </FormLabel>
             <FormControl>
               <>
