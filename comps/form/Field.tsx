@@ -13,7 +13,7 @@ import { UseFormReturn } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { ButtonOptions } from "./ButtonOptions";
+import { Radio } from "./Radio";
 import { Date } from "./Date";
 import { Datetime } from "./Datetime";
 import { InputMoney } from "./InputMoney";
@@ -30,7 +30,7 @@ export const Field: FC<{
     | "textarea"
     | "dropdown"
     | "password"
-    | "button-options"
+    | "radio"
     | "date"
     | "datetime"
     | "money"
@@ -40,6 +40,9 @@ export const Field: FC<{
   options: () => Promise<{ value: string; label: string }[]>;
   slider: () => Promise<SliderOptions>;
   on_change: (arg: { value: any }) => void | Promise<void>;
+  PassProp: any;
+  custom: "y" | "n";
+  child: any;
 }> = ({
   name,
   form,
@@ -50,6 +53,9 @@ export const Field: FC<{
   options,
   slider,
   on_change,
+  PassProp,
+  custom,
+  child,
 }) => {
   const value = form?.hook.getValues()[name];
   const local = useLocal({
@@ -208,10 +214,13 @@ export const Field: FC<{
                   />
                 )}
 
-                {type === "button-options" && (
-                  <ButtonOptions
+                {type === "radio" && (
+                  <Radio
                     options={options}
+                    PassProp={PassProp}
+                    child={child}
                     value={field.value}
+                    custom={custom}
                     on_select={(value: any) => {
                       form?.hook.setValue(name, value);
                     }}
