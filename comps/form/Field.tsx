@@ -19,12 +19,13 @@ import { Datetime } from "./Datetime";
 import { InputMoney } from "./InputMoney";
 import { PopUpDropdown } from "./PopUpDropdown";
 import { SliderOptions } from "./Slider/types";
+import { FormHook, modify } from "./utils/utils";
 
 export const Field: FC<{
   name: string;
   label: string;
   desc?: string;
-  form?: { hook: UseFormReturn<any, any, undefined>; render: () => void };
+  form?: FormHook;
   type:
     | "text"
     | "textarea"
@@ -43,7 +44,7 @@ export const Field: FC<{
   PassProp: any;
   custom: "y" | "n";
   child: any;
-  label_alt: ReactNode | (() => ReactNode);
+  label_alt: ReactNode | FC<{ modify: typeof modify; data: any }>;
 }> = ({
   name,
   form,
@@ -77,6 +78,7 @@ export const Field: FC<{
       } as SliderOptions,
       status: "init" as "init" | "loading" | "ready",
     },
+    modify: null as any,
   });
 
   const textAreaRef = useRef<any>();
@@ -136,7 +138,17 @@ export const Field: FC<{
                 )}
               </div>
               <div>
-                {typeof label_alt === "function" ? label_alt() : label_alt}
+                {typeof label_alt === "function" &&
+                  form &&
+                  label_alt({
+                    modify: local.modify
+                      ? local.modify
+                      : modify.bind({
+                          form,
+                        }),
+                    data: form.hook.getValues(),
+                  })}
+                {typeof label_alt !== "function" && label_alt}
               </div>
             </FormLabel>
             <FormControl>
@@ -230,8 +242,13 @@ export const Field: FC<{
                     child={child}
                     value={field.value}
                     custom={custom}
+                    form={form}
                     on_select={(value: any) => {
                       form?.hook.setValue(name, value);
+                    }}
+                    init_modify={(mod) => {
+                      local.modify = mod;
+                      local.render();
                     }}
                   />
                 )}
