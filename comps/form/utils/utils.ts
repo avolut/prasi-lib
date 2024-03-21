@@ -16,8 +16,7 @@ export const modify = function (
   if (keys.includes("value")) {
     f.hook.setValue(field_name, opt.value);
   }
-  if (this.change_hook)
-  this.change_hook(opt);
+  if (this.change_hook) this.change_hook(opt);
 };
 
 export type FormHook = {

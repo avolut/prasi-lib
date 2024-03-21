@@ -44,7 +44,10 @@ export const Field: FC<{
   PassProp: any;
   custom: "y" | "n";
   child: any;
-  label_alt: ReactNode | FC<{ modify: typeof modify; data: any }>;
+  selection: "single" | "multi";
+  label_alt:
+    | ReactNode
+    | FC<{ modify: typeof modify; data: any; current_name: string }>;
 }> = ({
   name,
   form,
@@ -57,6 +60,7 @@ export const Field: FC<{
   on_change,
   PassProp,
   custom,
+  selection,
   child,
   label_alt,
 }) => {
@@ -146,6 +150,7 @@ export const Field: FC<{
                       : modify.bind({
                           form,
                         }),
+                    current_name: name,
                     data: form.hook.getValues(),
                   })}
                 {typeof label_alt !== "function" && label_alt}
@@ -237,12 +242,14 @@ export const Field: FC<{
 
                 {type === "radio" && (
                   <Radio
+                    name={name}
                     options={options}
                     PassProp={PassProp}
                     child={child}
                     value={field.value}
                     custom={custom}
                     form={form}
+                    selection={selection}
                     on_select={(value: any) => {
                       form?.hook.setValue(name, value);
                     }}

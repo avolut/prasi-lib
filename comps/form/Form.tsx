@@ -4,13 +4,22 @@ import { FC } from "react";
 import { useForm } from "react-hook-form";
 
 export const Form: FC<{
+  on_init: (arg: { submit: any }) => any;
   on_load: () => any;
   on_submit: (arg: { form: any; error: any }) => any;
   body: any;
   form: { hook: any; render: () => void };
   PassProp: any;
   layout: "auto" | "1-col" | "2-col";
-}> = ({ on_load, body, form, PassProp, on_submit, layout: _layout }) => {
+}> = ({
+  on_init,
+  on_load,
+  body,
+  form,
+  PassProp,
+  on_submit,
+  layout: _layout,
+}) => {
   const form_hook = useForm<any>({
     defaultValues: on_load,
   });
@@ -19,12 +28,28 @@ export const Form: FC<{
     el: null as any,
     submit_timeout: null as any,
     layout: "unknown" as "unknown" | "2-col" | "1-col",
+    init: false,
   });
 
   form.hook = form_hook;
 
   let layout = _layout || "auto";
   if (layout !== "auto") local.layout = layout;
+
+  const submit = () => {
+    clearTimeout(local.submit_timeout);
+    local.submit_timeout = setTimeout(() => {
+      on_submit({
+        form: form.hook.getValues(),
+        error: {},
+      });
+    }, 300);
+  };
+
+  if (!local.init) {
+    local.init = true;
+    on_init({ submit });
+  }
 
   return (
     <FForm {...form_hook}>
@@ -35,11 +60,7 @@ export const Form: FC<{
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
-
-          clearTimeout(local.submit_timeout);
-          local.submit_timeout = setTimeout(() => {
-            on_submit({ form: form.hook.getValues(), error: {} });
-          }, 300);
+          submit();
         }}
       >
         <div
@@ -80,14 +101,7 @@ export const Form: FC<{
               `
           )}
         >
-          <PassProp
-            submit={() => {
-              clearTimeout(local.submit_timeout);
-              local.submit_timeout = setTimeout(() => {
-                on_submit({ form: form.hook.getValues(), error: {} });
-              }, 300);
-            }}
-          >
+          <PassProp submit={submit} data={form_hook.getValues()}>
             {body}
           </PassProp>
         </div>
