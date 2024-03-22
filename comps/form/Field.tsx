@@ -28,6 +28,7 @@ export const Field: FC<{
   form?: FormHook;
   type:
     | "text"
+    | "number"
     | "textarea"
     | "dropdown"
     | "password"
@@ -194,7 +195,7 @@ export const Field: FC<{
                   </div>
                 )}
 
-                {["text", "password"].includes(type) && (
+                {["text", "number", "password"].includes(type) && (
                   <Input
                     {...field}
                     type={type}
