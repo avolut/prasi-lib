@@ -9,15 +9,14 @@ import {
 import { useLocal } from "@/utils/use-local";
 import autosize from "autosize";
 import { FC, ReactNode, useEffect, useRef } from "react";
-import { UseFormReturn } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Radio } from "./Radio";
 import { Date } from "./Date";
 import { Datetime } from "./Datetime";
 import { InputMoney } from "./InputMoney";
 import { PopUpDropdown } from "./PopUpDropdown";
+import { Radio } from "./Radio";
 import { SliderOptions } from "./Slider/types";
 import { FormHook, modify } from "./utils/utils";
 
@@ -46,6 +45,8 @@ export const Field: FC<{
   custom: "y" | "n";
   child: any;
   selection: "single" | "multi";
+  suffix: any;
+  placeholder?: any;
   label_alt:
     | ReactNode
     | FC<{ modify: typeof modify; data: any; current_name: string }>;
@@ -62,7 +63,9 @@ export const Field: FC<{
   PassProp,
   custom,
   selection,
+  suffix,
   child,
+  placeholder,
   label_alt,
 }) => {
   const value = form?.hook.getValues()[name];
@@ -195,19 +198,38 @@ export const Field: FC<{
                   </div>
                 )}
 
-                {["text", "number", "password"].includes(type) && (
-                  <Input
-                    {...field}
-                    type={type}
-                    onChangeCapture={
-                      typeof on_change === "function"
-                        ? (e) => {
-                            on_change({ value: e.currentTarget.value });
-                          }
-                        : undefined
-                    }
-                  />
-                )}
+                {["text", "number", "password"].includes(type) &&
+                  (suffix !== "" ? (
+                    <div className="c-relative">
+                      <Input
+                        {...field}
+                        type={type}
+                        placeholder={placeholder}
+                        onChangeCapture={
+                          typeof on_change === "function"
+                            ? (e) => {
+                                on_change({ value: e.currentTarget.value });
+                              }
+                            : undefined
+                        }
+                      ></Input>
+                      <span className="c-p-[7px] c-absolute c-top-1/2 c-right-0 c-transform -c-translate-y-1/2 c-text-base c-rounded c-bg-[#D3D3D5]">
+                        {suffix || "-"}
+                      </span>
+                    </div>
+                  ) : (
+                    <Input
+                      {...field}
+                      type={type}
+                      onChangeCapture={
+                        typeof on_change === "function"
+                          ? (e) => {
+                              on_change({ value: e.currentTarget.value });
+                            }
+                          : undefined
+                      }
+                    />
+                  ))}
 
                 {type === "textarea" && (
                   <Textarea {...field} ref={textAreaRef} />

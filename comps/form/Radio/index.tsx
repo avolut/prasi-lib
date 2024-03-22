@@ -100,8 +100,16 @@ export const Radio: FC<{
                   current_name={name}
                   item_click={() => {
                     console.log(selection);
-
-                    form.hook.setValue(name, [...value])
+                    if (selection === "single") {
+                      console.log(form.hook.get);
+                      
+                      form.hook.setValue(name, [...value]);
+                    } else if (selection === "multi") {
+                      
+                      form.hook
+                    } else {
+                      null;
+                    }
                   }}
                 >
                   {child}

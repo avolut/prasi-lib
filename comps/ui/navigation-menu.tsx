@@ -69,10 +69,11 @@ const NavigationMenuContent = React.forwardRef<
   <NavigationMenuPrimitive.Content
     ref={ref}
     className={cn(
-      // "c-left-0 c-top-0 c-w-full",
-
-      "c-absolute c-top-full c-w-fit c-bg-popover",
-      "c-origin-top-center c-relative c-h-[var(--radix-navigation-menu-viewport-height)] c-w-full c-overflow-hidden c-rounded-md c-border c-bg-popover c-text-popover-foreground c-shadow-lg md:c-w-[var(--radix-navigation-menu-viewport-width)]",
+      css`
+        margin-top: 3px;
+      `,
+      "c-absolute c-w-fit c-bg-popover",
+      "c-origin-top-center c-relative c-h-[var(--radix-navigation-menu-viewport-height)] c-w-full c-overflow-hidden c-border c-bg-popover c-text-popover-foreground c-shadow-lg md:c-w-[var(--radix-navigation-menu-viewport-width)]",
       "data-[motion^=from-]:c-animate-in data-[motion^=to-]:c-animate-out data-[motion^=from-]:c-fade-in data-[motion^=to-]:c-fade-out data-[motion=from-end]:c-slide-in-from-right-52 data-[motion=from-start]:c-slide-in-from-left-52 data-[motion=to-end]:c-slide-out-to-right-52 data-[motion=to-start]:c-slide-out-to-left-52 md:c-absolute md:c-w-auto c-",
 
       className
