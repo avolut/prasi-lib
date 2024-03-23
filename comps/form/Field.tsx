@@ -9,16 +9,15 @@ import {
 import { useLocal } from "@/utils/use-local";
 import autosize from "autosize";
 import { FC, ReactNode, useEffect, useRef } from "react";
-import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Date } from "./Date";
 import { Datetime } from "./Datetime";
 import { InputMoney } from "./InputMoney";
-import { PopUpDropdown } from "./PopUpDropdown";
 import { Radio } from "./Radio";
 import { SliderOptions } from "./Slider/types";
 import { FormHook, modify } from "./utils/utils";
+import { Dropdown } from "./Dropdown";
 
 export const Field: FC<{
   name: string;
@@ -70,9 +69,6 @@ export const Field: FC<{
 }) => {
   const value = form?.hook.getValues()[name];
   const local = useLocal({
-    dropdown: {
-      popup: false,
-    },
     date: {
       // label: "",
       popup: false,
@@ -120,19 +116,6 @@ export const Field: FC<{
 
   return (
     <>
-      {local.dropdown.popup && (
-        <PopUpDropdown
-          on_close={() => {
-            local.dropdown.popup = false;
-            local.render();
-          }}
-          on_select={(value: any) => {
-            form?.hook.setValue(name, value);
-          }}
-          title={label}
-          options={options}
-        />
-      )}
       <FormField
         control={form?.hook.control || ({} as any)}
         name={name}
@@ -235,17 +218,7 @@ export const Field: FC<{
                   <Textarea {...field} ref={textAreaRef} />
                 )}
 
-                {type === "dropdown" && (
-                  <Button
-                    onClick={() => {
-                      local.dropdown.popup = true;
-                      local.render();
-                    }}
-                    variant={"outline"}
-                  >
-                    {field.value}
-                  </Button>
-                )}
+                {type === "dropdown" && <Dropdown {...field} />}
 
                 {type === "date" && (
                   <Date

@@ -175,15 +175,13 @@ export const usePopoverContext = () => {
 export function Popover({
   children,
   content,
-  className,
   modal = false,
-  popoverClassName,
+  className,
   arrow,
   ...restOptions
 }: {
-  className?: string;
   root?: HTMLElement;
-  popoverClassName?: string;
+  className?: string;
   children: React.ReactNode;
   content?: React.ReactNode;
   arrow?: boolean;
@@ -196,7 +194,7 @@ export function Popover({
   return (
     <PopoverContext.Provider value={popover}>
       <PopoverTrigger
-        className={className}
+        asChild
         onClick={
           typeof restOptions.open !== "undefined"
             ? () => {
@@ -209,13 +207,12 @@ export function Popover({
       </PopoverTrigger>
       <PopoverContent
         className={cx(
-          popoverClassName
-            ? popoverClassName
-            : css`
-                background: white;
-                box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.4);
-                user-select: none;
-              `
+          className,
+          css`
+            background: white;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+            user-select: none;
+          `
         )}
       >
         {_content}
@@ -297,10 +294,7 @@ export const PopoverContent = React.forwardRef<
   return (
     <FloatingPortal root={context.root}>
       {context.backdrop ? (
-        <FloatingOverlay
-          className={"c-z-50"}
-          lockScroll
-        >
+        <FloatingOverlay className={"c-z-50"} lockScroll>
           {content}
         </FloatingOverlay>
       ) : (

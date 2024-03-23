@@ -10,7 +10,7 @@ export const Radio: FC<{
     data: any;
     current_name: string;
   }) => Promise<(string | { value: string; label: string })[]>;
-  value: string;
+  value: string | string[];
   PassProp: any;
   custom: "y" | "n";
   child: any;
@@ -99,14 +99,16 @@ export const Radio: FC<{
                   option_item={item}
                   current_name={name}
                   item_click={() => {
-                    console.log(selection);
+                    console.log(value, "====single", name);
                     if (selection === "single") {
-                      console.log(form.hook.get);
-                      
-                      form.hook.setValue(name, [...value]);
+                      local.mod(name, { value: item.value });
+                      local.render();
                     } else if (selection === "multi") {
-                      
-                      form.hook
+                      const val = []
+                      val.push()
+                      local.mod(name, { value: item.value });
+                      local.render();
+                      console.log(value, "====multi", name);
                     } else {
                       null;
                     }

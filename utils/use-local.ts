@@ -8,11 +8,11 @@ export const useLocal = <T extends object>(
   deps?: any[]
 ): {
   [K in keyof T]: T[K] extends Promise<any> ? null | Awaited<T[K]> : T[K];
-} & { render: () => void } => {
+} & { render: (force?: boolean) => void } => {
   const [, _render] = useState({});
   const _ = useRef({
     data: data as unknown as T & {
-      render: () => void;
+      render: (force?: boolean) => void;
     },
     deps: (deps || []) as any[],
     promisedKeys: new Set<string>(),
@@ -45,8 +45,9 @@ export const useLocal = <T extends object>(
       }
     }
 
-    local.data.render = () => {
-      if (local.ready) _render({});
+    local.data.render = (force) => {
+      if (force) _render({})
+      else if (local.ready) _render({});
     };
   } else {
     if (local.deps.length > 0 && deps) {
