@@ -2,14 +2,12 @@ import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
 import { Button } from "../../ui/button";
 import { FormHook, modify } from "../utils/utils";
+import { FieldOptions } from "../type";
 
 export const Radio: FC<{
   name: string;
   on_select: (val: any) => void;
-  options: (opt: {
-    data: any;
-    current_name: string;
-  }) => Promise<(string | { value: string; label: string })[]>;
+  options: FieldOptions;
   value: string | string[];
   PassProp: any;
   custom: "y" | "n";
@@ -40,22 +38,27 @@ export const Radio: FC<{
     if (!local.option_modified && form) {
       local.status = "loading";
       local.render();
-      options({ data: form.hook.getValues(), current_name: name }).then(
-        (result) => {
-          local.list = result.map((e) => {
-            if (typeof e === "string") {
-              return {
-                value: e,
-                label: e,
-              };
-            }
-            return e;
-          });
+      const callback = (result: any[]) => {
+        local.list = result.map((e) => {
+          if (typeof e === "string") {
+            return {
+              value: e,
+              label: e,
+            };
+          }
+          return e;
+        });
 
-          local.status = "ready";
-          local.render();
-        }
-      );
+        local.status = "ready";
+        local.render();
+      };
+
+      const res = options({ data: form.hook.getValues(), current_name: name });
+      if (res instanceof Promise) {
+        res.then(callback);
+      } else {
+        callback(res);
+      }
     }
   }, [options]);
 
@@ -104,8 +107,8 @@ export const Radio: FC<{
                       local.mod(name, { value: item.value });
                       local.render();
                     } else if (selection === "multi") {
-                      const val = []
-                      val.push()
+                      const val = [];
+                      val.push();
                       local.mod(name, { value: item.value });
                       local.render();
                       console.log(value, "====multi", name);

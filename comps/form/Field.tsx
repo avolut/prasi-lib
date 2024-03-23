@@ -18,6 +18,7 @@ import { Radio } from "./Radio";
 import { SliderOptions } from "./Slider/types";
 import { FormHook, modify } from "./utils/utils";
 import { Dropdown } from "./Dropdown";
+import { FieldOptions } from "./type";
 
 export const Field: FC<{
   name: string;
@@ -37,7 +38,7 @@ export const Field: FC<{
     | "slider"
     | "master-link";
   required: "y" | "n";
-  options: () => Promise<{ value: string; label: string }[]>;
+  options: FieldOptions;
   slider: () => Promise<SliderOptions>;
   on_change: (arg: { value: any }) => void | Promise<void>;
   PassProp: any;
@@ -218,7 +219,14 @@ export const Field: FC<{
                   <Textarea {...field} ref={textAreaRef} />
                 )}
 
-                {type === "dropdown" && <Dropdown {...field} />}
+                {type === "dropdown" && (
+                  <Dropdown
+                    {...field}
+                    options={options}
+                    form={form}
+                    name={name}
+                  />
+                )}
 
                 {type === "date" && (
                   <Date
