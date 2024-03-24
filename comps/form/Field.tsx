@@ -19,6 +19,7 @@ import { SliderOptions } from "./Slider/types";
 import { FormHook, modify } from "./utils/utils";
 import { Dropdown } from "./Dropdown";
 import { FieldOptions } from "./type";
+import { Relation } from "./Dropdown/relation";
 
 export const Field: FC<{
   name: string;
@@ -30,6 +31,7 @@ export const Field: FC<{
     | "number"
     | "textarea"
     | "dropdown"
+    | "relation"
     | "password"
     | "radio"
     | "date"
@@ -50,6 +52,9 @@ export const Field: FC<{
   label_alt:
     | ReactNode
     | FC<{ modify: typeof modify; data: any; current_name: string }>;
+  rel_table: string;
+  rel_fields: string[];
+  rel_query: () => any;
 }> = ({
   name,
   form,
@@ -67,6 +72,9 @@ export const Field: FC<{
   child,
   placeholder,
   label_alt,
+  rel_fields,
+  rel_table,
+  rel_query,
 }) => {
   const value = form?.hook.getValues()[name];
   const local = useLocal({
@@ -184,10 +192,11 @@ export const Field: FC<{
 
                 {["text", "number", "password"].includes(type) &&
                   (suffix !== "" ? (
-                    <div className="c-relative">
+                    <div className="c-flex c-items-stretch">
                       <Input
                         {...field}
                         type={type}
+                        className="c-flex-1 c-rounded-r-none focus:c-rounded-r-none c-pr-1 c-border-r-0"
                         placeholder={placeholder}
                         onChangeCapture={
                           typeof on_change === "function"
@@ -197,7 +206,7 @@ export const Field: FC<{
                             : undefined
                         }
                       ></Input>
-                      <span className="c-p-[7px] c-absolute c-top-1/2 c-right-0 c-transform -c-translate-y-1/2 c-text-base c-rounded c-bg-[#D3D3D5]">
+                      <span className="c-p-[7px] c-rounded-r c-bg-[#D3D3D5]">
                         {suffix || "-"}
                       </span>
                     </div>
@@ -221,10 +230,23 @@ export const Field: FC<{
 
                 {type === "dropdown" && (
                   <Dropdown
-                    {...field}
                     options={options}
                     form={form}
                     name={name}
+                    value={field.value}
+                  />
+                )}
+
+                {type === "relation" && (
+                  <Relation
+                    relation={{
+                      fields: rel_fields,
+                      table: rel_table,
+                      query: rel_query,
+                    }}
+                    form={form}
+                    name={name}
+                    value={field.value}
                   />
                 )}
 

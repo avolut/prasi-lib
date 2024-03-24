@@ -7,14 +7,23 @@ import { FC, useEffect } from "react";
 import { FieldListItem, FieldOptions } from "../type";
 import { FormHook } from "../utils/utils";
 
-type DropdownProps = {
+type RelationProps = {
   value: string;
-  options: FieldOptions;
+  relation: {
+    table: string;
+    fields: string[];
+    query: () => Promise<any>;
+  };
   form?: FormHook;
   name: string;
 };
 
-export const Dropdown: FC<DropdownProps> = ({ value, options, form, name }) => {
+export const Relation: FC<RelationProps> = ({
+  relation,
+  value,
+  form,
+  name,
+}) => {
   const local = useLocal({
     status: "loading" as "loading" | "ready",
     open: false,
@@ -23,22 +32,41 @@ export const Dropdown: FC<DropdownProps> = ({ value, options, form, name }) => {
     input: "",
     label: "",
     filter: "",
+    pk: "",
   });
 
   useEffect(() => {
-    if (form) {
-      local.status = "loading";
-      local.render();
-      const callback = (result: any[]) => {
-        local.list = result.map((e) => {
-          if (typeof e === "string") {
-            return {
-              value: e,
-              label: e,
-            };
+    (async () => {
+      if (form) {
+        local.status = "loading";
+        local.render();
+        const table_fn = (db as any)[relation.table];
+        const select = {} as any;
+        local.pk = "";
+        for (const f of relation.fields) {
+          if (f.startsWith("::")) {
+            select[f.substring(2)] = true;
+            local.pk = f.substring(2);
+          } else {
+            select[f] = true;
           }
-          return e;
-        });
+        }
+        let q = {};
+
+        if (typeof relation.query === "function") {
+          q = await relation.query();
+        }
+
+        const list = await table_fn.findMany({ select, ...q });
+        if (Array.isArray(list)) {
+          local.list = list.map((item: any) => {
+            let label = [];
+            for (const [k, v] of Object.entries(item)) {
+              if (k !== local.pk) label.push(v);
+            }
+            return { value: item[local.pk], label: label.join(" - ") };
+          });
+        }
 
         const found = local.list.find((e) => e.value === value);
         if (found) {
@@ -47,16 +75,9 @@ export const Dropdown: FC<DropdownProps> = ({ value, options, form, name }) => {
 
         local.status = "ready";
         local.render();
-      };
-
-      const res = options({ data: form.hook.getValues(), current_name: name });
-      if (res instanceof Promise) {
-        res.then(callback);
-      } else {
-        callback(res);
       }
-    }
-  }, [options]);
+    })();
+  }, [relation]);
 
   let filtered = local.list;
 
