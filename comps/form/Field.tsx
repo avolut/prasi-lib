@@ -13,13 +13,13 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Date } from "./Date";
 import { Datetime } from "./Datetime";
+import { Dropdown } from "./Dropdown";
+import { Relation } from "./Dropdown/relation";
 import { InputMoney } from "./InputMoney";
 import { Radio } from "./Radio";
 import { SliderOptions } from "./Slider/types";
-import { FormHook, modify } from "./utils/utils";
-import { Dropdown } from "./Dropdown";
 import { FieldOptions } from "./type";
-import { Relation } from "./Dropdown/relation";
+import { FormHook, modify } from "./utils/utils";
 
 export const Field: FC<{
   name: string;
@@ -123,6 +123,30 @@ export const Field: FC<{
     }
   }, [value]);
 
+  const inputKeyDown = (e: any) => {
+    if (e.key === "Enter" && form?.ref) {
+      form.submit();
+    }
+  };
+
+  const onChange = (e: any) => {
+    form?.hook.setValue(name, e.currentTarget.value);
+    form?.render();
+  };
+
+  if (form) {
+    form.label[name] = label;
+    if (required === "y") {
+      form.validation[name] = "required";
+
+      if (value) {
+        delete form.hook.formState.errors[name];
+      }
+    } else {
+      delete form.validation[name];
+    }
+  }
+
   return (
     <>
       <FormField
@@ -131,7 +155,7 @@ export const Field: FC<{
         render={({ field }) => (
           <FormItem className="c-flex c-flex-1 c-flex-col">
             <FormLabel className="c-flex c-justify-between">
-              <div>
+              <div className="c-flex c-items-center">
                 {label}
                 {required === "y" && (
                   <h1 className="c-ml-1 c-text-red-500">*</h1>
@@ -196,15 +220,11 @@ export const Field: FC<{
                       <Input
                         {...field}
                         type={type}
+                        spellCheck={false}
                         className="c-flex-1 c-rounded-r-none focus:c-rounded-r-none c-pr-1 c-border-r-0"
                         placeholder={placeholder}
-                        onChangeCapture={
-                          typeof on_change === "function"
-                            ? (e) => {
-                                on_change({ value: e.currentTarget.value });
-                              }
-                            : undefined
-                        }
+                        onChange={onChange}
+                        onKeyDown={inputKeyDown}
                       ></Input>
                       <span className="c-p-[7px] c-rounded-r c-bg-[#D3D3D5]">
                         {suffix || "-"}
@@ -214,18 +234,20 @@ export const Field: FC<{
                     <Input
                       {...field}
                       type={type}
-                      onChangeCapture={
-                        typeof on_change === "function"
-                          ? (e) => {
-                              on_change({ value: e.currentTarget.value });
-                            }
-                          : undefined
-                      }
+                      spellCheck={false}
+                      placeholder={placeholder}
+                      onKeyDown={inputKeyDown}
+                      onChange={onChange}
                     />
                   ))}
 
                 {type === "textarea" && (
-                  <Textarea {...field} ref={textAreaRef} />
+                  <Textarea
+                    {...field}
+                    ref={textAreaRef}
+                    spellCheck={false}
+                    onChange={onChange}
+                  />
                 )}
 
                 {type === "dropdown" && (
@@ -296,7 +318,7 @@ export const Field: FC<{
                 )}
               </>
             </FormControl>
-            <FormDescription>{desc}</FormDescription>
+            {/* <FormDescription>{desc}</FormDescription> */}
             <FormMessage />
           </FormItem>
         )}

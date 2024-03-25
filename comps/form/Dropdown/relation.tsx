@@ -32,7 +32,7 @@ export const Relation: FC<RelationProps> = ({
     input: "",
     label: "",
     filter: "",
-    pk: "",
+    pk_field: "",
   });
 
   useEffect(() => {
@@ -42,11 +42,11 @@ export const Relation: FC<RelationProps> = ({
         local.render();
         const table_fn = (db as any)[relation.table];
         const select = {} as any;
-        local.pk = "";
+        local.pk_field = "";
         for (const f of relation.fields) {
           if (f.startsWith("::")) {
             select[f.substring(2)] = true;
-            local.pk = f.substring(2);
+            local.pk_field = f.substring(2);
           } else {
             select[f] = true;
           }
@@ -62,13 +62,22 @@ export const Relation: FC<RelationProps> = ({
           local.list = list.map((item: any) => {
             let label = [];
             for (const [k, v] of Object.entries(item)) {
-              if (k !== local.pk) label.push(v);
+              if (k !== local.pk_field) label.push(v);
             }
-            return { value: item[local.pk], label: label.join(" - ") };
+            return { value: item[local.pk_field], label: label.join(" - ") };
           });
         }
 
-        const found = local.list.find((e) => e.value === value);
+        const found = local.list.find((e) => {
+          if (typeof value === "object") {
+            if (value["connect"]) {
+              return e.value === value["connect"][local.pk_field];
+            }
+            return e.value === value[local.pk_field];
+          } else {
+            return e.value === value;
+          }
+        });
         if (found) {
           local.label = found.label;
         }
@@ -133,7 +142,9 @@ export const Relation: FC<RelationProps> = ({
                     onClick={() => {
                       if (form) {
                         local.open = false;
-                        form.hook.setValue(name, item.value);
+                        form.hook.setValue(name, {
+                          connect: { [local.pk_field]: item.value },
+                        });
                         form.render();
                       }
                     }}

@@ -2,13 +2,14 @@ import { Form as FForm } from "@/comps/ui/form";
 import { useLocal } from "@/utils/use-local";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
+import { FormHook } from "./utils/utils";
 
 export const Form: FC<{
   on_init: (arg: { submit: any }) => any;
   on_load: () => any;
   on_submit: (arg: { form: any; error: any }) => any;
   body: any;
-  form: { hook: any; render: () => void };
+  form: FormHook;
   PassProp: any;
   layout: "auto" | "1-col" | "2-col";
 }> = ({
@@ -32,6 +33,12 @@ export const Form: FC<{
   });
 
   form.hook = form_hook;
+  if (!form.validation) {
+    form.validation = {};
+  }
+  if (!form.label) {
+    form.label = {};
+  }
 
   let layout = _layout || "auto";
   if (layout !== "auto") local.layout = layout;
@@ -39,9 +46,24 @@ export const Form: FC<{
   const submit = () => {
     clearTimeout(local.submit_timeout);
     local.submit_timeout = setTimeout(() => {
+      const data = form.hook.getValues();
+      form.hook.clearErrors();
+      for (const [k, v] of Object.entries(form.validation)) {
+        if (v === "required") {
+          if (!data[k]) {
+            const error = {
+              type: "required",
+              message: `${form.label[k] || k} is required.`,
+            };
+            form.hook.formState.errors[k] = error;
+            form.hook.setError(k, error);
+          }
+        }
+      }
+
       on_submit({
-        form: form.hook.getValues(),
-        error: {},
+        form: data,
+        error: form.hook.formState.errors,
       });
     }, 300);
   };
@@ -51,13 +73,19 @@ export const Form: FC<{
     on_init({ submit });
   }
 
+  form.submit = submit;
+
   return (
     <FForm {...form_hook}>
       <form
         className={
           "flex-1 flex flex-col w-full items-stretch relative overflow-auto"
         }
+        ref={(el) => {
+          if (el) form.ref = el;
+        }}
         onSubmit={(e) => {
+          console.log("on submit");
           e.preventDefault();
           e.stopPropagation();
           submit();

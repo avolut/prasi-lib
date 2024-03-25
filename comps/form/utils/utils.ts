@@ -21,5 +21,9 @@ export const modify = function (
 
 export type FormHook = {
   hook: UseFormReturn<any, any, undefined>;
+  ref: HTMLFormElement;
+  submit: any;
+  label: Record<string, string>;
+  validation: Record<string, "required">;
   render: () => void;
 };
