@@ -38,17 +38,24 @@ export const gen_table = (modify: (data: any) => void, data: any) => {
   }
 
   const result = {} as any;
-  if (data["columns"]) {
-    result["columns"] = data["columns"];
-    result["columns"].value = gen_columns(columns);
+
+  if (!pk) {
+    alert("Failed to generate! Primary Key not found. ");
+    return;
   }
-  if (data["on_load"]) {
-    result["on_load"] = data["on_load"];
-    result["on_load"].value = on_load({ pk, table, select, pks });
-  }
-  if (data["child"]) {
-    result["child"] = data["child"];
-    result["child"].content.childs = newField(select, pks);
+  if (pk) {
+    if (data["columns"]) {
+      result["columns"] = data["columns"];
+      result["columns"].value = gen_columns(columns);
+    }
+    if (data["on_load"]) {
+      result["on_load"] = data["on_load"];
+      result["on_load"].value = on_load({ pk, table, select, pks });
+    }
+    if (data["child"]) {
+      result["child"] = data["child"];
+      result["child"].content.childs = newField(select, pks);
+    }
   }
   modify(result);
 

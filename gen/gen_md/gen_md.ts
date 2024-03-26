@@ -6,6 +6,7 @@ import { gen_master } from "./gen_master";
 import { on_load as table_on_load } from "../gen_table/on_load";
 import { on_load as form_on_load } from "../gen_form/on_load";
 import { on_submit as form_on_submit } from "../gen_form/on_submit";
+import { newField as form_new_field } from "../gen_form/new_field";
 import { gen_columns } from "../gen_table/columns";
 import { newField as table_new_field } from "../gen_table/new_field";
 import { gen_detail } from "./gen_detail";
@@ -66,6 +67,10 @@ export const gen_md = (modify: (data: any) => void, data: any) => {
   }
 
   const result: any = {};
+  if (!pk) {
+    alert("Failed to generate! Primary Key not found. ");
+    return;
+  }
   if (pk) {
     result["header"] = data["header"];
     result["header"].content = gen_header();
@@ -79,19 +84,48 @@ export const gen_md = (modify: (data: any) => void, data: any) => {
 
     result["detail"] = data["detail"];
     const detail = gen_detail();
-    const title = JSON.parse(get(data, "title.value"));
-    const before_load = form_before_load(pk.name, title, "");
+    const title = parse(get(data, "title.value"));
+    const label = parse(get(data, "gen_label.value"));
+    const before_load = form_before_load(table, pk.name, title, label);
 
-    detail.props["on_load"].value = form_on_load({ pk, pks, select, table });
+    detail.props["on_load"].value = form_on_load({
+      pk,
+      pks,
+      select,
+      table,
+      opt: { before_load, after_load: `after_load(item);` },
+    });
     detail.props["on_submit"].value = form_on_submit({
       pk,
       table,
       select,
       pks,
     });
+
+    const childs = get(detail.props, "body.content.childs");
+    if (Array.isArray(childs)) {
+      detail.props.body.content.childs = new_fields.map(form_new_field) as any;
+      console.log(detail.props.body.content.childs);
+    }
     result["detail"].content = detail.content;
   }
-  // modify(result);
+  modify(result);
 
-  alert("Prop Generated!");
+  alert("Prop Generated! ");
+};
+
+const parse = (text: any) => {
+  if (typeof text === "string") {
+    let result = "";
+    try {
+      eval(`result = ${text}`);
+
+      if (typeof result === "function") {
+        result = (result as any)();
+      }
+    } catch (e) {}
+
+    return result;
+  }
+  return "";
 };

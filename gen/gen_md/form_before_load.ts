@@ -1,4 +1,9 @@
-export const form_before_load = (pk: string, title: string, name: string) => {
+export const form_before_load = (
+  table: string,
+  pk: string,
+  title: string,
+  label: string
+) => {
   return `
   const after_load = (item: any) => {
     const set_actions = () =>
@@ -11,7 +16,7 @@ export const form_before_load = (pk: string, title: string, name: string) => {
               md.ui.actions = [{ label: "Deleting...", type: "ghost" }];
               md.render();
 
-              await db.m_aset.delete({ where: { ${pk}: item.${pk} } });
+              await db.${table}.delete({ where: { ${pk}: item.${pk} } });
 
               setTimeout(() => {
                 md.ui.actions = [...md.ui.default_actions];
@@ -39,8 +44,11 @@ export const form_before_load = (pk: string, title: string, name: string) => {
         },
       ]);
     set_actions();
-    md.ui.breadcrumb = [[${title}, ""], item?.nama_aset_komersial];
+    md.ui.breadcrumb = [["${title}", ""]${label ? `, item?.["${label}"]` : ""}];
     md.render();
   };
+  md.ui.breadcrumb = [["${title}", ""], "..."];
+  md.render();
+  
 `;
 };

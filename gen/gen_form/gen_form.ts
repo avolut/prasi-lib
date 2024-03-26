@@ -60,6 +60,11 @@ export const gen_form = (modify: (data: any) => void, data: any) => {
   }
 
   const result: any = {};
+
+  if (!pk) {
+    alert("Failed to generate! Primary Key not found. ");
+    return;
+  }
   if (pk) {
     if (mode.includes("on_load")) {
       result["on_load"] = data["on_load"];

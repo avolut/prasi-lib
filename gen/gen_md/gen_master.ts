@@ -208,7 +208,6 @@ export const gen_master = () => {
               },
               typings:
                 "const typings = {\n  cell: `{ key: string, value: any }`,\n  row: `any`,\n  idx: `number`,\n  rows: `any[]`,\n}",
-              valueBuilt: ' "hello";\n',
             },
             columns: {
               idx: 0,
@@ -219,8 +218,6 @@ export const gen_master = () => {
               type: "string",
               value:
                 'async (): Promise<\n    { key: string; name: string; width?: number; frozen?: boolean }[]\n  > => {\n    return [\n      { key: "id", name: "#", width: 60, frozen: true },\n      {"key":"nama_aset_komersial","name":"Nama Aset Komersial"},\n      {"key":"m_cabang","name":"Cabang"},\n      {"key":"m_regional","name":"Regional"},\n      {"key":"luas_setifikat","name":"Luas Setifikat"},\n      {"key":"tanggal_sertifikat","name":"Tanggal Sertifikat"}\n    ];\n  }',
-              valueBuilt:
-                ' async () => {\n  return [\n    { key: "id", name: "#", width: 60, frozen: true },\n    { "key": "nama_aset_komersial", "name": "Nama Aset Komersial" },\n    { "key": "m_cabang", "name": "Cabang" },\n    { "key": "m_regional", "name": "Regional" },\n    { "key": "luas_setifikat", "name": "Luas Setifikat" },\n    { "key": "tanggal_sertifikat", "name": "Tanggal Sertifikat" }\n  ];\n};\n',
             },
             on_load: {
               idx: 1,
@@ -230,9 +227,7 @@ export const gen_master = () => {
               name: "prop_1",
               type: "string",
               value:
-                "async () => {\n  if (isEditor)\n    return [\n      {\n        id: createId(),\n    },\n  });\n\n  return items;\n}",
-              valueBuilt:
-                ' async () => {\n  if (isEditor)\n    return [\n      {\n        id: createId(),\n        tanggal_sertifikat: "sample"\n      }\n    ];\n  const items = await db.m_aset.findMany({\n    select: {\n      id: true,\n      nama_aset_komersial: true,\n      m_cabang: {\n        select: {\n          id: true,\n          nama_cabang: true\n        }\n      },\n      m_regional: {\n        select: {\n          regional: true,\n          id: true\n        }\n      },\n      luas_setifikat: true,\n      tanggal_sertifikat: true\n    },\n    orderBy: {\n      id: "desc"\n    }\n  });\n  return items;\n};\n',
+                "async () => {\n  if (isEditor)\n    return [\n      {\n      },\n  });\n\n  return items;\n}",
             },
             generate: {
               idx: 5,

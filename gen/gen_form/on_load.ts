@@ -13,6 +13,7 @@ export const on_load = ({
   pks: Record<string, string>;
   opt?: {
     before_load: string;
+    after_load: string;
   };
 }) => {
   return `\
@@ -22,8 +23,9 @@ async (opt) => {
   let id = ${pk.type === "int" ? "parseInt(params.id)" : "params.id"};
   ${opt?.before_load}
   
+  let item = {};
   if (id){
-    const item = await db.${table}.findFirst({
+    item = await db.${table}.findFirst({
       where: {
         ${pk.name}: id,
       },
@@ -40,9 +42,12 @@ async (opt) => {
       }`;
       })
       .join("\n")}
-    }
+
+    ${opt?.after_load}
 
     return item;
+  } else {
+    ${opt?.after_load}
   }
 }`;
 };
