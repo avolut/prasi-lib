@@ -1,9 +1,8 @@
 import get from "lodash.get";
-import { on_load } from "./gen_form/on_load";
-import { on_submit } from "./gen_form/on_submit";
-import { GFCol as Col } from "./gen_form/type";
-import { NewFieldArg, newField } from "./gen_form/new_field";
-import capitalize from "lodash.capitalize";
+import { GFCol as Col, formatName } from "../utils";
+import { NewFieldArg, newField } from "./new_field";
+import { on_load } from "./on_load";
+import { on_submit } from "./on_submit";
 
 export const gen_form = (modify: (data: any) => void, data: any) => {
   const mode = JSON.parse(data.gen_mode.value) as (
@@ -59,7 +58,6 @@ export const gen_form = (modify: (data: any) => void, data: any) => {
       select[col.name] = true;
     }
   }
-  console.log(new_fields);
 
   const result: any = {};
   if (pk) {
@@ -76,19 +74,10 @@ export const gen_form = (modify: (data: any) => void, data: any) => {
     result["body"] = data["body"];
     const childs = get(result, "body.content.childs");
     if (Array.isArray(childs)) {
-      
       result.body.content.childs = new_fields.map(newField);
     }
   }
   modify(result);
 
   alert("Prop Generated!");
-};
-
-const formatName = (name: string) => {
-  return name
-    .split("_")
-    .filter((e) => e.length > 1)
-    .map((e) => capitalize(e))
-    .join(" ");
 };

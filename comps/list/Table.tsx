@@ -1,15 +1,26 @@
 import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
-import DataGrid, { ColumnOrColumnGroup, SortColumn } from "react-data-grid";
+import DataGrid, {
+  ColumnOrColumnGroup,
+  Row,
+  SortColumn,
+} from "react-data-grid";
 import "react-data-grid/lib/styles.css";
 import { Skeleton } from "../ui/skeleton";
 
+type OnRowClick = {
+  row: any;
+  rows: any[];
+  idx: any;
+  event: React.MouseEvent<HTMLDivElement, MouseEvent>;
+};
 export const Table: FC<{
   columns: () => Promise<ColumnOrColumnGroup<any>[]>;
   on_load: () => Promise<any[]>;
   child: any;
   PassProp: any;
-}> = ({ columns, on_load, child, PassProp }) => {
+  row_click: (arg: OnRowClick) => void;
+}> = ({ columns, on_load, child, PassProp, row_click }) => {
   const local = useLocal({
     loading: false,
     data: undefined as unknown as any[],
@@ -56,6 +67,7 @@ export const Table: FC<{
 
   return (
     <TableInternal
+      row_click={row_click}
       columns={local.columns}
       data={local.loading ? undefined : local.data}
       render={local.render}
@@ -67,7 +79,8 @@ const TableInternal: FC<{
   columns: ColumnOrColumnGroup<any>[];
   data?: any[];
   render: () => void;
-}> = ({ columns, data, render }) => {
+  row_click: (arg: OnRowClick) => void;
+}> = ({ columns, data, render, row_click }) => {
   const local = useLocal({
     width: 0,
     height: 0,
@@ -134,7 +147,6 @@ const TableInternal: FC<{
     >
       <DataGrid
         columns={columns}
-        selectedRows={null}
         sortColumns={sort}
         onSortColumnsChange={([col]) => {
           local.sort = [];
@@ -160,6 +172,24 @@ const TableInternal: FC<{
           typeof data === "undefined"
             ? undefined
             : {
+                renderRow(key, props) {
+                  return (
+                    <Row
+                      key={key}
+                      {...props}
+                      onClick={(ev) => {
+                        if (typeof row_click === "function") {
+                          row_click({
+                            event: ev,
+                            idx: props.rowIdx,
+                            row: props.row,
+                            rows: data,
+                          });
+                        }
+                      }}
+                    />
+                  );
+                },
                 noRowsFallback: (
                   <div className="c-flex-1 c-w-full absolute inset-0 c-flex c-flex-col c-items-center c-justify-center">
                     <div className="c-max-w-[15%] c-flex c-flex-col c-items-center">

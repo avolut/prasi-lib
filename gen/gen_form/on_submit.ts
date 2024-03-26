@@ -1,4 +1,4 @@
-import { GFCol } from "./type";
+import { GFCol } from "../utils";
 
 export const on_submit = ({
   pk,

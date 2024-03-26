@@ -24,6 +24,7 @@ export type FormHook = {
   ref: HTMLFormElement;
   submit: any;
   label: Record<string, string>;
+  cache: any;
   validation: Record<string, "required">;
   render: () => void;
 };

@@ -40,32 +40,39 @@ export const Relation: FC<RelationProps> = ({
       if (form) {
         local.status = "loading";
         local.render();
-        const table_fn = (db as any)[relation.table];
-        const select = {} as any;
-        local.pk_field = "";
-        for (const f of relation.fields) {
-          if (f.startsWith("::")) {
-            select[f.substring(2)] = true;
-            local.pk_field = f.substring(2);
-          } else {
-            select[f] = true;
-          }
-        }
-        let q = {};
 
-        if (typeof relation.query === "function") {
-          q = await relation.query();
-        }
-
-        const list = await table_fn.findMany({ select, ...q });
-        if (Array.isArray(list)) {
-          local.list = list.map((item: any) => {
-            let label = [];
-            for (const [k, v] of Object.entries(item)) {
-              if (k !== local.pk_field) label.push(v);
+        if (form.cache[name]) {
+          local.pk_field = form.cache[name].pk_field;
+          local.list = form.cache[name].list;
+        } else {
+          const table_fn = (db as any)[relation.table];
+          const select = {} as any;
+          local.pk_field = "";
+          for (const f of relation.fields) {
+            if (f.startsWith("::")) {
+              select[f.substring(2)] = true;
+              local.pk_field = f.substring(2);
+            } else {
+              select[f] = true;
             }
-            return { value: item[local.pk_field], label: label.join(" - ") };
-          });
+          }
+          let q = {};
+
+          if (typeof relation.query === "function") {
+            q = await relation.query();
+          }
+
+          const list = await table_fn.findMany({ select, ...q });
+          if (Array.isArray(list)) {
+            local.list = list.map((item: any) => {
+              let label = [];
+              for (const [k, v] of Object.entries(item)) {
+                if (k !== local.pk_field) label.push(v);
+              }
+              return { value: item[local.pk_field], label: label.join(" - ") };
+            });
+          }
+          form.cache[name] = { list: local.list, pk_field: local.pk_field };
         }
 
         const found = local.list.find((e) => {
@@ -109,9 +116,10 @@ export const Relation: FC<RelationProps> = ({
       content={
         <div
           className={cx(
-            "c-text-sm",
+            "c-text-sm c-relative c-overflow-auto",
             css`
               width: ${local.ref.input?.clientWidth || 100}px;
+              max-height: 300px;
             `
           )}
         >
@@ -124,15 +132,25 @@ export const Relation: FC<RelationProps> = ({
             </>
           )}
           {local.status === "ready" && (
-            <>
+            <div className="c-flex c-flex-1 c-flex-col">
               {filtered.map((item, idx) => {
+                let is_active = false;
+                if (typeof value === "object") {
+                  const c = (value as any).connect;
+                  if (c) {
+                    is_active = item.value === c[local.pk_field];
+                  }
+                } else {
+                  is_active = item.value === value;
+                }
+
                 return (
                   <div
                     tabIndex={0}
                     key={item.value + "_" + idx}
                     className={cx(
                       "c-px-3 c-py-1 cursor-pointer option-item",
-                      item.value === value
+                      is_active
                         ? "c-bg-blue-600 c-text-white"
                         : "hover:c-bg-blue-50",
                       idx > 0 && "c-border-t",
@@ -149,11 +167,11 @@ export const Relation: FC<RelationProps> = ({
                       }
                     }}
                   >
-                    {item.label}
+                    {item.label || "-"}
                   </div>
                 );
               })}
-            </>
+            </div>
           )}
         </div>
       }
@@ -197,7 +215,7 @@ export const Relation: FC<RelationProps> = ({
         />
         {!local.open && (
           <div className="c-absolute c-text-sm c-inset-0 c-px-3 c-flex c-items-center">
-            {local.label}
+            {local.label || "-"}
           </div>
         )}
       </div>

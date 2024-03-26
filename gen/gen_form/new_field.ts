@@ -265,10 +265,8 @@ export const newField = (arg: NewFieldArg) => {
           idx: 11,
           name: "prop_11",
           type: "string",
-          value:
-            'async () => {\n  return {\n    orderBy: {\n      regional: "asc",\n    },\n  };\n}',
-          valueBuilt:
-            ' async () => {\n  return {\n    orderBy: {\n      regional: "asc"\n    }\n  };\n};\n',
+          value: "async () => {\n  return {\n     };\n}",
+          valueBuilt: " async () => {\n  return {\n     };\n};\n",
           meta: {
             type: "text",
           },

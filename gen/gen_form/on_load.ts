@@ -1,22 +1,27 @@
-import { GFCol } from "./type";
+import { GFCol } from "../utils";
 
 export const on_load = ({
   pk,
   table,
   select,
   pks,
+  opt,
 }: {
   pk: GFCol;
   table: string;
   select: any;
   pks: Record<string, string>;
+  opt?: {
+    before_load: string;
+  };
 }) => {
   return `\
 async (opt) => {
   if (isEditor) return {};
 
   let id = ${pk.type === "int" ? "parseInt(params.id)" : "params.id"};
-
+  ${opt?.before_load}
+  
   if (id){
     const item = await db.${table}.findFirst({
       where: {
@@ -30,7 +35,8 @@ async (opt) => {
       .map(([k, v]) => {
         return `\
       if (k === "${k}") {
-        item[k] = { connect: { ${v}: v["${v}"] } } as any;
+        if (v?.["${v}"]) item[k] = { connect: { ${v}: v?.["${v}"] } } as any;
+        else delete item[k];
       }`;
       })
       .join("\n")}

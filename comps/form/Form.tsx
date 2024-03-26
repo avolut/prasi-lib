@@ -1,16 +1,22 @@
 import { Form as FForm } from "@/comps/ui/form";
+import { Toaster } from "@/comps/ui/sonner";
 import { useLocal } from "@/utils/use-local";
 import { FC } from "react";
+import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { FormHook } from "./utils/utils";
+import { AlertTriangle, Check, Loader2 } from "lucide-react";
+import { cn } from "@/utils";
 
 export const Form: FC<{
   on_init: (arg: { submit: any }) => any;
   on_load: () => any;
-  on_submit: (arg: { form: any; error: any }) => any;
+  on_submit: (arg: { form: any; error: any }) => Promise<any>;
   body: any;
   form: FormHook;
   PassProp: any;
+  cache: () => any;
   layout: "auto" | "1-col" | "2-col";
 }> = ({
   on_init,
@@ -19,10 +25,11 @@ export const Form: FC<{
   form,
   PassProp,
   on_submit,
+  cache,
   layout: _layout,
 }) => {
   const form_hook = useForm<any>({
-    defaultValues: on_load,
+    defaultValues: {},
   });
 
   const local = useLocal({
@@ -33,6 +40,13 @@ export const Form: FC<{
   });
 
   form.hook = form_hook;
+  if (!form.cache && typeof cache === "function") {
+    try {
+      form.cache = cache() || {};
+    } catch (e) {}
+  }
+  if (!form.cache) form.cache = {};
+
   if (!form.validation) {
     form.validation = {};
   }
@@ -45,7 +59,19 @@ export const Form: FC<{
 
   const submit = () => {
     clearTimeout(local.submit_timeout);
-    local.submit_timeout = setTimeout(() => {
+    local.submit_timeout = setTimeout(async () => {
+      toast.loading(
+        <>
+          <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
+          Saving ...
+        </>,
+        {
+          dismissible: true,
+          className: css`
+            background: #e4f7ff;
+          `,
+        }
+      );
       const data = form.hook.getValues();
       form.hook.clearErrors();
       for (const [k, v] of Object.entries(form.validation)) {
@@ -61,22 +87,88 @@ export const Form: FC<{
         }
       }
 
-      on_submit({
+      await on_submit({
         form: data,
         error: form.hook.formState.errors,
       });
+      toast.dismiss();
+
+      if (Object.keys(form.hook.formState.errors).length > 0) {
+        toast.error(
+          <div className="c-flex c-text-red-600 c-items-center">
+            <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+            Save Failed, please correct{" "}
+            {Object.keys(form.hook.formState.errors).length} errors.
+          </div>,
+          {
+            dismissible: true,
+            className: css`
+              background: #ffecec;
+              border: 2px solid red;
+            `,
+          }
+        );
+      } else {
+        toast.success(
+          <div className="c-flex c-text-blue-700 c-items-center">
+            <Check className="c-h-4 c-w-4 c-mr-1 " />
+            Data saved
+          </div>,
+          {
+            className: css`
+              background: #e4f5ff;
+              border: 2px solid blue;
+            `,
+          }
+        );
+      }
     }, 300);
   };
 
   if (!local.init) {
     local.init = true;
     on_init({ submit });
+    const res = on_load();
+    const loaded = (values: any) => {
+      setTimeout(() => {
+        toast.dismiss();
+      });
+      if (!!values) {
+        for (const [k, v] of Object.entries(values)) {
+          form.hook.setValue(k, v);
+        }
+      }
+      local.render();
+    };
+    if (res instanceof Promise) {
+      setTimeout(() => {
+        if (!isEditor) {
+          toast.loading(
+            <>
+              <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
+              Loading data...
+            </>
+          );
+        }
+        res.then(loaded);
+      });
+    } else {
+      loaded(res);
+    }
   }
 
   form.submit = submit;
 
+  if (document.getElementsByClassName("prasi-toaster").length === 0) {
+    const elemDiv = document.createElement("div");
+    elemDiv.className = "prasi-toaster";
+    document.body.appendChild(elemDiv);
+  }
+  const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
+
   return (
     <FForm {...form_hook}>
+      {toaster_el && createPortal(<Toaster cn={cn} />, toaster_el)}
       <form
         className={
           "flex-1 flex flex-col w-full items-stretch relative overflow-auto"
@@ -85,7 +177,6 @@ export const Form: FC<{
           if (el) form.ref = el;
         }}
         onSubmit={(e) => {
-          console.log("on submit");
           e.preventDefault();
           e.stopPropagation();
           submit();
