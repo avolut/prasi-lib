@@ -93,7 +93,6 @@ export const Field: FC<{
     },
     modify: null as any,
   });
-
   const textAreaRef = useRef<any>();
   useEffect(() => {
     autosize(textAreaRef.current);

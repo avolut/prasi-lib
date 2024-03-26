@@ -11,6 +11,7 @@ import { gen_columns } from "../gen_table/columns";
 import { newField as table_new_field } from "../gen_table/new_field";
 import { gen_detail } from "./gen_detail";
 import { form_before_load } from "./form_before_load";
+import { createId } from "@paralleldrive/cuid2";
 
 export const gen_md = (modify: (data: any) => void, data: any) => {
   const table = JSON.parse(data.gen_table.value);
@@ -86,7 +87,7 @@ export const gen_md = (modify: (data: any) => void, data: any) => {
     const detail = gen_detail();
     const title = parse(get(data, "title.value"));
     const label = parse(get(data, "gen_label.value"));
-    const before_load = form_before_load(table, pk.name, title, label);
+    const before_load = form_before_load(table, pk, title, label);
 
     detail.props["on_load"].value = form_on_load({
       pk,
@@ -105,9 +106,17 @@ export const gen_md = (modify: (data: any) => void, data: any) => {
     const childs = get(detail.props, "body.content.childs");
     if (Array.isArray(childs)) {
       detail.props.body.content.childs = new_fields.map(form_new_field) as any;
-      console.log(detail.props.body.content.childs);
     }
-    result["detail"].content = detail.content;
+    result["detail"].content = {
+      id: createId(),
+      name: "Detail",
+      type: "item",
+      dim: {
+        w: "full",
+        h: "full",
+      },
+      childs: [detail.content],
+    };
   }
   modify(result);
 

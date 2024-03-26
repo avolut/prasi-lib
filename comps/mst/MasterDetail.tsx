@@ -1,30 +1,54 @@
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
 import { FC, useEffect } from "react";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   MasterDetailConfig,
   MasterDetailLocal,
   MasterDetailProp,
 } from "./type";
-import { Tab } from "../custom/Tab";
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import { GFCol } from "@/gen/utils";
+import { master_detail_gen_hash, master_detail_params } from "./utils";
 
 export const MasterDetail: FC<MasterDetailProp> = (props) => {
-  const { header, PassProp, master, detail, mode, title, actions } = props;
-  const md = useLocal<MasterDetailLocal & { cache_internal: any }>({
-    mode,
-    selected: null,
-    active_tab: "",
-    ui: {
-      back: false,
-      title: title,
-      breadcrumb: [],
-      default_actions: null as any,
-      actions: null as any,
+  const { header, name, mode, title, actions, gen_fields } = props;
+  const md = useLocal<MasterDetailLocal & { cache_internal: any }>(
+    {
+      name,
+      mode,
+      selected: null,
+      active_tab: "",
+      ui: {
+        back: false,
+        title: title,
+        breadcrumb: [],
+        default_actions: null as any,
+        actions: null as any,
+      },
+      cache_internal: {},
+      cache: null as any,
+      pk: null as null | GFCol,
     },
-    cache_internal: {},
-    cache: null as any,
-  });
+    () => {
+      if (!isEditor) {
+        const hash = master_detail_params(md);
+        if (hash && hash[name] && md.pk) {
+          if (md.pk.type === "int") {
+            md.selected = { [md.pk.name]: parseInt(hash[name]) };
+          } else {
+            md.selected = { [md.pk.name]: hash[name] };
+          }
+          md.render();
+        }
+      }
+    }
+  );
+  if (!md.pk && gen_fields) {
+    for (const str of gen_fields) {
+      const f = JSON.parse(str) as GFCol;
+      if (f.is_pk) md.pk = f;
+    }
+  }
 
   if (!md.ui.actions) {
     md.ui.actions = actions(md);
@@ -72,6 +96,24 @@ const BreadcrumbMode: FC<{
   props: MasterDetailProp;
   md: MasterDetailConfig;
 }> = ({ props, md }) => {
+  const local = useLocal({ init: false }, () => {
+    local.init = true;
+    local.render();
+  });
+
+  if (local.init) {
+    const hash = master_detail_params(md);
+    delete hash.parent_id;
+
+    if (!md.selected) {
+      delete hash[md.name];
+      location.hash = master_detail_gen_hash(hash);
+    } else if (md.pk) {
+      hash[md.name] = md.selected[md.pk.name];
+      location.hash = master_detail_gen_hash(hash);
+    }
+  }
+
   return (
     <div className={cx("c-flex-1 c-flex-col c-flex")}>
       <div
@@ -80,6 +122,11 @@ const BreadcrumbMode: FC<{
         <props.PassProp md={md}>{props.master}</props.PassProp>
       </div>
       {md.selected && <Detail props={props} md={md} />}
+      {isEditor && !local.init && (
+        <div className="c-hidden">
+          <Detail props={props} md={md} />
+        </div>
+      )}
     </div>
   );
 };

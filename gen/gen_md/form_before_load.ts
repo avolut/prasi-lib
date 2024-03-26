@@ -1,10 +1,15 @@
+import { GFCol } from "../utils";
+
 export const form_before_load = (
   table: string,
-  pk: string,
+  pk: GFCol,
   title: string,
   label: string
 ) => {
   return `
+
+  const id = master_detail_params(md).parent_id;
+
   const after_load = (item: any) => {
     const set_actions = () =>
       (md.ui.actions = [
@@ -16,7 +21,9 @@ export const form_before_load = (
               md.ui.actions = [{ label: "Deleting...", type: "ghost" }];
               md.render();
 
-              await db.${table}.delete({ where: { ${pk}: item.${pk} } });
+              await db.${table}.delete({ where: { ${pk.name}: item.${
+    pk.name
+  } } });
 
               setTimeout(() => {
                 md.ui.actions = [...md.ui.default_actions];
@@ -44,10 +51,12 @@ export const form_before_load = (
         },
       ]);
     set_actions();
-    md.ui.breadcrumb = [["${title}", ""]${label ? `, item?.["${label}"]` : ""}];
+    md.ui.breadcrumb = [[md.ui.title, ""]${
+      label ? `, item?.["${label}"]` : ""
+    }];
     md.render();
   };
-  md.ui.breadcrumb = [["${title}", ""], "..."];
+  md.ui.breadcrumb = [[md.ui.title, ""], "..."];
   md.render();
   
 `;

@@ -1,3 +1,4 @@
+import { GFCol } from "@/gen/utils";
 import { ReactElement, ReactNode } from "react";
 
 export type MasterDetailProp = {
@@ -8,6 +9,8 @@ export type MasterDetailProp = {
   mode: "breadcrumb" | "vertical" | "horizontal";
   title: string;
   actions: (md: any) => MasterDetailAction[];
+  gen_fields: any;
+  name: string;
 };
 
 type MasterDetailAction = {
@@ -18,6 +21,7 @@ type MasterDetailAction = {
 };
 
 export type MasterDetailLocal = {
+  name: string;
   mode: MasterDetailProp["mode"];
   selected: null | Record<string, any>;
   active_tab: string;
@@ -29,6 +33,7 @@ export type MasterDetailLocal = {
     actions: MasterDetailAction[];
   };
   cache: (name: string, opt?: { reset: boolean }) => any;
+  pk: null | GFCol;
 };
 
 export type MasterDetailConfig = MasterDetailLocal & { render: () => void };
@@ -54,6 +59,7 @@ export const master_detail_typings = {
       actions: ${action_type}[];
     };
     cache: (name: string, opt?: { reset: boolean }) => any;
+    pk: null | any
   }`,
   action_type,
 };
