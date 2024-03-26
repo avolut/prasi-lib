@@ -27,4 +27,5 @@ export type FormHook = {
   cache: any;
   validation: Record<string, "required">;
   render: () => void;
+  unload?: () => void;
 };

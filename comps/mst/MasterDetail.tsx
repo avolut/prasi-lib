@@ -1,17 +1,18 @@
+import { GFCol } from "@/gen/utils";
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
 import { FC, useEffect } from "react";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   MasterDetailConfig,
   MasterDetailLocal,
   MasterDetailProp,
 } from "./type";
-import { GFCol } from "@/gen/utils";
 import { master_detail_gen_hash, master_detail_params } from "./utils";
 
 export const MasterDetail: FC<MasterDetailProp> = (props) => {
-  const { header, name, mode, title, actions, gen_fields } = props;
+  const { header, name, mode, title, actions, gen_fields, md_parent } = props;
   const md = useLocal<MasterDetailLocal & { cache_internal: any }>(
     {
       name,
@@ -28,25 +29,53 @@ export const MasterDetail: FC<MasterDetailProp> = (props) => {
       cache_internal: {},
       cache: null as any,
       pk: null as null | GFCol,
+      parent: md_parent,
     },
     () => {
-      if (!isEditor) {
-        const hash = master_detail_params(md);
+      const params = master_detail_params(md);
+      const hash = params.hash;
+
+      if (params.tabs && params.tabs[md.name]) {
+        md.active_tab = params.tabs[md.name];
+      }
+      if (md.mode === "breadcrumb") {
         if (hash && hash[name] && md.pk) {
           if (md.pk.type === "int") {
             md.selected = { [md.pk.name]: parseInt(hash[name]) };
           } else {
             md.selected = { [md.pk.name]: hash[name] };
           }
-          md.render();
         }
       }
+      md.render();
     }
   );
+
+  const local = useLocal({ init: false }, () => {
+    local.init = true;
+    local.render();
+  });
+
+  if (local.init) {
+    const params = master_detail_params(md);
+    const hash = params.hash;
+    delete hash.parent_id;
+
+    if (!md.selected) {
+      delete hash[md.name];
+      master_detail_gen_hash(params);
+    } else if (md.pk) {
+      hash[md.name] = md.selected[md.pk.name];
+      master_detail_gen_hash(params);
+    }
+  }
+
   if (!md.pk && gen_fields) {
     for (const str of gen_fields) {
-      const f = JSON.parse(str) as GFCol;
-      if (f.is_pk) md.pk = f;
+      try {
+        const f = JSON.parse(str) as GFCol;
+        if (f.is_pk) md.pk = f;
+      } catch (e) {}
     }
   }
 
@@ -67,6 +96,11 @@ export const MasterDetail: FC<MasterDetailProp> = (props) => {
       md.ui.title = title;
       md.render();
     }, [title]);
+
+    useEffect(() => {
+      md.mode = mode;
+      md.render();
+    }, [mode]);
   }
 
   useEffect(() => {
@@ -86,8 +120,88 @@ export const MasterDetail: FC<MasterDetailProp> = (props) => {
         "c-flex-1 c-flex-col c-flex c-w-full c-h-full c-overflow-hidden"
       )}
     >
-      <props.PassProp md={md}>{header}</props.PassProp>
-      <BreadcrumbMode props={props} md={md} />
+      {md.mode === "breadcrumb" && (
+        <BreadcrumbMode props={props} md={md} header={header} />
+      )}
+      {md.mode === "vertical" && (
+        <VerticalMode props={props} md={md} header={header} />
+      )}
+      {md.mode === "horizontal" && (
+        <HorizontalMode props={props} md={md} header={header} />
+      )}
+      {isEditor && (
+        <div className="c-hidden">
+          <props.PassProp md={md}>{props.detail}</props.PassProp>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const VerticalMode: FC<{
+  props: MasterDetailProp;
+  md: MasterDetailConfig;
+  header: any;
+}> = ({ props, md, header }) => {
+  return (
+    <div className={cx("c-flex-1")}>
+      <PanelGroup direction="vertical">
+        <Panel className="c-border-b">
+          <props.PassProp md={md}>{props.master}</props.PassProp>
+        </Panel>
+        <>
+          <PanelResizeHandle />
+          <Panel
+            className="c-flex c-flex-col c-items-stretch"
+            defaultSize={
+              parseInt(localStorage.getItem(`prasi-md-h-${md.name}`) || "") ||
+              undefined
+            }
+            onResize={(e) => {
+              if (e < 80) {
+                localStorage.setItem(`prasi-md-h-${md.name}`, e.toString());
+              }
+            }}
+          >
+            <props.PassProp md={md}>{header}</props.PassProp>
+            <Detail props={props} md={md} />
+          </Panel>
+        </>
+      </PanelGroup>
+    </div>
+  );
+};
+
+const HorizontalMode: FC<{
+  props: MasterDetailProp;
+  md: MasterDetailConfig;
+  header: any;
+}> = ({ props, md, header }) => {
+  return (
+    <div className={cx("c-flex-1")}>
+      <PanelGroup direction="horizontal">
+        <Panel className="c-border-r">
+          <props.PassProp md={md}>{props.master}</props.PassProp>
+        </Panel>
+        <>
+          <PanelResizeHandle />
+          <Panel
+            className="c-flex c-flex-col c-items-stretch"
+            defaultSize={
+              parseInt(localStorage.getItem(`prasi-md-h-${md.name}`) || "") ||
+              undefined
+            }
+            onResize={(e) => {
+              if (e < 80) {
+                localStorage.setItem(`prasi-md-h-${md.name}`, e.toString());
+              }
+            }}
+          >
+            <props.PassProp md={md}>{header}</props.PassProp>
+            <Detail props={props} md={md} />
+          </Panel>
+        </>
+      </PanelGroup>
     </div>
   );
 };
@@ -95,39 +209,23 @@ export const MasterDetail: FC<MasterDetailProp> = (props) => {
 const BreadcrumbMode: FC<{
   props: MasterDetailProp;
   md: MasterDetailConfig;
-}> = ({ props, md }) => {
-  const local = useLocal({ init: false }, () => {
-    local.init = true;
-    local.render();
-  });
-
-  if (local.init) {
-    const hash = master_detail_params(md);
-    delete hash.parent_id;
-
-    if (!md.selected) {
-      delete hash[md.name];
-      location.hash = master_detail_gen_hash(hash);
-    } else if (md.pk) {
-      hash[md.name] = md.selected[md.pk.name];
-      location.hash = master_detail_gen_hash(hash);
-    }
-  }
-
+  header: any;
+}> = ({ props, md, header }) => {
   return (
-    <div className={cx("c-flex-1 c-flex-col c-flex")}>
-      <div
-        className={cx(md.selected && "c-hidden", "c-flex c-flex-1 c-flex-col")}
-      >
-        <props.PassProp md={md}>{props.master}</props.PassProp>
-      </div>
-      {md.selected && <Detail props={props} md={md} />}
-      {isEditor && !local.init && (
-        <div className="c-hidden">
-          <Detail props={props} md={md} />
+    <>
+      <props.PassProp md={md}>{header}</props.PassProp>
+      <div className={cx("c-flex-1 c-flex-col c-flex")}>
+        <div
+          className={cx(
+            md.selected && "c-hidden",
+            "c-flex c-flex-1 c-flex-col"
+          )}
+        >
+          <props.PassProp md={md}>{props.master}</props.PassProp>
         </div>
-      )}
-    </div>
+        {md.selected && <Detail props={props} md={md} />}
+      </div>
+    </>
   );
 };
 
@@ -145,7 +243,9 @@ const Detail: FC<{
   );
   if (idx < 0) {
     idx = 0;
-    md.active_tab = childs[idx].name;
+    if (childs[idx]) {
+      md.active_tab = childs[idx].name;
+    }
     setTimeout(md.render);
   }
   const content = childs[idx];
@@ -170,6 +270,7 @@ const Detail: FC<{
               "c-flex c-w-full c-rounded-none c-border-b c-border-gray-300 c-justify-start",
               css`
                 padding: 0 !important;
+                padding-left: 20px !important;
                 height: auto !important;
               `
             )}
@@ -179,6 +280,13 @@ const Detail: FC<{
                 <TabsTrigger
                   value={e.name}
                   onClick={() => {
+                    const params = master_detail_params(md);
+                    const hash = params.hash;
+                    delete hash.parent_id;
+
+                    params.tabs[md.name] = e.name;
+                    master_detail_gen_hash(params);
+
                     md.active_tab = e.name;
                     md.render();
                   }}

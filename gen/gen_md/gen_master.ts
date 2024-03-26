@@ -100,110 +100,7 @@ export const gen_master = () => {
                 },
                 name: "prop_3",
                 type: "item",
-                childs: [
-                  {
-                    id: createId(),
-                    adv: {
-                      js: '<>\n  {cell.key === "id" && (\n    <div {...props} className={cx(props.className, "")}>\n      {cell.value}\n    </div>\n  )}\n</>',
-                      css: "",
-                      jsBuilt:
-                        'render(\n  React.createElement(\n    React.Fragment,\n    null,\n    cell.key === "id" &&\n      React.createElement(\n        "div",\n        Object.assign({}, props, { className: cx(props.className, "") }),\n        cell.value\n      )\n  )\n)',
-                    },
-                    dim: {
-                      h: "full",
-                      w: "full",
-                    },
-                    name: "id",
-                    type: "item",
-                    childs: [],
-                    script: {},
-                  },
-                  {
-                    id: createId(),
-                    adv: {
-                      js: '<>\n  {cell.key === "nama_aset_komersial" && (\n    <div {...props} className={cx(props.className, "")}>\n      {cell.value}\n    </div>\n  )}\n</>',
-                      css: "",
-                      jsBuilt:
-                        'render(\n  React.createElement(\n    React.Fragment,\n    null,\n    cell.key === "nama_aset_komersial" &&\n      React.createElement(\n        "div",\n        Object.assign({}, props, { className: cx(props.className, "") }),\n        cell.value\n      )\n  )\n)',
-                    },
-                    dim: {
-                      h: "full",
-                      w: "full",
-                    },
-                    name: "nama_aset_komersial",
-                    type: "item",
-                    childs: [],
-                    script: {},
-                  },
-                  {
-                    id: createId(),
-                    adv: {
-                      js: '<>\n  {cell.key === "m_cabang" && (\n    <div {...props} className={cx(props.className, "")}>\n      {cell.value?.["nama_cabang"]}\n    </div>\n  )}\n</>',
-                      css: "",
-                      jsBuilt:
-                        'render(\n  React.createElement(\n    React.Fragment,\n    null,\n    cell.key === "m_cabang" &&\n      React.createElement(\n        "div",\n        Object.assign({}, props, { className: cx(props.className, "") }),\n        cell.value?.["nama_cabang"]\n      )\n  )\n)',
-                    },
-                    dim: {
-                      h: "full",
-                      w: "full",
-                    },
-                    name: "m_cabang",
-                    type: "item",
-                    childs: [],
-                    script: {},
-                  },
-                  {
-                    id: createId(),
-                    adv: {
-                      js: '<>\n  {cell.key === "m_regional" && (\n    <div {...props} className={cx(props.className, "")}>\n      {cell.value?.["regional"]}\n    </div>\n  )}\n</>',
-                      css: "",
-                      jsBuilt:
-                        'render(\n  React.createElement(\n    React.Fragment,\n    null,\n    cell.key === "m_regional" &&\n      React.createElement(\n        "div",\n        Object.assign({}, props, { className: cx(props.className, "") }),\n        cell.value?.["regional"]\n      )\n  )\n)',
-                    },
-                    dim: {
-                      h: "full",
-                      w: "full",
-                    },
-                    name: "m_regional",
-                    type: "item",
-                    childs: [],
-                    script: {},
-                  },
-                  {
-                    id: createId(),
-                    adv: {
-                      js: '<>\n  {cell.key === "luas_setifikat" && (\n    <div {...props} className={cx(props.className, "")}>\n      {cell.value}\n    </div>\n  )}\n</>',
-                      css: "",
-                      jsBuilt:
-                        'render(\n  React.createElement(\n    React.Fragment,\n    null,\n    cell.key === "luas_setifikat" &&\n      React.createElement(\n        "div",\n        Object.assign({}, props, { className: cx(props.className, "") }),\n        cell.value\n      )\n  )\n)',
-                    },
-                    dim: {
-                      h: "full",
-                      w: "full",
-                    },
-                    name: "luas_setifikat",
-                    type: "item",
-                    childs: [],
-                    script: {},
-                  },
-                  {
-                    id: createId(),
-                    adv: {
-                      js: '<>\n  {cell.key === "tanggal_sertifikat" && (\n    <div {...props} className={cx(props.className, "")}>\n      {cell.value}\n    </div>\n  )}\n</>',
-                      css: "",
-                      jsBuilt:
-                        'render(\n  React.createElement(\n    React.Fragment,\n    null,\n    cell.key === "tanggal_sertifikat" &&\n      React.createElement(\n        "div",\n        Object.assign({}, props, { className: cx(props.className, "") }),\n        cell.value\n      )\n  )\n)',
-                    },
-                    dim: {
-                      h: "full",
-                      w: "full",
-                    },
-                    name: "tanggal_sertifikat",
-                    type: "item",
-                    childs: [],
-                    script: {},
-                  },
-                ],
+                childs: [] as any,
                 hidden: false,
               },
               typings:
@@ -217,7 +114,7 @@ export const gen_master = () => {
               name: "prop_1",
               type: "string",
               value:
-                'async (): Promise<\n    { key: string; name: string; width?: number; frozen?: boolean }[]\n  > => {\n    return [\n      { key: "id", name: "#", width: 60, frozen: true },\n      {"key":"nama_aset_komersial","name":"Nama Aset Komersial"},\n      {"key":"m_cabang","name":"Cabang"},\n      {"key":"m_regional","name":"Regional"},\n      {"key":"luas_setifikat","name":"Luas Setifikat"},\n      {"key":"tanggal_sertifikat","name":"Tanggal Sertifikat"}\n    ];\n  }',
+                'async (): Promise<\n    { key: string; name: string; width?: number; frozen?: boolean }[]\n  > => {\n    return [\n      { key: "id", name: "#", width: 60, frozen: true },\n      {"key":"m_cabang","name":"Cabang"},\n      {"key":"m_regional","name":"Regional"},\n      {"key":"nama_aset_komersial","name":"Nama Aset Komersial"},\n      {"key":"asset_number","name":"Asset Number"}\n    ];\n  }',
             },
             on_load: {
               idx: 1,
@@ -227,7 +124,7 @@ export const gen_master = () => {
               name: "prop_1",
               type: "string",
               value:
-                "async () => {\n  if (isEditor)\n    return [\n      {\n      },\n  });\n\n  return items;\n}",
+                'async (arg: TableOnLoad) => {\n  md.cache("master").reload = arg.reload;\n\n  if (isEditor)\n    return [\n      {\n        id: "sample",\n        m_cabang: { nama_cabang: "sample" },\n        m_regional: { regional: "sample" },\n        nama_aset_komersial: "sample",\n        asset_number: "sample",\n      },\n    ];\n\n  const items = await db.m_aset.findMany({\n    select: {\n      id: true,\n      m_cabang: {\n        select: {\n          id: true,\n          nama_cabang: true,\n        },\n      },\n      m_regional: {\n        select: {\n          regional: true,\n          id: true,\n        },\n      },\n      nama_aset_komersial: true,\n      asset_number: true,\n    },\n    orderBy: {\n      id: createId(),\n    },\n  });\n\n  return items;\n};\n\ntype TableOnLoad = {\n  reload: () => Promise<void>;\n}',
             },
             generate: {
               idx: 5,
@@ -263,10 +160,32 @@ export const gen_master = () => {
               idx: 11,
               name: "prop_11",
               type: "string",
-              value:
-                "({ row, rows, idx, event }: OnRowClick) => {\n  md.selected = row;\n  md.render();\n};\n\ntype OnRowClick = {\n  row: any;\n  rows: any[];\n  idx: any;\n  event: React.MouseEvent<HTMLDivElement, MouseEvent>;\n}",
-              valueBuilt:
-                " ({ row, rows, idx, event }) => {\n  md.selected = row;\n  md.render();\n};\n",
+              value: `\
+({ row, rows, idx, event }: OnRowClick) => {
+    md.selected = row;
+    md.render();
+    const reload = md.cache("detail")?.reload;
+    if (typeof reload === 'function') {
+        reload()
+    }
+};
+            
+type OnRowClick = {
+  row: any;
+  rows: any[];
+  idx: any;
+  event: React.MouseEvent<HTMLDivElement, MouseEvent>;
+}`,
+              valueBuilt: `({ row, rows, idx, event }) => {
+    var _a;
+    md.selected = row;
+    md.render();
+    const reload = (_a = md.cache("detail")) === null || _a === void 0 ? void 0 : _a.reload;
+    if (typeof reload === 'function') {
+        reload();
+    }
+};
+`,
               meta: {
                 type: "text",
               },
@@ -279,6 +198,18 @@ export const gen_master = () => {
               valueBuilt: '"hello"',
               meta: {
                 type: "button",
+              },
+            },
+            selected: {
+              idx: 3,
+              name: "prop_9",
+              type: "string",
+              value:
+                "({ row, rows, idx }: SelectedRow) => {\n  return md.selected?.id === row?.id;\n};\n\ntype SelectedRow = {\n  row: any;\n  rows: any[];\n  idx: any;\n}",
+              valueBuilt:
+                " ({ row, rows, idx }) => {\n  return md.selected?.id === row?.id;\n};\n",
+              meta: {
+                type: "text",
               },
             },
           },

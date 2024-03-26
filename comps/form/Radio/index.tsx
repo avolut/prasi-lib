@@ -92,7 +92,7 @@ export const Radio: FC<{
       {!!local.list &&
         local.list
           .filter((e) => e)
-          .map((item, index:number) => {
+          .map((item, index: number) => {
             if (custom === "y" && form)
               return (
                 <PassProp
@@ -103,20 +103,11 @@ export const Radio: FC<{
                   current_name={name}
                   item_click={() => {
                     if (selection === "single") {
-                      console.log(value, "====single", name);
                       local.mod(name, { value: item.value });
                       local.render();
                     } else if (selection === "multi") {
-                      const val = [];
-                      console.log();
-                      
-                      val.push( ...value, item.value);
-                      
-                      local.mod(name, { value: val });
+                      local.mod(name, { value: item.value });
                       local.render();
-                      console.log(item.value, "value", form.hook.getValues());
-                      return;
-                      console.log(value, "====multi", name);
                     } else {
                       null;
                     }

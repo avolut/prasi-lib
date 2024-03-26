@@ -13,7 +13,7 @@ export const gen_header = () => {
     childs: [
       {
         id: createId(),
-        name: "breadcrumb",
+        name: "wrapper",
         type: "item",
         dim: {
           w: "full",
@@ -71,9 +71,9 @@ export const gen_header = () => {
               },
             ],
             adv: {
-              js: '<>\n  {md.ui.back && (\n    <div\n      {...props}\n      className={cx(props.className, "")}\n      onClick={() => {\n        md.ui.actions = [...md.ui.default_actions];\n        md.ui.breadcrumb = [];\n        md.ui.back = false;\n        md.selected = null;\n        md.render();\n      }}\n    >\n      {children}\n    </div>\n  )}\n</>',
+              js: '<>\n  {md.selected && (\n    <div\n      {...props}\n      className={cx(props.className, "")}\n      onClick={() => {\n        md.ui.actions = [...md.ui.default_actions];\n        md.ui.breadcrumb = [];\n        md.ui.back = false;\n        md.selected = null;\n        md.render();\n      }}\n    >\n      {children}\n    </div>\n  )}\n</>',
               jsBuilt:
-                'render(/* @__PURE__ */ React.createElement(React.Fragment, null, md.ui.back && /* @__PURE__ */ React.createElement(\n  "div",\n  {\n    ...props,\n    className: cx(props.className, ""),\n    onClick: () => {\n      md.ui.actions = [...md.ui.default_actions];\n      md.ui.breadcrumb = [];\n      md.ui.back = false;\n      md.selected = null;\n      md.render();\n    }\n  },\n  children\n)));\n',
+                'render(/* @__PURE__ */ React.createElement(React.Fragment, null, md.selected && /* @__PURE__ */ React.createElement(\n  "div",\n  {\n    ...props,\n    className: cx(props.className, ""),\n    onClick: () => {\n      md.ui.actions = [...md.ui.default_actions];\n      md.ui.breadcrumb = [];\n      md.ui.back = false;\n      md.selected = null;\n      md.render();\n    }\n  },\n  children\n)));\n',
               css: "& {\n  display: flex;\n  cursor: pointer;\n\n  // &.mobile {}\n  // &.desktop {}\n  &:hover {\n    background: rgb(237, 246, 255);\n  }\n}",
             },
             script: {},
@@ -188,9 +188,6 @@ export const gen_header = () => {
           },
         ],
         adv: {
-          js: '<>\n  {md.mode === "breadcrumb" && (\n    <div {...props} className={cx(props.className, "")}>\n      {children}\n    </div>\n  )}\n</>',
-          jsBuilt:
-            'render(/* @__PURE__ */ React.createElement(React.Fragment, null, md.mode === "breadcrumb" && /* @__PURE__ */ React.createElement("div", { ...props, className: cx(props.className, "") }, children)));\n',
           css: "",
         },
         script: {},

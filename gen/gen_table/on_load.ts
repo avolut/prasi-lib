@@ -28,7 +28,12 @@ export const on_load = ({
   }
 
   return `\
-async () => {
+async (arg: TableOnLoad) => {
+
+  if (typeof md !== 'undefined') {
+    md.cache("master").reload = arg.reload;
+  }
+
   if (isEditor) return [${JSON.stringify(sample)}];
 
   const items = await db.${table}.findMany({
@@ -39,5 +44,10 @@ async () => {
   });
 
   return items;
-}`;
+}
+
+type TableOnLoad = {
+  reload: () => Promise<void>;
+}
+`;
 };

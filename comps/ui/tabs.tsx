@@ -10,18 +10,22 @@ const TabsList = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
     overrideClassName?: boolean;
   }
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.List
-    ref={ref}
-    className={cn(
-      props.overrideClassName === true
-        ? ""
-        : "c-inline-flex c-h-10 c-items-center c-justify-center c-rounded-md c-bg-muted c-p-1 c-text-muted-foreground",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const overrideClassName = props.overrideClassName;
+  delete props.overrideClassName;
+  return (
+    <TabsPrimitive.List
+      ref={ref}
+      className={cn(
+        overrideClassName === true
+          ? ""
+          : "c-inline-flex c-h-10 c-items-center c-justify-center c-rounded-md c-bg-muted c-p-1 c-text-muted-foreground",
+        className
+      )}
+      {...props}
+    />
+  );
+});
 TabsList.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
@@ -29,18 +33,22 @@ const TabsTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> & {
     overrideClassName?: boolean;
   }
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      props.overrideClassName === true
-        ? ""
-        : "c-inline-flex c-items-center c-justify-center c-whitespace-nowrap c-rounded-sm c-px-3 c-py-1.5 c-text-sm c-font-medium c-ring-offset-background c-transition-all focus-visible:c-outline-none focus-visible:c-ring-2 focus-visible:c-ring-ring focus-visible:c-ring-offset-2 disabled:c-pointer-events-none disabled:c-opacity-50 data-[state=active]:c-bg-background data-[state=active]:c-text-foreground data-[state=active]:c-shadow-sm",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const overrideClassName = props.overrideClassName;
+  delete props.overrideClassName;
+  return (
+    <TabsPrimitive.Trigger
+      ref={ref}
+      className={cn(
+        overrideClassName === true
+          ? ""
+          : "c-inline-flex c-items-center c-justify-center c-whitespace-nowrap c-rounded-sm c-px-3 c-py-1.5 c-text-sm c-font-medium c-ring-offset-background c-transition-all focus-visible:c-outline-none focus-visible:c-ring-2 focus-visible:c-ring-ring focus-visible:c-ring-offset-2 disabled:c-pointer-events-none disabled:c-opacity-50 data-[state=active]:c-bg-background data-[state=active]:c-text-foreground data-[state=active]:c-shadow-sm",
+        className
+      )}
+      {...props}
+    />
+  );
+});
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
 const TabsContent = React.forwardRef<

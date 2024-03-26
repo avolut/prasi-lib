@@ -56,6 +56,19 @@ export const gen_table = (modify: (data: any) => void, data: any) => {
       result["child"] = data["child"];
       result["child"].content.childs = newField(select, pks);
     }
+    if (data["selected"]) {
+      result["selected"] = data["selected"];
+      result["selected"].value = `\
+({ row, rows, idx }: SelectedRow) => {
+  return md.selected?.id === row?.id;
+};
+
+type SelectedRow = {
+  row: any;
+  rows: any[];
+  idx: any;
+}`;
+    }
   }
   modify(result);
 

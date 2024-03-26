@@ -11,6 +11,7 @@ export type MasterDetailProp = {
   actions: (md: any) => MasterDetailAction[];
   gen_fields: any;
   name: string;
+  md_parent?: MasterDetailConfig;
 };
 
 type MasterDetailAction = {
@@ -34,6 +35,7 @@ export type MasterDetailLocal = {
   };
   cache: (name: string, opt?: { reset: boolean }) => any;
   pk: null | GFCol;
+  parent?: MasterDetailConfig;
 };
 
 export type MasterDetailConfig = MasterDetailLocal & { render: () => void };
@@ -59,7 +61,8 @@ export const master_detail_typings = {
       actions: ${action_type}[];
     };
     cache: (name: string, opt?: { reset: boolean }) => any;
-    pk: null | any
+    pk: null | any;
+    parent?: typeof md;
   }`,
   action_type,
 };

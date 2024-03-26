@@ -36,6 +36,10 @@ export const on_submit = ({
       if (res) form.${id} = res.${id};
     }
   
+    if (md.mode !== "breadcrumb") {
+      md.cache("master")?.reload();
+    }
+    
     return true;
   };
   

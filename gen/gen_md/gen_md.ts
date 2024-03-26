@@ -28,17 +28,21 @@ export const gen_md = (modify: (data: any) => void, data: any) => {
       const col = JSON.parse(sel.value) as Col;
       select[col.name] = {};
       const fields: string[] = [];
+      const subsel: any = {};
+
       for (let s of sel.checked) {
         const c = JSON.parse(s) as Col;
         if (c.is_pk) {
           pks[col.name] = c.name;
           fields.push(`::${c.name}`);
-          select[col.name] = { select: { [c.name]: true } };
           col.relation = { table: col.name, pk: sel.name };
         } else {
           fields.push(c.name);
         }
+        subsel[c.name] = true;
       }
+      select[col.name] = { select: subsel };
+
       columns.push(col);
       new_fields.push({
         name: col.name,

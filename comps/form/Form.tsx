@@ -1,16 +1,17 @@
 import { Form as FForm } from "@/comps/ui/form";
 import { Toaster } from "@/comps/ui/sonner";
 import { useLocal } from "@/utils/use-local";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormHook } from "./utils/utils";
 import { AlertTriangle, Check, Loader2 } from "lucide-react";
 import { cn } from "@/utils";
+import { Skeleton } from "../ui/skeleton";
 
 export const Form: FC<{
-  on_init: (arg: { submit: any }) => any;
+  on_init: (arg: { submit: any; reload: any }) => any;
   on_load: () => any;
   on_submit: (arg: { form: any; error: any }) => Promise<any>;
   body: any;
@@ -63,7 +64,7 @@ export const Form: FC<{
       toast.loading(
         <>
           <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
-          Saving ...
+          Processing ...
         </>,
         {
           dismissible: true,
@@ -112,7 +113,7 @@ export const Form: FC<{
         toast.success(
           <div className="c-flex c-text-blue-700 c-items-center">
             <Check className="c-h-4 c-w-4 c-mr-1 " />
-            Data saved
+            Done
           </div>,
           {
             className: css`
@@ -127,7 +128,19 @@ export const Form: FC<{
 
   if (!local.init) {
     local.init = true;
-    on_init({ submit });
+    on_init({
+      submit,
+      reload: () => {
+        local.init = false;
+        form.unload = () => {
+          form.hook.clearErrors();
+          form.hook.reset();
+          delete form.unload;
+          local.render();
+        };
+        local.render();
+      },
+    });
     const res = on_load();
     const loaded = (values: any) => {
       setTimeout(() => {
@@ -166,8 +179,16 @@ export const Form: FC<{
   }
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
 
+  if (form.unload)
+    return (
+      <div className="c-p-6 c-flex c-flex-col c-space-y-2 c-w-full c-flex-1 c-items-start">
+        <Skeleton className="c-h-3 c-w-[50%]" />
+        <Skeleton className="c-h-3 c-w-[40%]" />
+      </div>
+    );
+
   return (
-    <FForm {...form_hook}>
+    <FormInternal {...form_hook} form={form}>
       {toaster_el && createPortal(<Toaster cn={cn} />, toaster_el)}
       <form
         className={
@@ -225,6 +246,17 @@ export const Form: FC<{
           </PassProp>
         </div>
       </form>
-    </FForm>
+    </FormInternal>
   );
+};
+
+const FormInternal = (props: any) => {
+  useEffect(() => {
+    return () => {
+      if (props.form && props.form.unload) {
+        props.form.unload();
+      }
+    };
+  }, []);
+  return <FForm {...props} />;
 };

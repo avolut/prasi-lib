@@ -1,7 +1,8 @@
 import { useLocal } from "@/utils/use-local";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef } from "react";
 import DataGrid, {
   ColumnOrColumnGroup,
+  DataGridHandle,
   Row,
   SortColumn,
 } from "react-data-grid";
@@ -14,13 +15,20 @@ type OnRowClick = {
   idx: any;
   event: React.MouseEvent<HTMLDivElement, MouseEvent>;
 };
+
+type RowSelected = {
+  row: any;
+  rows: any[];
+  idx: any;
+};
 export const Table: FC<{
   columns: () => Promise<ColumnOrColumnGroup<any>[]>;
-  on_load: () => Promise<any[]>;
+  on_load: (opt: { reload: () => Promise<void> }) => Promise<any[]>;
   child: any;
   PassProp: any;
   row_click: (arg: OnRowClick) => void;
-}> = ({ columns, on_load, child, PassProp, row_click }) => {
+  selected: (arg: RowSelected) => boolean;
+}> = ({ columns, on_load, child, PassProp, row_click, selected }) => {
   const local = useLocal({
     loading: false,
     data: undefined as unknown as any[],
@@ -58,7 +66,19 @@ export const Table: FC<{
 
   useEffect(() => {
     local.loading = true;
-    on_load().then((data) => {
+    const arg = {
+      reload: async () => {
+        local.loading = true;
+        local.render();
+
+        const data = await on_load(arg);
+
+        local.data = data;
+        local.loading = false;
+        local.render();
+      },
+    };
+    on_load(arg).then((data) => {
       local.data = data;
       local.loading = false;
       local.render();
@@ -67,6 +87,7 @@ export const Table: FC<{
 
   return (
     <TableInternal
+      selected={selected}
       row_click={row_click}
       columns={local.columns}
       data={local.loading ? undefined : local.data}
@@ -80,7 +101,8 @@ const TableInternal: FC<{
   data?: any[];
   render: () => void;
   row_click: (arg: OnRowClick) => void;
-}> = ({ columns, data, render, row_click }) => {
+  selected: (arg: RowSelected) => boolean;
+}> = ({ columns, data, render, row_click, selected }) => {
   const local = useLocal({
     width: 0,
     height: 0,
@@ -91,7 +113,9 @@ const TableInternal: FC<{
     }),
     el: null as any,
     sort: [] as SortColumn[],
+    scrolled: false,
   });
+  const rdg = useRef<null | DataGridHandle>(null);
 
   useEffect(() => {
     return () => {
@@ -100,21 +124,44 @@ const TableInternal: FC<{
   }, []);
   const sort = local.sort;
 
-  let sorted = data;
-  if (sort.length > 0 && data) {
-    sorted = data.sort((a, b) => {
-      const va = a[sort[0].columnKey];
-      const vb = b[sort[0].columnKey];
-      if (typeof va === "string" && typeof vb === "string") {
-        if (sort[0].direction === "ASC") {
-          return va.localeCompare(vb);
-        } else {
-          return vb.localeCompare(va);
-        }
+  // let sorted = data;
+  // if (sort.length > 0 && data) {
+  //   sorted = data.sort((a, b) => {
+  //     const va = a[sort[0].columnKey];
+  //     const vb = b[sort[0].columnKey];
+  //     if (typeof va === "string" && typeof vb === "string") {
+  //       if (sort[0].direction === "ASC") {
+  //         return va.localeCompare(vb);
+  //       } else {
+  //         return vb.localeCompare(va);
+  //       }
+  //     }
+  //     return 0;
+  //   });
+  // }
+
+  let selected_idx = -1;
+  if (data) {
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
+      if (
+        typeof selected === "function"
+          ? selected({
+              idx: i,
+              row: row,
+              rows: data,
+            })
+          : false
+      ) {
+        selected_idx = i;
+        break;
       }
-      return 0;
-    });
+    }
   }
+
+  useEffect(() => {
+    rdg.current!.scrollToCell({ rowIdx: selected_idx, idx: 0 });
+  }, [selected_idx]);
 
   return (
     <div
@@ -136,6 +183,10 @@ const TableInternal: FC<{
           div[aria-selected="true"] {
             outline: none;
           }
+
+          .row-selected {
+            background: #e2f1ff;
+          }
         `
       )}
       ref={(el) => {
@@ -148,6 +199,7 @@ const TableInternal: FC<{
       <DataGrid
         columns={columns}
         sortColumns={sort}
+        ref={rdg}
         onSortColumnsChange={([col]) => {
           local.sort = [];
           if (col) {
@@ -173,6 +225,8 @@ const TableInternal: FC<{
             ? undefined
             : {
                 renderRow(key, props) {
+                  const is_selected = selected_idx === props.rowIdx;
+
                   return (
                     <Row
                       key={key}
@@ -187,6 +241,11 @@ const TableInternal: FC<{
                           });
                         }
                       }}
+                      isRowSelected={is_selected}
+                      className={cx(
+                        props.className,
+                        is_selected && "row-selected"
+                      )}
                     />
                   );
                 },

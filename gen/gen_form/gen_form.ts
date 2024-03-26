@@ -66,14 +66,16 @@ export const gen_form = (modify: (data: any) => void, data: any) => {
     return;
   }
   if (pk) {
-    if (mode.includes("on_load")) {
-      result["on_load"] = data["on_load"];
-      result["on_load"].value = on_load({ pk, pks, select, table });
-    }
+    if (mode) {
+      if (mode.includes("on_load")) {
+        result["on_load"] = data["on_load"];
+        result["on_load"].value = on_load({ pk, pks, select, table });
+      }
 
-    if (mode.includes("on_submit")) {
-      result["on_submit"] = data["on_submit"];
-      result["on_submit"].value = on_submit({ pk, table, select, pks });
+      if (mode.includes("on_submit")) {
+        result["on_submit"] = data["on_submit"];
+        result["on_submit"].value = on_submit({ pk, table, select, pks });
+      }
     }
 
     result["body"] = data["body"];

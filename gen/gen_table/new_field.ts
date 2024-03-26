@@ -1,5 +1,4 @@
 import { createId } from "@paralleldrive/cuid2";
-import { GFCol } from "../utils";
 
 export const newField = (select: any, pks: Record<string, string>) => {
   const result = [];
@@ -8,7 +7,7 @@ export const newField = (select: any, pks: Record<string, string>) => {
     if (typeof v === "object") {
       const res = Object.keys(v.select)
         .filter((e) => e !== pks[k])
-        .map((e) => `cell.value?.["${e}"]`)
+        .map((e) => `cell.value?.["${k}"]?.["${e}"] || ''`)
         .join('+ " " +');
 
       result.push({
@@ -18,7 +17,7 @@ export const newField = (select: any, pks: Record<string, string>) => {
 <>
   {cell.key === "${k}" && (
     <div {...props} className={cx(props.className, "")}>
-      {${res}}
+      {Array.isArray(cell.value) ? cell.value.length + ' items' : ${res}}
     </div>
   )}
 </>`,
