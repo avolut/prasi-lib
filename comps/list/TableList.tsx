@@ -10,6 +10,7 @@ type TableListProp = {
   PassProp: any;
   name: string;
   on_load: () => Promise<any[]>;
+  mode: "table" | "list" | "grid";
 };
 
 export const TableList: FC<TableListProp> = ({
@@ -17,6 +18,7 @@ export const TableList: FC<TableListProp> = ({
   on_load,
   child,
   PassProp,
+  mode,
 }) => {
   const local = useLocal({
     el: null as null | HTMLDivElement,
@@ -50,10 +52,19 @@ export const TableList: FC<TableListProp> = ({
     }
   }, [on_load]);
 
-  const childs = get(
+  const raw_childs = get(
     child,
     "props.meta.item.component.props.child.content.childs"
   );
+
+  let childs: any[] = [];
+
+  const mode_child = raw_childs.find((e: any) => e.name === mode);
+
+  if (mode_child && mode_child.childs) {
+    childs = mode_child.childs;
+  }
+  console.log(raw_childs);
 
   const columns: ColumnOrColumnGroup<any>[] = [];
   for (const child of childs) {

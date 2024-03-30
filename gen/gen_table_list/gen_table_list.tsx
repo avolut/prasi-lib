@@ -53,6 +53,13 @@ export const gen_table_list = (
 
     if (data["child"]) {
       result["child"] = data["child"];
+
+      result["child"].content.childs = result["child"].content.childs.filter(
+        (e: any) => {
+          return e.name !== arg.mode;
+        }
+      );
+
       result["child"].content.childs = [
         createItem({
           name: arg.mode,
@@ -67,9 +74,9 @@ export const gen_table_list = (
             },
           ],
         }),
+        ...result["child"].content.childs,
       ];
     }
-    console.log(result["child"]);
 
     if (data["selected"]) {
       result["selected"] = data["selected"];
