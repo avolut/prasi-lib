@@ -47,7 +47,7 @@ export const form_before_load = (
           onClick: async () => {
             md.ui.actions = [{ label: "Saving...", type: "ghost" }];
             md.render();
-            await md.cache("master")._submit();
+            await md.cache("detail").submit();
             setTimeout(() => {
               set_actions();
               md.render();

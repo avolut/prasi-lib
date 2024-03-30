@@ -3,7 +3,7 @@ import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
 import { FC, useEffect } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs";
 import {
   MasterDetailConfig,
   MasterDetailLocal,

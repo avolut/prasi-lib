@@ -136,7 +136,7 @@ export const Relation: FC<RelationProps> = ({
               {filtered.map((item, idx) => {
                 let is_active = false;
                 if (typeof value === "object") {
-                  const c = (value as any).connect;
+                  const c = (value as any)?.connect;
                   if (c) {
                     is_active = item.value === c[local.pk_field];
                   }

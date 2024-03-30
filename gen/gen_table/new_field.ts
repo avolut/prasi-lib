@@ -7,7 +7,7 @@ export const newField = (select: any, pks: Record<string, string>) => {
     if (typeof v === "object") {
       const res = Object.keys(v.select)
         .filter((e) => e !== pks[k])
-        .map((e) => `cell.value?.["${k}"]?.["${e}"] || ''`)
+        .map((e) => `cell.value?.["${e}"] || ''`)
         .join('+ " " +');
 
       result.push({

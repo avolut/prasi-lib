@@ -13,7 +13,10 @@ import { gen_detail } from "./gen_detail";
 import { form_before_load } from "./form_before_load";
 import { createId } from "@paralleldrive/cuid2";
 
-export const gen_md = (modify: (data: any) => void, data: any) => {
+export const gen_md = (
+  modify: (data: any) => void,
+  data: any,
+) => {
   const table = JSON.parse(data.gen_table.value);
   const fields = JSON.parse(data.gen_fields.value);
   const select = {} as any;

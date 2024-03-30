@@ -17,8 +17,7 @@ export const gen_header = () => {
         type: "item",
         dim: {
           w: "full",
-          h: 40,
-          hUnit: "px",
+          h: "fit",
         },
         childs: [
           {

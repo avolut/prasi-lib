@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { MasterDetailConfig } from "./type";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 export const MDAction: FC<{ md: MasterDetailConfig }> = ({ md }) => {
   return (
