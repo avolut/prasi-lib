@@ -1,10 +1,12 @@
 import capitalize from "lodash.capitalize";
-import { GFCol } from "../utils";
-import { gen_columns } from "./columns";
-import { newField } from "./new_field";
+import { GFCol, createItem } from "../utils";
 import { on_load } from "./on_load";
 
-export const generate_table = (modify: (data: any) => void, data: any) => {
+export const gen_table_list = (
+  modify: (data: any) => void,
+  data: any,
+  arg: { mode: "table" | "list" | "grid" }
+) => {
   const table = JSON.parse(data.gen_table.value) as string;
   const fields = JSON.parse(data.gen_fields.value) as (
     | string
@@ -44,23 +46,35 @@ export const generate_table = (modify: (data: any) => void, data: any) => {
     return;
   }
   if (pk) {
-    if (data["columns"]) {
-      result["columns"] = data["columns"];
-      result["columns"].value = gen_columns(columns);
-    }
     if (data["on_load"]) {
       result["on_load"] = data["on_load"];
       result["on_load"].value = on_load({ pk, table, select, pks });
     }
+
     if (data["child"]) {
       result["child"] = data["child"];
-      result["child"].content.childs = newField(select, pks);
+      result["child"].content.childs = [
+        createItem({
+          name: arg.mode,
+          childs: [
+            {
+              component: {
+                id: "297023a4-d552-464a-971d-f40dcd940b77",
+                props: {
+                  name: "muku",
+                },
+              },
+            },
+          ],
+        }),
+      ];
     }
+    console.log(result["child"]);
+
     if (data["selected"]) {
       result["selected"] = data["selected"];
       result["selected"].value = `\
 ({ row, rows, idx }: SelectedRow) => {
-  return md.selected?.id === row?.id;
 };
 
 type SelectedRow = {
