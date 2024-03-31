@@ -60,20 +60,43 @@ export const gen_table_list = (
         }
       );
 
-      result["child"].content.childs = [
-        createItem({
-          name: arg.mode,
-          childs: [
-            {
+      const child = createItem({
+        name: arg.mode,
+        childs: columns
+          .map((e) => {
+            if (e.is_pk) return;
+            return {
               component: {
                 id: "297023a4-d552-464a-971d-f40dcd940b77",
                 props: {
-                  name: "muku",
+                  name: e.name,
+                  title: formatName(e.name),
+                  child: {
+                    name: "cell",
+                    padding: {
+                      l: 8,
+                      b: 0,
+                      t: 0,
+                      r: 8,
+                    },
+                    adv: {
+                      js: `\
+<div {...props} className={cx(props.className, "")}>
+  <FormatValue value={col.value} name={col.name} gen_fields={gen_fields} />
+</div>`,
+                      jsBuilt: `\
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen_fields })));
+                  `,
+                    },
+                  },
                 },
               },
-            },
-          ],
-        }),
+            };
+          })
+          .filter((e) => e) as any,
+      });
+      result["child"].content.childs = [
+        child,
         ...result["child"].content.childs,
       ];
     }

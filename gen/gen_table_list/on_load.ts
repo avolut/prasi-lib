@@ -29,20 +29,30 @@ export const on_load = ({
 
   return `\
 async (arg: TableOnLoad) => {
-  if (isEditor) return [${JSON.stringify(sample)}];
+  if (isEditor) return sampleData;
+
+  if (arg.mode === 'count') {
+    return await db.${table}.count();
+  }
 
   const items = await db.${table}.findMany({
     select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
-    orderBy: {
+    orderBy: arg.orderBy || {
       ${pk}: "desc"
-    }
+    },
+    ...arg.paging,
   });
 
   return items;
 }
 
+const sampleData = [${JSON.stringify(sample, null, 2)}]
+
 type TableOnLoad = {
   reload: () => Promise<void>;
+  orderBy?: Record<string, "asc" | "desc">;
+  paging: { take: number; skip: number };
+  mode: 'count' | 'query'
 }
 `;
 };

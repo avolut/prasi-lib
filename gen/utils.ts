@@ -22,8 +22,13 @@ export const formatName = (name: string) => {
 
 type SimplifiedItem = {
   name?: string;
-  component?: { id: string; props: Record<string, any> };
+  component?: { id: string; props: Record<string, string | SimplifiedItem> };
   childs?: SimplifiedItem[];
+  adv?: {
+    js: string;
+    jsBuilt: string;
+  };
+  padding?: any;
 };
 
 export const createItem = (arg: SimplifiedItem): any => {
@@ -34,11 +39,32 @@ export const createItem = (arg: SimplifiedItem): any => {
 
     if (arg.component.props) {
       for (const [k, v] of Object.entries(arg.component.props)) {
-        component.props[k] = {
-          type: "string",
-          value: JSON.stringify(v),
-          valueBuilt: JSON.stringify(v),
-        };
+        if (typeof v === "object") {
+          component.props[k] = {
+            meta: {
+              type: "content-element",
+            },
+            content: {
+              id: createId(),
+              dim: {
+                h: "full",
+                w: "full",
+              },
+              padding: arg.padding,
+              type: "item",
+              name: k,
+              ...v,
+            },
+            value: "",
+            valueBuilt: "",
+          };
+        } else {
+          component.props[k] = {
+            type: "string",
+            value: JSON.stringify(v),
+            valueBuilt: JSON.stringify(v),
+          };
+        }
       }
     }
   }
@@ -49,10 +75,13 @@ export const createItem = (arg: SimplifiedItem): any => {
       h: "full",
       w: "full",
     },
+    padding: arg.padding,
     name: arg.name || "item",
     type: "item",
     component,
-    script: {},
+    script: {
+      ...arg.adv,
+    },
     childs: arg.childs?.map(createItem),
   };
 };
