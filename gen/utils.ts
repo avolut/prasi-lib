@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import capitalize from "lodash.capitalize";
 
-export type GFCol = {
+export type GFCol = { 
   name: string;
   type: string;
   is_pk: boolean;

@@ -1,7 +1,7 @@
 import { Form as FForm } from "@/comps/ui/form";
 import { Toaster } from "@/comps/ui/sonner";
 import { useLocal } from "@/utils/use-local";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -9,6 +9,7 @@ import { FormHook } from "./utils/utils";
 import { AlertTriangle, Check, Loader2 } from "lucide-react";
 import { cn } from "@/utils";
 import { Skeleton } from "../ui/skeleton";
+import { getPathname } from "../../..";
 
 export const Form: FC<{
   on_init: (arg: { submit: any; reload: any }) => any;
@@ -88,41 +89,46 @@ export const Form: FC<{
         }
       }
 
-      await on_submit({
+      const res = on_submit({
         form: data,
         error: form.hook.formState.errors,
       });
-      toast.dismiss();
 
-      if (Object.keys(form.hook.formState.errors).length > 0) {
-        toast.error(
-          <div className="c-flex c-text-red-600 c-items-center">
-            <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
-            Save Failed, please correct{" "}
-            {Object.keys(form.hook.formState.errors).length} errors.
-          </div>,
-          {
-            dismissible: true,
-            className: css`
-              background: #ffecec;
-              border: 2px solid red;
-            `,
-          }
-        );
-      } else {
-        toast.success(
-          <div className="c-flex c-text-blue-700 c-items-center">
-            <Check className="c-h-4 c-w-4 c-mr-1 " />
-            Done
-          </div>,
-          {
-            className: css`
-              background: #e4f5ff;
-              border: 2px solid blue;
-            `,
-          }
-        );
-      }
+      await res;
+      toast.dismiss();
+      setTimeout(() => {
+        toast.dismiss();
+
+        if (Object.keys(form.hook.formState.errors).length > 0) {
+          toast.error(
+            <div className="c-flex c-text-red-600 c-items-center">
+              <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+              Save Failed, please correct{" "}
+              {Object.keys(form.hook.formState.errors).length} errors.
+            </div>,
+            {
+              dismissible: true,
+              className: css`
+                background: #ffecec;
+                border: 2px solid red;
+              `,
+            }
+          );
+        } else {
+          toast.success(
+            <div className="c-flex c-text-blue-700 c-items-center">
+              <Check className="c-h-4 c-w-4 c-mr-1 " />
+              Done
+            </div>,
+            {
+              className: css`
+                background: #e4f5ff;
+                border: 2px solid blue;
+              `,
+            }
+          );
+        }
+      }, 100);
     }, 300);
   };
 
@@ -141,11 +147,13 @@ export const Form: FC<{
         local.render();
       },
     });
+
     const res = on_load();
     const loaded = (values: any) => {
       setTimeout(() => {
         toast.dismiss();
       });
+
       if (!!values) {
         for (const [k, v] of Object.entries(values)) {
           form.hook.setValue(k, v);
@@ -224,7 +232,8 @@ export const Form: FC<{
               } else {
                 local.layout = "2-col";
               }
-              local.render();
+
+              local.render(true);
             }
           }}
           className={cx(

@@ -38,7 +38,8 @@ export const Field: FC<{
     | "datetime"
     | "money"
     | "slider"
-    | "master-link";
+    | "master-link"
+    | "custom";
   required: "y" | "n";
   options: FieldOptions;
   slider: () => Promise<SliderOptions>;
@@ -76,7 +77,8 @@ export const Field: FC<{
   rel_table,
   rel_query,
 }) => {
-  const value = form?.hook.getValues()[name];
+  const values = form?.hook.getValues();
+  const value = values[name];
   const local = useLocal({
     date: {
       // label: "",
@@ -177,6 +179,15 @@ export const Field: FC<{
             </FormLabel>
             <FormControl>
               <>
+                {type === "custom" && (
+                  <div
+                    className={cx(
+                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    )}
+                  >
+                    {custom}
+                  </div>
+                )}
                 {type === "slider" && (
                   <div className="c-flex-1 c-min-h-[40px] c-flex">
                     <div className="c-flex c-flex-col c-items-center">
