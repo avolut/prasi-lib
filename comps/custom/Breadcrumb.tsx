@@ -4,7 +4,8 @@ import { Skeleton } from "../ui/skeleton";
 
 type BreadcrumbProps = {
   on_load: () => Promise<any[]>;
-  props: any;
+  className?: string;
+  props?: any;
 };
 
 export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
@@ -31,7 +32,12 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
   }, [on_load]);
 
   return (
-    <div className="c-w-full c-flex c-items-center c-px-4 c-flex-wrap c-py-2 c-border-b">
+    <div
+      className={cx(
+        "breadcrumb c-w-full c-flex c-items-center c-flex-wrap",
+        _arg.className
+      )}
+    >
       {local.status !== "ready" ? (
         <Skeleton className="c-h-4 c-w-[80%]" />
       ) : (
