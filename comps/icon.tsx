@@ -46,6 +46,7 @@ import {
   BetweenHorizontalStart,
   Outdent,
   Indent,
+  ChevronLeft,
 } from "lucide-react";
 
 export const icon = {
@@ -76,6 +77,7 @@ export const icon = {
   workflow: <Workflow />,
   layout: <LayoutList />,
   right: <ChevronRight />,
+  left: <ChevronLeft />,
   down: <ChevronDown />,
   setting: <Settings />,
   settingSmall: <Settings className={`c-w-4`} fill="currentColor" />,
@@ -120,5 +122,5 @@ export const icon = {
     </svg>
   ),
   delete: <Delete />,
-  update: <Edit />
+  update: <Edit />,
 };
