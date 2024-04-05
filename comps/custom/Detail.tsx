@@ -84,6 +84,7 @@ export const Detail: FC<{
     local.status = "ready";
   }
 
+  if (typeof values !== "object" || values === null) return null;
   const entries = Object.entries(values);
   return (
     <div

@@ -243,6 +243,7 @@ export const Form: FC<{
             }
           }}
           className={cx(
+            "c-w-full c-h-full c-flex-1 c-flex",
             local.layout === "unknown" && "c-hidden",
             local.layout === "2-col" &&
               css`
