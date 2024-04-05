@@ -2,24 +2,37 @@ import { useLocal } from "@/utils/use-local";
 import { FC, ReactNode, useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
 
+export type BreadItem = {
+  label: React.ReactNode;
+  url?: string;
+  onClick?: () => void;
+};
+
 type BreadcrumbProps = {
-  on_load: () => Promise<any[]>;
+  on_load?: () => Promise<BreadItem[]>;
   className?: string;
   props?: any;
+  value?: BreadItem[];
 };
 
 export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
   const { on_load } = _arg;
 
   const local = useLocal({
-    list: [] as { label: string; url: string }[],
+    list: [] as BreadItem[],
     status: "init" as "init" | "loading" | "ready",
     params: {},
   });
 
   useEffect(() => {
+    if (local.status === "init" && _arg.value) {
+      local.list = _arg.value;
+      local.status = "ready";
+      local.render();
+    }
+
     (async () => {
-      if (local.status === "init") {
+      if (local.status === "init" && typeof on_load === "function") {
         local.status = "loading";
         local.render();
 
@@ -45,7 +58,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
           {local.list === null ? (
             <>
               <h1 className="c-font-semibold c-text-xs md:c-text-base">
-                Dummy
+                Null Breadcrumb
               </h1>
             </>
           ) : (
@@ -62,7 +75,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
                     <h1
                       className="c-font-normal c-text-xs md:c-text-base hover:c-cursor-pointer"
                       onClick={() => {
-                        navigate(item?.url);
+                        navigate(item.url || "");
                       }}
                     >
                       {item?.label}

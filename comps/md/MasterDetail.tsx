@@ -1,38 +1,54 @@
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { masterDetailApplyHash, masterDetailStoreHash } from "./utils/md-hash";
 import { masterDetailInit } from "./utils/md-init";
 import { MDLocal, MDLocalInternal } from "./utils/typings";
+import { MDTab, should_show_tab } from "./MDTab";
+import { getProp } from "./utils/get-prop";
 
 export const MasterDetail: FC<{
   child: any;
   PassProp: any;
   name: string;
-  child_mode: "full" | "h-split" | "v-split";
+  mode: "full" | "h-split" | "v-split";
   show_head: "always" | "only-master" | "only-child" | "hidden";
   tab_mode: "h-tab" | "v-tab" | "hidden";
-}> = ({ PassProp, child, name, child_mode, show_head, tab_mode }) => {
+  editor_tab: string;
+}> = ({ PassProp, child, name, mode, show_head, tab_mode, editor_tab }) => {
   const md = useLocal<MDLocalInternal>({
     name,
     actions: [],
     breadcrumb: [],
-    selected: {},
+    selected: null,
     tab: {
       active: "",
       list: [],
     },
     childs: {},
-    props: { child_mode, show_head, tab_mode },
+    props: { mode, show_head, tab_mode },
     params: { hash: {}, tabs: {} },
     master: { internal: null, render() {}, pk: null },
   });
   const local = useLocal({ init: false });
 
+  useEffect(() => {
+    local.init = false;
+    local.render();
+  }, [editor_tab]);
+
+  useEffect(() => {
+    (async () => {
+      if (!md.selected) {
+        const master_bread = await getProp(md.master.internal, "breadcrumb");
+      }
+    })();
+  }, [md.selected]);
+
   if (!local.init) {
     local.init = true;
-    masterDetailInit(md, child);
+    masterDetailInit(md, child, editor_tab);
     masterDetailApplyHash(md);
   } else {
     masterDetailStoreHash(md);
@@ -45,10 +61,8 @@ export const MasterDetail: FC<{
       )}
     >
       <Header md={md} child={child} PassProp={PassProp} />
-      {md.props.child_mode === "full" && (
-        <ModeFull md={md} PassProp={PassProp} />
-      )}
-      {md.props.child_mode === "v-split" && (
+      {md.props.mode === "full" && <ModeFull md={md} PassProp={PassProp} />}
+      {md.props.mode === "v-split" && (
         <ModeVSplit md={md} PassProp={PassProp} />
       )}
     </div>
@@ -56,8 +70,15 @@ export const MasterDetail: FC<{
 };
 
 const ModeFull: FC<{ md: MDLocal; PassProp: any }> = ({ md, PassProp }) => {
+  if (should_show_tab(md)) {
+    return <MDTab md={md} />;
+  }
+
   return (
-    <>{md.selected && <PassProp md={md}>{md.master.internal}</PassProp>}</>
+    <>
+      {!md.selected && <PassProp md={md}>{md.master.internal}</PassProp>}
+      {md.selected && <MDTab md={md} />}
+    </>
   );
 };
 

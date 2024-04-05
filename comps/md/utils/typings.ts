@@ -22,14 +22,14 @@ export type MDLocalInternal = {
     tabs: any;
   };
   props: {
-    child_mode: "full" | "h-split" | "v-split";
+    mode: "full" | "h-split" | "v-split";
     show_head: "always" | "only-master" | "only-child" | "hidden";
     tab_mode: "h-tab" | "v-tab" | "hidden";
   };
   childs: Record<
     string,
     {
-      title: string;
+      name: string;
       breadcrumb: MDBreadcrumb;
       actions: MDActions;
       hide: () => void;
@@ -44,7 +44,11 @@ export type MDLocalInternal = {
 export type MDLocal = MDLocalInternal & { render: (force?: boolean) => void };
 
 export const MasterDetailType = `{
-  breadcrumb: [string, string, string][];
+  breadcrumb: {
+    label: React.ReactNode;
+    url?: string;
+    onClick?: () => void;
+  }[];
   actions: (
     | { text: ReactNode; onClick?: (e: any) => Promise<void> }
     | ReactNode

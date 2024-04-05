@@ -12,6 +12,5 @@ export { Button, FloatButton } from "@/comps/ui/button";
 export { getPathname } from "@/utils/pathname";
 export { Breadcrumb } from "./comps/custom/Breadcrumb";
 export { Header } from "./comps/custom/Header";
-export { TableList } from "./comps/custom/TableList";
 export { Carousel } from "./comps/custom/Carousel";
 export { Tree } from "./comps/list/Tree";

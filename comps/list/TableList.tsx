@@ -1,14 +1,14 @@
+import { cn } from "@/utils";
+import { fields_map } from "@/utils/format-value";
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
+import { Loader2 } from "lucide-react";
 import { FC, useEffect } from "react";
 import DataGrid, { ColumnOrColumnGroup, SortColumn } from "react-data-grid";
 import "react-data-grid/lib/styles.css";
-import { getProp } from "../md/utils/get-prop";
-import { Toaster, toast } from "sonner";
 import { createPortal } from "react-dom";
-import { cn } from "@/utils";
-import { Loader2 } from "lucide-react";
-import { fields_map } from "@/utils/format-value";
+import { Toaster, toast } from "sonner";
+import { getProp } from "../md/utils/get-prop";
 import { Skeleton } from "../ui/skeleton";
 
 type TableListProp = {
@@ -107,10 +107,12 @@ export const TableList: FC<TableListProp> = ({
   });
 
   useEffect(() => {
+    if (isEditor) return;
     (async () => {
-      if (local.status === "reload") {
+      if (local.status === "reload" && typeof on_load === "function") {
         local.status = "loading";
         local.render();
+
         const orderBy = local.sort.orderBy || undefined;
         const load_args = {
           async reload() {},
@@ -141,7 +143,12 @@ export const TableList: FC<TableListProp> = ({
 
   let childs: any[] = [];
 
-  const mode_child = raw_childs.find((e: any) => e.name === mode);
+  let sub_name = "fields";
+  if (mode === "table") sub_name = "columns";
+
+  const mode_child = raw_childs.find(
+    (e: any) => e.name === sub_name || e.name === mode
+  );
   if (mode_child) {
     const meta = _meta[mode_child.id];
     if (meta && meta.item.childs) {
@@ -178,7 +185,7 @@ export const TableList: FC<TableListProp> = ({
     });
   }
 
-  if (local.status === "resizing") {
+  if (local.status === "resizing" && !isEditor) {
     local.status = "ready";
     local.render();
 
@@ -210,6 +217,19 @@ export const TableList: FC<TableListProp> = ({
     document.body.appendChild(elemDiv);
   }
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
+
+  if (isEditor && local.status !== "ready") {
+    if (local.data.length === 0) {
+      const load_args = {
+        async reload() {},
+        paging: { take: local.paging.take, skip: local.paging.skip },
+      };
+      if (typeof on_load === "function") {
+        local.data = on_load({ ...load_args, mode: "query" }) as any;
+      }
+    }
+    local.status = "ready";
+  }
 
   if (mode === "table") {
     return (

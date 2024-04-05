@@ -40,6 +40,12 @@ export const FormatValue: FC<{
           return value[e.name];
         })
         .join(" - ");
+
+      if (Array.isArray(value)) {
+        const len = value.length;
+        if (len === 0) return ` - `;
+        return `${len} item${len > 1 ? "s" : ""}`;
+      }
       return result;
     }
 

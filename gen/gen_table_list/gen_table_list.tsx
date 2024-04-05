@@ -1,5 +1,5 @@
 import capitalize from "lodash.capitalize";
-import { GFCol, createItem } from "../utils";
+import { createItem, parseGenField } from "../utils";
 import { on_load } from "./on_load";
 
 export const gen_table_list = (
@@ -8,38 +8,31 @@ export const gen_table_list = (
   arg: { mode: "table" | "list" | "grid" }
 ) => {
   const table = JSON.parse(data.gen_table.value) as string;
-  const fields = JSON.parse(data.gen_fields.value) as (
+  const raw_fields = JSON.parse(data.gen_fields.value) as (
     | string
     | { value: string; checked: string[] }
   )[];
   const select = {} as any;
-  const columns = [] as GFCol[];
   let pk = "";
   let pks: Record<string, string> = {};
 
+  const fields = parseGenField(raw_fields);
+  const result = {} as any;
   for (const f of fields) {
-    if (typeof f === "string") {
-      const col = JSON.parse(f) as GFCol;
-      columns.push(col);
-      select[col.name] = true;
-      if (col.is_pk) pk = col.name;
-    } else {
-      const col = JSON.parse(f.value) as GFCol;
-      const subsel: any = {};
-      for (const s of f.checked) {
-        const sel = JSON.parse(s) as GFCol;
-        if (sel.is_pk) {
-          pks[col.name] = sel.name;
-          col.relation = { table: col.name, pk: sel.name };
-        }
-        subsel[sel.name] = true;
+    select[f.name] = true;
+    if (f.relation) {
+      select[f.name] = {
+        select: {},
+      };
+      for (const r of f.relation.fields) {
+        select[f.name].select[r.name] = true;
       }
-      select[col.name] = { select: subsel };
-      columns.push(col);
+    }
+
+    if (f.is_pk) {
+      pk = f.name;
     }
   }
-
-  const result = {} as any;
 
   if (!pk) {
     alert("Failed to generate! Primary Key not found. ");
@@ -49,6 +42,7 @@ export const gen_table_list = (
     if (data["on_load"]) {
       result["on_load"] = data["on_load"];
       result["on_load"].value = on_load({ pk, table, select, pks });
+      delete result["on_load"].valueBuilt;
     }
 
     if (data["child"]) {
@@ -60,9 +54,12 @@ export const gen_table_list = (
         }
       );
 
+      let sub_name = "fields";
+      if (arg.mode === "table") sub_name = "columns";
+
       const child = createItem({
-        name: arg.mode,
-        childs: columns
+        name: sub_name,
+        childs: fields
           .map((e) => {
             if (e.is_pk) return;
             return {
@@ -112,11 +109,11 @@ type SelectedRow = {
   rows: any[];
   idx: any;
 }`;
+      delete result["selected"].valueBuilt;
     }
   }
+  console.log(result);
   modify(result);
-
-  alert("Prop Generated!");
 };
 
 const formatName = (name: string) => {

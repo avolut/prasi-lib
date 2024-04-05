@@ -28,25 +28,25 @@ export const on_load = ({
   }
 
   return `\
-async (arg: TableOnLoad) => {
-  if (isEditor) return sampleData;
+(arg: TableOnLoad) => {
+  if (isEditor) return [${JSON.stringify(sample)}];
 
-  if (arg.mode === 'count') {
-    return await db.${table}.count();
-  }
+  return new Promise(async (done) => {
+    if (arg.mode === 'count') {
+      return await db.${table}.count();
+    }
 
-  const items = await db.${table}.findMany({
-    select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
-    orderBy: arg.orderBy || {
-      ${pk}: "desc"
-    },
-    ...arg.paging,
-  });
+    const items = await db.${table}.findMany({
+      select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
+      orderBy: arg.orderBy || {
+        ${pk}: "desc"
+      },
+      ...arg.paging,
+    });
 
-  return items;
+    done(items);
+  })
 }
-
-const sampleData = [${JSON.stringify(sample, null, 2)}]
 
 type TableOnLoad = {
   reload: () => Promise<void>;

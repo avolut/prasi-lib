@@ -3,10 +3,6 @@ import { MDLocal } from "./typings";
 export const masterDetailApplyHash = (md: MDLocal) => {
   let raw_hash = decodeURIComponent(location.hash);
 
-  if (isEditor) {
-    raw_hash = localStorage.getItem("prasi-md-hash") || "";
-  }
-
   md.params = { hash: {}, tabs: {} };
 
   for (const h of raw_hash.split("#")) {

@@ -50,9 +50,5 @@ export const master_detail_gen_hash = (obj: {
     hash += `#${k}~${v}`;
   }
 
-  if (isEditor) {
-    localStorage.setItem("prasi-md-hash", hash);
-  } else {
-    location.hash = hash;
-  }
+  location.hash = hash;
 };
