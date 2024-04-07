@@ -2,7 +2,7 @@ import { Popover } from "@/comps/custom/Popover";
 import { Input } from "@/comps/ui/input";
 import { Skeleton } from "@/comps/ui/skeleton";
 import { useLocal } from "@/utils/use-local";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 import { FC, useEffect } from "react";
 import { FieldListItem, FieldOptions } from "../type";
 import { FormHook } from "../utils/utils";
@@ -25,7 +25,7 @@ export const Relation: FC<RelationProps> = ({
   name,
 }) => {
   const local = useLocal({
-    status: "loading" as "loading" | "ready",
+    status: "init" as "init" | "loading" | "ready",
     open: false,
     ref: { input: null as null | HTMLInputElement },
     list: [] as FieldListItem[],
@@ -33,10 +33,12 @@ export const Relation: FC<RelationProps> = ({
     label: "",
     filter: "",
     pk_field: "",
+    timeout: null as any,
   });
 
   useEffect(() => {
-    (async () => {
+    clearTimeout(local.timeout);
+    local.timeout = setTimeout(async () => {
       if (form) {
         local.status = "loading";
         local.render();
@@ -92,8 +94,8 @@ export const Relation: FC<RelationProps> = ({
         local.status = "ready";
         local.render();
       }
-    })();
-  }, [relation]);
+    }, 100);
+  }, [relation, location.hash, location.pathname, value]);
 
   let filtered = local.list;
 
@@ -215,7 +217,11 @@ export const Relation: FC<RelationProps> = ({
         />
         {!local.open && (
           <div className="c-absolute c-text-sm c-inset-0 c-px-3 c-flex c-items-center">
-            {local.label || "-"}
+            {local.status !== "ready" ? (
+              <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
+            ) : (
+              <> {local.label || "-"}</>
+            )}
           </div>
         )}
       </div>

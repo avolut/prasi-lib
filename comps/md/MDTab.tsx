@@ -65,6 +65,12 @@ export const MDNavTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
                 )
             )}
             key={tab_name}
+            onClick={() => {
+              if (isEditor) return;
+              md.tab.active = tab_name;
+              md.params.apply();
+              md.render();
+            }}
           >
             {tab_name === md.tab.active && (
               <div

@@ -48,7 +48,7 @@ async (opt) => {
   ${Object.entries(pks)
     .map(([k, v]) => {
       return `\
-        if (k === "${k}") {
+        if (k === "${k}" && !(v as any)?.connect) {
           if (v?.["${v}"]) item[k] = { connect: { ${v}: v?.["${v}"] } } as any;
           else delete item[k];
         }`;
@@ -57,11 +57,11 @@ async (opt) => {
       }
     }
 
-    ${opt?.after_load}
+    ${opt?.after_load ? opt?.after_load : ""}
 
     return item;
   } else {
-    ${opt?.after_load}
+    ${opt?.after_load ? opt?.after_load : ""}
   }
 }`;
 };

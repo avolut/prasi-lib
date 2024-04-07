@@ -170,7 +170,7 @@ export const Form: FC<{
     const loaded = (values: any) => {
       setTimeout(() => {
         toast.dismiss();
-      });
+      }, 100);
 
       if (!!values) {
         for (const [k, v] of Object.entries(values)) {
@@ -179,6 +179,7 @@ export const Form: FC<{
       }
       local.render();
     };
+
     if (res instanceof Promise) {
       setTimeout(() => {
         if (!isEditor && sonar === "on") {
