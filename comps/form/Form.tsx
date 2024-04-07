@@ -38,6 +38,7 @@ export const Form: FC<{
   const local = useLocal({
     el: null as any,
     submit_timeout: null as any,
+    submit_done: [] as any[],
     layout: "unknown" as "unknown" | "2-col" | "1-col",
     init: false,
   });
@@ -61,81 +62,92 @@ export const Form: FC<{
   if (layout !== "auto") local.layout = layout;
 
   const submit = () => {
-    clearTimeout(local.submit_timeout);
-    local.submit_timeout = setTimeout(async () => {
-      if (sonar === "on") {
-        toast.loading(
-          <>
-            <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
-            Processing ...
-          </>,
-          {
-            dismissible: true,
-            className: css`
-              background: #e4f7ff;
-            `,
-          }
-        );
-      }
-      const data = form.hook.getValues();
-      form.hook.clearErrors();
-      for (const [k, v] of Object.entries(form.validation)) {
-        if (v === "required") {
-          if (!data[k]) {
-            const error = {
-              type: "required",
-              message: `${form.label[k] || k} is required.`,
-            };
-            form.hook.formState.errors[k] = error;
-            form.hook.setError(k, error);
+    return new Promise<boolean>((done) => {
+      local.submit_done.push(done);
+      const done_all = (val: boolean) => {
+        for (const d of local.submit_done) {
+          d(val);
+        }
+        local.submit_done = [];
+        local.render();
+      };
+
+      clearTimeout(local.submit_timeout);
+      local.submit_timeout = setTimeout(async () => {
+        if (sonar === "on") {
+          toast.loading(
+            <>
+              <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
+              Processing ...
+            </>,
+            {
+              dismissible: true,
+              className: css`
+                background: #e4f7ff;
+              `,
+            }
+          );
+        }
+        const data = form.hook.getValues();
+        form.hook.clearErrors();
+        for (const [k, v] of Object.entries(form.validation)) {
+          if (v === "required") {
+            if (!data[k]) {
+              const error = {
+                type: "required",
+                message: `${form.label[k] || k} is required.`,
+              };
+              form.hook.formState.errors[k] = error;
+              form.hook.setError(k, error);
+            }
           }
         }
-      }
 
-      const res = on_submit({
-        form: data,
-        error: form.hook.formState.errors,
-      });
+        const res = on_submit({
+          form: data,
+          error: form.hook.formState.errors,
+        });
 
-      await res;
-      toast.dismiss();
+        const success = await res;
+        toast.dismiss();
+        done_all(success);
+        if (sonar === "on") {
+          setTimeout(() => {
+            toast.dismiss();
 
-      if (sonar === "on") {
-        setTimeout(() => {
-          toast.dismiss();
-
-          if (Object.keys(form.hook.formState.errors).length > 0) {
-            toast.error(
-              <div className="c-flex c-text-red-600 c-items-center">
-                <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
-                Save Failed, please correct{" "}
-                {Object.keys(form.hook.formState.errors).length} errors.
-              </div>,
-              {
-                dismissible: true,
-                className: css`
-                  background: #ffecec;
-                  border: 2px solid red;
-                `,
-              }
-            );
-          } else {
-            toast.success(
-              <div className="c-flex c-text-blue-700 c-items-center">
-                <Check className="c-h-4 c-w-4 c-mr-1 " />
-                Done
-              </div>,
-              {
-                className: css`
-                  background: #e4f5ff;
-                  border: 2px solid blue;
-                `,
-              }
-            );
-          }
-        }, 100);
-      }
-    }, 300);
+            if (!success) {
+              toast.error(
+                <div className="c-flex c-text-red-600 c-items-center">
+                  <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+                  Save Failed, please correct{" "}
+                  {Object.keys(form.hook.formState.errors).length} errors.
+                </div>,
+                {
+                  dismissible: true,
+                  className: css`
+                    background: #ffecec;
+                    border: 2px solid red;
+                  `,
+                }
+              );
+            } else {
+              toast.success(
+                <div className="c-flex c-text-blue-700 c-items-center">
+                  <Check className="c-h-4 c-w-4 c-mr-1 " />
+                  Done
+                </div>,
+                {
+                  className: css`
+                    background: #e4f5ff;
+                    border: 2px solid blue;
+                  `,
+                }
+              );
+            }
+          }, 100);
+        }
+      }, 50);
+    });
   };
 
   if (!local.init) {
@@ -205,11 +217,47 @@ export const Form: FC<{
     <FormInternal {...form_hook} form={form}>
       {toaster_el && createPortal(<Toaster cn={cn} />, toaster_el)}
       <form
-        className={
-          "flex-1 flex flex-col w-full items-stretch relative overflow-auto"
-        }
+        className={cx(
+          "flex-1 flex flex-col w-full items-stretch relative overflow-auto",
+          css`
+            .c-text-destructive {
+              color: red;
+            }
+          `,
+          local.layout === "unknown" && "c-hidden",
+          local.layout === "2-col" &&
+            css`
+              > div {
+                flex-direction: row;
+                flex-wrap: wrap;
+                > div {
+                  width: 50%;
+                }
+              }
+            `
+        )}
         ref={(el) => {
           if (el) form.ref = el;
+
+          if (el && layout === "auto" && local.layout === "unknown") {
+            let cur: any = el;
+            let i = 0;
+            while (cur.parentNode && cur.getBoundingClientRect().width === 0) {
+              cur = cur.parentNode;
+              i++;
+              if (i > 10) {
+                break;
+              }
+            }
+
+            if (cur.getBoundingClientRect().width < 500) {
+              local.layout = "1-col";
+            } else {
+              local.layout = "2-col";
+            }
+
+            local.render(true);
+          }
         }}
         onSubmit={(e) => {
           e.preventDefault();
@@ -217,50 +265,9 @@ export const Form: FC<{
           submit();
         }}
       >
-        <div
-          ref={(el) => {
-            if (el && layout === "auto" && local.layout === "unknown") {
-              let cur: any = el;
-              let i = 0;
-              while (
-                cur.parentNode &&
-                cur.getBoundingClientRect().width === 0
-              ) {
-                cur = cur.parentNode;
-                i++;
-                if (i > 10) {
-                  break;
-                }
-              }
-
-              if (cur.getBoundingClientRect().width < 500) {
-                local.layout = "1-col";
-              } else {
-                local.layout = "2-col";
-              }
-
-              local.render(true);
-            }
-          }}
-          className={cx(
-            "c-w-full c-h-full c-flex-1 c-flex",
-            local.layout === "unknown" && "c-hidden",
-            local.layout === "2-col" &&
-              css`
-                > div {
-                  flex-direction: row;
-                  flex-wrap: wrap;
-                  > div {
-                    width: 50%;
-                  }
-                }
-              `
-          )}
-        >
-          <PassProp submit={submit} data={form_hook.getValues()}>
-            {body}
-          </PassProp>
-        </div>
+        <PassProp submit={submit} data={form_hook.getValues()}>
+          {body}
+        </PassProp>
       </form>
     </FormInternal>
   );

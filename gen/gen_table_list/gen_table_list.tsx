@@ -1,8 +1,9 @@
 import capitalize from "lodash.capitalize";
 import { createItem, parseGenField } from "../utils";
 import { on_load } from "./on_load";
+import { codeBuild } from "../master_detail/utils";
 
-export const gen_table_list = (
+export const gen_table_list = async (
   modify: (data: any) => void,
   data: any,
   arg: { mode: "table" | "list" | "grid" }
@@ -39,10 +40,12 @@ export const gen_table_list = (
     return;
   }
   if (pk) {
+    const code = {} as any;
     if (data["on_load"]) {
       result["on_load"] = data["on_load"];
       result["on_load"].value = on_load({ pk, table, select, pks });
       delete result["on_load"].valueBuilt;
+      code.on_load = result["on_load"].value;
     }
 
     if (data["child"]) {
@@ -110,9 +113,14 @@ type SelectedRow = {
   idx: any;
 }`;
       delete result["selected"].valueBuilt;
+      code.selected = result["selected"].value;
+    }
+
+    const res = await codeBuild(code);
+    for (const [k, v] of Object.entries(res)) {
+      result[k].valueBuilt = v[1];
     }
   }
-  console.log(result);
   modify(result);
 };
 

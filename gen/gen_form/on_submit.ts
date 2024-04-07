@@ -14,10 +14,19 @@ export const on_submit = ({
   const id = pk.name;
 
   return `\
-  async ({ form, error }: IForm) => {
-    if (typeof error === "object" && Object.keys(error).length > 0)
-      return {};
+async ({ form, error }: IForm) => {
+  if (typeof form !== "object") return false;
+  if (typeof error === "object" && Object.keys(error).length > 0) return false;
 
+  let original_actions = [];
+  if (typeof md === "object") {
+    original_actions = md.actions;
+    md.actions = [{ label: <>...</> }];
+    md.render();
+  }
+
+  let result = false;
+  try { 
     const data = { ...form };
     delete data.${id};
   
@@ -35,13 +44,21 @@ export const on_submit = ({
       });
       if (res) form.${id} = res.${id};
     }
-  
-    if (md.mode !== "breadcrumb") {
-      md.cache("master")?.reload();
-    }
     
-    return true;
-  };
-  
-  type IForm = { form: any; error: Record<string, string> }`;
+    result = true;
+  } catch (e) {
+    console.error(e);
+    result = false;
+  }
+
+  if (typeof md === "object") {
+    md.actions = original_actions;
+    md.selected = null;
+    md.render();
+  }
+
+  return result;
+};
+
+type IForm = { form: any; error: Record<string, string> }`;
 };

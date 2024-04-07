@@ -3,12 +3,9 @@ import { GFCol as Col, formatName } from "../utils";
 import { NewFieldArg, newField } from "./new_field";
 import { on_load } from "./on_load";
 import { on_submit } from "./on_submit";
+import { codeBuild } from "../master_detail/utils";
 
-export const gen_form = (modify: (data: any) => void, data: any) => {
-  const mode = JSON.parse(data.gen_mode.value) as (
-    | string
-    | { value: string; checked: string[] }
-  )[];
+export const gen_form = async (modify: (data: any) => void, data: any) => {
   const table = JSON.parse(data.gen_table.value);
   const fields = JSON.parse(data.gen_fields.value);
   const select = {} as any;
@@ -66,25 +63,26 @@ export const gen_form = (modify: (data: any) => void, data: any) => {
     return;
   }
   if (pk) {
-    if (mode) {
-      if (mode.includes("on_load")) {
-        result["on_load"] = data["on_load"];
-        result["on_load"].value = on_load({ pk, pks, select, table });
-      }
+    const code = {} as any;
+    if (data["on_load"]) {
+      result["on_load"] = data["on_load"];
+      result["on_load"].value = on_load({ pk, pks, select, table });
+      code.on_load = result["on_load"].value;
+    }
 
-      if (mode.includes("on_submit")) {
-        result["on_submit"] = data["on_submit"];
-        result["on_submit"].value = on_submit({ pk, table, select, pks });
-      }
+    if (data["on_submit"]) {
+      result["on_submit"] = data["on_submit"];
+      result["on_submit"].value = on_submit({ pk, table, select, pks });
+      code.on_submit = result["on_submit"].value;
+    }
+
+    const res = await codeBuild(code);
+    for (const [k, v] of Object.entries(res)) {
+      result[k].valueBuilt = v[1];
     }
 
     result["body"] = data["body"];
-    const childs = get(result, "body.content.childs");
-    if (Array.isArray(childs)) {
-      result.body.content.childs = new_fields.map(newField);
-    }
+    result.body.content.childs = new_fields.map(newField);
   }
   modify(result);
-
-  alert("Prop Generated!");
 };

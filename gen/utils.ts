@@ -58,7 +58,7 @@ type SimplifiedItem = {
   name?: string;
   component?: {
     id: string;
-    props: Record<string, string | SimplifiedItem | [any]>;
+    props: Record<string, string | SimplifiedItem | [any] | [any, any]>;
   };
   childs?: SimplifiedItem[];
   adv?: {
@@ -81,8 +81,15 @@ export const createItem = (arg: SimplifiedItem): any => {
             component.props[k] = {
               meta: { type: "text" },
               type: "string",
-              value: JSON.stringify(v[0]),
-              valueBuilt: JSON.stringify(v[0]),
+              value: v[0],
+              valueBuilt: v[0],
+            };
+          } else if (Array.isArray(v) && v.length === 2) {
+            component.props[k] = {
+              meta: { type: "text" },
+              type: "string",
+              value: v[0],
+              valueBuilt: v[1],
             };
           } else {
             component.props[k] = {

@@ -1,6 +1,7 @@
 import { MDLocal } from "./typings";
 import { getProp } from "./get-prop";
 import get from "lodash.get";
+import { parseGenField } from "@/gen/utils";
 
 export const masterDetailInit = (
   md: MDLocal,
@@ -27,9 +28,14 @@ export const masterDetailInit = (
       if (cid) {
         if (cid === "c68415ca-dac5-44fe-aeb6-936caf8cc491") {
           md.master.internal = child;
+          const pk = parseGenField(md.props.gen_fields).find((e) => e.is_pk);
+          if (pk) {
+            md.master.pk = pk;
+          }
         }
         if (cid === "cb52075a-14ab-455a-9847-6f1d929a2a73") {
-          const name = getProp(child, "name");
+          const name = getProp(child, "name", { md });
+          const label = getProp(child, "label", { md });
           if (typeof name === "string") {
             if (isEditor && editor_tab !== "master") {
               if (name === editor_tab && md.tab.active !== name) {
@@ -39,9 +45,8 @@ export const masterDetailInit = (
             }
             md.tab.list.push(name);
             md.childs[name] = {
-              breadcrumb: getProp(child, "breadcrumb"),
-              actions: getProp(child, "actions"),
               internal: child,
+              label,
               name,
               hide() {},
               show() {},
@@ -50,6 +55,21 @@ export const masterDetailInit = (
             };
           }
         }
+      }
+    }
+  }
+};
+
+export const masterDetailSelected = (md: MDLocal) => {
+  md.params.parse();
+  const pk = md.master.pk;
+  if (pk) {
+    const value = md.params.hash[md.name];
+    if (value) {
+      md.selected = { [pk.name]: value };
+      const tab = md.params.tabs[md.name];
+      if (tab && md.tab.list.includes(tab)) {
+        md.tab.active = tab;
       }
     }
   }

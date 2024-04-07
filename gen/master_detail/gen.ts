@@ -1,8 +1,9 @@
 import { PropOptRaw, GenFn, parseGenField, parseOpt } from "../utils";
+import { genForm } from "./gen-form";
 import { genList } from "./gen-list";
 import { GenMasterDetailArg } from "./utils";
 
-export const gen_master_detail: GenFn<GenMasterDetailArg> = (
+export const gen_master_detail: GenFn<GenMasterDetailArg> = async (
   modify,
   data,
   arg
@@ -16,7 +17,10 @@ export const gen_master_detail: GenFn<GenMasterDetailArg> = (
 
   const result: any = {};
   if (should_gen.list) {
-    genList(arg, fields, data);
+    await genList(arg, data);
+  }
+  if (should_gen.form) {
+    await genForm(arg, data);
   }
   result.child = data.child;
 

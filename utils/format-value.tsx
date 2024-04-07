@@ -1,10 +1,7 @@
 import { GFCol } from "@/gen/utils";
 import { FC } from "react";
 
-export const fields_map = new WeakMap<
-  string[],
-  (GFCol & { checked?: GFCol[] })[]
->();
+export const fields_map = new Map<string, (GFCol & { checked?: GFCol[] })[]>();
 
 export const FormatValue: FC<{
   value: any;
@@ -13,9 +10,10 @@ export const FormatValue: FC<{
 }> = (prop) => {
   const { value, gen_fields, name } = prop;
 
-  if (!fields_map.has(gen_fields)) {
+  const gf = JSON.stringify(gen_fields);
+  if (!fields_map.has(gf)) {
     fields_map.set(
-      gen_fields,
+      gf,
       gen_fields.map((e: any) => {
         if (typeof e === "string") {
           return JSON.parse(e);
@@ -29,7 +27,7 @@ export const FormatValue: FC<{
     );
   }
 
-  const fields = fields_map.get(gen_fields);
+  const fields = fields_map.get(gf);
 
   if (typeof value === "object" && value) {
     const rel = fields?.find((e) => e.name === name);

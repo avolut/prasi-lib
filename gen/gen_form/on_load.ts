@@ -20,12 +20,18 @@ export const on_load = ({
 async (opt) => {
   if (isEditor) return {};
 
+  let raw_id = params.id;
+  if (typeof md === 'object' && md.selected && md.master?.pk) {
+    const pk = md.master?.pk?.name;
+    if (md.selected[pk]) {
+      raw_id = md.selected[pk]; 
+    }
+  }
+
   ${
     opt?.before_load
       ? opt.before_load
-      : `
-  let id = ${pk.type === "int" ? "parseInt(params.id)" : "params.id"};
-  `
+      : `let id = ${pk.type === "int" ? "parseInt(raw_id)" : "raw_id"};`
   }
   
   let item = {};

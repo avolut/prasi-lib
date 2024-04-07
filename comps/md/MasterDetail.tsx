@@ -1,12 +1,15 @@
 import { useLocal } from "@/utils/use-local";
-import get from "lodash.get";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { masterDetailApplyHash, masterDetailStoreHash } from "./utils/md-hash";
-import { masterDetailInit } from "./utils/md-init";
-import { MDLocal, MDLocalInternal } from "./utils/typings";
+import { refreshBread } from "./MDBread";
+import { MDHeader } from "./MDHeader";
 import { MDTab, should_show_tab } from "./MDTab";
-import { getProp } from "./utils/get-prop";
+import {
+  masterDetailApplyParams,
+  masterDetailParseHash as masterDetailParseParams,
+} from "./utils/md-hash";
+import { masterDetailInit, masterDetailSelected } from "./utils/md-init";
+import { MDLocal, MDLocalInternal, MDRef } from "./utils/typings";
 
 export const MasterDetail: FC<{
   child: any;
@@ -16,7 +19,22 @@ export const MasterDetail: FC<{
   show_head: "always" | "only-master" | "only-child" | "hidden";
   tab_mode: "h-tab" | "v-tab" | "hidden";
   editor_tab: string;
-}> = ({ PassProp, child, name, mode, show_head, tab_mode, editor_tab }) => {
+  gen_fields: any;
+  gen_table: string;
+  on_init: (md: MDLocal) => void;
+}> = ({
+  PassProp,
+  child,
+  name,
+  mode,
+  show_head,
+  tab_mode,
+  editor_tab,
+  gen_fields,
+  gen_table,
+  on_init,
+}) => {
+  const _ref = useRef({ PassProp, child });
   const md = useLocal<MDLocalInternal>({
     name,
     actions: [],
@@ -26,32 +44,53 @@ export const MasterDetail: FC<{
       active: "",
       list: [],
     },
+    internal: { action_should_refresh: false },
     childs: {},
-    props: { mode, show_head, tab_mode },
-    params: { hash: {}, tabs: {} },
+    props: {
+      mode,
+      show_head,
+      tab_mode,
+      editor_tab,
+      gen_fields,
+      gen_table,
+      on_init,
+    },
+    params: {
+      hash: {},
+      tabs: {},
+      parse: () => {
+        masterDetailParseParams(md);
+      },
+      apply: () => {
+        masterDetailApplyParams(md);
+      },
+    },
     master: { internal: null, render() {}, pk: null },
   });
   const local = useLocal({ init: false });
+  if (isEditor) {
+    md.props.mode = mode;
+    md.props.show_head = show_head;
+    md.props.tab_mode = tab_mode;
+    md.props.editor_tab = editor_tab;
+    md.props.gen_fields = gen_fields;
+    md.props.gen_table = gen_table;
+    md.props.on_init = on_init;
+  }
+  _ref.current.PassProp = PassProp;
+  _ref.current.child = child;
 
   useEffect(() => {
     local.init = false;
     local.render();
   }, [editor_tab]);
 
-  useEffect(() => {
-    (async () => {
-      if (!md.selected) {
-        const master_bread = await getProp(md.master.internal, "breadcrumb");
-      }
-    })();
-  }, [md.selected]);
+  refreshBread(md);
 
-  if (!local.init) {
+  if (!local.init || isEditor) {
     local.init = true;
     masterDetailInit(md, child, editor_tab);
-    masterDetailApplyHash(md);
-  } else {
-    masterDetailStoreHash(md);
+    masterDetailSelected(md);
   }
 
   return (
@@ -60,34 +99,34 @@ export const MasterDetail: FC<{
         "c-flex-1 c-flex-col c-flex c-w-full c-h-full c-overflow-hidden"
       )}
     >
-      <Header md={md} child={child} PassProp={PassProp} />
-      {md.props.mode === "full" && <ModeFull md={md} PassProp={PassProp} />}
-      {md.props.mode === "v-split" && (
-        <ModeVSplit md={md} PassProp={PassProp} />
+      {md.props.show_head === "always" && (
+        <MDHeader md={md} mdr={_ref.current} />
       )}
+      {md.props.mode === "full" && <ModeFull md={md} mdr={_ref.current} />}
+      {md.props.mode === "v-split" && <ModeVSplit md={md} mdr={_ref.current} />}
     </div>
   );
 };
 
-const ModeFull: FC<{ md: MDLocal; PassProp: any }> = ({ md, PassProp }) => {
+const ModeFull: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   if (should_show_tab(md)) {
-    return <MDTab md={md} />;
+    return <MDTab md={md} mdr={mdr} />;
   }
 
   return (
     <>
-      {!md.selected && <PassProp md={md}>{md.master.internal}</PassProp>}
-      {md.selected && <MDTab md={md} />}
+      {!md.selected && <Master md={md} mdr={mdr} />}
+      {md.selected && <MDTab md={md} mdr={mdr} />}
     </>
   );
 };
 
-const ModeVSplit: FC<{ md: MDLocal; PassProp: any }> = ({ md, PassProp }) => {
+const ModeVSplit: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   return (
     <div className={cx("c-flex-1")}>
       <PanelGroup direction="vertical">
         <Panel className="c-border-b">
-          <PassProp md={md}>{md.master.internal}</PassProp>
+          <Master md={md} mdr={mdr} />
         </Panel>
         <>
           <PanelResizeHandle />
@@ -102,26 +141,22 @@ const ModeVSplit: FC<{ md: MDLocal; PassProp: any }> = ({ md, PassProp }) => {
                 localStorage.setItem(`prasi-md-h-${md.name}`, e.toString());
               }
             }}
-          ></Panel>
+          >
+            <MDTab md={md} mdr={mdr} />
+          </Panel>
         </>
       </PanelGroup>
     </div>
   );
 };
 
-const Header: FC<{ md: MDLocal; child: any; PassProp: any }> = ({
-  md,
-  child,
-  PassProp,
-}) => {
-  const head = get(child, "props.meta.item.component.props.header.content");
-  const show_head = md.props.show_head;
+const Master: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
+  const PassProp = mdr.PassProp;
 
-  if (show_head === "always") {
-    return <PassProp md={md}>{head}</PassProp>;
-  } else if (show_head === "only-master" && !md.selected) {
-    return <PassProp md={md}>{head}</PassProp>;
-  } else if (show_head === "only-child" && md.selected) {
-    return <PassProp md={md}>{head}</PassProp>;
-  }
+  return (
+    <>
+      {md.props.show_head === "only-master" && <MDHeader md={md} mdr={mdr} />}
+      <PassProp md={md}>{md.master.internal}</PassProp>
+    </>
+  );
 };

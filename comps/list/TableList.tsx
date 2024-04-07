@@ -4,12 +4,23 @@ import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
 import { Loader2 } from "lucide-react";
 import { FC, useEffect } from "react";
-import DataGrid, { ColumnOrColumnGroup, SortColumn } from "react-data-grid";
+import DataGrid, {
+  ColumnOrColumnGroup,
+  Row,
+  SortColumn,
+} from "react-data-grid";
 import "react-data-grid/lib/styles.css";
 import { createPortal } from "react-dom";
 import { Toaster, toast } from "sonner";
 import { getProp } from "../md/utils/get-prop";
 import { Skeleton } from "../ui/skeleton";
+
+type OnRowClick = (arg: {
+  row: any;
+  rows: any[];
+  idx: any;
+  event: React.MouseEvent<HTMLDivElement, MouseEvent>;
+}) => void;
 
 type TableListProp = {
   child: any;
@@ -24,6 +35,7 @@ type TableListProp = {
   mode: "table" | "list" | "grid";
   _meta: Record<string, any>;
   gen_fields: string[];
+  row_click: OnRowClick;
 };
 
 export const TableList: FC<TableListProp> = ({
@@ -34,6 +46,7 @@ export const TableList: FC<TableListProp> = ({
   mode,
   _meta,
   gen_fields,
+  row_click,
 }) => {
   const local = useLocal({
     el: null as null | HTMLDivElement,
@@ -72,7 +85,9 @@ export const TableList: FC<TableListProp> = ({
           const { columnKey, direction } = cols[0];
 
           let should_set = true;
-          const fields = fields_map.get(gen_fields);
+          const gf = JSON.stringify(gen_fields);
+          const fields = fields_map.get(gf);
+
           if (fields) {
             const rel = fields?.find((e) => e.name === columnKey);
             if (rel && rel.checked) {
@@ -158,9 +173,9 @@ export const TableList: FC<TableListProp> = ({
 
   const columns: ColumnOrColumnGroup<any>[] = [];
   for (const child of childs) {
-    const key = getProp(child, "name");
-    const name = getProp(child, "title");
-    const width = parseInt(getProp(child, "width"));
+    const key = getProp(child, "name", {});
+    const name = getProp(child, "title", {});
+    const width = parseInt(getProp(child, "width", {}));
     columns.push({
       key,
       name,
@@ -231,6 +246,8 @@ export const TableList: FC<TableListProp> = ({
     local.status = "ready";
   }
 
+  let selected_idx = -1;
+
   if (mode === "table") {
     return (
       <div
@@ -285,6 +302,54 @@ export const TableList: FC<TableListProp> = ({
                 columns={columns}
                 rows={local.data || []}
                 onScroll={local.paging.scroll}
+                renderers={
+                  local.status !== "ready"
+                    ? undefined
+                    : {
+                        renderRow(key, props) {
+                          const is_selected = selected_idx === props.rowIdx;
+
+                          return (
+                            <Row
+                              key={key}
+                              {...props}
+                              onClick={(ev) => {
+                                if (
+                                  !isEditor &&
+                                  typeof row_click === "function"
+                                ) {
+                                  row_click({
+                                    event: ev,
+                                    idx: props.rowIdx,
+                                    row: props.row,
+                                    rows: local.data,
+                                  });
+                                }
+                              }}
+                              isRowSelected={is_selected}
+                              className={cx(
+                                props.className,
+                                is_selected && "row-selected"
+                              )}
+                            />
+                          );
+                        },
+                        noRowsFallback: (
+                          <div className="c-flex-1 c-w-full absolute inset-0 c-flex c-flex-col c-items-center c-justify-center">
+                            <div className="c-max-w-[15%] c-flex c-flex-col c-items-center">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 128 140"
+                              >
+                                <path d="M52.77 74.89a2 2 0 002.83 0l8.4-8.4 8.4 8.4a2 2 0 002.83-2.83l-8.4-8.4 8.4-8.4a2 2 0 00-2.83-2.83l-8.4 8.4-8.4-8.4a2 2 0 00-2.83 2.83l8.4 8.4-8.4 8.4a2 2 0 000 2.83z"></path>
+                                <path d="M127.11 36.34l-24-16A2 2 0 00102 20H2a2 2 0 00-1.49.68A2 2 0 000 22v68a2 2 0 00.89 1.66l24 16A2.29 2.29 0 0026 108h100a2 2 0 002-2V38a2 2 0 00-.89-1.66zM104 25.74L119.39 36H104zm-80 76.52L8.61 92H24zM24 88H4V25.74l20 13.33zM8.61 24H100v12H26.61zM100 40v48H28V40zm-72 64V92h73.39l18 12zm96-1.74l-20-13.33V40h20z"></path>
+                              </svg>
+                              <div className="c-text-lg">No Data</div>
+                            </div>
+                          </div>
+                        ),
+                      }
+                }
               />
             </>
           )}

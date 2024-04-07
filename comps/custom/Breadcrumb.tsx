@@ -5,7 +5,7 @@ import { Skeleton } from "../ui/skeleton";
 export type BreadItem = {
   label: React.ReactNode;
   url?: string;
-  onClick?: () => void;
+  onClick?: (ev: any) => void;
 };
 
 type BreadcrumbProps = {
@@ -19,19 +19,22 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
   const { on_load } = _arg;
 
   const local = useLocal({
-    list: [] as BreadItem[],
+    list: _arg.value || ([] as BreadItem[]),
     status: "init" as "init" | "loading" | "ready",
     params: {},
   });
 
-  useEffect(() => {
-    if (local.status === "init" && _arg.value) {
-      local.list = _arg.value;
-      local.status = "ready";
-      local.render();
-    }
+  if (_arg.value) {
+    local.list = _arg.value;
+  }
 
+  useEffect(() => {
     (async () => {
+      if (_arg.value) {
+        local.status = "ready";
+        local.render();
+        return;
+      }
       if (local.status === "init" && typeof on_load === "function") {
         local.status = "loading";
         local.render();
@@ -73,9 +76,10 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
                     </h1>
                   ) : (
                     <h1
-                      className="c-font-normal c-text-xs md:c-text-base hover:c-cursor-pointer"
-                      onClick={() => {
-                        navigate(item.url || "");
+                      className="c-font-normal c-text-xs md:c-text-base hover:c-cursor-pointer hover:c-underline"
+                      onClick={(ev) => {
+                        if (item.url) navigate(item.url || "");
+                        if (item.onClick) item.onClick(ev);
                       }}
                     >
                       {item?.label}
