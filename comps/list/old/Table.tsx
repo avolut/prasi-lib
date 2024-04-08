@@ -7,7 +7,7 @@ import DataGrid, {
   SortColumn,
 } from "react-data-grid";
 import "react-data-grid/lib/styles.css";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../../ui/skeleton";
 
 type OnRowClick = {
   row: any;

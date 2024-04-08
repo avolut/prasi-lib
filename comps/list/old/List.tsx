@@ -1,6 +1,6 @@
 import { useLocal } from "@/utils/use-local";
 import { FC, ReactElement, useEffect } from "react";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../../ui/skeleton";
 import get from "lodash.get";
 
 type ListProp = {

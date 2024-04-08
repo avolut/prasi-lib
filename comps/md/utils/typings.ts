@@ -1,6 +1,6 @@
 import { BreadItem } from "@/comps/custom/Breadcrumb";
 import { GFCol } from "@/gen/utils";
-import { ReactElement, ReactNode } from "react";
+import { ReactNode } from "react";
 
 export type MDActions = {
   action?: string;

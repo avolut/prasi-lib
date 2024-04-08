@@ -1,11 +1,11 @@
 export { Card } from "@/comps/custom/Card";
 export { Detail } from "@/comps/custom/Detail";
 export { Tab } from "@/comps/custom/Tab";
-export { Field } from "@/comps/form/Field";
+export { Field } from "@/comps/form-old/Field";
 export { Form } from "@/comps/form/Form";
-export { formatMoney } from "@/comps/form/InputMoney";
+export { formatMoney } from "@/comps/form-old/InputMoney";
 export { icon } from "@/comps/icon";
-export { List } from "@/comps/list/List";
+export { List } from "@/comps/list/old/List";
 export { Slider } from "@/comps/ui/slider";
 export * from "@/utils/date";
 export { Button, FloatButton } from "@/comps/ui/button";

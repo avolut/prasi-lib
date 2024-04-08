@@ -51,11 +51,13 @@ export const Relation: FC<RelationProps> = ({
           const select = {} as any;
           local.pk_field = "";
           for (const f of relation.fields) {
-            if (f.startsWith("::")) {
-              select[f.substring(2)] = true;
-              local.pk_field = f.substring(2);
-            } else {
-              select[f] = true;
+            if (typeof f === "string") {
+              if (f.startsWith("::")) {
+                select[f.substring(2)] = true;
+                local.pk_field = f.substring(2);
+              } else {
+                select[f] = true;
+              }
             }
           }
           let q = {};
