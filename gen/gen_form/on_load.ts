@@ -16,9 +16,22 @@ export const on_load = ({
     after_load: string;
   };
 }) => {
+  const sample: any = {};
+  for (const [k, v] of Object.entries(select) as any) {
+    if (typeof v === "object") {
+      sample[k] = {};
+
+      Object.keys(v.select).map((e) => {
+        sample[k][e] = "sample";
+      });
+    } else {
+      sample[k] = "sample";
+    }
+  }
+
   return `\
 async (opt) => {
-  if (isEditor) return {};
+  if (isEditor) return ${JSON.stringify(sample)};
 
   let raw_id = params.id;
   if (typeof md === 'object' && md.selected && md.master?.pk) {

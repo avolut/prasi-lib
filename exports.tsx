@@ -1,8 +1,6 @@
 export { Card } from "@/comps/custom/Card";
 export { Detail } from "@/comps/custom/Detail";
 export { Tab } from "@/comps/custom/Tab";
-export { Field } from "@/comps/form-old/Field";
-export { Form } from "@/comps/form/Form";
 export { formatMoney } from "@/comps/form-old/InputMoney";
 export { icon } from "@/comps/icon";
 export { List } from "@/comps/list/old/List";

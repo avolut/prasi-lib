@@ -2,6 +2,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { FMLocal, FMProps } from "../typings";
 import { formError } from "./error";
+import { editorFormData } from "./ed-data";
 
 export const formInit = (fm: FMLocal, props: FMProps) => {
   for (const [k, v] of Object.entries(props)) {
@@ -12,6 +13,9 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
   fm.error = formError(fm);
 
   fm.reload = () => {
+    fm.status = "loading";
+    fm.render();
+
     const promise = new Promise<void>((done) => {
       fm.internal.reload.done.push(done);
       clearTimeout(fm.internal.reload.timeout);
@@ -29,10 +33,31 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
 
         const res = on_load({ fm });
 
+        if (typeof res === "object" && res instanceof Promise) {
+          fm.data = await res;
+        } else {
+          fm.data = res;
+        }
+
+        // if (isEditor) {
+        //   const item_id = (props?.props?.className || "")
+        //     .split(" ")
+        //     .find((e: string) => e.startsWith("s-"));
+
+        //   if (item_id) {
+        //     console.log(item_id);
+        //   }
+        // }
+
         fm.internal.reload.done.map((e) => e());
       }, 50);
     });
     fm.internal.reload.promises.push(promise);
     return promise;
   };
+
+  fm.data = { halo: "any" };
+
+  fm.submit = async () => {};
+  fm.props.on_init({ fm, submit: fm.submit, reload: fm.reload });
 };

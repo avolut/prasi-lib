@@ -1,5 +1,5 @@
 import { useLocal } from "@/utils/use-local";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { FMInternal, FMProps } from "./typings";
 import { formReload } from "./utils/reload";
 import { formInit } from "./utils/init";
@@ -9,11 +9,12 @@ import { Toaster } from "sonner";
 export const Form: FC<FMProps> = (props) => {
   const { PassProp, body } = props;
   const fm = useLocal<FMInternal>({
-    data: "",
+    data: {},
     status: "init",
     reload: async () => {
       formReload(fm);
     },
+    submit: null as any,
     error: {} as any,
     internal: {
       reload: {
@@ -25,9 +26,12 @@ export const Form: FC<FMProps> = (props) => {
     props: {} as any,
   });
 
-  if (fm.status === "init") {
-    formInit(fm, props);
-  }
+  useEffect(() => {
+    if (fm.status === "init") {
+      formInit(fm, props);
+      fm.reload();
+    }
+  }, []);
 
   if (document.getElementsByClassName("prasi-toaster").length === 0) {
     const elemDiv = document.createElement("div");
@@ -39,7 +43,7 @@ export const Form: FC<FMProps> = (props) => {
   return (
     <>
       {toaster_el && createPortal(<Toaster cn={cx} />, toaster_el)}
-      <PassProp>{body}</PassProp>
+      {fm.status !== "init" && <PassProp fm={fm}>{body}</PassProp>}
     </>
   );
 };
