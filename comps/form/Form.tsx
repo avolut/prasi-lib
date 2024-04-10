@@ -14,6 +14,7 @@ export const Form: FC<FMProps> = (props) => {
     reload: async () => {
       formReload(fm);
     },
+    fields: {},
     submit: null as any,
     error: {} as any,
     internal: {

@@ -3,10 +3,11 @@ import { toast } from "sonner";
 import { FMLocal, FMProps } from "../typings";
 import { formError } from "./error";
 import { editorFormData } from "./ed-data";
+import get from "lodash.get";
 
 export const formInit = (fm: FMLocal, props: FMProps) => {
   for (const [k, v] of Object.entries(props)) {
-    if (["PassProp", "body"].includes(k)) continue;
+    if (["PassProp", "body", "meta", "item"].includes(k)) continue;
     (fm.props as any)[k] = v;
   }
   const { on_load, sonar } = fm.props;
@@ -31,23 +32,39 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           });
         }
 
-        const res = on_load({ fm });
-
-        if (typeof res === "object" && res instanceof Promise) {
-          fm.data = await res;
-        } else {
-          fm.data = res;
+        let should_load = true;
+        if (isEditor) {
+          const item_id = props.item.id;
+          if (item_id) {
+            const cache = editorFormData[item_id];
+            if (
+              cache &&
+              cache.on_load === get(props.item, "component.props.on_load.value")
+            ) {
+              fm.data = cache.data;
+              should_load = false;
+            }
+          }
         }
+        if (should_load) {
+          const res = on_load({ fm });
 
-        // if (isEditor) {
-        //   const item_id = (props?.props?.className || "")
-        //     .split(" ")
-        //     .find((e: string) => e.startsWith("s-"));
+          if (typeof res === "object" && res instanceof Promise) {
+            fm.data = await res;
+          } else {
+            fm.data = res;
+          }
 
-        //   if (item_id) {
-        //     console.log(item_id);
-        //   }
-        // }
+          if (isEditor) {
+            const item_id = props.item.id;
+            if (item_id) {
+              editorFormData[item_id] = {
+                data: fm.data,
+                on_load: get(props.item, "component.props.on_load.value"),
+              };
+            }
+          }
+        }
 
         fm.internal.reload.done.map((e) => e());
       }, 50);

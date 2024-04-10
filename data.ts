@@ -1,5 +1,5 @@
 export { Form } from "@/comps/form/Form";
-export { Field } from "@/comps/form/fields/Field";
+export { Field } from "@/comps/form/field/Field";
 export { formType } from "@/comps/form/typings";
 export { TableList } from "@/comps/list/TableList";
 export { TableListType } from "@/comps/list/typings";
