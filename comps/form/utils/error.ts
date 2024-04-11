@@ -15,7 +15,7 @@ export const formError = (fm: FMLocal) => {
       else this._internal = {};
     },
     get(name) {
-      return this._internal[name];
+      return this._internal[name] || [];
     },
     set(name, error) {
       this._internal[name] = error;
