@@ -2,7 +2,7 @@ import { useLocal } from "@/utils/use-local";
 import { FMLocal, FieldInternal, FieldProp } from "../typings";
 import { useEffect } from "react";
 
-export const createField = (arg: FieldProp) => {
+export const useField = (arg: FieldProp) => {
   const field = useLocal<FieldInternal>({
     status: "init",
     name: arg.name,
@@ -11,7 +11,9 @@ export const createField = (arg: FieldProp) => {
     desc: arg.desc,
     prefix: arg.prefix,
     suffix: arg.suffix,
-    label_mode: arg.label_mode,
+    width: arg.width,
+    required: arg.required === "y",
+    required_msg: arg.required_msg,
     Child: () => {
       return <arg.PassProp>{arg.child}</arg.PassProp>;
     },

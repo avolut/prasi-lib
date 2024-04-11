@@ -16,13 +16,14 @@ export type FMProps = {
   layout: "auto" | "1-col" | "2-col";
   meta: any;
   item: any;
+  label_mode: "vertical" | "horizontal" | "hidden";
+  label_width: number;
 };
 
 export type FieldProp = {
   name: string;
   label: string;
   desc?: string;
-  label_mode: "vertical" | "horizontal" | "hidden";
   fm: FMLocal;
   type:
     | "text"
@@ -39,6 +40,7 @@ export type FieldProp = {
     | "master-link"
     | "custom";
   required: "y" | "n";
+  required_msg: (name: string) => string;
   options: FieldOptions;
   on_change: (arg: { value: any }) => void | Promise<void>;
   PassProp: any;
@@ -51,19 +53,23 @@ export type FieldProp = {
   rel_table: string;
   rel_fields: string[];
   rel_query: () => any;
+  width: "auto" | "full" | "½" | "⅓" | "¼";
 };
 
 export type FMInternal = {
-  status: "init" | "loading" | "saving" | "ready";
+  status: "init" | "resizing" | "loading" | "saving" | "ready";
   data: any;
   reload: () => Promise<void>;
   submit: () => Promise<void>;
+  events: {
+    on_change: (name: string, new_value: any) => void;
+  };
   fields: Record<string, FieldLocal>;
   error: {
-    list: { name: string; error: string }[];
-    set: (name: string, error: string) => void;
-    get: (name: string, error: string) => void;
-    clear: () => void;
+    readonly list: { name: string; error: string[] }[];
+    set: (name: string, error: string[]) => void;
+    get: (name: string) => string[];
+    clear: (name?: string) => void;
   };
   internal: {
     reload: {
@@ -73,6 +79,11 @@ export type FMInternal = {
     };
   };
   props: Exclude<FMProps, "body" | "PassProp">;
+  size: {
+    width: number;
+    height: number;
+    field: "full" | "half";
+  };
 };
 export type FMLocal = FMInternal & { render: () => void };
 
@@ -84,7 +95,9 @@ export type FieldInternal = {
   desc: FieldProp["desc"];
   prefix: FieldProp["prefix"];
   suffix: FieldProp["suffix"];
-  label_mode: FieldProp["label_mode"];
+  width: FieldProp["width"];
+  required: boolean;
+  required_msg: FieldProp["required_msg"];
   Child: () => ReactNode;
 };
 export type FieldLocal = FieldInternal & { render: () => void };
