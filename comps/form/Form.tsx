@@ -8,13 +8,16 @@ import { Toaster } from "sonner";
 import get from "lodash.get";
 import { Field } from "./field/Field";
 import { getProp } from "../../..";
+import { editorFormData } from "./utils/ed-data";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
 export const Form: FC<FMProps> = (props) => {
   const { PassProp, body } = props;
   const fm = useLocal<FMInternal>({
-    data: {},
+    data: editorFormData[props.item.id]
+      ? editorFormData[props.item.id].data
+      : {},
     status: "init",
     reload: async () => {
       formReload(fm);
