@@ -8,11 +8,14 @@ export type BreadItem = {
   onClick?: (ev: any) => void;
 };
 
+const breadcrumbData = {} as Record<string, any>;
+
 type BreadcrumbProps = {
   on_load?: () => Promise<BreadItem[]>;
   className?: string;
   props?: any;
   value?: BreadItem[];
+  item: any;
 };
 
 export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
@@ -40,6 +43,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
         local.render();
 
         local.list = await on_load();
+        if (isEditor) breadcrumbData[_arg.item.id] = local.list;
 
         local.status = "ready";
         local.render();
@@ -47,6 +51,10 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
     })();
   }, [on_load]);
 
+  if (isEditor && local.status != "loading" && breadcrumbData[_arg.item.id]) {
+    local.list = breadcrumbData[_arg.item.id];
+    local.status = "ready";
+  }
 
   return (
     <div
