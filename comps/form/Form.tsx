@@ -127,14 +127,10 @@ export const Form: FC<FMProps> = (props) => {
         {fm.status !== "init" &&
           fm.size.width > 0 &&
           childs.map((child, idx) => {
-            const props = {} as any;
-            for (const [k, v] of Object.entries(child.component.props)) {
-              props[k] = getProp(child, k);
-            }
             return (
-              <Fragment key={idx}>
-                <Field {...props} fm={fm} />
-              </Fragment>
+              <PassProp fm={fm} key={idx}>
+                {child}
+              </PassProp>
             );
           })}
       </div>

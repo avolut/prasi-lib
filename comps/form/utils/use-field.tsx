@@ -20,11 +20,12 @@ export const useField = (arg: FieldProp) => {
     width: arg.width,
     required: arg.required === "y",
     required_msg: arg.required_msg,
-    focused: false,
     disabled: arg.disabled === "y",
   };
-  for (const [k, v] of Object.entries(update_field)) {
-    (field as any)[k] = v;
+  if (field.status === "init" || isEditor) {
+    for (const [k, v] of Object.entries(update_field)) {
+      (field as any)[k] = v;
+    }
   }
 
   const fm = arg.fm;

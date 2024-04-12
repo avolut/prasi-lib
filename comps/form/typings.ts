@@ -24,6 +24,7 @@ export type FieldProp = {
   name: string;
   label: string;
   desc?: string;
+  props?: any;
   fm: FMLocal;
   type:
     | "text"
@@ -44,17 +45,14 @@ export type FieldProp = {
   options: FieldOptions;
   on_change: (arg: { value: any }) => void | Promise<void>;
   PassProp: any;
-  custom: "y" | "n";
   disabled: "y" | "n";
   child: any;
   selection: "single" | "multi";
   prefix: any;
   suffix: any;
-  placeholder?: any;
-  rel_table: string;
-  rel_fields: string[];
-  rel_query: () => any;
   width: "auto" | "full" | "½" | "⅓" | "¼";
+  _meta: any;
+  _item: any;
 };
 
 export type FMInternal = {

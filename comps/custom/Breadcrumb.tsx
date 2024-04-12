@@ -29,27 +29,33 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
 
   if (_arg.value) {
     local.list = _arg.value;
+    local.status = "ready";
   }
 
-  useEffect(() => {
-    (async () => {
-      if (_arg.value) {
-        local.status = "ready";
-        local.render();
-        return;
-      }
-      if (local.status === "init" && typeof on_load === "function") {
-        local.status = "loading";
-        local.render();
+  if (local.status === "init") {
+    let should_load = true;
 
-        local.list = await on_load();
-        if (isEditor) breadcrumbData[_arg.item.id] = local.list;
+    if (isEditor && breadcrumbData[_arg.item.id]) {
+      local.list = breadcrumbData[_arg.item.id];
+      local.status = "ready";
+      should_load = false;
+    }
 
+    if (should_load && typeof on_load === "function") {
+      const callback = (res: any) => {
+        local.list = res;
+        breadcrumbData[_arg.item.id] = res;
         local.status = "ready";
-        local.render();
-      }
-    })();
-  }, [on_load]);
+      };
+      const res = on_load();
+      if (res instanceof Promise) {
+        res.then((res) => {
+          callback(res);
+          local.render();
+        });
+      } else callback(res);
+    }
+  }
 
   if (isEditor && local.status !== "ready" && breadcrumbData[_arg.item.id]) {
     local.list = breadcrumbData[_arg.item.id];
