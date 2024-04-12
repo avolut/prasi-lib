@@ -13,7 +13,7 @@ export const InputText: FC<{ field: FieldLocal; fm: FMLocal }> = ({
         fm.data[field.name] = ev.currentTarget.value;
         fm.render();
       }}
-      value={value}
+      value={value || ''}
       disabled={field.disabled}
       className="c-flex-1 c-rounded c-bg-transparent c-outline-none c-px-2 c-text-sm"
       spellCheck={false}

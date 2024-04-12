@@ -47,6 +47,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
     })();
   }, [on_load]);
 
+
   return (
     <div
       className={cx(

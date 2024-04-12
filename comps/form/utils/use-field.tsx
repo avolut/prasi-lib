@@ -5,6 +5,12 @@ import { useEffect } from "react";
 export const useField = (arg: FieldProp) => {
   const field = useLocal<FieldInternal>({
     status: "init",
+    Child: () => {
+      return <arg.PassProp>{arg.child}</arg.PassProp>;
+    },
+  } as any);
+
+  const update_field = {
     name: arg.name,
     label: arg.label,
     type: arg.type,
@@ -16,10 +22,10 @@ export const useField = (arg: FieldProp) => {
     required_msg: arg.required_msg,
     focused: false,
     disabled: arg.disabled === "y",
-    Child: () => {
-      return <arg.PassProp>{arg.child}</arg.PassProp>;
-    },
-  });
+  };
+  for (const [k, v] of Object.entries(update_field)) {
+    (field as any)[k] = v;
+  }
 
   const fm = arg.fm;
 

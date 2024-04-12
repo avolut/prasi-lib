@@ -9,6 +9,8 @@ import get from "lodash.get";
 import { Field } from "./field/Field";
 import { getProp } from "../../..";
 
+const editorFormWidth = {} as Record<string, { w: number; f: any }>;
+
 export const Form: FC<FMProps> = (props) => {
   const { PassProp, body } = props;
   const fm = useLocal<FMInternal>({
@@ -32,9 +34,13 @@ export const Form: FC<FMProps> = (props) => {
     },
     props: {} as any,
     size: {
-      width: 0,
+      width: editorFormWidth[props.item.id]
+        ? editorFormWidth[props.item.id].w
+        : 0,
       height: 0,
-      field: "full",
+      field: editorFormWidth[props.item.id]
+        ? editorFormWidth[props.item.id].f
+        : "full",
     },
   });
 
@@ -44,7 +50,8 @@ export const Form: FC<FMProps> = (props) => {
       if (e.contentRect.width > 0) {
         fm.size.height = e.contentRect.height;
         fm.size.width = e.contentRect.width;
-        if (fm.status === "ready") fm.status = "resizing";
+
+        if (fm.status === "ready" && !isEditor) fm.status = "resizing";
 
         if (fm.props.layout === "auto") {
           if (fm.size.width > 650) {
@@ -55,6 +62,13 @@ export const Form: FC<FMProps> = (props) => {
         } else {
           if (fm.props.layout === "1-col") fm.size.field = "full";
           if (fm.props.layout === "2-col") fm.size.field = "half";
+        }
+
+        if (isEditor) {
+          editorFormWidth[props.item.id] = {
+            w: fm.size.width,
+            f: fm.size.field,
+          };
         }
 
         fm.render();
@@ -87,9 +101,11 @@ export const Form: FC<FMProps> = (props) => {
         fm.submit();
       }}
       ref={(el) => {
-        if (!ref.current.el && el) {
-          ref.current.el = el;
-          ref.current.rob.observe(el);
+        if (el) {
+          if (!ref.current.el) {
+            ref.current.el = el;
+            ref.current.rob.observe(el);
+          }
         }
       }}
       className={cx(
