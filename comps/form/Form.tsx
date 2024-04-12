@@ -1,11 +1,13 @@
 import { useLocal } from "@/utils/use-local";
-import { FC, useEffect, useRef } from "react";
+import { FC, Fragment, useEffect, useRef } from "react";
 import { FMInternal, FMProps } from "./typings";
 import { formReload } from "./utils/reload";
 import { formInit } from "./utils/init";
 import { createPortal } from "react-dom";
 import { Toaster } from "sonner";
 import get from "lodash.get";
+import { Field } from "./field/Field";
+import { getProp } from "../../..";
 
 export const Form: FC<FMProps> = (props) => {
   const { PassProp, body } = props;
@@ -39,31 +41,31 @@ export const Form: FC<FMProps> = (props) => {
   const ref = useRef({
     el: null as null | HTMLFormElement,
     rob: new ResizeObserver(([e]) => {
-      fm.size.height = e.contentRect.height;
-      fm.size.width = e.contentRect.width;
-      if (fm.status === "ready") fm.status = "resizing";
+      if (e.contentRect.width > 0) {
+        fm.size.height = e.contentRect.height;
+        fm.size.width = e.contentRect.width;
+        if (fm.status === "ready") fm.status = "resizing";
 
-      if (fm.props.layout === "auto") {
-        if (fm.size.width > 650) {
-          fm.size.field = "half";
+        if (fm.props.layout === "auto") {
+          if (fm.size.width > 650) {
+            fm.size.field = "half";
+          } else {
+            fm.size.field = "full";
+          }
         } else {
-          fm.size.field = "full";
+          if (fm.props.layout === "1-col") fm.size.field = "full";
+          if (fm.props.layout === "2-col") fm.size.field = "half";
         }
-      } else {
-        if (fm.props.layout === "1-col") fm.size.field = "full";
-        if (fm.props.layout === "2-col") fm.size.field = "half";
-      }
 
-      fm.render();
+        fm.render();
+      }
     }),
   });
 
-  useEffect(() => {
-    if (fm.status === "init") {
-      formInit(fm, props);
-      fm.reload();
-    }
-  }, []);
+  if (fm.status === "init") {
+    formInit(fm, props);
+    fm.reload();
+  }
 
   if (document.getElementsByClassName("prasi-toaster").length === 0) {
     const elemDiv = document.createElement("div");
@@ -76,8 +78,6 @@ export const Form: FC<FMProps> = (props) => {
     body,
     "props.meta.item.component.props.body.content.childs"
   ) as any[];
-
-  if (fm.status === "resizing") return null;
 
   return (
     <form
@@ -99,15 +99,23 @@ export const Form: FC<FMProps> = (props) => {
       {toaster_el && createPortal(<Toaster cn={cx} />, toaster_el)}
       <div
         className={cx(
-          "form-inner c-flex c-flex-1 c-flex-wrap c-items-start c-content-start c-absolute c-inset-0"
+          "form-inner c-flex c-flex-1 c-flex-wrap c-items-start c-content-start c-absolute c-inset-0",
+          css`
+            padding-right: 10px;
+          `
         )}
       >
         {fm.status !== "init" &&
+          fm.size.width > 0 &&
           childs.map((child, idx) => {
+            const props = {} as any;
+            for (const [k, v] of Object.entries(child.component.props)) {
+              props[k] = getProp(child, k);
+            }
             return (
-              <PassProp fm={fm} key={idx}>
-                {child}
-              </PassProp>
+              <Fragment key={idx}>
+                <Field {...props} fm={fm} />
+              </Fragment>
             );
           })}
       </div>

@@ -14,6 +14,8 @@ export const useField = (arg: FieldProp) => {
     width: arg.width,
     required: arg.required === "y",
     required_msg: arg.required_msg,
+    focused: false,
+    disabled: arg.disabled === "y",
     Child: () => {
       return <arg.PassProp>{arg.child}</arg.PassProp>;
     },

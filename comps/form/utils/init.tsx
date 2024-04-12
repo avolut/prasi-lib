@@ -14,7 +14,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
   fm.error = formError(fm);
 
   fm.reload = () => {
-    fm.status = "loading";
+    fm.status = isEditor ? "ready" : "loading";
     fm.render();
 
     const promise = new Promise<void>((done) => {
@@ -67,13 +67,15 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         }
 
         fm.internal.reload.done.map((e) => e());
+        toast.dismiss();
+
+        fm.status = "ready";
+        fm.render();
       }, 50);
     });
     fm.internal.reload.promises.push(promise);
     return promise;
   };
-
-  fm.data = { halo: "any" };
 
   fm.submit = async () => {};
   fm.props.on_init({ fm, submit: fm.submit, reload: fm.reload });

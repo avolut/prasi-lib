@@ -11,6 +11,7 @@ export const Label: FC<{ field: FieldLocal; fm: FMLocal }> = ({
         "label",
         fm.props.label_mode === "horizontal" &&
           css`
+            font-size: 14px;
             width: ${fm.props.label_width}px;
           `
       )}

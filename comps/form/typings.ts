@@ -45,6 +45,7 @@ export type FieldProp = {
   on_change: (arg: { value: any }) => void | Promise<void>;
   PassProp: any;
   custom: "y" | "n";
+  disabled: "y" | "n";
   child: any;
   selection: "single" | "multi";
   prefix: any;
@@ -97,6 +98,8 @@ export type FieldInternal = {
   suffix: FieldProp["suffix"];
   width: FieldProp["width"];
   required: boolean;
+  focused: boolean;
+  disabled: boolean;
   required_msg: FieldProp["required_msg"];
   Child: () => ReactNode;
 };
