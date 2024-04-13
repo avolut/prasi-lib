@@ -4,7 +4,8 @@ import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal } from "../typings";
 import { fieldMapping } from "./mapping";
 import { Loader2 } from "lucide-react";
-import { genFieldMitem } from "../utils/gen-mitem";
+import { genFieldMitem, updateFieldMItem } from "../utils/gen-mitem";
+import { createItem } from "@/gen/utils";
 
 const modify = {
   timeout: null as any,
@@ -17,6 +18,7 @@ export const FieldInput: FC<{
   child: any;
   _item: any;
   _meta: any;
+  _sync: (mitem: any, item: any) => void;
 }> = ({ field, fm, PassProp, child, _meta, _item }) => {
   const prefix = typeof field.prefix === "function" ? field.prefix() : null;
   const suffix = typeof field.suffix === "function" ? field.suffix() : null;
@@ -31,6 +33,25 @@ export const FieldInput: FC<{
     for (const child of childs) {
       if (child.component?.id === fieldMapping[field.type].id) {
         found = child;
+
+        const item = createItem({
+          component: { id: "--", props: fieldMapping[field.type].props },
+        });
+
+        const props = found.component.props;
+        let should_update = false;
+        for (const [k, v] of Object.entries(item.component.props) as any) {
+          if (props[k] && props[k].valueBuilt === v.valueBuilt) {
+            continue;
+          } else {
+            props[k] = v;
+            should_update = true;
+          }
+        }
+
+        if (should_update) {
+          updateFieldMItem(_meta, found);
+        }
       }
     }
   }

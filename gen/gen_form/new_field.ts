@@ -40,7 +40,9 @@ export const newField = (arg: GFCol) => {
             createItem({
               component: {
                 id: "ca7ac237-8f22-4492-bb9d-4b715b1f5c25",
-                props: {},
+                props: {
+                  type: "text",
+                },
               },
             }),
           ],

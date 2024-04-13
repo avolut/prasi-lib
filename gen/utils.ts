@@ -92,16 +92,19 @@ export const createItem = (arg: SimplifiedItem): any => {
               valueBuilt: v[1],
             };
           } else {
-            let newItem = createItem(v);
-
-            component.props[k] = {
-              meta: {
-                type: "content-element",
-              },
-              content: newItem,
-              value: "",
-              valueBuilt: "",
-            };
+            if ((v as any)?.meta?.type) {
+              component.props[k] = v;
+            } else {
+              let newItem = createItem(v);
+              component.props[k] = {
+                meta: {
+                  type: "content-element",
+                },
+                content: newItem,
+                value: "",
+                valueBuilt: "",
+              };
+            }
           }
         } else {
           component.props[k] = {

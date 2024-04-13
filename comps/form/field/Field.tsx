@@ -53,6 +53,7 @@ export const Field: FC<FieldProp> = (arg) => {
           child={arg.child}
           _meta={arg._meta}
           _item={arg._item}
+          _sync={arg._sync}
         />
         {field.desc && (
           <div className={cx("c-p-2 c-text-xs", errors.length > 0 && "c-pb-1")}>

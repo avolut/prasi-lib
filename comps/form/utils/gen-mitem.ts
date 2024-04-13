@@ -22,3 +22,12 @@ export const genFieldMitem = (arg: {
     }
   }
 };
+export const updateFieldMItem = (_meta: any, _item: any) => {
+  const m = _meta[_item.id];
+  if (m) {
+    const mitem = m.mitem;
+    if (mitem) {
+      
+    }
+  }
+};

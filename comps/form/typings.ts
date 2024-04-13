@@ -53,6 +53,7 @@ export type FieldProp = {
   width: "auto" | "full" | "½" | "⅓" | "¼";
   _meta: any;
   _item: any;
+  _sync: any;
 };
 
 export type FMInternal = {
