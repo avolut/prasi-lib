@@ -66,6 +66,7 @@ type SimplifiedItem = {
     jsBuilt: string;
   };
   padding?: any;
+  layout?: any;
 };
 
 export const createItem = (arg: SimplifiedItem): any => {
@@ -125,6 +126,7 @@ export const createItem = (arg: SimplifiedItem): any => {
       w: "full",
     },
     padding: arg.padding,
+    layout: arg.layout,
     name: arg.name || "item",
     type: "item",
     component,

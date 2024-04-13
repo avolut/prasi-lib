@@ -1,5 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
 import { GFCol, createItem, formatName } from "../utils";
+import { gen_relation } from "../gen_relation/gen_relation";
 export const newItem = (component: {
   id: string;
   props: Record<string, string>;
@@ -28,7 +29,7 @@ export type NewFieldArg = {
   };
 };
 
-export const newField = (arg: GFCol) => {
+export const newField = async (arg: GFCol) => {
   const childs = [];
 
   let type = "text";
@@ -43,18 +44,29 @@ export const newField = (arg: GFCol) => {
         },
       })
     );
-  } else if (["has-many", "has-one"].includes(arg.type)) {
+  } else if (["has-many", "has-one"].includes(arg.type) && arg.relation) {
     type = "relation";
-    childs.push(
-      createItem({
-        component: {
-          id: "69263ca0-61a1-4899-ad5f-059ac12b94d1",
-          props: {
-            type: arg.type,
-          },
-        },
-      })
+    const value = JSON.stringify(
+      arg.relation.fields.map((e) => JSON.stringify(e))
     );
+    const item = createItem({
+      component: {
+        id: "69263ca0-61a1-4899-ad5f-059ac12b94d1",
+        props: {
+          type: arg.type,
+          on_load: [
+            `async () => {
+            return { items: [], pk: "" };
+          }`,
+          ],
+          gen_table: arg.relation.to.table,
+          gen_fields: [value, value],
+          child: {},
+        },
+      },
+    });
+    await gen_relation(() => {}, item.component.props);
+    childs.push(item);
   }
 
   const item = createItem({

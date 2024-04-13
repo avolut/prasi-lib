@@ -2,9 +2,8 @@ import { codeBuild } from "../master_detail/utils";
 import { GFCol, parseGenField } from "../utils";
 import { newField } from "./new_field";
 import { on_load } from "./on_load";
-import { on_submit } from "./on_submit";
 
-export const gen_form = async (modify: (data: any) => void, data: any) => {
+export const gen_relation = async (modify: (data: any) => void, data: any) => {
   const table = JSON.parse(data.gen_table.value);
   const raw_fields = JSON.parse(data.gen_fields.value) as (
     | string
@@ -44,22 +43,13 @@ export const gen_form = async (modify: (data: any) => void, data: any) => {
       code.on_load = result["on_load"].value;
     }
 
-    if (data["on_submit"]) {
-      result["on_submit"] = data["on_submit"];
-      result["on_submit"].value = on_submit({ pk, table, select, pks });
-      code.on_submit = result["on_submit"].value;
-    }
-
     const res = await codeBuild(code);
     for (const [k, v] of Object.entries(res)) {
       result[k].valueBuilt = v[1];
     }
 
-    result["body"] = data["body"];
-    result.body.content.childs = [];
-    for (const item of fields.filter((e) => !e.is_pk)) {
-      result.body.content.childs.push(await newField(item));
-    }
+    result["child"] = data["child"];
+    result.child.content.childs = fields.filter((e) => !e.is_pk).map(newField);
   }
   modify(result);
 };

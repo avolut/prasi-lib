@@ -3,7 +3,7 @@ import { useLocal } from "@/utils/use-local";
 import { ChevronDown } from "lucide-react";
 import { FC, ReactNode } from "react";
 
-type OptionItem = { value: string; label: string; el?: ReactNode };
+export type OptionItem = { value: string; label: string; el?: ReactNode };
 
 export const RawDropdown: FC<{
   options: OptionItem[];
@@ -35,6 +35,9 @@ export const RawDropdown: FC<{
   }
   local.selected = options.find((e) => e.value === value);
 
+  if (disabled || isEditor) {
+    local.open = false;
+  }
   return (
     <Popover
       open={disabled ? false : local.open}
@@ -69,10 +72,12 @@ export const RawDropdown: FC<{
                     idx === filtered.length - 1 && "c-rounded-b-sm"
                   )}
                   onClick={() => {
+                    local.open = false;
+                    local.render();
                     if (onChange) onChange(item.value);
                   }}
                 >
-                  {item.label}
+                  {item.el || item.label}
                 </div>
               );
             })}
@@ -109,29 +114,31 @@ export const RawDropdown: FC<{
         }}
       >
         <div className="c-w-full c-h-full c-relative">
-          <input
-            spellCheck={false}
-            value={local.open ? local.input.value : "Halo"}
-            className={cx(
-              "c-absolute c-inset-0 c-w-full c-h-full c-outline-none c-p-0",
-              disabled
-                ? "c-invisible"
-                : local.open
-                  ? "c-cursor-pointer"
-                  : "c-pointer-events-none c-invisible"
-            )}
-            onChange={(e) => {
-              local.input.value = e.currentTarget.value;
-              local.filter = local.input.value.toLowerCase();
-              local.render();
-            }}
-            ref={(el) => {
-              local.input.el = el;
-            }}
-            type="text"
-            onFocus={onFocus}
-            onBlur={onBlur}
-          />
+          {!isEditor && (
+            <input
+              spellCheck={false}
+              value={local.open ? local.input.value : "Halo"}
+              className={cx(
+                "c-absolute c-inset-0 c-w-full c-h-full c-outline-none c-p-0",
+                disabled
+                  ? "c-invisible"
+                  : local.open
+                    ? "c-cursor-pointer"
+                    : "c-pointer-events-none c-invisible"
+              )}
+              onChange={(e) => {
+                local.input.value = e.currentTarget.value;
+                local.filter = local.input.value.toLowerCase();
+                local.render();
+              }}
+              ref={(el) => {
+                local.input.el = el;
+              }}
+              type="text"
+              onFocus={onFocus}
+              onBlur={onBlur}
+            />
+          )}
 
           {!local.open && local.selected && (
             <div className="c-absolute c-inset-0 c-z-10 c-w-full c-h-full c-text-sm c-flex c-items-center">
