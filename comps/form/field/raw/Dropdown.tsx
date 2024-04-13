@@ -12,7 +12,8 @@ export const RawDropdown: FC<{
   onFocus?: () => void;
   onBlur?: () => void;
   onChange?: (value: string) => void;
-}> = ({ value, options, className, onFocus, onBlur, onChange }) => {
+  disabled?: boolean;
+}> = ({ value, options, className, onFocus, onBlur, onChange, disabled }) => {
   const local = useLocal({
     open: false,
     input: {
@@ -36,7 +37,7 @@ export const RawDropdown: FC<{
 
   return (
     <Popover
-      open={local.open}
+      open={disabled ? false : local.open}
       onOpenChange={() => {
         local.open = false;
         local.render();
@@ -113,9 +114,11 @@ export const RawDropdown: FC<{
             value={local.open ? local.input.value : "Halo"}
             className={cx(
               "c-absolute c-inset-0 c-w-full c-h-full c-outline-none c-p-0",
-              local.open
-                ? "c-cursor-pointer"
-                : "c-pointer-events-none c-invisible"
+              disabled
+                ? "c-invisible"
+                : local.open
+                  ? "c-cursor-pointer"
+                  : "c-pointer-events-none c-invisible"
             )}
             onChange={(e) => {
               local.input.value = e.currentTarget.value;
@@ -139,7 +142,8 @@ export const RawDropdown: FC<{
         <div
           className={cx(
             "c-absolute c-pointer-events-none c-z-10 c-inset-0 c-left-auto c-flex c-items-center ",
-            "c-bg-white c-justify-center c-w-6 c-mr-1 c-my-2"
+            "c-bg-white c-justify-center c-w-6 c-mr-1 c-my-2",
+            disabled && "c-hidden"
           )}
         >
           <ChevronDown size={14} />

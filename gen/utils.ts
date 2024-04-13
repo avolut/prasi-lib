@@ -128,9 +128,7 @@ export const createItem = (arg: SimplifiedItem): any => {
     name: arg.name || "item",
     type: "item",
     component,
-    script: {
-      ...arg.adv,
-    },
+    adv: arg.adv,
     childs: arg.childs?.map(createItem),
   };
 };

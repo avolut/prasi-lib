@@ -51,14 +51,14 @@ export const gen_table_list = async (
     if (data["child"]) {
       result["child"] = data["child"];
 
-      result["child"].content.childs = result["child"].content.childs.filter(
-        (e: any) => {
-          return e.name !== arg.mode;
-        }
-      );
-
       let sub_name = "fields";
       if (arg.mode === "table") sub_name = "columns";
+
+      result["child"].content.childs = result["child"].content.childs.filter(
+        (e: any) => {
+          return e.name !== sub_name;
+        }
+      );
 
       const child = createItem({
         name: sub_name,
@@ -71,24 +71,28 @@ export const gen_table_list = async (
                 props: {
                   name: e.name,
                   title: formatName(e.name),
-                  child: {
-                    name: "cell",
-                    padding: {
-                      l: 8,
-                      b: 0,
-                      t: 0,
-                      r: 8,
-                    },
-                    adv: {
-                      js: `\
+                  child: createItem({
+                    childs: [
+                      createItem({
+                        name: "cell",
+                        padding: {
+                          l: 8,
+                          b: 0,
+                          t: 0,
+                          r: 8,
+                        },
+                        adv: {
+                          js: `\
 <div {...props} className={cx(props.className, "")}>
   <FormatValue value={col.value} name={col.name} gen_fields={gen_fields} />
 </div>`,
-                      jsBuilt: `\
+                          jsBuilt: `\
 render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen_fields })));
                   `,
-                    },
-                  },
+                        },
+                      }),
+                    ],
+                  }),
                 },
               },
             };

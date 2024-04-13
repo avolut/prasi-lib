@@ -156,5 +156,10 @@ export const formType = (active: { item_id: string }, meta: any) => {
       };
     };
     props: any;
+  size: {
+      width: number;
+      height: number;
+      field: "full" | "half";
+    };
   }`;
 };
