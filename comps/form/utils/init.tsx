@@ -86,6 +86,12 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
     return promise;
   };
 
-  fm.submit = async () => {};
-  fm.props.on_init({ fm, submit: fm.submit, reload: fm.reload });
+  fm.submit = async () => {
+    if (typeof fm.props.on_submit === "function") {
+      fm.props.on_submit({ fm, form: fm.data, error: fm.error.object });
+    }
+  };
+  if (typeof fm.props.on_init === "function") {
+    fm.props.on_init({ fm, submit: fm.submit, reload: fm.reload });
+  }
 };

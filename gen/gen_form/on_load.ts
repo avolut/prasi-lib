@@ -56,20 +56,6 @@ async (opt) => {
       select: ${JSON.stringify(select, null, 2).split("\n").join("\n      ")},
     });
 
-    if (item){
-      for (const [k, v] of Object.entries(item)) {
-  ${Object.entries(pks)
-    .map(([k, v]) => {
-      return `\
-        if (k === "${k}" && !(v as any)?.connect) {
-          if (v?.["${v}"]) item[k] = { connect: { ${v}: v?.["${v}"] } } as any;
-          else delete item[k];
-        }`;
-    })
-    .join("\n")}
-      }
-    }
-
     ${opt?.after_load ? opt?.after_load : ""}
 
     return item;

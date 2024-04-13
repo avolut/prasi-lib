@@ -113,6 +113,7 @@ export const Form: FC<FMProps> = (props) => {
       className={cx(
         "form c-flex-1 c-w-full c-h-full c-relative c-overflow-auto"
       )}
+      action="#"
     >
       {toaster_el && createPortal(<Toaster cn={cx} />, toaster_el)}
       <div
@@ -132,6 +133,7 @@ export const Form: FC<FMProps> = (props) => {
               </PassProp>
             );
           })}
+        <button type="submit" className="c-hidden"></button>
       </div>
     </form>
   );

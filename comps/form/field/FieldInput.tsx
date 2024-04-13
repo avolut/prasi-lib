@@ -1,11 +1,10 @@
-import { Skeleton } from "@/comps/ui/skeleton";
+import { createItem } from "@/gen/utils";
 import get from "lodash.get";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal } from "../typings";
-import { fieldMapping } from "./mapping";
-import { Loader2 } from "lucide-react";
 import { genFieldMitem, updateFieldMItem } from "../utils/gen-mitem";
-import { createItem } from "@/gen/utils";
+import { fieldMapping } from "./mapping";
+import { FieldLoading } from "./raw/FieldLoading";
 
 const modify = {
   timeout: null as any,
@@ -97,28 +96,7 @@ export const FieldInput: FC<{
     >
       {prefix && <></>}
       {fm.status === "loading" ? (
-        <div className="c-flex c-flex-col c-space-y-1 c-p-1 c-justify-center">
-          <div className="c-flex c-space-x-1">
-            <Skeleton
-              className={css`
-                width: 50px;
-                height: 10px;
-              `}
-            />
-            <Skeleton
-              className={css`
-                width: 50px;
-                height: 10px;
-              `}
-            />
-          </div>
-          <Skeleton
-            className={css`
-              width: 80px;
-              height: 10px;
-            `}
-          />
-        </div>
+        <FieldLoading />
       ) : (
         <div
           className={cx(
@@ -126,7 +104,7 @@ export const FieldInput: FC<{
             field.disabled && "c-pointer-events-none"
           )}
         >
-          {!found && <Loader2 className="c-h-4 c-w-4 c-animate-spin" />}
+          {!found && <FieldLoading />}
           {found && (
             <PassProp field={field} fm={fm}>
               {found}

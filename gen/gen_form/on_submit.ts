@@ -29,7 +29,22 @@ async ({ form, error }: IForm) => {
   try { 
     const data = { ...form };
     delete data.${id};
-  
+
+    if (data) {
+      const pks = ${JSON.stringify(pks)};
+      for (const [k, v] of Object.entries(pks)) {
+        if (typeof data[k] === 'object') {
+          if (data[k][v]) {
+            data[k] = {
+              connect: {
+                [v]: data[k][v]
+              }
+            }
+          }
+        }
+      }
+    }
+
     if (form.${id}) {
       await db.${table}.update({
         where: {

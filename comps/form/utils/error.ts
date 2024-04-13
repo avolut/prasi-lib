@@ -12,6 +12,13 @@ export const formError = (fm: FMLocal) => {
 
       return res;
     },
+    get object() {
+      const result: any = {};
+      Object.entries(this._internal).map(([name, error]) => {
+        result[name] = error.join("\n");
+      });
+      return {};
+    },
     clear(name) {
       if (name) delete this._internal[name];
       else this._internal = {};

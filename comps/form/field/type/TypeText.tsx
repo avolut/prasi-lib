@@ -25,7 +25,7 @@ export const FieldTypeText: FC<{
       }}
       value={value || ""}
       disabled={field.disabled}
-      className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm"
+      className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
       spellCheck={false}
       onFocus={() => {
         field.focused = true;

@@ -38,6 +38,16 @@ export const newField = (arg: GFCol) => {
 </div>`,
       jsBuilt: `render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }), item["${arg.name}"]));`,
     },
+    dim: {
+      h: "full",
+      w: "fit",
+    },
+    padding: {
+      l: 0,
+      b: 0,
+      t: 0,
+      r: 10,
+    },
     layout: {
       dir: "row",
       align: "left",

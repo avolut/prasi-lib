@@ -9,7 +9,7 @@ import { PropTypeRelation } from "./field/type/TypeRelation";
 export type FMProps = {
   on_init: (arg: { fm: FMLocal; submit: any; reload: any }) => any;
   on_load: (arg: { fm: FMLocal }) => any;
-  on_submit: (arg: { form: any; error: any }) => Promise<any>;
+  on_submit: (arg: { fm: FMLocal; form: any; error: any }) => Promise<any>;
   body: any;
   form: FormHook;
   PassProp: any;
@@ -68,6 +68,7 @@ export type FMInternal = {
   fields: Record<string, FieldLocal>;
   field_def: Record<string, GFCol>;
   error: {
+    readonly object: Record<string, string>;
     readonly list: { name: string; error: string[] }[];
     set: (name: string, error: string[]) => void;
     get: (name: string) => string[];

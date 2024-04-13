@@ -24,6 +24,9 @@ export const gen_form = async (modify: (data: any) => void, data: any) => {
       };
       for (const r of f.relation.fields) {
         select[f.name].select[r.name] = true;
+        if (r.is_pk) {
+          pks[f.name] = r.name;
+        }
       }
     }
 

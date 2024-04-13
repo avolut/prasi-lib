@@ -2,7 +2,7 @@ import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
 import { OptionItem, RawDropdown } from "../raw/Dropdown";
-import { Loader2 } from "lucide-react";
+import { FieldLoading } from "../raw/FieldLoading";
 
 export type PropTypeRelation = {
   type: "has-one" | "has-many";
@@ -68,9 +68,7 @@ export const FieldTypeRelation: FC<{
   return (
     <>
       {field.status === "loading" ? (
-        <div className="c-w-full c-h-full c-items-center c-flex c-px-2">
-          <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
-        </div>
+        <FieldLoading />
       ) : (
         <RawDropdown
           options={list}
