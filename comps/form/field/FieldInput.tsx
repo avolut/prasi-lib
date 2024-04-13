@@ -19,7 +19,7 @@ export const FieldInput: FC<{
   _item: any;
   _meta: any;
   _sync: (mitem: any, item: any) => void;
-}> = ({ field, fm, PassProp, child, _meta, _item }) => {
+}> = ({ field, fm, PassProp, child, _meta, _item, _sync }) => {
   const prefix = typeof field.prefix === "function" ? field.prefix() : null;
   const suffix = typeof field.suffix === "function" ? field.suffix() : null;
   const errors = fm.error.get(field.name);
@@ -31,26 +31,35 @@ export const FieldInput: FC<{
   let found = null as any;
   if (childs && childs.length > 0) {
     for (const child of childs) {
-      if (child.component?.id === fieldMapping[field.type].id) {
+      const mp = (fieldMapping as any)[field.type];
+      if (child.component?.id === mp.id) {
         found = child;
 
-        const item = createItem({
-          component: { id: "--", props: fieldMapping[field.type].props },
-        });
+        if (mp.props) {
+          const item = createItem({
+            component: {
+              id: "--",
+              props:
+                typeof mp.props === "function" ? mp.props(fm, field) : mp.props,
+            },
+          });
 
-        const props = found.component.props;
-        let should_update = false;
-        for (const [k, v] of Object.entries(item.component.props) as any) {
-          if (props[k] && props[k].valueBuilt === v.valueBuilt) {
-            continue;
-          } else {
-            props[k] = v;
-            should_update = true;
+          const props = found.component.props;
+          let should_update = false;
+          for (const [k, v] of Object.entries(item.component.props) as any) {
+            if (props[k] && props[k].valueBuilt === v.valueBuilt) {
+              continue;
+            } else {
+              if (field.prop && !field.prop[k]) {
+                props[k] = v;
+                should_update = true;
+              }
+            }
           }
-        }
 
-        if (should_update) {
-          updateFieldMItem(_meta, found);
+          if (should_update) {
+            updateFieldMItem(_meta, found, _sync);
+          }
         }
       }
     }
@@ -58,14 +67,14 @@ export const FieldInput: FC<{
 
   useEffect(() => {
     if (isEditor && !found) {
-      genFieldMitem({ _meta, _item, field, fm });
+      genFieldMitem({ _meta, _item, _sync, field, fm });
     }
   }, []);
 
   return (
     <div
       className={cx(
-        "field-inner c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm",
+        "field-outer c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm",
         fm.status === "loading"
           ? css`
               border-color: transparent;

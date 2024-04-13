@@ -1,14 +1,21 @@
 import { FC } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
+import { useLocal } from "@/utils/use-local";
+
+export type PropTypeText = {
+  type: "text" | "password" | "number";
+};
 
 export const FieldTypeText: FC<{
   field: FieldLocal;
   fm: FMLocal;
-  prop: {
-    type: "text" | "password" | "number";
-  };
+  prop: PropTypeText;
 }> = ({ field, fm, prop }) => {
+  const input = useLocal({});
   const value = fm.data[field.name];
+  field.input = input;
+  field.prop = prop;
+
   return (
     <input
       type={prop.type}
@@ -18,7 +25,7 @@ export const FieldTypeText: FC<{
       }}
       value={value || ""}
       disabled={field.disabled}
-      className="c-flex-1 c-rounded c-bg-transparent c-outline-none c-px-2 c-text-sm"
+      className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm"
       spellCheck={false}
       onFocus={() => {
         field.focused = true;

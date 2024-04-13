@@ -1,14 +1,12 @@
 import { useLocal } from "@/utils/use-local";
-import { FC, Fragment, useEffect, useRef } from "react";
-import { FMInternal, FMProps } from "./typings";
-import { formReload } from "./utils/reload";
-import { formInit } from "./utils/init";
+import get from "lodash.get";
+import { FC, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Toaster } from "sonner";
-import get from "lodash.get";
-import { Field } from "./field/Field";
-import { getProp } from "../../..";
+import { FMInternal, FMProps } from "./typings";
 import { editorFormData } from "./utils/ed-data";
+import { formInit } from "./utils/init";
+import { formReload } from "./utils/reload";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
@@ -35,6 +33,7 @@ export const Form: FC<FMProps> = (props) => {
         done: [],
       },
     },
+    field_def: {},
     props: {} as any,
     size: {
       width: editorFormWidth[props.item.id]

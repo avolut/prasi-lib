@@ -1,9 +1,8 @@
-import get from "lodash.get";
-import { GFCol as Col, GFCol, formatName, parseGenField } from "../utils";
-import { NewFieldArg, newField } from "./new_field";
+import { codeBuild } from "../master_detail/utils";
+import { GFCol, parseGenField } from "../utils";
+import { newField } from "./new_field";
 import { on_load } from "./on_load";
 import { on_submit } from "./on_submit";
-import { codeBuild } from "../master_detail/utils";
 
 export const gen_form = async (modify: (data: any) => void, data: any) => {
   const table = JSON.parse(data.gen_table.value);
@@ -57,7 +56,7 @@ export const gen_form = async (modify: (data: any) => void, data: any) => {
     }
 
     result["body"] = data["body"];
-    result.body.content.childs = fields.map(newField);
+    result.body.content.childs = fields.filter((e) => !e.is_pk).map(newField);
   }
   modify(result);
 };

@@ -36,6 +36,7 @@ export const Field: FC<FieldProp> = (arg) => {
         w === "auto" && fm.size.field === "full" && "c-w-full",
         w === "auto" && fm.size.field === "half" && "c-w-1/2",
         w === "full" && "c-w-full",
+        w === "¾" && "c-w-3/4",
         w === "½" && "c-w-1/2",
         w === "⅓" && "c-w-1/3",
         w === "¼" && "c-w-1/4",

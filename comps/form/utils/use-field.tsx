@@ -3,11 +3,12 @@ import { FMLocal, FieldInternal, FieldProp } from "../typings";
 import { useEffect } from "react";
 
 export const useField = (arg: FieldProp) => {
-  const field = useLocal<FieldInternal>({
+  const field = useLocal<FieldInternal<typeof arg.type>>({
     status: "init",
     Child: () => {
       return <arg.PassProp>{arg.child}</arg.PassProp>;
     },
+    input: {},
   } as any);
 
   const update_field = {

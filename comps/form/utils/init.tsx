@@ -1,9 +1,10 @@
+import { parseGenField } from "@/gen/utils";
+import get from "lodash.get";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { FMLocal, FMProps } from "../typings";
-import { formError } from "./error";
 import { editorFormData } from "./ed-data";
-import get from "lodash.get";
+import { formError } from "./error";
 
 export const formInit = (fm: FMLocal, props: FMProps) => {
   for (const [k, v] of Object.entries(props)) {
@@ -12,6 +13,14 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
   }
   const { on_load, sonar } = fm.props;
   fm.error = formError(fm);
+
+  if (isEditor) {
+    fm.field_def = {};
+    const defs = parseGenField(fm.props.gen_fields);
+    for (const d of defs) {
+      fm.field_def[d.name] = d;
+    }
+  }
 
   fm.reload = () => {
     fm.status = isEditor ? "ready" : "loading";

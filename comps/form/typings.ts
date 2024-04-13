@@ -1,8 +1,10 @@
+import { GFCol } from "@/gen/utils";
 import { ReactNode } from "react";
-import { SliderOptions } from "../form-old/Slider/types";
 import { FieldOptions } from "../form-old/type";
 import { FormHook } from "../form-old/utils/utils";
 import { editorFormData } from "./utils/ed-data";
+import { PropTypeText } from "./field/type/TypeText";
+import { PropTypeRelation } from "./field/type/TypeRelation";
 
 export type FMProps = {
   on_init: (arg: { fm: FMLocal; submit: any; reload: any }) => any;
@@ -18,6 +20,7 @@ export type FMProps = {
   item: any;
   label_mode: "vertical" | "horizontal" | "hidden";
   label_width: number;
+  gen_fields: any;
 };
 
 export type FieldProp = {
@@ -26,20 +29,18 @@ export type FieldProp = {
   desc?: string;
   props?: any;
   fm: FMLocal;
-  type:
-    | "text"
-    | "number"
-    | "textarea"
-    | "dropdown"
-    | "relation"
-    | "password"
-    | "radio"
-    | "date"
-    | "datetime"
-    | "money"
-    | "slider"
-    | "master-link"
-    | "custom";
+  type: "text" | "relation";
+  // | "number"
+  // | "textarea"
+  // | "dropdown"
+  // | "password"
+  // | "radio"
+  // | "date"
+  // | "datetime"
+  // | "money"
+  // | "slider"
+  // | "master-link"
+  // | "custom";
   required: "y" | "n";
   required_msg: (name: string) => string;
   options: FieldOptions;
@@ -50,7 +51,7 @@ export type FieldProp = {
   selection: "single" | "multi";
   prefix: any;
   suffix: any;
-  width: "auto" | "full" | "½" | "⅓" | "¼";
+  width: "auto" | "full" | "¾" | "½" | "⅓" | "¼";
   _meta: any;
   _item: any;
   _sync: any;
@@ -65,6 +66,7 @@ export type FMInternal = {
     on_change: (name: string, new_value: any) => void;
   };
   fields: Record<string, FieldLocal>;
+  field_def: Record<string, GFCol>;
   error: {
     readonly list: { name: string; error: string[] }[];
     set: (name: string, error: string[]) => void;
@@ -87,10 +89,16 @@ export type FMInternal = {
 };
 export type FMLocal = FMInternal & { render: () => void };
 
-export type FieldInternal = {
+type FieldInternalProp = {
+  text: PropTypeText;
+  number: PropTypeText;
+  relation: PropTypeRelation;
+};
+
+export type FieldInternal<T extends FieldProp["type"]> = {
   status: "init" | "loading" | "ready";
   name: FieldProp["name"];
-  type: FieldProp["type"];
+  type: T;
   label: FieldProp["label"];
   desc: FieldProp["desc"];
   prefix: FieldProp["prefix"];
@@ -100,9 +108,16 @@ export type FieldInternal = {
   focused: boolean;
   disabled: boolean;
   required_msg: FieldProp["required_msg"];
+  col?: GFCol;
   Child: () => ReactNode;
+  input: Record<string, any> & {
+    render: () => void;
+  };
+  prop?: FieldInternalProp[T];
 };
-export type FieldLocal = FieldInternal & { render: () => void };
+export type FieldLocal = FieldInternal<any> & {
+  render: () => void;
+};
 
 export const formType = (active: { item_id: string }, meta: any) => {
   let data = "null as any";
