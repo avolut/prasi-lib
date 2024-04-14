@@ -124,15 +124,9 @@ export const Form: FC<FMProps> = (props) => {
           `
         )}
       >
-        {fm.status !== "init" &&
-          fm.size.width > 0 &&
-          childs.map((child, idx) => {
-            return (
-              <PassProp fm={fm} key={idx}>
-                {child}
-              </PassProp>
-            );
-          })}
+        {fm.status !== "init" && fm.size.width > 0 && (
+          <PassProp fm={fm}>{body}</PassProp>
+        )}
         <button type="submit" className="c-hidden"></button>
       </div>
     </form>

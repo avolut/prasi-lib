@@ -63,6 +63,9 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           } else {
             fm.data = res;
           }
+          if (!fm.data) {
+            fm.data = {};
+          }
 
           if (isEditor) {
             const item_id = props.item.id;

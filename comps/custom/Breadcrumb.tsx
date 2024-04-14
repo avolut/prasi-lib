@@ -15,11 +15,11 @@ type BreadcrumbProps = {
   className?: string;
   props?: any;
   value?: BreadItem[];
-  item: any;
+  item?: any;
 };
 
 export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
-  const { on_load } = _arg;
+  const { on_load, item } = _arg;
 
   const local = useLocal({
     list: _arg.value || ([] as BreadItem[]),
@@ -35,8 +35,8 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
   if (local.status === "init") {
     let should_load = true;
 
-    if (isEditor && breadcrumbData[_arg.item.id]) {
-      local.list = breadcrumbData[_arg.item.id];
+    if (isEditor && item && breadcrumbData[item.id]) {
+      local.list = breadcrumbData[item.id];
       local.status = "ready";
       should_load = false;
     }
@@ -44,7 +44,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
     if (should_load && typeof on_load === "function") {
       const callback = (res: any) => {
         local.list = res;
-        breadcrumbData[_arg.item.id] = res;
+        if (item) breadcrumbData[item.id] = res;
         local.status = "ready";
       };
       const res = on_load();
@@ -57,8 +57,10 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
     }
   }
 
-  if (isEditor && local.status !== "ready" && breadcrumbData[_arg.item.id]) {
-    local.list = breadcrumbData[_arg.item.id];
+  if (isEditor && local.status !== "ready") {
+    if (item && breadcrumbData[item.id]) {
+      local.list = breadcrumbData[_arg.item.id];
+    }
     local.status = "ready";
   }
 

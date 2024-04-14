@@ -8,8 +8,10 @@ export const parseGenField = (fields: PropOptRaw) => {
   const result = [] as GFCol[];
   for (const f of fields) {
     if (typeof f === "string") {
-      const field = JSON.parse(f);
-      result.push(field);
+      try {
+        const field = JSON.parse(f);
+        result.push(field);
+      } catch (e) {}
     } else {
       const field = JSON.parse(f.value);
       field.relation.fields = f.checked.map((e) => JSON.parse(e));
