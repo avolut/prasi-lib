@@ -3,6 +3,7 @@ export { FieldTypeRelation } from "./comps/form/field/type/TypeRelation";
 export { Form } from "@/comps/form/Form";
 export { Field } from "@/comps/form/field/Field";
 export { formType } from "@/comps/form/typings";
+export { fieldType } from "@/comps/form/typings";
 export { TableList } from "@/comps/list/TableList";
 export { TableListType } from "@/comps/list/typings";
 export { MasterDetail } from "@/comps/md/MasterDetail";

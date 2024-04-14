@@ -1,6 +1,6 @@
 import { useLocal } from "@/utils/use-local";
-import { FMLocal, FieldInternal, FieldProp } from "../typings";
 import { useEffect } from "react";
+import { FieldInternal, FieldProp } from "../typings";
 
 export const useField = (arg: FieldProp) => {
   const field = useLocal<FieldInternal<typeof arg.type>>({
@@ -32,7 +32,7 @@ export const useField = (arg: FieldProp) => {
   const fm = arg.fm;
 
   useEffect(() => {
-    if (field.status === "init") {
+    if (field.status === "init" || !fm.fields[arg.name]) {
       field.status = "ready";
       fm.fields[arg.name] = field;
       field.render();

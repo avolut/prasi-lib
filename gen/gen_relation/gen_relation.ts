@@ -35,6 +35,7 @@ export const gen_relation = async (modify: (data: any) => void, data: any) => {
     alert("Failed to generate! Primary Key not found. ");
     return;
   }
+
   if (pk) {
     const code = {} as any;
     if (data["on_load"]) {

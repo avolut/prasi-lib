@@ -5,6 +5,7 @@ import { FormHook } from "../form-old/utils/utils";
 import { editorFormData } from "./utils/ed-data";
 import { PropTypeText } from "./field/type/TypeText";
 import { PropTypeRelation } from "./field/type/TypeRelation";
+import { getProp } from "../../..";
 
 export type FMProps = {
   on_init: (arg: { fm: FMLocal; submit: any; reload: any }) => any;
@@ -163,4 +164,35 @@ export const formType = (active: { item_id: string }, meta: any) => {
       field: "full" | "half";
     };
   }`;
+};
+
+export const fieldType = (item: any, meta: any, fm: FMLocal) => {
+  const m = meta[item.id];
+  if (m) {
+    const name = getProp(m.item, "name");
+    const field = fm.fields[name];
+    const def = fm.field_def[name];
+    return `
+    const field = null as unknown as {
+      status: "init" | "loading" | "ready";
+      name: "${name}";
+      type: "${field.type}";
+      label: any;
+      desc: any;
+      prefix: any;
+      suffix: any;
+      width: any;
+      required: boolean;
+      focused: boolean;
+      disabled: boolean;
+      required_msg: any;
+      col?: GFCol;
+      Child: () => ReactNode;
+      input: Record<string, any> & {
+        render: () => void;
+      };
+      prop?: any;
+    }
+  `;
+  }
 };

@@ -50,7 +50,7 @@ export type MDLocalInternal = {
 export type MDRef = { PassProp: any; child: any };
 export type MDLocal = MDLocalInternal & { render: (force?: boolean) => void };
 
-export const MasterDetailType = `{
+export const MasterDetailType = `const md = {
   name: string;
   breadcrumb: {
     label: React.ReactNode;
