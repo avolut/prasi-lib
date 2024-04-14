@@ -59,6 +59,7 @@ export const newField = async (arg: GFCol) => {
             return { items: [], pk: "" };
           }`,
           ],
+          label: [`() => {}`],
           gen_table: arg.relation.to.table,
           gen_fields: [value, value],
           child: {},

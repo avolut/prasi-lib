@@ -101,6 +101,7 @@ export const RawDropdown: FC<{
           local.render();
           setTimeout(() => {
             local.input.el?.focus();
+            local.input.el?.select();
           });
         }}
         ref={(el) => {

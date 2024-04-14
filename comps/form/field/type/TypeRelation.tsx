@@ -7,6 +7,7 @@ import { FieldLoading } from "../raw/FieldLoading";
 export type PropTypeRelation = {
   type: "has-one" | "has-many";
   on_load: (opt: { value?: any }) => Promise<{ items: any[]; pk: string }>;
+  label: (item: any, pk: string) => string;
 };
 export const FieldTypeRelation: FC<{
   field: FieldLocal;
@@ -44,15 +45,22 @@ export const FieldTypeRelation: FC<{
   if (input.list && input.pk && input.list.length) {
     for (const item of input.list) {
       if (typeof item !== "object") continue;
-      const label: string[] = [];
+      let label = "";
 
-      for (const [k, v] of Object.entries(item)) {
-        if (k !== input.pk) label.push(v as any);
+      if (typeof prop.label === "function") {
+        label = prop.label(item, input.pk);
+      } else {
+        const label_arr: string[] = [];
+
+        for (const [k, v] of Object.entries(item)) {
+          if (k !== input.pk) label_arr.push(v as any);
+        }
+        label = label_arr.join(" ");
       }
 
       list.push({
         value: item[input.pk],
-        label: label.join(" "),
+        label,
         el: <PassProp item={item}>{child}</PassProp>,
       });
     }

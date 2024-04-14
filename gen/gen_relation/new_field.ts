@@ -46,7 +46,7 @@ export const newField = (arg: GFCol) => {
       l: 0,
       b: 0,
       t: 0,
-      r: 10,
+      r: 5,
     },
     layout: {
       dir: "row",

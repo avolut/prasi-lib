@@ -3,7 +3,11 @@ import { FC, Fragment, isValidElement } from "react";
 import { getProp } from "./utils/get-prop";
 import { MDActions, MDLocal } from "./utils/typings";
 
-export const MDAction: FC<{ md: MDLocal }> = ({ md }) => {
+export const MDAction: FC<{ md: MDLocal; PassProp: any; child: any }> = ({
+  md,
+  PassProp,
+  child,
+}) => {
   const local = useLocal({
     last_render: Date.now(),
   });
@@ -30,19 +34,7 @@ export const MDAction: FC<{ md: MDLocal }> = ({ md }) => {
           return <Fragment key={idx}>{e}</Fragment>;
         }
         if (typeof e === "object" && e.label) {
-          return (
-            <div
-              key={idx}
-              className={cx(
-                "btn action c-text-sm c-px-3 c-h-[25px] c-flex c-items-center c-cursor-pointer c-rounded-md c-bg-blue-700 c-text-white hover:c-bg-blue-500"
-              )}
-              onClick={(ev) => {
-                if (e.onClick && !isEditor) e.onClick(ev);
-              }}
-            >
-              {e.label}
-            </div>
-          );
+          return <PassProp item={e}>{child}</PassProp>;
         }
       })}
     </div>

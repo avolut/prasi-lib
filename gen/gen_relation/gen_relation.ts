@@ -43,6 +43,24 @@ export const gen_relation = async (modify: (data: any) => void, data: any) => {
       code.on_load = result["on_load"].value;
     }
 
+    if (data["label"]) {
+      result["label"] = data["label"];
+      result["label"].value = `\
+(item:any, pk:string) => {
+  return \`${Object.entries(select)
+    .filter(([k, v]) => {
+      if (typeof v !== "object" && k !== pk?.name) {
+        return true;
+      }
+    })
+    .map(([name]) => {
+      return `\${item.${name}}`;
+    })
+    .join(" ")}\`
+}`;
+      code.on_load = result["on_load"].value;
+    }
+
     const res = await codeBuild(code);
     for (const [k, v] of Object.entries(res)) {
       result[k].valueBuilt = v[1];
