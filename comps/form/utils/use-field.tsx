@@ -19,6 +19,7 @@ export const useField = (arg: FieldProp) => {
     prefix: arg.prefix,
     suffix: arg.suffix,
     width: arg.width,
+    custom: arg.custom,
     required: arg.required === "y",
     required_msg: arg.required_msg,
     disabled: arg.disabled === "y",

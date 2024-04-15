@@ -17,24 +17,26 @@ export const FieldTypeText: FC<{
   field.prop = prop;
 
   return (
-    <input
-      type={prop.type}
-      onChange={(ev) => {
-        fm.data[field.name] = ev.currentTarget.value;
-        fm.render();
-      }}
-      value={value || ""}
-      disabled={field.disabled}
-      className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
-      spellCheck={false}
-      onFocus={() => {
-        field.focused = true;
-        field.render();
-      }}
-      onBlur={() => {
-        field.focused = false;
-        field.render();
-      }}
-    />
+    <>
+      <input
+        type={prop.type}
+        onChange={(ev) => {
+          fm.data[field.name] = ev.currentTarget.value;
+          fm.render();
+        }}
+        value={value || ""}
+        disabled={field.disabled}
+        className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
+        spellCheck={false}
+        onFocus={() => {
+          field.focused = true;
+          field.render();
+        }}
+        onBlur={() => {
+          field.focused = false;
+          field.render();
+        }}
+      />
+    </>
   );
 };

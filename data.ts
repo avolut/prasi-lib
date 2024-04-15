@@ -1,3 +1,4 @@
+export { FieldTypeCustom } from "@/comps/form/typings";
 export { FieldTypeText } from "./comps/form/field/type/TypeText";
 export { FieldTypeRelation } from "./comps/form/field/type/TypeRelation";
 export { Form } from "@/comps/form/Form";

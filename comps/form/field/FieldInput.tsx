@@ -5,6 +5,7 @@ import { FMLocal, FieldLocal } from "../typings";
 import { genFieldMitem, updateFieldMItem } from "../utils/gen-mitem";
 import { fieldMapping } from "./mapping";
 import { FieldLoading } from "./raw/FieldLoading";
+import { TypeCustom } from "./type/TypeCustom";
 
 const modify = {
   timeout: null as any,
@@ -28,7 +29,7 @@ export const FieldInput: FC<{
   );
 
   let found = null as any;
-  if (childs && childs.length > 0) {
+  if (childs && childs.length > 0 && field.type !== "custom") {
     for (const child of childs) {
       const mp = (fieldMapping as any)[field.type];
       if (child.component?.id === mp.id) {
@@ -65,7 +66,7 @@ export const FieldInput: FC<{
   }
 
   useEffect(() => {
-    if (isEditor && !found) {
+    if (isEditor && !found && field.type !== "custom") {
       genFieldMitem({ _meta, _item, _sync, field, fm });
     }
   }, []);
@@ -100,15 +101,21 @@ export const FieldInput: FC<{
       ) : (
         <div
           className={cx(
-            "field-inner c-flex-1 c-flex c-items-center c-justify-center",
+            "field-inner c-flex-1 c-flex c-items-center",
             field.disabled && "c-pointer-events-none"
           )}
         >
-          {!found && <FieldLoading />}
-          {found && (
-            <PassProp field={field} fm={fm}>
-              {found}
-            </PassProp>
+          {field.type === "custom" ? (
+            <TypeCustom fm={fm} field={field} />
+          ) : (
+            <>
+              {!found && <FieldLoading />}
+              {found && (
+                <PassProp field={field} fm={fm}>
+                  {found}
+                </PassProp>
+              )}
+            </>
           )}
         </div>
       )}

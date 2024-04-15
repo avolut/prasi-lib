@@ -1,5 +1,5 @@
 import { GFCol } from "@/gen/utils";
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 import { FieldOptions } from "../form-old/type";
 import { FormHook } from "../form-old/utils/utils";
 import { editorFormData } from "./utils/ed-data";
@@ -56,6 +56,7 @@ export type FieldProp = {
   _meta: any;
   _item: any;
   _sync: any;
+  custom?: () => Promise<CustomField>;
 };
 
 export type FMInternal = {
@@ -112,6 +113,7 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   required_msg: FieldProp["required_msg"];
   col?: GFCol;
   Child: () => ReactNode;
+  custom: FieldProp["custom"];
   input: Record<string, any> & {
     render: () => void;
   };
@@ -196,3 +198,12 @@ export const fieldType = (item: any, meta: any, fm: FMLocal) => {
   `;
   }
 };
+
+export type CustomField =
+  | { field: "text"; type: "text" | "password" | "number" }
+  | { field: "relation"; type: "has-many" | "has-one" };
+
+export const FieldTypeCustom = `type CustomField = 
+  { field: "text", type: "text" | "password" | "number" }
+| { field: "relation", type: "has-many" | "has-one" }
+`;
