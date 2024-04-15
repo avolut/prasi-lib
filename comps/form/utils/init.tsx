@@ -1,6 +1,6 @@
 import { parseGenField } from "@/gen/utils";
 import get from "lodash.get";
-import { Loader2 } from "lucide-react";
+import { AlertTriangle, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { FMLocal, FMProps } from "../typings";
 import { editorFormData } from "./ed-data";
@@ -89,10 +89,77 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
     return promise;
   };
 
-  fm.submit = async () => {
-    if (typeof fm.props.on_submit === "function") {
-      fm.props.on_submit({ fm, form: fm.data, error: fm.error.object });
-    }
+  fm.submit = () => {
+    const promise = new Promise<boolean>(async (done) => {
+      fm.internal.submit.done.push(done);
+      clearTimeout(fm.internal.submit.timeout);
+      fm.internal.submit.timeout = setTimeout(async () => {
+        const done_all = (val: boolean) => {
+          for (const d of fm.internal.submit.done) {
+            d(val);
+          }
+          fm.internal.submit.done = [];
+          fm.render();
+        };
+
+        if (typeof fm.props.on_submit === "function") {
+          if (fm.props.sonar === "on") {
+            toast.loading(
+              <>
+                <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
+                Submitting...
+              </>
+            );
+          }
+          const success = await fm.props.on_submit({
+            fm,
+            form: fm.data,
+            error: fm.error.object,
+          });
+
+          toast.dismiss();
+          done_all(success);
+          if (fm.props.sonar === "on") {
+            setTimeout(() => {
+              toast.dismiss();
+
+              if (!success) {
+                toast.error(
+                  <div className="c-flex c-text-red-600 c-items-center">
+                    <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+                    Save Failed, please correct{" "}
+                    {Object.keys(fm.error.list).length} errors.
+                  </div>,
+                  {
+                    dismissible: true,
+                    className: css`
+                      background: #ffecec;
+                      border: 2px solid red;
+                    `,
+                  }
+                );
+              } else {
+                toast.success(
+                  <div className="c-flex c-text-green-700 c-items-center">
+                    <Check className="c-h-4 c-w-4 c-mr-1 " />
+                    Done
+                  </div>,
+                  {
+                    className: css`
+                      background: #e4ffed;
+                      border: 2px solid green;
+                    `,
+                  }
+                );
+              }
+            }, 100);
+          }
+        }
+      }, 100);
+    });
+    fm.internal.submit.promises.push(promise);
+
+    return promise;
   };
   if (typeof fm.props.on_init === "function") {
     fm.props.on_init({ fm, submit: fm.submit, reload: fm.reload });

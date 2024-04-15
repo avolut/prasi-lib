@@ -63,7 +63,7 @@ export type FMInternal = {
   status: "init" | "resizing" | "loading" | "saving" | "ready";
   data: any;
   reload: () => Promise<void>;
-  submit: () => Promise<void>;
+  submit: () => Promise<boolean>;
   events: {
     on_change: (name: string, new_value: any) => void;
   };
@@ -80,6 +80,11 @@ export type FMInternal = {
     reload: {
       timeout: ReturnType<typeof setTimeout>;
       promises: Promise<void>[];
+      done: any[];
+    };
+    submit: {
+      promises: Promise<boolean>[];
+      timeout: ReturnType<typeof setTimeout>;
       done: any[];
     };
   };
@@ -204,6 +209,6 @@ export type CustomField =
   | { field: "relation"; type: "has-many" | "has-one" };
 
 export const FieldTypeCustom = `type CustomField = 
-  { field: "text", type: "text" | "password" | "number" }
+  { field: "text", type: "text" | "password" | "number" | "date" | "datetime" }
 | { field: "relation", type: "has-many" | "has-one" }
 `;

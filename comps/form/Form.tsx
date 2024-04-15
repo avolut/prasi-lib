@@ -32,6 +32,11 @@ export const Form: FC<FMProps> = (props) => {
         promises: [],
         done: [],
       },
+      submit: {
+        timeout: null as any,
+        promises: [],
+        done: [],
+      },
     },
     field_def: {},
     props: {} as any,
@@ -89,11 +94,6 @@ export const Form: FC<FMProps> = (props) => {
     document.body.appendChild(elemDiv);
   }
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
-
-  const childs = get(
-    body,
-    "props.meta.item.component.props.body.content.childs"
-  ) as any[];
 
   return (
     <form
