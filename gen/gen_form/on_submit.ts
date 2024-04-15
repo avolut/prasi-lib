@@ -34,6 +34,11 @@ async ({ form, error }: IForm) => {
       const pks = ${JSON.stringify(pks)};
       for (const [k, v] of Object.entries(pks)) {
         if (typeof data[k] === 'object') {
+          if (data[k] === null) {
+            data[k] = {
+              disconnect: true
+            }
+          }
           if (data[k][v]) {
             data[k] = {
               connect: {

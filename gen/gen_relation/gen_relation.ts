@@ -3,7 +3,11 @@ import { GFCol, parseGenField } from "../utils";
 import { newField } from "./new_field";
 import { on_load } from "./on_load";
 
-export const gen_relation = async (modify: (data: any) => void, data: any) => {
+export const gen_relation = async (
+  modify: (data: any) => void,
+  data: any,
+  arg: { id_parent: string }
+) => {
   const table = JSON.parse(data.gen_table.value);
   const raw_fields = JSON.parse(data.gen_fields.value) as (
     | string
@@ -31,6 +35,10 @@ export const gen_relation = async (modify: (data: any) => void, data: any) => {
     }
   }
 
+  if (arg.id_parent) {
+    select[arg.id_parent] = true;
+  }
+
   if (!pk) {
     alert("Failed to generate! Primary Key not found. ");
     return;
@@ -40,7 +48,13 @@ export const gen_relation = async (modify: (data: any) => void, data: any) => {
     const code = {} as any;
     if (data["on_load"]) {
       result["on_load"] = data["on_load"];
-      result["on_load"].value = on_load({ pk, pks, select, table });
+      result["on_load"].value = on_load({
+        pk,
+        pks,
+        select,
+        table,
+        id_parent: arg.id_parent,
+      });
       code.on_load = result["on_load"].value;
     }
 
@@ -50,7 +64,7 @@ export const gen_relation = async (modify: (data: any) => void, data: any) => {
 (item:any, pk:string) => {
   return \`${Object.entries(select)
     .filter(([k, v]) => {
-      if (typeof v !== "object" && k !== pk?.name) {
+      if (typeof v !== "object" && k !== pk?.name && k !== arg.id_parent) {
         return true;
       }
     })

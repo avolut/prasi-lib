@@ -18,13 +18,14 @@ export type MDLocalInternal = {
     list: string[];
   };
   internal: { action_should_refresh: boolean };
-  master: { internal: any; render: () => void; pk: null | GFCol };
+  master: { internal: any; render: () => void };
   params: {
     hash: any;
     tabs: any;
     parse: () => void;
     apply: () => void;
   };
+  pk?: GFCol;
   props: {
     mode: "full" | "h-split" | "v-split";
     show_head: "always" | "only-master" | "only-child" | "hidden";
@@ -75,19 +76,28 @@ export const MasterDetailType = `const md = {
     parse: () => void;
     apply: () => void;
   };
+  props: {
+    mode: "full" | "h-split" | "v-split";
+    show_head: "always" | "only-master" | "only-child" | "hidden";
+    tab_mode: "h-tab" | "v-tab" | "hidden";
+    editor_tab: string;
+    gen_fields: any;
+    gen_table: string;
+    on_init: (md: any) => void;
+  };
   internal: { action_should_refresh: boolean };
   render: () => void;
-  master: { internal: any; render: () => void; pk: null | {
-      name: string;
-      type: string;
-      is_pk: boolean;
-      optional: boolean;
-      relation?: {
-        from: { table: string; fields: string[] };
-        to: { table: string; fields: string[] };
-        fields: GFCol[];
-      };
-    }
+  master: { internal: any; render: () => void; };
+  pk?: {
+    name: string;
+    type: string;
+    is_pk: boolean;
+    optional: boolean;
+    relation?: {
+      from: { table: string; fields: string[] };
+      to: { table: string; fields: string[] };
+      fields: GFCol[];
+    };
   };
   childs: Record<
     string,

@@ -14,6 +14,8 @@ import { createPortal } from "react-dom";
 import { Toaster, toast } from "sonner";
 import { getProp } from "../md/utils/get-prop";
 import { Skeleton } from "../ui/skeleton";
+import { sortTree } from "./sort-tree";
+import { GFCol, parseGenField } from "@/gen/utils";
 
 type OnRowClick = (arg: {
   row: any;
@@ -36,6 +38,7 @@ type TableListProp = {
   _meta: Record<string, any>;
   gen_fields: string[];
   row_click: OnRowClick;
+  id_parent?: string;
 };
 
 export const TableList: FC<TableListProp> = ({
@@ -47,6 +50,7 @@ export const TableList: FC<TableListProp> = ({
   _meta,
   gen_fields,
   row_click,
+  id_parent,
 }) => {
   const local = useLocal({
     el: null as null | HTMLDivElement,
@@ -58,6 +62,7 @@ export const TableList: FC<TableListProp> = ({
       if (local.status === "ready") local.status = "resizing";
       local.render();
     }),
+    pk: null as null | GFCol,
     scrolled: false,
     data: [] as any[],
     status: "init" as "loading" | "ready" | "resizing" | "reload" | "init",
@@ -91,14 +96,23 @@ export const TableList: FC<TableListProp> = ({
           if (fields) {
             const rel = fields?.find((e) => e.name === columnKey);
             if (rel && rel.checked) {
-              const field = rel.checked.find((e) => !e.is_pk);
-              if (field) {
-                should_set = false;
+              should_set = false;
+
+              if (rel.type === "has-many") {
                 local.sort.orderBy = {
                   [columnKey]: {
-                    [field.name]: direction === "ASC" ? "asc" : "desc",
+                    _count: direction === "ASC" ? "asc" : "desc",
                   },
                 };
+              } else {
+                const field = rel.checked.find((e) => !e.is_pk);
+                if (field) {
+                  local.sort.orderBy = {
+                    [columnKey]: {
+                      [field.name]: direction === "ASC" ? "asc" : "desc",
+                    },
+                  };
+                }
               }
             }
           }
@@ -129,11 +143,14 @@ export const TableList: FC<TableListProp> = ({
         local.render();
 
         const orderBy = local.sort.orderBy || undefined;
-        const load_args = {
+        const load_args: any = {
           async reload() {},
           orderBy,
           paging: { take: local.paging.take, skip: local.paging.skip },
         };
+        if (id_parent) {
+          load_args.paging = {};
+        }
 
         const result = on_load({ ...load_args, mode: "query" });
         const callback = (data: any[]) => {
@@ -190,6 +207,7 @@ export const TableList: FC<TableListProp> = ({
             col={{
               name: props.column.key,
               value: props.row[props.column.key],
+              depth: props.row.__depth || 0,
             }}
             rows={local.data}
           >
@@ -233,12 +251,23 @@ export const TableList: FC<TableListProp> = ({
   }
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
 
+  if (local.status === "init") {
+    const fields = parseGenField(gen_fields);
+    for (const field of fields) {
+      if (field.is_pk) {
+        local.pk = field;
+      }
+    }
+  }
+
   if (isEditor && local.status !== "ready") {
     if (local.data.length === 0) {
-      const load_args = {
+      const load_args: any = {
         async reload() {},
         paging: { take: local.paging.take, skip: local.paging.skip },
       };
+
+      if (id_parent) load_args.paging = {};
       if (typeof on_load === "function") {
         local.data = on_load({ ...load_args, mode: "query" }) as any;
       }
@@ -247,6 +276,11 @@ export const TableList: FC<TableListProp> = ({
   }
 
   let selected_idx = -1;
+
+  let data = local.data || [];
+  if (id_parent && local.pk && local.sort.columns.length === 0) {
+    data = sortTree(local.data, id_parent, local.pk.name);
+  }
 
   if (mode === "table") {
     return (
@@ -300,7 +334,7 @@ export const TableList: FC<TableListProp> = ({
                 sortColumns={local.sort.columns}
                 onSortColumnsChange={local.sort.on_change}
                 columns={columns}
-                rows={local.data || []}
+                rows={data}
                 onScroll={local.paging.scroll}
                 renderers={
                   local.status !== "ready"

@@ -1,6 +1,10 @@
+const cache: any = [];
+
 export const gen_props_table = async () => {
+  if (cache.length > 0) return cache;
+
   const result = [{ value: "", label: "" }];
-  return [
+  const final = [
     ...result,
     ...(await db._schema.tables()).map((e) => ({
       value: e,
@@ -8,4 +12,10 @@ export const gen_props_table = async () => {
       reload: ["gen_fields", "gen_label"],
     })),
   ];
+
+  for (const f of final) {
+    cache.push(f);
+  }
+
+  return cache;
 };

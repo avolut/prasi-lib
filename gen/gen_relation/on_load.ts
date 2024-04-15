@@ -6,6 +6,7 @@ export const on_load = ({
   select,
   pks,
   opt,
+  id_parent,
 }: {
   pk: GFCol;
   table: string;
@@ -15,6 +16,7 @@ export const on_load = ({
     before_load: string;
     after_load: string;
   };
+  id_parent: string;
 }) => {
   const sample: any = {};
   for (const [k, v] of Object.entries(select) as any) {
@@ -41,11 +43,6 @@ async (opt: { value: any }) => {
   }
   
   let items = await db.${table}.findMany({
-    where: !!id
-      ? {
-          ${pk.name}: id,
-        }
-      : undefined,
     select: ${JSON.stringify(select, null, 2).split("\n").join("\n      ")},
   });
 

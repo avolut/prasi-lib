@@ -3,7 +3,7 @@ import { useLocal } from "@/utils/use-local";
 import { ChevronDown } from "lucide-react";
 import { FC, ReactNode } from "react";
 
-export type OptionItem = { value: string; label: string; el?: ReactNode };
+export type OptionItem = { value: any; label: string; el?: ReactNode };
 
 export const RawDropdown: FC<{
   options: OptionItem[];
@@ -28,8 +28,18 @@ export const RawDropdown: FC<{
   let filtered = options;
 
   if (local.filter) {
-    filtered = options.filter((e) => {
-      if (e.label.toLowerCase().includes(local.filter)) return true;
+    filtered = options.filter((e: any) => {
+      if (typeof e === "string") {
+        if (e.toLowerCase().includes(local.filter)) {
+          return true;
+        }
+        return false;
+      }
+      if (
+        typeof e.label === "string" &&
+        e.label.toLowerCase().includes(local.filter)
+      )
+        return true;
       return false;
     });
   }
@@ -118,7 +128,7 @@ export const RawDropdown: FC<{
           {!isEditor && (
             <input
               spellCheck={false}
-              value={local.open ? local.input.value : "Halo"}
+              value={local.open ? local.input.value : ""}
               className={cx(
                 "c-absolute c-inset-0 c-w-full c-h-full c-outline-none c-p-0",
                 disabled

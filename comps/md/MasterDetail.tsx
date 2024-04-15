@@ -44,7 +44,7 @@ export const MasterDetail: FC<{
       active: "",
       list: [],
     },
-    internal: { action_should_refresh: false },
+    internal: { action_should_refresh: true },
     childs: {},
     props: {
       mode,
@@ -65,7 +65,7 @@ export const MasterDetail: FC<{
         masterDetailApplyParams(md);
       },
     },
-    master: { internal: null, render() {}, pk: null },
+    master: { internal: null, render() {} },
   });
   const local = useLocal({ init: false });
   if (isEditor) {

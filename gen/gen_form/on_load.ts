@@ -34,8 +34,8 @@ async (opt) => {
   if (isEditor) return ${JSON.stringify(sample)};
 
   let raw_id = params.id;
-  if (typeof md === 'object' && md.selected && md.master?.pk) {
-    const pk = md.master?.pk?.name;
+  if (typeof md === 'object' && md.selected && md.pk) {
+    const pk = md.pk?.name;
     if (md.selected[pk]) {
       raw_id = md.selected[pk]; 
     }

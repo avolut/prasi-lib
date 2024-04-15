@@ -6,7 +6,7 @@ import { codeBuild } from "../master_detail/utils";
 export const gen_table_list = async (
   modify: (data: any) => void,
   data: any,
-  arg: { mode: "table" | "list" | "grid" }
+  arg: { mode: "table" | "list" | "grid"; id_parent: string }
 ) => {
   const table = JSON.parse(data.gen_table.value) as string;
   const raw_fields = JSON.parse(data.gen_fields.value) as (
@@ -35,6 +35,10 @@ export const gen_table_list = async (
     }
   }
 
+  if (arg.id_parent) {
+    select[arg.id_parent] = true;
+  }
+
   if (!pk) {
     alert("Failed to generate! Primary Key not found. ");
     return;
@@ -60,11 +64,19 @@ export const gen_table_list = async (
         }
       );
 
+      let first = true;
       const child = createItem({
         name: sub_name,
         childs: fields
           .map((e) => {
             if (e.is_pk) return;
+            let tree_depth = "";
+            let tree_depth_built = "";
+            if (first) {
+              tree_depth = `tree_depth={col.depth}`;
+              tree_depth_built = `tree_depth:col.depth`;
+              first = false;
+            }
             return {
               component: {
                 id: "297023a4-d552-464a-971d-f40dcd940b77",
@@ -84,10 +96,10 @@ export const gen_table_list = async (
                         adv: {
                           js: `\
 <div {...props} className={cx(props.className, "")}>
-  <FormatValue value={col.value} name={col.name} gen_fields={gen_fields} />
+  <FormatValue value={col.value} name={col.name} gen_fields={gen_fields} ${tree_depth} />
 </div>`,
                           jsBuilt: `\
-render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen_fields })));
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen_fields, ${tree_depth_built} })));
                   `,
                         },
                       }),

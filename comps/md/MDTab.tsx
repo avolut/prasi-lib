@@ -16,7 +16,6 @@ export const MDTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
     return null;
   }
 
-
   return (
     <>
       {md.props.show_head === "only-child" && <MDHeader md={md} mdr={mdr} />}
@@ -41,7 +40,7 @@ export const MDNavTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
     <div
       className={cx(
         "tab-list c-flex c-text-sm",
-        mode === "v-tab" && "c-flex-row c-border-b c-pl-2",
+        mode === "v-tab" && "c-flex-row c-border-b c-pl-2 c-pt-2",
         mode === "h-tab" && "c-flex-col c-border-r c-pl-2 c-min-w-[100px]"
       )}
     >

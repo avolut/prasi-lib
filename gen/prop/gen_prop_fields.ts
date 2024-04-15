@@ -1,4 +1,8 @@
+const cache = {} as Record<string, any>;
+
 export const gen_prop_fields = async (gen_table: string) => {
+  if (cache[gen_table]) return cache[gen_table];
+
   const result: {
     label: string;
     value: string;
@@ -48,5 +52,10 @@ export const gen_prop_fields = async (gen_table: string) => {
       options,
     });
   }
+
+  if (!cache[gen_table]) {
+    cache[gen_table] = result;
+  }
+
   return result;
 };

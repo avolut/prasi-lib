@@ -36,7 +36,7 @@ export const masterDetailApplyParams = (md: MDLocal) => {
       }
     }
 
-    const pk = md.master.pk;
+    const pk = md.pk;
     if (pk && row[pk.name]) {
       md.params.hash[md.name] = row[pk.name];
     }

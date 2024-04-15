@@ -49,6 +49,9 @@ type BreadItem = {
 async () => {
   return [
     {
+      action: "delete",
+    },
+    {
       label: "Save",
       action: "save",
     },
@@ -68,7 +71,9 @@ async ({ submit, reload }: Init) => {
   if (tab) {
     const actions = await getProp(tab.internal, "actions", { md });
     if (Array.isArray(actions)) {
-      const save_btn = actions.find((e) => e.action === "save");
+      const save_btn = actions 
+          .filter((e) => e)
+          .find((e) => e.action === "save");
       if (save_btn) {
         save_btn.onClick = async () => {
           await submit();

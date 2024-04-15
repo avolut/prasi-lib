@@ -14,12 +14,10 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
   const { on_load, sonar } = fm.props;
   fm.error = formError(fm);
 
-  if (isEditor) {
-    fm.field_def = {};
-    const defs = parseGenField(fm.props.gen_fields);
-    for (const d of defs) {
-      fm.field_def[d.name] = d;
-    }
+  fm.field_def = {};
+  const defs = parseGenField(fm.props.gen_fields);
+  for (const d of defs) {
+    fm.field_def[d.name] = d;
   }
 
   fm.reload = () => {

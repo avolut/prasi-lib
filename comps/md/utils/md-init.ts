@@ -30,7 +30,7 @@ export const masterDetailInit = (
           md.master.internal = child;
           const pk = parseGenField(md.props.gen_fields).find((e) => e.is_pk);
           if (pk) {
-            md.master.pk = pk;
+            md.pk = pk;
           }
         }
         if (cid === "cb52075a-14ab-455a-9847-6f1d929a2a73") {
@@ -62,7 +62,7 @@ export const masterDetailInit = (
 
 export const masterDetailSelected = (md: MDLocal) => {
   md.params.parse();
-  const pk = md.master.pk;
+  const pk = md.pk;
   if (pk) {
     const value = md.params.hash[md.name];
     if (value) {

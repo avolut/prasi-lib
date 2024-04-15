@@ -28,15 +28,22 @@ export type NewFieldArg = {
   };
 };
 
-export const newField = (arg: GFCol) => {
+export const newField = (arg: GFCol, idx: number) => {
+  let result = `{item["${arg.name}"]}`;
+  let result_built = `render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }), item["${arg.name}"]));`;
+  if (idx === 0) {
+    result = `<FormatValue value={item["${arg.name}"]} tree_depth={item.__depth} />`;
+    result_built = `render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),
+    React.createElement(FormatValue, { value: item["${arg.name}"], tree_depth: item.__depth })));`;
+  }
   return createItem({
     name: arg.name,
     adv: {
       js: `\
 <div {...props} className={cx(props.className, "")}>
-  {item["${arg.name}"]}
+ ${result}
 </div>`,
-      jsBuilt: `render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }), item["${arg.name}"]));`,
+      jsBuilt: result_built,
     },
     dim: {
       h: "full",

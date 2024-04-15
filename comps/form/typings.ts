@@ -151,6 +151,7 @@ export const formType = (active: { item_id: string }, meta: any) => {
     data: typeof ___data;
     reload: () => Promise<void>;
     submit: () => Promise<void>;
+    render: () => void;
     error: {
       list: { name: string; error: string }[];
       set: (name: string, error: string) => void;
@@ -165,7 +166,7 @@ export const formType = (active: { item_id: string }, meta: any) => {
       };
     };
     props: any;
-  size: {
+    size: {
       width: number;
       height: number;
       field: "full" | "half";
