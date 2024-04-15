@@ -56,7 +56,7 @@ export type FieldProp = {
   _meta: any;
   _item: any;
   _sync: any;
-  custom?: () => Promise<CustomField>;
+  custom?: () => CustomField;
 };
 
 export type FMInternal = {

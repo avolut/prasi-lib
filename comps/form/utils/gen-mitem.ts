@@ -23,16 +23,13 @@ export const genFieldMitem = (arg: {
         ?.get("content")
         ?.get("childs");
 
-      const col = fm.field_def[field.name];
-      if (col) {
-        const component = fieldMapping[field.type as "text"];
-        if (component) {
-          const item = createItem({
-            component: component as any,
-          });
+      const component = fieldMapping[field.type as "text"];
+      if (component) {
+        const item = createItem({
+          component: component as any,
+        });
 
-          _sync(childs, [...childs.toJSON(), item]);
-        }
+        _sync(childs, [...childs.toJSON(), item]);
       }
     }
   }

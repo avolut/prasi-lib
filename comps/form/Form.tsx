@@ -125,7 +125,9 @@ export const Form: FC<FMProps> = (props) => {
         )}
       >
         {fm.status !== "init" && fm.size.width > 0 && (
-          <PassProp fm={fm}>{body}</PassProp>
+          <PassProp fm={fm} submit={fm.submit}>
+            {body}
+          </PassProp>
         )}
         <button type="submit" className="c-hidden"></button>
       </div>

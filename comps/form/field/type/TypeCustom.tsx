@@ -14,30 +14,16 @@ export const TypeCustom: FC<{ field: FieldLocal; fm: FMLocal }> = ({
   });
 
   if (!local.custom && field.custom) {
-    console.log("field", field.custom);
     local.custom = field.custom;
   }
 
-  if (!local.exec) {
-    local.exec = true;
-    const callback = (value: any, should_render: boolean) => {
-      local.result = value;
-      if (should_render) {
-        local.render();
-        setTimeout(() => {
-          local.exec = false;
-        }, 100);
-      }
-    };
-    if (field.custom) {
-      const res = local.custom();
-      if (res instanceof Promise) {
-        res.then((value) => {
-          callback(value, true);
-        });
-      } else {
-        callback(res, false);
-      }
+  if (field.custom) {
+    const res = local.custom();
+    if (res instanceof Promise) {
+      console.error("Custom Function cannot be async");
+      return null;
+    } else {
+      local.result = res;
     }
   }
 
