@@ -10,8 +10,85 @@ export type PropTypeRelation = {
   on_load: (opt: { value?: any }) => Promise<{ items: any[]; pk: string }>;
   label: (item: any, pk: string) => string;
   id_parent: string;
+  has_many: "checkbox" | "typeahead";
+  has_many_list: (opt: {
+    value?: any;
+  }) => Promise<{ value: string; label: string }[]>;
 };
 export const FieldTypeRelation: FC<{
+  field: FieldLocal;
+  fm: FMLocal;
+  prop: PropTypeRelation;
+  PassProp: any;
+  child: any;
+}> = (props) => {
+  if (props.prop.type === "has-one") return <HasOne {...props} />;
+  return <HasMany {...props} />;
+};
+
+const HasMany: FC<{
+  field: FieldLocal;
+  fm: FMLocal;
+  prop: PropTypeRelation;
+  PassProp: any;
+  child: any;
+}> = ({ field, fm, prop, PassProp, child }) => {
+  const input = useLocal({
+    list: null as null | any[],
+    many: [] as { value: string; label: string }[],
+    pk: "",
+  });
+  const value = fm.data[field.name];
+  field.input = input;
+  field.prop = prop;
+
+  useEffect(() => {
+    if (!isEditor && input.list === null) {
+      field.status = "loading";
+      field.render();
+
+      const callback = (arg: { items: any[]; pk: string }) => {
+        input.list = arg.items;
+        input.pk = arg.pk;
+        field.status = "ready";
+        input.render();
+      };
+      const res = prop.on_load({ value });
+      if (res instanceof Promise) res.then(callback);
+      else callback(res);
+
+      const many_list_loaded = (arg: { value: string; label: string }[]) => {
+        input.many = arg;
+        input.render();
+      };
+      const many_res = prop.has_many_list({ value });
+      if (res instanceof Promise) many_res.then(many_list_loaded);
+      else many_list_loaded(res);
+    }
+  }, []);
+
+  if (isEditor) {
+    input.many = [
+      { value: "sample 1", label: "sample 1" },
+      { value: "sample 2", label: "sample 2" },
+    ];
+  }
+
+  return (
+    <div className="c-flex c-flex-col c-p-2 c-items-stretch">
+      {input.many.map((e, idx) => {
+        return (
+          <label key={idx} className="c-flex c-items-center c-space-x-1">
+            <input type="checkbox" value={e.value} />
+            <div className="c-flex-1">{e.label}</div>
+          </label>
+        );
+      })}
+    </div>
+  );
+};
+
+const HasOne: FC<{
   field: FieldLocal;
   fm: FMLocal;
   prop: PropTypeRelation;
@@ -27,7 +104,7 @@ export const FieldTypeRelation: FC<{
   field.prop = prop;
 
   useEffect(() => {
-    if (input.list === null) {
+    if (!isEditor && input.list === null) {
       field.status = "loading";
       field.render();
 

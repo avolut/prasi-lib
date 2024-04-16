@@ -1,6 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { GFCol, createItem, formatName } from "../utils";
 import { gen_relation } from "../gen_relation/gen_relation";
+import { FMLocal } from "@/comps/form/typings";
 export const newItem = (component: {
   id: string;
   props: Record<string, string>;
@@ -29,7 +30,7 @@ export type NewFieldArg = {
   };
 };
 
-export const newField = async (arg: GFCol) => {
+export const newField = async (arg: GFCol, opt: { parent_table: string }) => {
   const childs = [];
 
   let type = "text";
@@ -62,11 +63,18 @@ export const newField = async (arg: GFCol) => {
           label: [`() => {}`],
           gen_table: arg.relation.to.table,
           gen_fields: [value, value],
+          has_many_from:
+            arg.type === "has-many" ? arg.relation.from.table : undefined,
+          has_many_list: arg.type === "has-many" ? [`null`] : undefined,
           child: {},
         },
       },
     });
-    await gen_relation(() => {}, item.component.props);
+    await gen_relation(() => {}, item.component.props, {
+      id_parent: "",
+      type: arg.type as any,
+      parent_table: opt.parent_table,
+    });
     childs.push(item);
   }
 

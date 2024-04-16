@@ -46,6 +46,7 @@ export const FieldInput: FC<{
 
           const props = found.component.props;
           let should_update = false;
+
           for (const [k, v] of Object.entries(item.component.props) as any) {
             if (props[k] && props[k].valueBuilt === v.valueBuilt) {
               continue;
@@ -88,9 +89,8 @@ export const FieldInput: FC<{
               : field.focused &&
                 "c-border-blue-700 c-outline c-outline-blue-700",
         css`
-          > div {
+          & > .field-inner {
             min-height: 35px;
-            line-height: 35px;
           }
         `
       )}

@@ -22,6 +22,7 @@ export type FMProps = {
   label_mode: "vertical" | "horizontal" | "hidden";
   label_width: number;
   gen_fields: any;
+  gen_table: string;
 };
 
 export type FieldProp = {

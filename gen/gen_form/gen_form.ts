@@ -61,7 +61,9 @@ export const gen_form = async (modify: (data: any) => void, data: any) => {
     result["body"] = data["body"];
     result.body.content.childs = [];
     for (const item of fields.filter((e) => !e.is_pk)) {
-      result.body.content.childs.push(await newField(item));
+      result.body.content.childs.push(
+        await newField(item, { parent_table: table })
+      );
     }
   }
   modify(result);

@@ -60,7 +60,10 @@ type SimplifiedItem = {
   name?: string;
   component?: {
     id: string;
-    props: Record<string, string | SimplifiedItem | [any] | [any, any]>;
+    props: Record<
+      string,
+      string | SimplifiedItem | [any] | [any, any] | undefined
+    >;
   };
   childs?: SimplifiedItem[];
   adv?: {
@@ -80,6 +83,7 @@ export const createItem = (arg: SimplifiedItem): any => {
 
     if (arg.component.props) {
       for (const [k, v] of Object.entries(arg.component.props)) {
+        if (v === undefined) continue;
         if (typeof v === "object") {
           if (Array.isArray(v) && v.length === 1) {
             component.props[k] = {

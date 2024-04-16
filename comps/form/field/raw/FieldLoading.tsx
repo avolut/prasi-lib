@@ -2,7 +2,7 @@ import { Skeleton } from "@/comps/ui/skeleton";
 
 export const FieldLoading = () => {
   return (
-    <div className="c-flex c-flex-col c-space-y-1 c-p-1 c-justify-center">
+    <div className="field-inner c-flex c-flex-col c-space-y-1 c-p-1 c-justify-center">
       <div className="c-flex c-space-x-1">
         <Skeleton
           className={css`
