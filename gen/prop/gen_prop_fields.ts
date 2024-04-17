@@ -1,4 +1,3 @@
-const cache = {} as Record<string, any>;
 const single = {} as Record<
   string,
   {
@@ -40,8 +39,6 @@ const load_single = async (table: string) => {
 };
 
 export const gen_prop_fields = async (gen_table: string) => {
-  if (cache[gen_table]) return cache[gen_table];
-
   const result: {
     label: string;
     value: string;
@@ -68,6 +65,8 @@ export const gen_prop_fields = async (gen_table: string) => {
       let options = [];
       const to = v.to;
       const from = v.from;
+      const parent_name = k;
+      const parent_rel = v;
       const { cols, rels } = await load_single(v.to.table);
       if (cols) {
         for (const [k, v] of Object.entries(cols)) {
@@ -111,6 +110,9 @@ export const gen_prop_fields = async (gen_table: string) => {
             }),
             label: k,
             options: sub_opt,
+            checked:
+              parent_rel.type === "has-many" &&
+              parent_rel.from.table === v.to.table,
           });
         }
       }
@@ -130,57 +132,3 @@ export const gen_prop_fields = async (gen_table: string) => {
 
   return result;
 };
-
-// const result: {
-//   label: string;
-//   value: string;
-//   options?: any[];
-//   checked?: boolean;
-// }[] = [];
-// const fields = await db._schema.columns(gen_table);
-// for (const [k, v] of Object.entries(fields)) {
-//   result.push({
-//     value: JSON.stringify({
-//       name: k,
-//       is_pk: v.is_pk,
-//       type: v.db_type || v.type,
-//       optional: v.optional,
-//     }),
-//     label: k,
-//     checked: v.is_pk,
-//   });
-// }
-// const rels = await db._schema.rels(gen_table);
-// for (const [k, v] of Object.entries(rels)) {
-//   let options = [];
-//   const to = v.to;
-//   const from = v.from;
-//   const fields = await db._schema.columns(v.to.table);
-//   for (const [k, v] of Object.entries(fields)) {
-//     options.push({
-//       value: JSON.stringify({
-//         name: k,
-//         is_pk: v.is_pk,
-//         type: v.db_type || v.type,
-//         optional: v.optional,
-//       }),
-//       label: k,
-//       checked: v.is_pk,
-//     });
-//   }
-//   result.push({
-//     value: JSON.stringify({
-//       name: k,
-//       is_pk: false,
-//       type: v.type,
-//       optional: true,
-//       relation: { from, to },
-//     }),
-//     label: k,
-//     options,
-//   });
-// }
-
-// if (!cache[gen_table]) {
-//   cache[gen_table] = result;
-// }

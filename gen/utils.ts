@@ -14,7 +14,7 @@ export const parseGenField = (fields: PropOptRaw) => {
       } catch (e) {}
     } else {
       const field = JSON.parse(f.value);
-      field.relation.fields = f.checked.map((e) => JSON.parse(e));
+      field.relation.fields = parseGenField(f.checked);
       result.push(field);
     }
   }

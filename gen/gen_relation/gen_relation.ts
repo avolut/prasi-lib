@@ -93,20 +93,22 @@ const genHasMany = async (
         (await gen_prop_fields(arg.parent_table)).map((e: any) => e.value)
       );
       const pk = defs.find((e) => e.is_pk);
-
-      result["has_many_list"] = data["has_many_list"];
-      result["has_many_list"].value = `\
+      if (pk) {
+        console.log(arg.parent_table);
+        result["has_many_list"] = data["has_many_list"];
+        result["has_many_list"].value = `\
 async () => {
   const result: { value: string; label: string }[] = [];
   const list = await db.${arg.parent_table}.findMany({
     select: { 
-      ${pk}: true,
+      ${pk?.name}: true,
     },
     where: { },
   });
   return result;
 }`;
-      code.has_many_list = result["has_many_list"].value;
+        code.has_many_list = result["has_many_list"].value;
+      }
     }
 
     if (data["label"]) {

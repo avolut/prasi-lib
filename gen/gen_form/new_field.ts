@@ -1,7 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
-import { GFCol, createItem, formatName } from "../utils";
 import { gen_relation } from "../gen_relation/gen_relation";
-import { FMLocal } from "@/comps/form/typings";
+import { GFCol, createItem, formatName } from "../utils";
 export const newItem = (component: {
   id: string;
   props: Record<string, string>;
@@ -48,7 +47,19 @@ export const newField = async (arg: GFCol, opt: { parent_table: string }) => {
   } else if (["has-many", "has-one"].includes(arg.type) && arg.relation) {
     type = "relation";
     const value = JSON.stringify(
-      arg.relation.fields.map((e) => JSON.stringify(e))
+      arg.relation.fields.map((e) => {
+        if (e.relation) {
+          const rel = { ...e };
+          const fields = e.relation.fields;
+          delete (e as any).relation.fields;
+          return {
+            value: JSON.stringify(e),
+            checked: fields.map((e) => JSON.stringify(e)),
+          };
+        } else {
+          return JSON.stringify(e);
+        }
+      })
     );
     const item = createItem({
       component: {
