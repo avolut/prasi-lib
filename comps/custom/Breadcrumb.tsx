@@ -34,6 +34,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
 
   if (local.status === "init") {
     let should_load = true;
+    local.status = "loading";
 
     if (isEditor && item && breadcrumbData[item.id]) {
       local.list = breadcrumbData[item.id];

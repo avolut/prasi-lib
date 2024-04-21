@@ -2,9 +2,10 @@ import { FC } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
 import { useLocal } from "@/utils/use-local";
 import parser from "any-date-parser";
+import { AutoHeightTextarea } from "@/comps/custom/AutoHeightTextarea";
 
 export type PropTypeText = {
-  type: "text" | "password" | "number" | "date" | "datetime";
+  type: "text" | "password" | "number" | "date" | "datetime" | "textarea";
 };
 
 const parse = parser.exportAsFunctionAny("en-US");
@@ -31,25 +32,46 @@ export const FieldTypeText: FC<{
 
   return (
     <>
-      <input
-        type={prop.type}
-        onChange={(ev) => {
-          fm.data[field.name] = ev.currentTarget.value;
-          fm.render();
-        }}
-        value={value || ""}
-        disabled={field.disabled}
-        className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
-        spellCheck={false}
-        onFocus={() => {
-          field.focused = true;
-          field.render();
-        }}
-        onBlur={() => {
-          field.focused = false;
-          field.render();
-        }}
-      />
+      {prop.type === "textarea" ? (
+        <AutoHeightTextarea
+          onChange={(ev) => {
+            fm.data[field.name] = ev.currentTarget.value;
+            fm.render();
+          }}
+          value={value || ""}
+          disabled={field.disabled}
+          className="c-flex-1 c-bg-transparent c-outline-none c-p-2 c-text-sm c-w-full"
+          spellCheck={false}
+          onFocus={() => {
+            field.focused = true;
+            field.render();
+          }}
+          onBlur={() => {
+            field.focused = false;
+            field.render();
+          }}
+        />
+      ) : (
+        <input
+          type={prop.type}
+          onChange={(ev) => {
+            fm.data[field.name] = ev.currentTarget.value;
+            fm.render();
+          }}
+          value={value || ""}
+          disabled={field.disabled}
+          className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
+          spellCheck={false}
+          onFocus={() => {
+            field.focused = true;
+            field.render();
+          }}
+          onBlur={() => {
+            field.focused = false;
+            field.render();
+          }}
+        />
+      )}
     </>
   );
 };

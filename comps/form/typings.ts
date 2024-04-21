@@ -73,9 +73,9 @@ export type FMInternal = {
   error: {
     readonly object: Record<string, string>;
     readonly list: { name: string; error: string[] }[];
-    set: (name: string, error: string[]) => void;
-    get: (name: string) => string[];
-    clear: (name?: string) => void;
+    set: (name: string | number | symbol, error: string[]) => void;
+    get: (name: string | number | symbol) => string[];
+    clear: (name?: string | number | symbol) => void;
   };
   internal: {
     reload: {

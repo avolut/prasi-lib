@@ -1,12 +1,13 @@
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Toaster } from "sonner";
 import { FMInternal, FMProps } from "./typings";
 import { editorFormData } from "./utils/ed-data";
 import { formInit } from "./utils/init";
 import { formReload } from "./utils/reload";
+import { getPathname } from "../../..";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
@@ -83,6 +84,13 @@ export const Form: FC<FMProps> = (props) => {
     }),
   });
 
+  useEffect(() => {
+    if (fm.status === "ready") {
+      fm.status = "init";
+      fm.render();
+    }
+  }, [getPathname()]);
+
   if (fm.status === "init") {
     formInit(fm, props);
     fm.reload();
@@ -94,6 +102,14 @@ export const Form: FC<FMProps> = (props) => {
     document.body.appendChild(elemDiv);
   }
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
+
+  if (fm.status === "resizing") {
+    setTimeout(() => {
+      fm.status = "ready";
+      fm.render();
+    }, 100);
+    return null;
+  }
 
   return (
     <form
