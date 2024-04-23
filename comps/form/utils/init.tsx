@@ -77,7 +77,9 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         }
 
         fm.internal.reload.done.map((e) => e());
-        toast.dismiss();
+        setTimeout(() => {
+          toast.dismiss();
+        }, 100);
 
         fm.status = "ready";
         fm.render();
