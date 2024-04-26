@@ -94,7 +94,6 @@ const genHasMany = async (
       );
       const pk = defs.find((e) => e.is_pk);
       if (pk) {
-        console.log(arg.parent_table);
         result["has_many_list"] = data["has_many_list"];
         result["has_many_list"].value = `\
 async () => {
