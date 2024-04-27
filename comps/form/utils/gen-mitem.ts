@@ -23,7 +23,12 @@ export const genFieldMitem = (arg: {
         ?.get("content")
         ?.get("childs");
 
-      const component = fieldMapping[field.type as "text"];
+      let component = fieldMapping[field.type as "text"];
+
+      if (!component) {
+        component = fieldMapping["text"];
+      }
+
       if (component) {
         const item = createItem({
           component: component as any,

@@ -1,5 +1,5 @@
+import { getPathname } from "@/exports";
 import { useLocal } from "@/utils/use-local";
-import get from "lodash.get";
 import { FC, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Toaster } from "sonner";
@@ -7,7 +7,6 @@ import { FMInternal, FMProps } from "./typings";
 import { editorFormData } from "./utils/ed-data";
 import { formInit } from "./utils/init";
 import { formReload } from "./utils/reload";
-import { getPathname } from "../../..";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 

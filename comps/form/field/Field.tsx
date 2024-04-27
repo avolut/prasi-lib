@@ -4,18 +4,22 @@ import { useField } from "../utils/use-field";
 import { validate } from "../utils/validate";
 import { FieldInput } from "./FieldInput";
 import { Label } from "./Label";
+import { useLocal } from "@/utils/use-local";
 
 export const Field: FC<FieldProp> = (arg) => {
   const { fm } = arg;
   const field = useField(arg);
+  const local = useLocal({ prev_val: fm.data[field.name] });
 
   const mode = fm.props.label_mode;
   const w = field.width;
 
   useEffect(() => {
-    validate(field, fm);
-    fm.events.on_change(field.name, fm.data[field.name]);
-    fm.render();
+    if (local.prev_val !== fm.data[field.name]) {
+      validate(field, fm);
+      fm.events.on_change(field.name, fm.data[field.name]);
+      fm.render();
+    }
   }, [fm.data[field.name]]);
 
   if (field.status === "init" && !isEditor) return null;

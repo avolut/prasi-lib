@@ -1,24 +1,33 @@
+import { useLocal } from "@/utils/use-local";
 import { icon } from "../icon";
 import { FC } from "react";
 
 export const TitleBack: FC<{
-  label: string;
-  url: string;
-  name_page: string;
-}> = ({ label, url, name_page }) => {
-
+  label: string | (() => Promise<string>);
+  on_back: () => void;
+}> = ({ label, on_back: on_back }) => {
+  const local = useLocal({ label: "" }, async () => {
+    if (typeof label === "function") {
+      local.label = await label();
+    } else {
+      local.label = label;
+    }
+    local.render();
+  });
   return (
-    <div className="c-bg-gray-100 c-px-2 c-w-full c-h-[20px] c-flex  c-py-2">
+    <div className="c-bg-white c-px-2 c-w-full c-min-h-[20px] c-flex c-py-2">
       <div
         className="c-mr-2 hover:c-cursor-pointer"
         onClick={() => {
-          navigate(`${url}`);
+          if (typeof on_back === "function") {
+            on_back();
+          }
         }}
       >
         {icon.left}
       </div>
 
-      <div>{label || "-"}</div>
+      <div>{local.label || "-"}</div>
     </div>
   );
 };

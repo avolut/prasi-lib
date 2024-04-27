@@ -29,9 +29,15 @@ export const FieldInput: FC<{
   );
 
   let found = null as any;
+
   if (childs && childs.length > 0 && field.type !== "custom") {
     for (const child of childs) {
-      const mp = (fieldMapping as any)[field.type];
+      let mp = (fieldMapping as any)[field.type];
+
+      if (!mp) {
+        mp = (fieldMapping as any)["text"];
+      }
+
       if (child.component?.id === mp.id) {
         found = child;
 
@@ -81,13 +87,12 @@ export const FieldInput: FC<{
               border-color: transparent;
             `
           : field.disabled
-            ? "c-border-gray-100"
-            : errors.length > 0
-              ? field.focused
-                ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
-                : "c-border-red-600 c-bg-red-50"
-              : field.focused &&
-                "c-border-blue-700 c-outline c-outline-blue-700",
+          ? "c-border-gray-100"
+          : errors.length > 0
+          ? field.focused
+            ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
+            : "c-border-red-600 c-bg-red-50"
+          : field.focused && "c-border-blue-700 c-outline c-outline-blue-700",
         css`
           & > .field-inner {
             min-height: 35px;
