@@ -167,7 +167,6 @@ const saveSchemaOnStorage = (res: any, id_site: string, table: string) => {
       ...schemaSite,
       [table]: JSON.stringify(res),
     };
-    console.log({schema_master_detail})
     localStorage.setItem(keys, JSON.stringify(schema_master_detail));
   } catch (e: any) {
     console.error(e.message);

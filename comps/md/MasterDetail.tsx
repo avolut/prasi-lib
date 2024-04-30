@@ -104,7 +104,7 @@ export const MasterDetail: FC<{
     masterDetailInit(md, child, editor_tab);
     masterDetailSelected(md);
   }
-  if (isGenerate) return <>Generating Master Detail...</>;
+  if (isGenerate) return <>Generating ...</>;
   return (
     <div
       className={cx(
