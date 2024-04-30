@@ -23,6 +23,7 @@ export type FMProps = {
   label_width: number;
   gen_fields: any;
   gen_table: string;
+  on_load_deps?: any[];
 };
 
 export type FieldProp = {

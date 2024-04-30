@@ -12,7 +12,7 @@ export const useField = (arg: FieldProp) => {
   } as any);
 
   const update_field = {
-    name: arg.name,
+    name: arg.name.replace(/\s*/gi, ""),
     label: arg.label,
     type: arg.type,
     desc: arg.desc,

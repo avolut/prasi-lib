@@ -90,6 +90,16 @@ export const Form: FC<FMProps> = (props) => {
     }
   }, [getPathname()]);
 
+  useEffect(
+    () => {
+      if (fm.status === "ready") {
+        fm.status = "init";
+        fm.render();
+      }
+    },
+    Array.isArray(props.on_load_deps) ? props.on_load_deps : []
+  );
+
   if (fm.status === "init") {
     formInit(fm, props);
     fm.reload();

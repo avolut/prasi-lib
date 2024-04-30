@@ -9,7 +9,7 @@ export const longDate = (date: string | Date) => {
 
 export const shortDate = (date: string | Date) => {
   if (date instanceof Date || typeof date === "string") {
-    return format(date, "P");
+    return format(date, "dd MMM yyyy");
   }
   return "-";
 };
