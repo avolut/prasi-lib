@@ -33,7 +33,7 @@ export const newField = async (arg: GFCol, opt: { parent_table: string }) => {
   const childs = [];
 
   let type = "text";
-  if (["int", "string"].includes(arg.type)) {
+  if (["int", "string", "text"].includes(arg.type)) {
     childs.push(
       createItem({
         component: {
@@ -87,6 +87,20 @@ export const newField = async (arg: GFCol, opt: { parent_table: string }) => {
       parent_table: opt.parent_table,
     });
     childs.push(item);
+  } else {
+    // type not found,
+    console.warn("Type not found", type);
+    type = "text";
+    childs.push(
+      createItem({
+        component: {
+          id: "ca7ac237-8f22-4492-bb9d-4b715b1f5c25",
+          props: {
+            type: "text",
+          },
+        },
+      })
+    );
   }
 
   const item = createItem({

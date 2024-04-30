@@ -94,6 +94,8 @@ type Init = { submit: () => Promise<boolean>; reload: () => void }
           props: {
             breadcrumb: res.breadcrumb,
             actions: res.actions,
+            name: "detail",
+            label: "Detail",
           },
         },
       });

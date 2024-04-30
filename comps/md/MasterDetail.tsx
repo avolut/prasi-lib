@@ -11,6 +11,10 @@ import {
 import { masterDetailInit, masterDetailSelected } from "./utils/md-init";
 import { MDLocal, MDLocalInternal, MDRef } from "./utils/typings";
 
+const w = window as unknown as {
+  generating_prasi_md: Record<string, true>;
+};
+
 export const MasterDetail: FC<{
   child: any;
   PassProp: any;
@@ -34,6 +38,19 @@ export const MasterDetail: FC<{
   gen_table,
   on_init,
 }) => {
+  let isGenerate = false as Boolean;
+  try{
+    console.log("MASUK");
+    isGenerate = false;
+    if (w.generating_prasi_md["master_detail"]){
+      isGenerate = true;
+    }
+  }catch(ex){
+
+  }
+  console.log(isGenerate);
+  if (w.generating_prasi_md && w.generating_prasi_md["xxxx"])
+    return "generating";
   const _ref = useRef({ PassProp, child });
   const md = useLocal<MDLocalInternal>({
     name,
@@ -92,7 +109,8 @@ export const MasterDetail: FC<{
     masterDetailInit(md, child, editor_tab);
     masterDetailSelected(md);
   }
-
+  console.log("MASUK?");
+  if(isGenerate) return <>Generate Master Detail...</>
   return (
     <div
       className={cx(
@@ -112,7 +130,6 @@ const ModeFull: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   if (should_show_tab(md)) {
     return <MDTab md={md} mdr={mdr} />;
   }
-
   return (
     <>
       {!md.selected && <Master md={md} mdr={mdr} />}
