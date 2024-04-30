@@ -27,7 +27,7 @@ export const TitleBack: FC<{
         {icon.left}
       </div>
 
-      <div>{local.label || "-"}</div>
+      <div className="c-font-bold">{local.label || "-"}</div>
     </div>
   );
 };
