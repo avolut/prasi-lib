@@ -39,18 +39,13 @@ export const MasterDetail: FC<{
   on_init,
 }) => {
   let isGenerate = false as Boolean;
-  try{
-    console.log("MASUK");
+  try {
     isGenerate = false;
-    if (w.generating_prasi_md["master_detail"]){
+    if (w.generating_prasi_md["master_detail"]) {
       isGenerate = true;
     }
-  }catch(ex){
+  } catch (ex) {}
 
-  }
-  console.log(isGenerate);
-  if (w.generating_prasi_md && w.generating_prasi_md["xxxx"])
-    return "generating";
   const _ref = useRef({ PassProp, child });
   const md = useLocal<MDLocalInternal>({
     name,
@@ -109,8 +104,7 @@ export const MasterDetail: FC<{
     masterDetailInit(md, child, editor_tab);
     masterDetailSelected(md);
   }
-  console.log("MASUK?");
-  if(isGenerate) return <>Generate Master Detail...</>
+  if (isGenerate) return <>Generating Master Detail...</>;
   return (
     <div
       className={cx(

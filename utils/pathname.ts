@@ -19,3 +19,10 @@ export const getPathname = (url?: string) => {
   // }
   return location.pathname;
 };
+
+export const getBasename = () => {
+  if (location.pathname.startsWith("/prod")) {
+    return location.pathname.split("/").slice(0, 3).join("/");
+  }
+  return "";
+};
