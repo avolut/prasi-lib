@@ -12,7 +12,6 @@ export const gen_master_detail: GenFn<GenMasterDetailArg> = async (
   data,
   arg
 ) => {
-  console.log("LAGI GENERATE");
   w.generating_prasi_md = {
     "master_detail": true
   };
