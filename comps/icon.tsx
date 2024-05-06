@@ -43,7 +43,7 @@ import {
   Volume2,
   Wallet,
   Workflow,
-  X
+  X,
 } from "lucide-react";
 
 export const icon = {
@@ -87,7 +87,6 @@ export const icon = {
   package: <Package />,
   block: <Blocks />,
   megaphone: <Megaphone />,
-  pointer: <MousePointerSquare />,
   policy: <Siren />,
   ship: <Ship />,
   heart: <HeartHandshake />,
