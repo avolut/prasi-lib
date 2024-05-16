@@ -12,3 +12,5 @@ export { Breadcrumb } from "./comps/custom/Breadcrumb";
 export { Header } from "./comps/custom/Header";
 export { Carousel } from "./comps/custom/Carousel";
 export { Tree } from "./comps/list/Tree";
+export {MasterFilter} from "./comps/filter/Filter"
+export * from "./data";

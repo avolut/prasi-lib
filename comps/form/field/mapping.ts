@@ -26,4 +26,5 @@ export const fieldMapping: {
       return {};
     },
   },
+  switch: { id: ""},
 };

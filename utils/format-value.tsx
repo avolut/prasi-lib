@@ -10,7 +10,6 @@ export const FormatValue: FC<{
   tree_depth?: number;
 }> = (prop) => {
   const { value, gen_fields, name, tree_depth } = prop;
-
   if (gen_fields) {
     const gf = JSON.stringify(gen_fields);
     if (!fields_map.has(gf)) {
@@ -22,7 +21,16 @@ export const FormatValue: FC<{
           } else {
             return {
               ...JSON.parse(e.value),
-              checked: e.checked.map(JSON.parse),
+              checked: e.checked.map((ex: any) => {
+                if(typeof ex === "string"){
+                  return JSON.parse(e.value)
+                }
+                try{
+                  return JSON.parse(ex["value"]);
+                }catch(em){
+                  return null
+                }
+              }),
             };
           }
         })

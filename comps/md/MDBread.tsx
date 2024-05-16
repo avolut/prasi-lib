@@ -4,7 +4,7 @@ import { MDLocal } from "./utils/typings";
 import { BreadItem } from "../custom/Breadcrumb";
 
 export const refreshBread = (md: MDLocal) => {
-  const bread = useLocal({
+  const local = useLocal({
     crumb: null as any,
     last_render: Date.now(),
     selected: null as any,
@@ -12,16 +12,16 @@ export const refreshBread = (md: MDLocal) => {
 
   if (isEditor) {
     refreshBreadInternal(md, () => {
-      if (Date.now() - bread.last_render > 1000) {
+      if (Date.now() - local.last_render > 1000) {
         md.render();
       }
-      bread.last_render = Date.now();
+      local.last_render = Date.now();
     });
   } else {
-    if (bread.crumb !== md.breadcrumb || md.selected !== bread.selected) {
+    if (local.crumb !== md.breadcrumb || md.selected !== local.selected) {
       refreshBreadInternal(md, () => {
-        bread.crumb = md.breadcrumb;
-        bread.selected = md.selected;
+        local.crumb = md.breadcrumb;
+        local.selected = md.selected;
         md.render();
       });
     }
@@ -29,8 +29,8 @@ export const refreshBread = (md: MDLocal) => {
 };
 
 const refreshBreadInternal = (md: MDLocal, callback: () => void) => {
-  let mode = "master";
 
+  let mode = "master";
   if (isEditor) {
     mode = md.props.editor_tab;
   } else {
@@ -41,11 +41,12 @@ const refreshBreadInternal = (md: MDLocal, callback: () => void) => {
       mode = md.tab.active;
     }
   }
-
   if (mode === "master") {
     const master_bread = getProp(md.master.internal, "breadcrumb", { md });
     if (master_bread instanceof Promise) {
-      master_bread.then((e) => done(md, e, callback));
+      master_bread.then((e) => {
+        done(md, e, callback);
+      });
     } else {
       done(md, master_bread, callback);
     }

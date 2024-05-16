@@ -4,8 +4,21 @@ import { createItem, formatName } from "../utils";
 import { gen_form } from "../gen_form/gen_form";
 
 export const genForm = async (arg: GenMasterDetailArg, data: any) => {
+  // tambahi kondisi, jika gk nemu component tab detail maka update tab detail atau bikin baru
+  const childs_form = data.child.content.childs || [];
+  const tab_form = childs_form.filter((c: any) => c.component?.id === "cb52075a-14ab-455a-9847-6f1d929a2a73" && c.component.props.name.value.replaceAll("\"","") === "detail")
   for (const c of get(data, "child.content.childs") || []) {
     if (c.component?.id === "cb52075a-14ab-455a-9847-6f1d929a2a73") {
+      // passing khusus tab detail, biar tab lain gk di rewrite.
+      let passing = false;
+      if(!tab_form.length){
+        passing = true;
+      }else{
+        const name_tab = c.component.props.name.value.replaceAll("\"","");
+        passing = name_tab === "detail"
+      }
+      if(passing){
+        
       const res = await codeBuild({
         breadcrumb: `\
 async () => {
@@ -14,6 +27,7 @@ async () => {
       label: "List ${formatName(arg.gen_table)}",
       onClick: () => {
         md.selected = null;
+        md.tab.active = "";
         md.internal.action_should_refresh = true;
         md.params.apply();
         md.render();
@@ -65,27 +79,36 @@ type ActionItem =
       onClick?: (e: any) => Promise<void>;
     }
   | React.ReactNode`,
-        on_init: `\
-async ({ submit, reload }: Init) => {
-  const tab = md.childs[md.tab.active];
-  if (tab) {
-    const actions = await getProp(tab.internal, "actions", { md });
-    if (Array.isArray(actions)) {
-      const save_btn = actions 
-          .filter((e) => e)
-          .find((e) => e.action === "save");
-      if (save_btn) {
-        save_btn.onClick = async () => {
-          await submit();
-        };
-        md.actions = actions;
-        md.render();
-      }
-    }
-  }
-};
+//         on_init: `\
+// async ({ submit, reload }: Init) => {
+//   const tab = md.childs[md.tab.active];
+//   if (tab) {
+//     const actions = await getProp(tab.internal, "actions", { md });
+//     if (Array.isArray(actions)) {
+//       const save_btn = actions 
+//           .filter((e) => e)
+//           .find((e) => e.action === "save");
+//       if (save_btn) {
+//         save_btn.onClick = async () => {
+//           await submit();
+//         };
+//         md.actions = actions;
+//         md.render();
+//       }
+//     }
+//   }
+// };
 
-type Init = { submit: () => Promise<boolean>; reload: () => void }
+// type Init = { submit: () => Promise<boolean>; reload: () => void }
+// `,
+on_init: `\
+async ({ submit, reload, fm }: Init) => {
+  if (typeof md === "object") {
+    md.childs["form"] = {} as any;
+    md.childs["form"]["fm"] = fm;
+  }
+}
+type Init = { submit: () => Promise<boolean>; reload: () => void; fm:any }
 `,
       });
       const comp = createItem({
@@ -102,7 +125,6 @@ type Init = { submit: () => Promise<boolean>; reload: () => void }
       for (const [k, v] of Object.entries(comp.component.props)) {
         c.component.props[k] = v;
       }
-
       const childs = get(c, "component.props.child.content.childs") || [];
       childs.length = 0;
       childs.push(
@@ -129,6 +151,7 @@ type Init = { submit: () => Promise<boolean>; reload: () => void }
       const data = childs[0].component.props;
       const modify = async (props: any) => {};
       await gen_form(modify, data);
+      }
     }
   }
 };

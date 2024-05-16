@@ -1,4 +1,4 @@
-import { MDLocal } from "./typings";
+import { MDLocal, w } from "./typings";
 import { getProp } from "./get-prop";
 import get from "lodash.get";
 import { parseGenField } from "@/gen/utils";
@@ -12,6 +12,7 @@ export const masterDetailInit = (
     child,
     "props.meta.item.component.props.child.content.childs"
   );
+
   if (Array.isArray(childs)) {
     md.master.internal = null;
     md.childs = {};
@@ -51,7 +52,6 @@ export const masterDetailInit = (
               hide() {},
               show() {},
               render() {},
-              data: {},
             };
           }
         }

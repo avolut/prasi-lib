@@ -26,21 +26,21 @@ export const MDAction: FC<{ md: MDLocal; PassProp: any; child: any }> = ({
       });
     }
   }
-
   return (
     <div
       className={cx(
         "c-flex c-flex-row c-space-x-1 c-items-stretch c-self-stretch c-h-full"
       )}
     >
-      {md.actions.map((e, idx) => {
+      {child}
+      {/* {md.actions.map((e, idx) => {
         if (isValidElement(e)) {
           return <Fragment key={idx}>{e}</Fragment>;
         }
         if (typeof e === "object" && (e.action || e.label)) {
           return <PassProp item={e}>{child}</PassProp>;
         }
-      })}
+      })} */}
     </div>
   );
 };
@@ -62,7 +62,6 @@ const refreshActionInternal = (md: MDLocal, callback: () => void) => {
       mode = md.tab.active;
     }
   }
-
   if (mode === "master") {
     const master_bread = getProp(md.master.internal, "actions", { md });
     if (master_bread instanceof Promise) {

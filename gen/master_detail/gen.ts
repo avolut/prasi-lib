@@ -1,4 +1,5 @@
 import { PropOptRaw, GenFn, parseGenField, parseOpt } from "../utils";
+import { genAtions } from "./gen-action";
 import { genForm } from "./gen-form";
 import { genList } from "./gen-list";
 import { GenMasterDetailArg } from "./utils";
@@ -34,7 +35,5 @@ export const gen_master_detail: GenFn<GenMasterDetailArg> = async (
 
   delete w.generating_prasi_md["master_detail"];
   modify(result);
-  
-  console.log("LAGI GENERATE");
 
 };

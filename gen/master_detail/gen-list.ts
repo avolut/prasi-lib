@@ -5,6 +5,7 @@ import { gen_table_list } from "../gen_table_list/gen_table_list";
 export const genList = async (arg: GenMasterDetailArg, data: any) => {
   for (const c of get(data, "child.content.childs") || []) {
     if (c.component?.id === "c68415ca-dac5-44fe-aeb6-936caf8cc491") {
+      
       const res = await codeBuild({
         row_click: `\
 ({ row, rows, idx, event }: OnRowClick) => {
@@ -21,6 +22,32 @@ type OnRowClick = {
   event: React.MouseEvent<HTMLDivElement, MouseEvent>;
 }
 `,
+        selected: `\
+({ row, rows, idx }: SelectedRow) => {
+  try {
+    if (typeof md === "object") {
+      if (Array.isArray(md.selected)) {
+        if (md.selected.length) {
+          let select = md.selected.find((e) => e === row)
+          if(select) return true
+        }
+      } else {
+        if (md.selected === row) {
+          return true;
+        }
+      }
+    }
+  } catch (e) {
+    
+  }
+  return false;
+};
+
+type SelectedRow = {
+  row: any;
+  rows: any[];
+  idx: any;
+}`,
         breadcrumb: `\
 async () => {
   return [{ label: "List ${formatName(arg.gen_table)}" }] as BreadItem[];
@@ -75,9 +102,9 @@ type ActionItem =
               name: arg.gen_table,
               gen_table: arg.gen_table,
               generate: "y",
-              selected: "",
               on_load: "",
               row_click: res.row_click,
+              selected: res.selected,
               gen_fields: [JSON.stringify(arg.gen_fields)],
               child: {
                 childs: [],

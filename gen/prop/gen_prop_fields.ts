@@ -48,7 +48,6 @@ export const gen_prop_fields = async (gen_table: string) => {
     id_site = window.location.hostname;
   }
   const schema = getSchemaOnStorage(id_site, gen_table);
-  console.log({schema})
   if (!schema) {
     const result: {
       label: string;
@@ -155,13 +154,12 @@ export const gen_prop_fields = async (gen_table: string) => {
 
 const saveSchemaOnStorage = (res: any, id_site: string, table: string) => {
   let schemaSite = null;
-  let schema_master_detail: Record<string, any> = {}
-  const keys = `schema-md-${id_site}`
+  let schema_master_detail: Record<string, any> = {};
+  const keys = `schema-md-${id_site}`;
   try {
     let smd = localStorage.getItem(keys) as string;
     schemaSite = JSON.parse(smd);
-  } catch (error) {
-  }
+  } catch (error) {}
   try {
     schema_master_detail = {
       ...schemaSite,
@@ -171,16 +169,15 @@ const saveSchemaOnStorage = (res: any, id_site: string, table: string) => {
   } catch (e: any) {
     console.error(e.message);
   }
-}
+};
 const getSchemaOnStorage = (id_site: string, table: string) => {
-  const keys = `schema-md-${id_site}`
+  const keys = `schema-md-${id_site}`;
   let schemaSite = null;
   try {
     let smd = localStorage.getItem(keys) as string;
     schemaSite = JSON.parse(smd);
-  } catch (error) {
-  }
+  } catch (error) {}
   const schema = get(schemaSite, `${table}`);
-  if(schema) return JSON.parse(schema);
-  return null
-}
+  if (schema) return JSON.parse(schema);
+  return null;
+};

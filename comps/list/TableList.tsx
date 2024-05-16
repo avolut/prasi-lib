@@ -3,11 +3,15 @@ import { fields_map } from "@/utils/format-value";
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
 import { Loader2 } from "lucide-react";
-import { FC, useEffect } from "react";
+import { ChangeEvent, FC, MouseEvent, useEffect, useState } from "react";
 import DataGrid, {
   ColumnOrColumnGroup,
   Row,
   SortColumn,
+  SelectColumn,
+  textEditor,
+  RenderCheckboxProps,
+  SELECT_COLUMN_KEY,
 } from "react-data-grid";
 import "react-data-grid/lib/styles.css";
 import { createPortal } from "react-dom";
@@ -21,9 +25,9 @@ type OnRowClick = (arg: {
   row: any;
   rows: any[];
   idx: any;
-  event: React.MouseEvent<HTMLDivElement, MouseEvent>;
+  event: React.MouseEvent<HTMLDivElement>;
 }) => void;
-
+type SelectedRow = (arg: { row: any; rows: any[]; idx: any }) => boolean;
 type TableListProp = {
   child: any;
   PassProp: any;
@@ -34,28 +38,60 @@ type TableListProp = {
     paging: { take: number; skip: number };
     mode: "count" | "query";
   }) => Promise<any[]>;
-  mode: "table" | "list" | "grid";
+  on_init: (arg?: any) => any;
+  mode: "table" | "list" | "grid" | "auto";
   _meta: Record<string, any>;
   gen_fields: string[];
   row_click: OnRowClick;
+  selected: SelectedRow;
   id_parent?: string;
+  feature?: Array<any>;
+  filter_name: string;
 };
+const w = window as any;
+const selectCellClassname = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
+  > input {
+    margin: 0;
+  }
+`;
 export const TableList: FC<TableListProp> = ({
   name,
   on_load,
   child,
   PassProp,
   mode,
+  on_init,
   _meta,
   gen_fields,
   row_click,
+  selected,
   id_parent,
+  feature,
+  filter_name,
 }) => {
+  console.log( `prasi_filter.${filter_name}`)
+  const where = get(w, `prasi_filter.${filter_name}`);
+  console.log(w.prasi_filter)
+  if (mode === "auto") {
+    if (w.isMobile) {
+      mode = "list";
+    } else {
+      mode = "table";
+    }
+  }
   const local = useLocal({
+    selectedRows: [] as {
+      pk: string | number;
+      rows: any;
+    }[],
     el: null as null | HTMLDivElement,
     width: 0,
     height: 0,
+    selectedRowIds: [] as (string | number)[],
     rob: new ResizeObserver(([e]) => {
       local.height = e.contentRect.height;
       local.width = e.contentRect.width;
@@ -66,6 +102,7 @@ export const TableList: FC<TableListProp> = ({
     scrolled: false,
     data: [] as any[],
     status: "init" as "loading" | "ready" | "resizing" | "reload" | "init",
+    where: null as any,
     paging: {
       take: 0,
       skip: 0,
@@ -134,10 +171,12 @@ export const TableList: FC<TableListProp> = ({
       >,
     },
   });
-
+  // code ini digunakan untuk mengambil nama dari pk yang akan digunakan sebagai key untuk id
+  const pk = local.pk?.name || "id";
   useEffect(() => {
     if (isEditor) return;
     (async () => {
+      on_init(local);
       if (local.status === "reload" && typeof on_load === "function") {
         local.status = "loading";
         local.render();
@@ -145,13 +184,13 @@ export const TableList: FC<TableListProp> = ({
         const orderBy = local.sort.orderBy || undefined;
         const load_args: any = {
           async reload() {},
+          where,
           orderBy,
           paging: { take: local.paging.take, skip: local.paging.skip },
         };
         if (id_parent) {
           load_args.paging = {};
         }
-
         const result = on_load({ ...load_args, mode: "query" });
         const callback = (data: any[]) => {
           if (local.paging.skip === 0) {
@@ -172,11 +211,67 @@ export const TableList: FC<TableListProp> = ({
     child,
     "props.meta.item.component.props.child.content.childs"
   );
-
   let childs: any[] = [];
 
+  let checkedBox: any[] = [];
+
   let sub_name = "fields";
-  if (mode === "table") sub_name = "columns";
+  // if (mode === "table") sub_name = "columns";
+
+  switch (mode) {
+    case "table":
+      sub_name = "tbl-col";
+      break;
+    case "list":
+      sub_name = "md-list";
+      break;
+  }
+
+  // passing local data ke variable baru (biar gak panjang nulisnya hehe)
+  let rowData = local.data;
+
+  // function untuk menghandle checkbox di header (digunakan untuk check all)
+  const headerCheckboxClick = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      // jika checbox checked, maka semua rowData akan dimasukkan ke dalam local selected rows
+      rowData.forEach((data) => {
+        local.selectedRows.push({
+          pk: data[pk],
+          rows: data,
+        });
+      });
+      local.render();
+    } else {
+      // jika tidak, maka local selected rows akan dikosongkan
+      local.selectedRows = [];
+      local.render();
+    }
+  };
+
+  // function untuk menghandle checkbox pada setiap row (digunakan untuk check setiap rowData)
+  const checkboxClick = (rowId: any) => (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const checked = !!local.selectedRows.find((data) => data.pk === rowId);
+    console.log(checked);
+    if (!checked) {
+      // jika checkbox tercheck, maka rowData akan diambil jika memiliki id yang sama dengan rowId yang dikirim
+      const checkedRowData = rowData.filter((row) => row[pk] === rowId);
+      local.selectedRows.push({
+        pk: rowId,
+        rows: checkedRowData,
+      });
+      local.render();
+      console.log("selected", local.selectedRows);
+    } else {
+      // jika tidak, maka akan dihapus
+      local.selectedRows = local.selectedRows.filter(
+        (data) => data.pk !== rowId
+      );
+      local.render();
+      console.log("deselected", local.selectedRows);
+    }
+  };
 
   const mode_child = raw_childs.find(
     (e: any) => e.name === sub_name || e.name === mode
@@ -187,12 +282,57 @@ export const TableList: FC<TableListProp> = ({
       childs = meta.item.childs;
     }
   }
-
-  const columns: ColumnOrColumnGroup<any>[] = [];
+  let columns: ColumnOrColumnGroup<any>[] = [];
+  let isCheckbox = false;
+  try {
+    if (feature?.find((e) => e === "checkbox")) isCheckbox = true;
+  } catch (e) {}
+  if (childs.length && isCheckbox) {
+    columns.push({
+      key: SELECT_COLUMN_KEY,
+      name: "",
+      width: 35,
+      minWidth: 35,
+      maxWidth: 35,
+      resizable: false,
+      sortable: false,
+      frozen: true,
+      renderHeaderCell(props) {
+        return <input type="checkbox" onChange={headerCheckboxClick} />;
+      },
+      renderCell(props) {
+        // digunakan untuk mengecek apakah local selected rows memiliki pk dari props.row.id
+        const isChecked = local.selectedRows.some(
+          (checked) => checked.pk === props.row.id
+        );
+        return (
+          <div
+            onClick={checkboxClick(props.row.id)}
+            className={cx(
+              css`
+                width: 100%;
+                height: 100%;
+              `,
+              "c-flex c-items-center c-justify-center"
+            )}
+          >
+            <input
+              className="c-pointer-events-none"
+              type="checkbox"
+              checked={isChecked}
+            />
+          </div>
+        );
+      },
+      headerCellClass: selectCellClassname,
+      cellClass: selectCellClassname,
+    });
+  }
   for (const child of childs) {
     const key = getProp(child, "name", {});
     const name = getProp(child, "title", {});
     const width = parseInt(getProp(child, "width", {}));
+
     columns.push({
       key,
       name,
@@ -216,6 +356,10 @@ export const TableList: FC<TableListProp> = ({
         );
       },
     });
+  }
+  if (mode === "list") {
+    // ambil satu index saja;
+    if (columns.length > 1) columns = columns.slice(0, 0 + 1);
   }
 
   if (local.status === "resizing" && !isEditor) {
@@ -264,6 +408,7 @@ export const TableList: FC<TableListProp> = ({
     if (local.data.length === 0) {
       const load_args: any = {
         async reload() {},
+        where,
         paging: { take: local.paging.take, skip: local.paging.skip },
       };
 
@@ -281,7 +426,6 @@ export const TableList: FC<TableListProp> = ({
   if (id_parent && local.pk && local.sort.columns.length === 0) {
     data = sortTree(local.data, id_parent, local.pk.name);
   }
-
   if (mode === "table") {
     return (
       <div
@@ -342,7 +486,12 @@ export const TableList: FC<TableListProp> = ({
                     : {
                         renderRow(key, props) {
                           const is_selected = selected_idx === props.rowIdx;
-
+                          const isSelect = selected({
+                            idx: props.rowIdx,
+                            row: props.row,
+                            rows: local.data,
+                          });
+                          // return "halo"
                           return (
                             <Row
                               key={key}
@@ -360,10 +509,10 @@ export const TableList: FC<TableListProp> = ({
                                   });
                                 }
                               }}
-                              isRowSelected={is_selected}
+                              isRowSelected={true}
                               className={cx(
                                 props.className,
-                                is_selected && "row-selected"
+                                isSelect && "row-selected"
                               )}
                             />
                           );
@@ -385,6 +534,78 @@ export const TableList: FC<TableListProp> = ({
                       }
                 }
               />
+            </>
+          )}
+        </div>
+      </div>
+    );
+  } else if (mode === "list") {
+    return (
+      <div
+        className={cx(
+          "c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
+          dataGridStyle(local)
+        )}
+        ref={(el) => {
+          if (!local.el && el) {
+            local.el = el;
+            local.rob.observe(el);
+          }
+        }}
+      >
+        <div className="c-absolute c-inset-0">
+          {toaster_el && createPortal(<Toaster cn={cn} />, toaster_el)}
+          {local.status === "init" ? (
+            <DataGrid
+              style={{ opacity: 0 }}
+              columns={[
+                {
+                  key: "_",
+                  name: "",
+                  renderCell({ rowIdx }) {
+                    if (local.paging.take < rowIdx) {
+                      local.paging.take = rowIdx;
+                    }
+                    clearTimeout(local.paging.timeout);
+                    local.paging.timeout = setTimeout(() => {
+                      local.status = "reload";
+                      local.paging.take = local.paging.take * 5;
+                      local.render();
+                    }, 100);
+                    return <></>;
+                  },
+                },
+              ]}
+              rows={genRows(200)}
+            />
+          ) : (
+            <>
+              <div
+                className="w-full h-full overflow-y-auto"
+                onScroll={local.paging.scroll}
+              >
+                {data.map((e, idx) => {
+                  return (
+                    <div
+                      className="flex-grow hover:c-bg-[#e2f1ff]"
+                      onClick={(ev) => {
+                        if (!isEditor && typeof row_click === "function") {
+                          row_click({
+                            event: ev,
+                            idx: idx,
+                            row: e,
+                            rows: local.data,
+                          });
+                        }
+                      }}
+                    >
+                      <PassProp idx={idx} row={e} col={{}} rows={local.data}>
+                        {child}
+                      </PassProp>
+                    </div>
+                  );
+                })}
+              </div>
             </>
           )}
         </div>

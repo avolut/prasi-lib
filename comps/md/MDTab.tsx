@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { MDLocal, MDRef } from "./utils/typings";
+import { MDLocal, MDRef, w } from "./utils/typings";
 import { MDHeader } from "./MDHeader";
 
 export const should_show_tab = (md: MDLocal) => {
@@ -15,7 +15,6 @@ export const MDTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   if (!detail) {
     return null;
   }
-
   return (
     <>
       {md.props.show_head === "only-child" && <MDHeader md={md} mdr={mdr} />}
@@ -68,7 +67,9 @@ export const MDNavTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
             )}
             key={tab_name}
             onClick={() => {
-              if (isEditor) return;
+              if (isEditor) {
+                return;
+              }
               md.tab.active = tab_name;
               md.params.apply();
               md.render();

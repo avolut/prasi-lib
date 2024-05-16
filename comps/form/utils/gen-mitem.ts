@@ -22,7 +22,6 @@ export const genFieldMitem = (arg: {
         ?.get("child")
         ?.get("content")
         ?.get("childs");
-
       let component = fieldMapping[field.type as "text"];
 
       if (!component) {

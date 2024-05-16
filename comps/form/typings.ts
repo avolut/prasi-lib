@@ -6,6 +6,7 @@ import { editorFormData } from "./utils/ed-data";
 import { PropTypeText } from "./field/type/TypeText";
 import { PropTypeRelation } from "./field/type/TypeRelation";
 import { getProp } from "../../..";
+import { PropTypeSwitch } from "./field/type/TypeSwitch";
 
 export type FMProps = {
   on_init: (arg: { fm: FMLocal; submit: any; reload: any }) => any;
@@ -32,7 +33,7 @@ export type FieldProp = {
   desc?: string;
   props?: any;
   fm: FMLocal;
-  type: "text" | "relation";
+  type: "text" | "relation" | "switch" | "input" | "single-option"| "multi-option";
   // | "number"
   // | "textarea"
   // | "dropdown"
@@ -59,6 +60,10 @@ export type FieldProp = {
   _item: any;
   _sync: any;
   custom?: () => CustomField;
+  on_load: () => any | Promise<any>;
+  on_row: (row: any) => string;
+  pk: string;
+  sub_type: string;
 };
 
 export type FMInternal = {
@@ -103,6 +108,7 @@ type FieldInternalProp = {
   text: PropTypeText;
   number: PropTypeText;
   relation: PropTypeRelation;
+  switch: PropTypeSwitch;
 };
 
 export type FieldInternal<T extends FieldProp["type"]> = {

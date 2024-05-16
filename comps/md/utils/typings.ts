@@ -1,6 +1,15 @@
 import { BreadItem } from "@/comps/custom/Breadcrumb";
+import { FMLocal } from "@/comps/form/typings";
 import { GFCol } from "@/gen/utils";
 import { ReactNode } from "react";
+
+type ID_MASTER_DETAIL = string;
+export const w = window as unknown as {
+  generating_prasi_md: Record<string, true>;
+  md_panel_master: any;
+  md_active_tab: Record<ID_MASTER_DETAIL, string>;
+  md_internal: Record<string, any>;
+};
 
 export type MDActions = {
   action?: string;
@@ -44,9 +53,15 @@ export type MDLocalInternal = {
       show: () => void;
       render: () => void;
       internal: any;
-      data: any;
+      fm?: FMLocal;
+      md?: MDLocal;
+      list?: any;
     }
   >;
+  panel: {
+    size: number;
+    min_size: number;
+  };
 };
 export type MDRef = { PassProp: any; child: any };
 export type MDLocal = MDLocalInternal & { render: (force?: boolean) => void };
@@ -108,6 +123,8 @@ export const MasterDetailType = `const md = {
       render: () => void;
       internal: any;
       data: any;
+      fm?: fm;
+      md?: md;
     }
   >;
 };`;

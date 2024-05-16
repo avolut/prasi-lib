@@ -25,10 +25,8 @@ export const Field: FC<FieldProp> = (arg) => {
   if (field.status === "init" && !isEditor) return null;
 
   const errors = fm.error.get(field.name);
-
   const props = { ...arg.props };
   delete props.className;
-
   return (
     <label
       className={cx(
@@ -59,6 +57,7 @@ export const Field: FC<FieldProp> = (arg) => {
           _meta={arg._meta}
           _item={arg._item}
           _sync={arg._sync}
+          arg={arg}
         />
         {field.desc && (
           <div className={cx("c-p-2 c-text-xs", errors.length > 0 && "c-pb-1")}>

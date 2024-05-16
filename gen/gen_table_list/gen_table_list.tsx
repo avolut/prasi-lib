@@ -1,12 +1,12 @@
 import capitalize from "lodash.capitalize";
-import { createItem, parseGenField } from "../utils";
+import { GFCol, createItem, parseGenField } from "../utils";
 import { on_load } from "./on_load";
 import { codeBuild } from "../master_detail/utils";
 
 export const gen_table_list = async (
   modify: (data: any) => void,
   data: any,
-  arg: { mode: "table" | "list" | "grid"; id_parent: string }
+  arg: { mode: "table" | "list" | "grid" | "auto"; id_parent?: string }
 ) => {
   const table = JSON.parse(data.gen_table.value) as string;
   const raw_fields = JSON.parse(data.gen_fields.value) as (
@@ -16,7 +16,7 @@ export const gen_table_list = async (
   const select = {} as any;
   let pk = "";
   let pks: Record<string, string> = {};
-
+  
   const fields = parseGenField(raw_fields);
   const result = {} as any;
   for (const f of fields) {
@@ -29,7 +29,6 @@ export const gen_table_list = async (
         select[f.name].select[r.name] = true;
       }
     }
-
     if (f.is_pk) {
       pk = f.name;
     }
@@ -56,7 +55,14 @@ export const gen_table_list = async (
       result["child"] = data["child"];
 
       let sub_name = "fields";
-      if (arg.mode === "table") sub_name = "columns";
+      switch (arg.mode) {
+        case "table":
+          sub_name = "tbl-col";
+          break;
+        case "list":
+          sub_name = "md-list";
+          break;
+      }
 
       result["child"].content.childs = result["child"].content.childs.filter(
         (e: any) => {
@@ -68,8 +74,11 @@ export const gen_table_list = async (
       const child = createItem({
         name: sub_name,
         childs: fields
-          .map((e) => {
-            if (e.is_pk) return;
+          .map((e, idx) => {
+            if (idx >= 1 && arg.mode === "list") {
+              return;
+            }
+            if (e.is_pk && arg.mode === "table") return;
             let tree_depth = "";
             let tree_depth_built = "";
             if (first) {
@@ -116,11 +125,28 @@ render(React.createElement("div", Object.assign({}, props, { className: cx(props
         ...result["child"].content.childs,
       ];
     }
-
+    // detect row yang aktif
     if (data["selected"]) {
       result["selected"] = data["selected"];
       result["selected"].value = `\
 ({ row, rows, idx }: SelectedRow) => {
+  try {
+    if (typeof md === "object") {
+      if (Array.isArray(md.selected)) {
+        if (md.selected.length) {
+          let select = md.selected.find((e) => e === row)
+          if(select) return true
+        }
+      } else {
+        if (md.selected === row) {
+          return true;
+        }
+      }
+    }
+  } catch (e) {
+    
+  }
+  return false;
 };
 
 type SelectedRow = {

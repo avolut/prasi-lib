@@ -1,6 +1,7 @@
 import { useLocal } from "@/utils/use-local";
 import { FC, ReactNode, useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
+import { MDLocal } from "../md/utils/typings";
 
 export type BreadItem = {
   label: React.ReactNode;
@@ -15,33 +16,37 @@ type BreadcrumbProps = {
   className?: string;
   props?: any;
   value?: BreadItem[];
-  item?: any;
+  item?: any
 };
 
 export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
   const { on_load, item } = _arg;
-
   const local = useLocal({
     list: _arg.value || ([] as BreadItem[]),
     status: "init" as "init" | "loading" | "ready",
     params: {},
   });
-
+  // code review: md.breadcrumb yang di set di props value dipindahkan di on_load
+  // dan ketika panjang _arg.value bernilai null maka status berubah menjadi init
+  // untuk menjalankan on_load
+  // case: ketika refreshBread dijalankan pada MasterDetail
+  // md.breadcrum yang awalnya array kosong akan berisi satu array namun
+  // md.breadcrumb yang diterima di komponen ini tidak berubah tetap seperti
+  // value default yakni array kosong
   if (_arg.value) {
     local.list = _arg.value;
     local.status = "ready";
+    if(!_arg.value.length) local.status = "init"
   }
-
   if (local.status === "init") {
     let should_load = true;
     local.status = "loading";
-
     if (isEditor && item && breadcrumbData[item.id]) {
       local.list = breadcrumbData[item.id];
       local.status = "ready";
       should_load = false;
+      if(!local.list.length) should_load = true;
     }
-
     if (should_load && typeof on_load === "function") {
       const callback = (res: any) => {
         local.list = res;

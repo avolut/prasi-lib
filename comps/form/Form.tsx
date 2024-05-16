@@ -10,7 +10,10 @@ import { formReload } from "./utils/reload";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
+export { FMLocal } from "./typings";
+
 export const Form: FC<FMProps> = (props) => {
+  
   const { PassProp, body } = props;
   const fm = useLocal<FMInternal>({
     data: editorFormData[props.item.id]
@@ -104,14 +107,13 @@ export const Form: FC<FMProps> = (props) => {
     formInit(fm, props);
     fm.reload();
   }
-
   if (document.getElementsByClassName("prasi-toaster").length === 0) {
     const elemDiv = document.createElement("div");
     elemDiv.className = "prasi-toaster";
     document.body.appendChild(elemDiv);
   }
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
-
+  
   if (fm.status === "resizing") {
     setTimeout(() => {
       fm.status = "ready";
@@ -119,7 +121,6 @@ export const Form: FC<FMProps> = (props) => {
     }, 100);
     return null;
   }
-
   return (
     <form
       onSubmit={(e) => {

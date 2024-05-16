@@ -7,6 +7,7 @@ export type GenMasterDetailArg = {
   gen_feature: PropOptRaw;
   gen_table: string;
   gen_fields: PropOptRaw;
+  child:any
 };
 
 export const codeBuild = async <K extends Record<string, string>>(input: K) => {
@@ -21,4 +22,19 @@ export const codeBuild = async <K extends Record<string, string>>(input: K) => {
   }
 
   return result as Record<keyof K, [string, string]>;
+};
+
+export const codeBuildTest = async (input: string) => {
+  const result = {} as any;
+
+  //@ts-ignore
+  const res = await _api.code_build(input);
+  return res;
+  // if (res) {
+  //   for (const [k, v] of Object.entries(res) as any) {
+  //     result[k] = [input[k], v];
+  //   }
+  // }
+
+  // return result as Record<keyof K, [string, string]>;
 };
