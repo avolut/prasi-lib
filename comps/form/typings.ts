@@ -27,13 +27,14 @@ export type FMProps = {
   on_load_deps?: any[];
 };
 
+type FieldType = "-" | "relation" | "switch" | "input" | "single-option" | "multi-option";
 export type FieldProp = {
   name: string | (() => string);
   label: string | (() => string);
   desc?: string;
   props?: any;
   fm: FMLocal;
-  type: "text" | "relation" | "switch" | "input" | "single-option" | "multi-option";
+  type: FieldType | (() => FieldType);
   // | "number"
   // | "textarea"
   // | "dropdown"
@@ -108,7 +109,7 @@ export type FMLocal = FMInternal & { render: () => void };
 export type FieldInternal<T extends FieldProp["type"]> = {
   status: "init" | "loading" | "ready";
   name: FieldProp["name"];
-  type: T;
+  type: T | (() => T);
   label: FieldProp["label"];
   desc: FieldProp["desc"];
   prefix: FieldProp["prefix"];

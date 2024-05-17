@@ -1,7 +1,7 @@
 import { createItem } from "@/gen/utils";
 import get from "lodash.get";
 import { FC, isValidElement, useEffect } from "react";
-import { FMLocal, FieldLocal, FieldProp } from "../typings";
+import { FMLocal, FieldLocal, FieldProp, FieldTypeCustom } from "../typings";
 import { genFieldMitem, updateFieldMItem } from "../utils/gen-mitem";
 import { fieldMapping } from "./mapping";
 import { FieldLoading } from "./raw/FieldLoading";
@@ -31,8 +31,7 @@ export const FieldInput: FC<{
   const suffix = typeof field.suffix === "function" ? field.suffix() : typeof field.suffix === "string" ? field.prefix : null;
   const name = typeof field.name === 'function' ? field.name() : field.name;
   const errors = fm.error.get(name);
-  const type_field = arg.type; // tipe field
-  const sub_type_field = arg.sub_type;
+  let type_field = typeof arg.type === 'function' ? arg.type() : arg.type; // tipe field
 
   return (
     <div
@@ -84,14 +83,14 @@ export const FieldInput: FC<{
             <FieldTypeText
               field={field}
               fm={fm}
-              prop={{ type: arg.type, sub_type: arg.sub_type, prefix, suffix } as PropTypeText}
+              prop={{ type: type_field as any, sub_type: arg.sub_type, prefix, suffix } as PropTypeText}
             />
           ) : ["single-option"].includes(type_field) ? (
             <SingleOption arg={arg} field={field} fm={fm} />
           ) : ["multi-option"].includes(type_field) ? (
             <MultiOption arg={arg} field={field} fm={fm} />
           ) : (
-            <>{isValidElement(field.type) && field.type}</>
+            <>{isValidElement(type_field) && type_field}</>
           )}
         </div>
       )}

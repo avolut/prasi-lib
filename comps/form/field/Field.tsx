@@ -9,22 +9,23 @@ import { useLocal } from "@/utils/use-local";
 export const Field: FC<FieldProp> = (arg) => {
   const { fm } = arg;
   const field = useField(arg);
-  const local = useLocal({ prev_val: fm.data[field.name] });
+  const name = typeof field.name === 'function' ? field.name() : field.name;
+  const local = useLocal({ prev_val: fm.data[name] });
 
   const mode = fm.props.label_mode;
   const w = field.width;
 
   useEffect(() => {
-    if (local.prev_val !== fm.data[field.name]) {
+    if (local.prev_val !== fm.data[name]) {
       validate(field, fm);
-      fm.events.on_change(field.name, fm.data[field.name]);
+      fm.events.on_change(name, fm.data[name]);
       fm.render();
     }
-  }, [fm.data[field.name]]);
+  }, [fm.data[name]]);
 
   if (field.status === "init" && !isEditor) return null;
 
-  const errors = fm.error.get(field.name);
+  const errors = fm.error.get(name);
   const props = { ...arg.props };
   delete props.className;
   return (
