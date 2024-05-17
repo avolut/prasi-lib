@@ -7,6 +7,7 @@ import { FieldToggle } from "./TypeToggle";
 import { FieldButton } from "./TypeButton";
 import { FieldRadio } from "./TypeRadio";
 import { FieldCheckbox } from "./TypeCheckbox";
+import { FieldTag } from "./TypeTag";
 
 export const MultiOption: FC<{
   field: FieldLocal;
@@ -17,10 +18,10 @@ export const MultiOption: FC<{
     <>
       {arg.sub_type === "checkbox" ? (
         <FieldCheckbox field={field} fm={fm} arg={arg}/>
-      ) : arg.sub_type === "tag" ? (
-        <>{arg.sub_type}</>
-      ) : arg.sub_type === "button" ? (
+      ): arg.sub_type === "button" ? (
         <FieldButton arg={arg} field={field} fm={fm} />
+      ): arg.sub_type === "tag" ? (
+        <FieldTag arg={arg} field={field} fm={fm} />
       ) : (
         <></>
       )}
