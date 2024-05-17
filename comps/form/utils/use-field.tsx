@@ -11,16 +11,20 @@ export const useField = (arg: FieldProp) => {
     input: {},
   } as any);
 
+  const name = typeof arg.name === 'string' ? arg.name : arg.name();
+  const label = typeof arg.label === 'string' ? arg.label : arg.label();
+  const required = typeof arg.required === 'string' ? arg.required : arg.required();
+
   const update_field = {
-    name: arg.name.replace(/\s*/gi, ""),
-    label: arg.label,
+    name: name.replace(/\s*/gi, ""),
+    label: label,
     type: arg.type,
     desc: arg.desc,
     prefix: arg.prefix,
     suffix: arg.suffix,
     width: arg.width,
     custom: arg.custom,
-    required: arg.required === "y",
+    required: required === "y",
     required_msg: arg.required_msg,
     disabled: arg.disabled === "y",
   };
@@ -33,9 +37,9 @@ export const useField = (arg: FieldProp) => {
   const fm = arg.fm;
 
   useEffect(() => {
-    if (field.status === "init" || !fm.fields[arg.name]) {
+    if (field.status === "init" || !fm.fields[name]) {
       field.status = "ready";
-      fm.fields[arg.name] = field;
+      fm.fields[name] = field;
       field.render();
     }
   }, []);

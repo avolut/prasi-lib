@@ -28,12 +28,12 @@ export type FMProps = {
 };
 
 export type FieldProp = {
-  name: string;
-  label: string;
+  name: string | (() => string);
+  label: string | (() => string);
   desc?: string;
   props?: any;
   fm: FMLocal;
-  type: "text" | "relation" | "switch" | "input" | "single-option"| "multi-option";
+  type: "text" | "relation" | "switch" | "input" | "single-option" | "multi-option";
   // | "number"
   // | "textarea"
   // | "dropdown"
@@ -45,7 +45,7 @@ export type FieldProp = {
   // | "slider"
   // | "master-link"
   // | "custom";
-  required: "y" | "n";
+  required: ("y" | "n") | (() => "y" | "n");
   required_msg: (name: string) => string;
   options: FieldOptions;
   on_change: (arg: { value: any }) => void | Promise<void>;
@@ -104,12 +104,6 @@ export type FMInternal = {
 };
 export type FMLocal = FMInternal & { render: () => void };
 
-type FieldInternalProp = {
-  text: PropTypeText;
-  number: PropTypeText;
-  relation: PropTypeRelation;
-  switch: PropTypeSwitch;
-};
 
 export type FieldInternal<T extends FieldProp["type"]> = {
   status: "init" | "loading" | "ready";
@@ -130,7 +124,7 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   input: Record<string, any> & {
     render: () => void;
   };
-  prop?: FieldInternalProp[T];
+  prop?: any;
 };
 export type FieldLocal = FieldInternal<any> & {
   render: () => void;
