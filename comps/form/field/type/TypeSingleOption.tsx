@@ -1,11 +1,9 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
-import { useLocal } from "@/utils/use-local";
-import get from "lodash.get";
-import { TypeDropdown } from "./TypeDropdown";
-import { FieldToggle } from "./TypeToggle";
 import { FieldButton } from "./TypeButton";
+import { TypeDropdown } from "./TypeDropdown";
 import { FieldRadio } from "./TypeRadio";
+import { FieldToggle } from "./TypeToggle";
 
 export const SingleOption: FC<{
   field: FieldLocal;
