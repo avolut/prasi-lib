@@ -33,6 +33,7 @@ export type MDActions = {
 
 export type MDLocalInternal = {
   name: string;
+  status: "init" | "unready" | "ready";
   breadcrumb: BreadItem[];
   actions: MDActions;
   selected: any;
@@ -77,11 +78,12 @@ export type MDLocalInternal = {
     min_size: number;
   };
 };
-export type MDRef = { PassProp: any; child: any };
+export type MDRef = { PassProp: any; item: PrasiItem };
 export type MDLocal = MDLocalInternal & { render: (force?: boolean) => void };
 
 export const MasterDetailType = `const md = {
   name: string;
+  status: "init" | "unready" | "ready";
   breadcrumb: {
     label: React.ReactNode;
     url?: string;

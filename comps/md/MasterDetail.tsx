@@ -1,5 +1,5 @@
 import { useLocal } from "@/utils/use-local";
-import { FC, useEffect, useRef } from "react";
+import { FC, useRef } from "react";
 import { ModeFull } from "./mode/full";
 import { ModeHSplit } from "./mode/h-split";
 import { ModeVSplit } from "./mode/v-split";
@@ -9,13 +9,12 @@ import {
   masterDetailApplyParams,
   masterDetailParseHash as masterDetailParseParams,
 } from "./utils/md-hash";
-import { masterDetailInit, masterDetailSelected } from "./utils/md-init";
 import { MDLocalInternal, MDProps } from "./utils/typings";
+import { mdRenderLoop } from "./utils/md-render-loop";
 
 export const MasterDetail: FC<MDProps> = (arg) => {
   const {
     PassProp,
-    child,
     name,
     mode,
     show_head,
@@ -26,10 +25,11 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     on_init,
     _item,
   } = arg;
-  const _ref = useRef({ PassProp, child, item: _item });
+  const _ref = useRef({ PassProp, item: _item });
   const mdr = _ref.current;
   const md = useLocal<MDLocalInternal>({
     name,
+    status: "init",
     actions: [],
     breadcrumb: [],
     selected: null,
@@ -65,25 +65,13 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     },
   });
 
-  const local = useLocal({ init: false });
-  if (isEditor) {
-    editorMDInit(md, arg);
-  }
-
   mdr.PassProp = PassProp;
-  mdr.child = child;
   mdr.item = _item;
-
-  useEffect(() => {
-    local.init = false;
-    local.render();
-  }, [editor_tab]);
-
-  if (!local.init || isEditor) {
-    local.init = true;
-    masterDetailInit(md, child, editor_tab);
-    masterDetailSelected(md);
+  if (isEditor && md.status === "init") {
+    editorMDInit(md, mdr, arg);
   }
+
+  mdRenderLoop(md, mdr, arg); 
 
   return (
     <div
@@ -92,9 +80,9 @@ export const MasterDetail: FC<MDProps> = (arg) => {
       )}
     >
       {md.props.show_head === "always" && <MDHeader md={md} mdr={mdr} />}
-      {md.props.mode === "full" && <ModeFull md={md} mdr={mdr} />}
+      {/* {md.props.mode === "full" && <ModeFull md={md} mdr={mdr} />}
       {md.props.mode === "v-split" && <ModeVSplit md={md} mdr={mdr} />}
-      {md.props.mode === "h-split" && <ModeHSplit md={md} mdr={mdr} />}
+      {md.props.mode === "h-split" && <ModeHSplit md={md} mdr={mdr} />} */}
     </div>
   );
 };
