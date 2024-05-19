@@ -1,9 +1,9 @@
+import { sortTree } from "@/comps/list/utils/sort-tree";
 import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
 import { OptionItem, RawDropdown } from "../raw/Dropdown";
 import { FieldLoading } from "../raw/FieldLoading";
-import { sortTree } from "@/comps/list/utils/sort-tree";
 
 export type PropTypeRelation = {
   type: "has-one" | "has-many";
@@ -38,7 +38,7 @@ const HasMany: FC<{
     many: [] as { value: string; label: string }[],
     pk: "",
   });
-  const name = typeof field.name === 'string' ? field.name : field.name();
+  const name = field.name;
   const value = fm.data[name];
   field.input = input;
   field.prop = prop;
@@ -100,7 +100,7 @@ const HasOne: FC<{
     list: null as null | any[],
     pk: "",
   });
-  const name = typeof field.name === 'string' ? field.name : field.name();
+  const name = field.name;
   const value = fm.data[name];
   field.input = input;
   field.prop = prop;

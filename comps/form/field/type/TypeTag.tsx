@@ -1,7 +1,6 @@
-import { FC, useEffect } from "react";
-import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { useLocal } from "@/utils/use-local";
-import get from "lodash.get";
+import { FC } from "react";
+import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 
 export const FieldTag: FC<{
   field: FieldLocal;

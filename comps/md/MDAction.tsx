@@ -2,7 +2,7 @@ import { useLocal } from "@/utils/use-local";
 import { FC, Fragment, isValidElement } from "react";
 import { getProp } from "./utils/get-prop";
 import { MDActions, MDLocal } from "./utils/typings";
-
+ 
 export const MDAction: FC<{ md: MDLocal; PassProp: any; child: any }> = ({
   md,
   PassProp,

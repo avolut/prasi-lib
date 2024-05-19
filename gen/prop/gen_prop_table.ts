@@ -1,6 +1,8 @@
 const cache: any = [];
 
 export const gen_props_table = async () => {
+  if (typeof db === "undefined") return ["- No Database -"];
+
   if (cache.length > 0) return cache;
   const tables = await db._schema.tables();
   if (!Array.isArray(tables)) {

@@ -1,14 +1,15 @@
-import { FC, useEffect } from "react";
-import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { useLocal } from "@/utils/use-local";
 import Quill from "quill";
 import "quill/dist/quill.snow.css"; // Import CSS untuk tema Quill
-import get from "lodash.get";
+import { FC, useEffect } from "react";
+import { FMLocal, FieldLocal, FieldProp } from "../../typings";
+import { PropTypeText } from "./TypeText";
+
 export const FieldRichText: FC<{
   field: FieldLocal;
   fm: FMLocal;
-  arg: FieldProp;
-}> = ({ field, fm, arg }) => {
+  prop: PropTypeText;
+}> = ({ field, fm, prop }) => {
   const local = useLocal({
     ref: null as any,
   });

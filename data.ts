@@ -3,9 +3,9 @@ export { Field } from "@/comps/form/field/Field";
 export {
   FMLocal,
   FieldTypeCustom,
-  fieldType,
+  fieldType, 
   formType,
-} from "@/comps/form/typings";
+} from "@/comps/form/typings"; 
 export { TableList } from "@/comps/list/TableList";
 export { TableListType } from "lib/comps/list/utils/typings";
 export { MasterDetail } from "@/comps/md/MasterDetail";

@@ -2,7 +2,10 @@ import { useLocal } from "@/utils/use-local";
 import { useEffect } from "react";
 import { FieldInternal, FieldProp } from "../typings";
 
-export const useField = (arg: FieldProp) => {
+export const useField = (arg: Omit<FieldProp, 'name' | 'label'> & {
+  name: string | (() => string);
+  label: string | (() => string)
+}) => {
   const field = useLocal<FieldInternal<typeof arg.type>>({
     status: "init",
     Child: () => {

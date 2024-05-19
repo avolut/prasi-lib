@@ -40,6 +40,8 @@ const load_single = async (table: string) => {
   return single[table];
 };
 export const gen_prop_fields = async (gen_table: string) => {
+  if (typeof db === "undefined") return ["- No Database -"];
+
   const path = window.location.pathname;
   let id_site = null;
   try {

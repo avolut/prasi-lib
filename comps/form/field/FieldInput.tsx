@@ -1,16 +1,9 @@
-import { createItem } from "@/gen/utils";
-import get from "lodash.get";
-import { FC, isValidElement, useEffect } from "react";
-import { FMLocal, FieldLocal, FieldProp, FieldTypeCustom } from "../typings";
-import { genFieldMitem, updateFieldMItem } from "../utils/gen-mitem";
-import { fieldMapping } from "./mapping";
+import { FC, isValidElement } from "react";
+import { FMLocal, FieldLocal, FieldProp } from "../typings";
 import { FieldLoading } from "./raw/FieldLoading";
-import { TypeCustom } from "./type/TypeCustom";
-import { FieldTypeText, PropTypeText } from "./type/TypeText";
-import { TypeDropdown } from "./type/TypeDropdown";
-import { FieldToggle } from "./type/TypeToggle";
-import { SingleOption } from "./type/TypeSingleOption";
 import { MultiOption } from "./type/TypeMultiOption";
+import { SingleOption } from "./type/TypeSingleOption";
+import { FieldTypeText, PropTypeText } from "./type/TypeText";
 
 const modify = {
   timeout: null as any,
@@ -21,15 +14,13 @@ export const FieldInput: FC<{
   fm: FMLocal;
   PassProp: any;
   child: any;
-  _item: any;
-  _meta: any;
-  _sync: (mitem: any, item: any) => void;
+  _item: PrasiItem;
   arg: FieldProp;
-}> = ({ field, fm, PassProp, child, _meta, _item, _sync, arg }) => {
+}> = ({ field, fm, arg }) => {
   // return <></>
   const prefix = typeof field.prefix === "function" ? field.prefix() : typeof field.prefix === "string" ? field.prefix : null;
   const suffix = typeof field.suffix === "function" ? field.suffix() : typeof field.suffix === "string" ? field.prefix : null;
-  const name = typeof field.name === 'function' ? field.name() : field.name;
+  const name = field.name;
   const errors = fm.error.get(name);
   let type_field = typeof arg.type === 'function' ? arg.type() : arg.type; // tipe field
 

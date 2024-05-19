@@ -7,10 +7,9 @@ import { Label } from "./Label";
 import { useLocal } from "@/utils/use-local";
 
 export const Field: FC<FieldProp> = (arg) => {
-  console.log({arg})
   const { fm } = arg;
   const field = useField(arg);
-  const name = typeof field.name === 'function' ? field.name() : field.name;
+  const name = field.name;
   const local = useLocal({ prev_val: fm.data[name] });
 
   const mode = fm.props.label_mode;
@@ -56,9 +55,7 @@ export const Field: FC<FieldProp> = (arg) => {
           fm={fm}
           PassProp={arg.PassProp}
           child={arg.child}
-          _meta={arg._meta}
           _item={arg._item}
-          _sync={arg._sync}
           arg={arg}
         />
         {field.desc && (

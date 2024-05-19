@@ -1,5 +1,5 @@
 import { useLocal } from "@/utils/use-local";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
 
 export type BreadItem = {
@@ -8,85 +8,55 @@ export type BreadItem = {
   onClick?: (ev: any) => void;
 };
 
-const breadcrumbData = {} as Record<string, any>;
-
 type BreadcrumbProps = {
   on_load?: () => Promise<BreadItem[]>;
   className?: string;
-  props?: any;
   value?: BreadItem[];
-  item?: any
+  item?: PrasiItem;
 };
 
-export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
-  const { on_load, item } = _arg;
+export const Breadcrumb: FC<BreadcrumbProps> = ({
+  value,
+  className,
+  on_load,
+  item,
+}) => {
   const local = useLocal({
-    list: _arg.value || ([] as BreadItem[]),
+    list: [] as BreadItem[],
     status: "init" as "init" | "loading" | "ready",
     params: {},
   });
-  // code review: md.breadcrumb yang di set di props value dipindahkan di on_load
-  // dan ketika panjang _arg.value bernilai null maka status berubah menjadi init
-  // untuk menjalankan on_load
-  // case: ketika refreshBread dijalankan pada MasterDetail
-  // md.breadcrum yang awalnya array kosong akan berisi satu array namun
-  // md.breadcrumb yang diterima di komponen ini tidak berubah tetap seperti
-  // value default yakni array kosong
-  if (_arg.value) {
-    local.list = _arg.value;
-    local.status = "ready";
-    if(!_arg.value.length) local.status = "init"
-  }
-  if (local.status === "init") {
-    let should_load = true;
-    local.status = "loading";
-    if (isEditor && item && breadcrumbData[item.id]) {
-      local.list = breadcrumbData[item.id];
-      local.status = "ready";
-      should_load = false;
-      if(!local.list.length) should_load = true;
-    }
-    if (should_load && typeof on_load === "function") {
-      const callback = (res: any) => {
-        local.list = res;
-        if (item) breadcrumbData[item.id] = res;
-        local.status = "ready";
-      };
-      const res = on_load();
-      if (res instanceof Promise) {
-        res.then((res) => {
-          callback(res);
-          local.render();
-        });
-      } else callback(res);
-    }
-  }
 
-  if (isEditor && local.status !== "ready") {
-    if (item && breadcrumbData[item.id]) {
-      local.list = breadcrumbData[_arg.item.id];
+  useEffect(() => {
+    if (value) {
+      local.list = value;
+      local.status = "ready";
     }
-    local.status = "ready";
-  }
+
+    if (typeof on_load === "function") {
+      local.status = "loading";
+      on_load().then((list) => {
+        local.list = list;
+        local.status = "ready";
+        local.render();
+      });
+    }
+
+    local.render();
+  }, []);
 
   return (
     <div
       className={cx(
         "breadcrumb c-w-full c-flex c-items-center c-flex-wrap",
-        _arg.className
+        className
       )}
     >
       {local.status !== "ready" ? (
         <Skeleton className="c-h-4 c-w-[80%]" />
       ) : (
         <>
-          {local.list === null ? (
-            <>
-              <h1 className="c-font-semibold c-text-xs md:c-text-base">
-                Null Breadcrumb
-              </h1>
-            </>
-          ) : (
+          {local.list &&
             (local.list || []).map((item, index): ReactNode => {
               const lastIndex = local.list.length - 1;
 
@@ -128,8 +98,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = (_arg) => {
                   )}
                 </>
               );
-            })
-          )}
+            })}
         </>
       )}
     </div>

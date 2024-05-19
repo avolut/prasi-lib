@@ -23,8 +23,8 @@ export type FMProps = {
 
 type FieldType = "-" | "relation" | "switch" | "input" | "single-option" | "multi-option";
 export type FieldProp = {
-  name: string | (() => string);
-  label: string | (() => string);
+  name: string;
+  label: string;
   desc?: string;
   props?: any;
   fm: FMLocal;
@@ -60,9 +60,9 @@ export type FMInternal = {
   error: {
     readonly object: Record<string, string>;
     readonly list: { name: string; error: string[] }[];
-    set: (name: string | number | symbol, error: string[]) => void;
-    get: (name: string | number | symbol) => string[];
-    clear: (name?: string | number | symbol) => void;
+    set: (name: string, error: string[]) => void;
+    get: (name: string) => string[];
+    clear: (name?: string) => void;
   };
   internal: {
     reload: {

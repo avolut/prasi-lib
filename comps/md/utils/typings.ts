@@ -127,4 +127,8 @@ export const MasterDetailType = `const md = {
       md?: md;
     }
   >;
+  panel: {
+    size: number;
+    min_size: number;
+  };
 };`;

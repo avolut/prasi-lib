@@ -37,97 +37,98 @@ export const MasterDetail: FC<{
   gen_table,
   on_init,
 }) => {
-    let isGenerate = false as Boolean;
+  let isGenerate = false as Boolean;
 
-    try {
-      if (!get(w.md_internal, _item.id)) w.md_internal = {
+  try {
+    if (!get(w.md_internal, _item.id))
+      w.md_internal = {
         ...w.md_internal,
-        [_item.id]: _item
+        [_item.id]: _item,
       };
-      isGenerate = false;
-      if (w.generating_prasi_md["master_detail"]) {
-        isGenerate = true;
-      }
-    } catch (ex) { }
-    const _ref = useRef({ PassProp, child });
-    const md = useLocal<MDLocalInternal>({
-      name,
-      actions: [],
-      breadcrumb: [],
-      selected: null,
-      tab: {
-        active: "",
-        list: [],
-      },
-      internal: { action_should_refresh: true },
-      childs: {},
-      props: {
-        mode,
-        show_head,
-        tab_mode,
-        editor_tab,
-        gen_fields,
-        gen_table,
-        on_init,
-      },
-      params: {
-        hash: {},
-        tabs: {},
-        parse: () => {
-          masterDetailParseParams(md);
-        },
-        apply: () => {
-          masterDetailApplyParams(md);
-        },
-      },
-      master: { internal: null, render() { } },
-      panel: {
-        size: 25,
-        min_size: 0,
-      },
-    });
-
-
-    const local = useLocal({ init: false });
-    if (isEditor) {
-      md.props.mode = mode;
-      md.props.show_head = show_head;
-      md.props.tab_mode = tab_mode;
-      md.props.editor_tab = editor_tab;
-      md.props.gen_fields = gen_fields;
-      md.props.gen_table = gen_table;
-      md.props.on_init = on_init;
+    isGenerate = false;
+    if (w.generating_prasi_md["master_detail"]) {
+      isGenerate = true;
     }
-    _ref.current.PassProp = PassProp;
-    _ref.current.child = child;
+  } catch (ex) {}
 
-    useEffect(() => {
-      local.init = false;
-      local.render();
-    }, [editor_tab]);
+  const _ref = useRef({ PassProp, child });
+  const md = useLocal<MDLocalInternal>({
+    name,
+    actions: [],
+    breadcrumb: [],
+    selected: null,
+    tab: {
+      active: "",
+      list: [],
+    },
+    internal: { action_should_refresh: true },
+    childs: {},
+    props: {
+      mode,
+      show_head,
+      tab_mode,
+      editor_tab,
+      gen_fields,
+      gen_table,
+      on_init,
+    },
+    params: {
+      hash: {},
+      tabs: {},
+      parse: () => {
+        masterDetailParseParams(md);
+      },
+      apply: () => {
+        masterDetailApplyParams(md);
+      },
+    },
+    master: { internal: null, render() {} },
+    panel: {
+      size: 25,
+      min_size: 0,
+    },
+  });
 
-    refreshBread(md);
-    if (!local.init || isEditor) {
-      local.init = true;
-      masterDetailInit(md, child, editor_tab);
-      masterDetailSelected(md);
-    }
-    if (isGenerate) return <>Generating ...</>;
-    return (
-      <div
-        className={cx(
-          "c-flex-1 c-flex-col c-flex c-w-full c-h-full c-overflow-hidden",
-        )}
-      >
-        {md.props.show_head === "always" && (
-          <MDHeader md={md} mdr={_ref.current} />
-        )}
-        {md.props.mode === "full" && <ModeFull md={md} mdr={_ref.current} />}
-        {md.props.mode === "v-split" && <ModeVSplit md={md} mdr={_ref.current} />}
-        {md.props.mode === "h-split" && <ModeHSplit md={md} mdr={_ref.current} />}
-      </div>
-    );
-  };
+  const local = useLocal({ init: false });
+  if (isEditor) {
+    md.props.mode = mode;
+    md.props.show_head = show_head;
+    md.props.tab_mode = tab_mode;
+    md.props.editor_tab = editor_tab;
+    md.props.gen_fields = gen_fields;
+    md.props.gen_table = gen_table;
+    md.props.on_init = on_init;
+  }
+  _ref.current.PassProp = PassProp;
+  _ref.current.child = child;
+
+  useEffect(() => {
+    local.init = false;
+    local.render();
+  }, [editor_tab]);
+
+  refreshBread(md);
+  if (!local.init || isEditor) {
+    local.init = true;
+    masterDetailInit(md, child, editor_tab);
+    masterDetailSelected(md);
+  }
+  if (isGenerate) return <>Generating ...</>;
+  return (
+    <div
+      className={cx(
+        "c-flex-1 c-flex-col c-flex c-w-full c-h-full c-overflow-hidden"
+      )}
+    >
+      {md.props.show_head === "always" && (
+        <MDHeader md={md} mdr={_ref.current} />
+      )}
+      {md.props.mode === "full" && <ModeFull md={md} mdr={_ref.current} />}
+      {md.props.mode === "v-split" && <ModeVSplit md={md} mdr={_ref.current} />}
+      {md.props.mode === "h-split" && <ModeHSplit md={md} mdr={_ref.current} />}
+    </div>
+  );
+};
 
 const ModeFull: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   if (should_show_tab(md)) {

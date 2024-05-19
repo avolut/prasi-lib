@@ -1,20 +1,6 @@
-import { Label } from "@/comps/ui/label";
-import { Switch } from "@/comps/ui/switch";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { Button } from "@/comps/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/comps/ui/form";
-import { FC } from "react";
 import { useLocal } from "@/utils/use-local";
+import { FC } from "react";
 
 export type PropTypeSwitch = {};
 export const FieldTypeSwitch: FC<{

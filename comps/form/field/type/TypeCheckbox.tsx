@@ -1,8 +1,7 @@
-import { FC, useEffect } from "react";
-import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
-import { DMMF } from "../../../../../typings/runtime/library";
+import { FC, useEffect } from "react";
+import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 
 export const FieldCheckbox: FC<{
   field: FieldLocal;
