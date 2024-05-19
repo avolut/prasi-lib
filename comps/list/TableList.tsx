@@ -9,12 +9,11 @@ import DataGrid, {
   ColumnOrColumnGroup,
   Row,
   SELECT_COLUMN_KEY,
-  SortColumn
+  SortColumn,
 } from "react-data-grid";
 import "react-data-grid/lib/styles.css";
 import { createPortal } from "react-dom";
 import { Toaster, toast } from "sonner";
-import { getProp } from "../md/utils/get-prop";
 import { Skeleton } from "../ui/skeleton";
 import { sortTree } from "./utils/sort-tree";
 
@@ -70,9 +69,9 @@ export const TableList: FC<TableListProp> = ({
   feature,
   filter_name,
 }) => {
-  console.log( `prasi_filter.${filter_name}`)
+  console.log(`prasi_filter.${filter_name}`);
   const where = get(w, `prasi_filter.${filter_name}`);
-  console.log(w.prasi_filter)
+  console.log(w.prasi_filter);
   if (mode === "auto") {
     if (w.isMobile) {
       mode = "list";
@@ -325,35 +324,35 @@ export const TableList: FC<TableListProp> = ({
       cellClass: selectCellClassname,
     });
   }
-  for (const child of childs) {
-    const key = getProp(child, "name", {});
-    const name = getProp(child, "title", {});
-    const width = parseInt(getProp(child, "width", {}));
+  // for (const child of childs) {
+  //   const key = getProp(child, "name", {});
+  //   const name = getProp(child, "title", {});
+  //   const width = parseInt(getProp(child, "width", {}));
 
-    columns.push({
-      key,
-      name,
-      width: width > 0 ? width : undefined,
-      resizable: true,
-      sortable: true,
-      renderCell(props) {
-        return (
-          <PassProp
-            idx={props.rowIdx}
-            row={props.row}
-            col={{
-              name: props.column.key,
-              value: props.row[props.column.key],
-              depth: props.row.__depth || 0,
-            }}
-            rows={local.data}
-          >
-            {child}
-          </PassProp>
-        );
-      },
-    });
-  }
+  //   columns.push({
+  //     key,
+  //     name,
+  //     width: width > 0 ? width : undefined,
+  //     resizable: true,
+  //     sortable: true,
+  //     renderCell(props) {
+  //       return (
+  //         <PassProp
+  //           idx={props.rowIdx}
+  //           row={props.row}
+  //           col={{
+  //             name: props.column.key,
+  //             value: props.row[props.column.key],
+  //             depth: props.row.__depth || 0,
+  //           }}
+  //           rows={local.data}
+  //         >
+  //           {child}
+  //         </PassProp>
+  //       );
+  //     },
+  //   });
+  // }
   if (mode === "list") {
     // ambil satu index saja;
     if (columns.length > 1) columns = columns.slice(0, 0 + 1);

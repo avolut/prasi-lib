@@ -1,5 +1,4 @@
 import { MDLocal, w } from "./typings";
-import { getProp } from "./get-prop";
 import get from "lodash.get";
 import { parseGenField } from "@/gen/utils";
 
@@ -35,25 +34,25 @@ export const masterDetailInit = (
           }
         }
         if (cid === "cb52075a-14ab-455a-9847-6f1d929a2a73") {
-          const name = getProp(child, "name", { md });
-          const label = getProp(child, "label", { md });
-          if (typeof name === "string") {
-            if (isEditor && editor_tab !== "master") {
-              if (name === editor_tab && md.tab.active !== name) {
-                md.tab.active = name;
-                setTimeout(md.render);
-              }
-            }
-            md.tab.list.push(name);
-            md.childs[name] = {
-              internal: child,
-              label,
-              name,
-              hide() {},
-              show() {},
-              render() {},
-            };
-          }
+          // const name = getProp(child, "name", { md });
+          // const label = getProp(child, "label", { md });
+          // if (typeof name === "string") {
+          //   if (isEditor && editor_tab !== "master") {
+          //     if (name === editor_tab && md.tab.active !== name) {
+          //       md.tab.active = name;
+          //       setTimeout(md.render);
+          //     }
+          //   }
+          //   md.tab.list.push(name);
+          //   md.childs[name] = {
+          //     internal: child,
+          //     label,
+          //     name,
+          //     hide() {},
+          //     show() {},
+          //     render() {},
+          //   };
+          // }
         }
       }
     }

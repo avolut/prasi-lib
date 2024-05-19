@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { MDLocal, MDRef, w } from "./utils/typings";
+import { MDLocal, MDRef, w } from "../utils/typings";
 import { MDHeader } from "./MDHeader";
 
 export const should_show_tab = (md: MDLocal) => {

@@ -1,23 +1,46 @@
-export { Form } from "@/comps/form/Form";
-export { Field } from "@/comps/form/field/Field";
+import { lazify } from "./utils/lazify";
+
+/** Master - Detail - List - Form */
+export const MasterDetail = lazify(
+  async () => (await import("@/comps/md/MasterDetail")).MasterDetail
+);
+export const MDMaster = lazify(
+  async () => (await import("@/comps/md/parts/MDMaster")).MDMaster
+);
+export const MDAction = lazify(
+  async () => (await import("@/comps/md/parts/MDAction")).MDAction
+);
+export const Breadcrumb = lazify(
+  async () => (await import("@/comps/custom/Breadcrumb")).Breadcrumb
+);
+export const TableList = lazify(
+  async () => (await import("@/comps/list/TableList")).TableList
+);
+export const Form = lazify(
+  async () => (await import("@/comps/form/Form")).Form
+);
+export const Field = lazify(
+  async () => (await import("@/comps/form/field/Field")).Field
+);
+
+/** Export - Import */
+export const ImportExcel = lazify(
+  async () => (await import("@/comps/list/ImportExcel")).ImportExcel
+);
+
+export const ExportExcel = lazify(
+  async () => (await import("@/comps/list/ExportExcel")).ExportExcel
+);
+
+/** ETC */
 export {
   FMLocal,
   FieldTypeCustom,
-  fieldType, 
+  fieldType,
   formType,
-} from "@/comps/form/typings"; 
-export { TableList } from "@/comps/list/TableList";
-export { TableListType } from "lib/comps/list/utils/typings";
-export { MasterDetail } from "@/comps/md/MasterDetail";
-export { getProp } from "@/comps/md/utils/get-prop";
+} from "@/comps/form/typings";
 export { MasterDetailType } from "@/comps/md/utils/typings";
 export { prasi_gen } from "@/gen/prasi_gen";
 export { FormatValue } from "@/utils/format-value";
 export { GetValue } from "@/utils/get-value";
-export { FieldTypeRelation } from "./comps/form/field/type/TypeRelation";
-export { FieldTypeSwitch } from "./comps/form/field/type/TypeSwitch";
-export { FieldTypeText } from "./comps/form/field/type/TypeText";
-export { MDAction } from "./comps/md/MDAction";
-export { MDMaster } from "./comps/md/MDMaster";
-export { ImportExcel } from "./comps/list/ImportExcel";
-export { ExportExcel } from "./comps/list/ExportExcel";
+export { TableListType } from "lib/comps/list/utils/typings";

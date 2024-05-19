@@ -1,6 +1,5 @@
 import { GFCol } from "@/gen/utils";
 import { ReactNode } from "react";
-import { getProp } from "../../..";
 import { editorFormData } from "./utils/ed-data";
 
 export type FMProps = {
@@ -21,7 +20,13 @@ export type FMProps = {
   on_load_deps?: any[];
 };
 
-type FieldType = "-" | "relation" | "switch" | "input" | "single-option" | "multi-option";
+type FieldType =
+  | "-"
+  | "relation"
+  | "switch"
+  | "input"
+  | "single-option"
+  | "multi-option";
 export type FieldProp = {
   name: string;
   label: string;
@@ -84,7 +89,6 @@ export type FMInternal = {
   };
 };
 export type FMLocal = FMInternal & { render: () => void };
-
 
 export type FieldInternal<T extends FieldProp["type"]> = {
   status: "init" | "loading" | "ready";
@@ -157,10 +161,10 @@ export const formType = (active: { item_id: string }, meta: any) => {
   }`;
 };
 
-export const fieldType = (item: any, meta: any, fm: FMLocal) => {
+export const fieldType = (item: PrasiItem, meta: any, fm: FMLocal) => {
   const m = meta[item.id];
-  if (m) {
-    const name = getProp(m.item, "name");
+  if (m && item.edit.props?.name.mode === "string") {
+    const name = item.edit.props?.name.value || "";
     const field = fm.fields[name];
     const def = fm.field_def[name];
     return `

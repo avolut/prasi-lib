@@ -5,6 +5,7 @@ export const editorMDInit = (md: MDLocal, arg: MDProps) => {
     PassProp,
     child,
     name,
+    _item,
     mode,
     show_head,
     tab_mode,
