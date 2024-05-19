@@ -1,5 +1,4 @@
 import { useLocal } from "@/utils/use-local";
-import get from "lodash.get";
 import { FC, useEffect, useRef } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { refreshBread } from "./MDBread";
@@ -10,47 +9,22 @@ import {
   masterDetailParseHash as masterDetailParseParams,
 } from "./utils/md-hash";
 import { masterDetailInit, masterDetailSelected } from "./utils/md-init";
-import { MDLocal, MDLocalInternal, MDRef, w } from "./utils/typings";
+import { MDLocal, MDLocalInternal, MDProps, MDRef } from "./utils/typings";
+import { editorMDInit } from "./utils/editor-init";
 
-export const MasterDetail: FC<{
-  child: any;
-  PassProp: any;
-  name: string;
-  mode: "full" | "h-split" | "v-split";
-  show_head: "always" | "only-master" | "only-child" | "hidden";
-  tab_mode: "h-tab" | "v-tab" | "hidden";
-  editor_tab: string;
-  gen_fields: any;
-  gen_table: string;
-  on_init: (md: MDLocal) => void;
-  _item: PrasiItem;
-}> = ({
-  _item,
-  PassProp,
-  child,
-  name,
-  mode,
-  show_head,
-  tab_mode,
-  editor_tab,
-  gen_fields,
-  gen_table,
-  on_init,
-}) => {
-  let isGenerate = false as Boolean;
-
-  try {
-    if (!get(w.md_internal, _item.id))
-      w.md_internal = {
-        ...w.md_internal,
-        [_item.id]: _item,
-      };
-    isGenerate = false;
-    if (w.generating_prasi_md["master_detail"]) {
-      isGenerate = true;
-    }
-  } catch (ex) {}
-
+export const MasterDetail: FC<MDProps> = (arg) => {
+  const {
+    PassProp,
+    child,
+    name,
+    mode,
+    show_head,
+    tab_mode,
+    editor_tab,
+    gen_fields,
+    gen_table,
+    on_init,
+  } = arg;
   const _ref = useRef({ PassProp, child });
   const md = useLocal<MDLocalInternal>({
     name,
@@ -91,14 +65,9 @@ export const MasterDetail: FC<{
 
   const local = useLocal({ init: false });
   if (isEditor) {
-    md.props.mode = mode;
-    md.props.show_head = show_head;
-    md.props.tab_mode = tab_mode;
-    md.props.editor_tab = editor_tab;
-    md.props.gen_fields = gen_fields;
-    md.props.gen_table = gen_table;
-    md.props.on_init = on_init;
+    editorMDInit(md, arg);
   }
+
   _ref.current.PassProp = PassProp;
   _ref.current.child = child;
 
@@ -107,13 +76,15 @@ export const MasterDetail: FC<{
     local.render();
   }, [editor_tab]);
 
+  // refreshBread ga ditaro di useEffect karena
+  // butuh ubah breadcrumb berdasarkan mode master-detailnya
   refreshBread(md);
+
   if (!local.init || isEditor) {
     local.init = true;
     masterDetailInit(md, child, editor_tab);
     masterDetailSelected(md);
   }
-  if (isGenerate) return <>Generating ...</>;
   return (
     <div
       className={cx(

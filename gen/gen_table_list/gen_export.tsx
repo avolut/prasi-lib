@@ -4,7 +4,6 @@ import { on_load } from "./on_load";
 import { codeBuild, codeBuildTest } from "../master_detail/utils";
 // import * as Excel from "exceljs";
 import ExcelJS from "exceljs";
-import * as FileSaver from "file-saver";
 
 export const gen_export = async (
   modify: (data: any) => void,
@@ -70,7 +69,7 @@ export const gen_export = async (
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
 
-    FileSaver.saveAs(blob, "exported_data.xlsx");
+    // FileSaver.saveAs(blob, "exported_data.xlsx");
 
     console.log("Data exported");
   } catch (error) {

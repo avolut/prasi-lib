@@ -11,6 +11,20 @@ export const w = window as unknown as {
   md_internal: Record<string, any>;
 };
 
+export type MDProps = {
+  child: any;
+  PassProp: any;
+  name: string;
+  mode: "full" | "h-split" | "v-split";
+  show_head: "always" | "only-master" | "only-child" | "hidden";
+  tab_mode: "h-tab" | "v-tab" | "hidden";
+  editor_tab: string;
+  gen_fields: any;
+  gen_table: string;
+  on_init: (md: MDLocal) => void;
+  _item: PrasiItem;
+};
+
 export type MDActions = {
   action?: string;
   label: ReactNode;

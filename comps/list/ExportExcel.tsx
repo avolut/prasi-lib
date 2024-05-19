@@ -1,7 +1,6 @@
 import { useLocal } from "@/utils/use-local";
 import { FC, MouseEvent } from "react";
 import ExcelJS from "exceljs";
-import * as FileSaver from "file-saver";
 
 export const ExportExcel: FC<{
   data: any[],
@@ -43,7 +42,7 @@ export const ExportExcel: FC<{
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
   
-      FileSaver.saveAs(blob, fileName);
+      // FileSaver.saveAs(blob, fileName);
   
       console.log("Data exported");
     } catch (error) {
