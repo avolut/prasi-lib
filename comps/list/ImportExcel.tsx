@@ -1,7 +1,7 @@
 import { GFCol } from "@/gen/utils";
 import { useLocal } from "@/utils/use-local";
 import { ChangeEvent, FC, MouseEvent } from "react";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
 
 type ImportExcelProps = {
   gen_fields: string[];
@@ -50,18 +50,18 @@ export const ImportExcel: FC<ImportExcelProps> = ({
     reader.onload = (event: ProgressEvent<FileReader>) => {
       if (!event.target?.result) return;
 
-      const workbook = XLSX.read(event.target.result, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const sheetData = XLSX.utils.sheet_to_json(sheet);
-      local.data = sheetData;
-      local.columns = getAllKeys(local.data);
-      gen_fields.forEach((data: any) => {
-        local.fields.push(JSON.parse(data).name);
-      });
-      local.tableName = gen_table;
-      local.showPreviewExcel = true;
-      local.render();
+      // const workbook = XLSX.read(event.target.result, { type: "binary" });
+      // const sheetName = workbook.SheetNames[0];
+      // const sheet = workbook.Sheets[sheetName];
+      // const sheetData = XLSX.utils.sheet_to_json(sheet);
+      // local.data = sheetData;
+      // local.columns = getAllKeys(local.data);
+      // gen_fields.forEach((data: any) => {
+      //   local.fields.push(JSON.parse(data).name);
+      // });
+      // local.tableName = gen_table;
+      // local.showPreviewExcel = true;
+      // local.render();
     };
     reader.readAsBinaryString(file);
   };
