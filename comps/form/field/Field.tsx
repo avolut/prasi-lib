@@ -7,6 +7,7 @@ import { Label } from "./Label";
 import { useLocal } from "@/utils/use-local";
 
 export const Field: FC<FieldProp> = (arg) => {
+  console.log({arg})
   const { fm } = arg;
   const field = useField(arg);
   const name = typeof field.name === 'function' ? field.name() : field.name;

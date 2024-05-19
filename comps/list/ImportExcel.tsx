@@ -22,7 +22,11 @@ export const ImportExcel: FC<ImportExcelProps> = ({
       rows: any;
     }[],
     pk: null as null | GFCol,
-    columnMappings: [] as Array<Record<string, string>>,
+    columnMappings: [] as { column: string; selectedColumn: string }[],
+    isLoading: false,
+    progress: 0,
+    showPreviewExcel: false,
+    insertedData: [] as any[]
   });
 
   const pk = local.pk?.name || "id";
@@ -56,21 +60,38 @@ export const ImportExcel: FC<ImportExcelProps> = ({
         local.fields.push(JSON.parse(data).name);
       });
       local.tableName = gen_table;
+      local.showPreviewExcel = true;
       local.render();
     };
     reader.readAsBinaryString(file);
   };
 
-  const executeImport = async (
-    columnMappings: string[],
-    data: {
-      pk: string | number;
-      rows: any;
-    }[]
-  ) => {
+  const executeImport = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     const table = (db as any)[local.tableName];
     if (table) {
-      // execute
+      local.showPreviewExcel = false;
+      local.isLoading = true;
+      local.progress = 0;
+      local.insertedData = [];
+      local.render();
+        const totalRows = local.selectedRows.length;
+        let processedRows = 0;
+        for (const row of local.selectedRows) {
+          let insertRow: any = {};
+          local.columnMappings.forEach((columnMapping) => {
+            insertRow[columnMapping.selectedColumn] = row.rows[columnMapping.column];
+          });
+          
+          let insertedData = await table.create({ data: insertRow });
+          local.insertedData.push(insertedData);
+          local.render();
+          processedRows++;
+          local.progress = Math.round((processedRows / totalRows) * 100);
+          local.render();
+        }
+        local.isLoading = false;
+        local.render();
     }
   };
 
@@ -136,10 +157,10 @@ export const ImportExcel: FC<ImportExcelProps> = ({
   return (
     <div>
       <input type="file" onChange={handleFileUpload} />
-      {local.data.length > 0 && (
+      {local.showPreviewExcel && (local.data.length > 0 && (
         <div>
           <button
-            onClick={isConfirmed}
+            onClick={executeImport}
             style={{
               backgroundColor: "#4CAF50",
               border: "none",
@@ -156,7 +177,7 @@ export const ImportExcel: FC<ImportExcelProps> = ({
           >
             Confirm Import
           </button>
-          <h2>Imported Data:</h2>
+          <h2>Your Excel Data:</h2>
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
               <tr>
@@ -215,6 +236,58 @@ export const ImportExcel: FC<ImportExcelProps> = ({
                       key={col}
                       style={{ border: "1px solid black", padding: "8px" }}
                     >
+                      {row[col]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+      {local.isLoading && (
+        <div style={{ width: '100%', padding: '10px' }}>
+          <div
+            style={{
+              width: '100%',
+              backgroundColor: '#f3f3f3',
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}
+          >
+            <div
+              style={{
+                width: `${local.progress}%`,
+                height: '24px',
+                backgroundColor: '#4caf50',
+                textAlign: 'center',
+                lineHeight: '24px',
+                color: 'white'
+              }}
+            >
+              {local.progress}%
+            </div>
+          </div>
+        </div>
+      )}
+      {local.insertedData.length > 0 && (
+        <div>
+          <h2>Inserted Data:</h2>
+          <table style={{ borderCollapse: "collapse", width: "100%" }}>
+            <thead>
+              <tr>
+                {local.columns.map((col) => (
+                  <th key={col} style={{ border: "1px solid black", padding: "8px" }}>
+                    {col}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {local.insertedData.map((row, index) => (
+                <tr key={index}>
+                  {local.columns.map((col) => (
+                    <td key={col} style={{ border: "1px solid black", padding: "8px" }}>
                       {row[col]}
                     </td>
                   ))}
