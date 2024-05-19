@@ -7,7 +7,7 @@ export {
   formType,
 } from "@/comps/form/typings";
 export { TableList } from "@/comps/list/TableList";
-export { TableListType } from "@/comps/list/typings";
+export { TableListType } from "lib/comps/list/utils/typings";
 export { MasterDetail } from "@/comps/md/MasterDetail";
 export { getProp } from "@/comps/md/utils/get-prop";
 export { MasterDetailType } from "@/comps/md/utils/typings";

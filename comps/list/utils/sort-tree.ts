@@ -23,6 +23,7 @@ export const sortTree = (list: any, parent_key: string, pk: string) => {
         unlisted[item[pk]] = item;
       }
     }
+
     let cyclic = {} as Record<string, number>;
     while (Object.values(unlisted).length > 0) {
       for (const item of Object.values(unlisted)) {

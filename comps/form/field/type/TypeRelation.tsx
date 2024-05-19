@@ -3,7 +3,7 @@ import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
 import { OptionItem, RawDropdown } from "../raw/Dropdown";
 import { FieldLoading } from "../raw/FieldLoading";
-import { sortTree } from "@/comps/list/sort-tree";
+import { sortTree } from "@/comps/list/utils/sort-tree";
 
 export type PropTypeRelation = {
   type: "has-one" | "has-many";
@@ -38,7 +38,8 @@ const HasMany: FC<{
     many: [] as { value: string; label: string }[],
     pk: "",
   });
-  const value = fm.data[field.name];
+  const name = typeof field.name === 'string' ? field.name : field.name();
+  const value = fm.data[name];
   field.input = input;
   field.prop = prop;
 
@@ -99,7 +100,8 @@ const HasOne: FC<{
     list: null as null | any[],
     pk: "",
   });
-  const value = fm.data[field.name];
+  const name = typeof field.name === 'string' ? field.name : field.name();
+  const value = fm.data[name];
   field.input = input;
   field.prop = prop;
 
@@ -122,7 +124,7 @@ const HasOne: FC<{
 
   let list: OptionItem[] = [];
   if (input.list && input.pk && input.list.length) {
-    if (fm.field_def[field.name]?.optional) {
+    if (fm.field_def[name]?.optional) {
       list.push({
         value: null,
         label: "-",
@@ -183,14 +185,14 @@ const HasOne: FC<{
           value={selected}
           onChange={(val) => {
             if (val === null) {
-              fm.data[field.name] = null;
+              fm.data[name] = null;
               fm.render();
               return;
             }
             if (input.list && input.pk) {
               for (const item of input.list) {
                 if (item[input.pk] === val) {
-                  fm.data[field.name] = item;
+                  fm.data[name] = item;
                   fm.render();
                   break;
                 }

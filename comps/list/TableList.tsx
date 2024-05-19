@@ -1,25 +1,22 @@
+import { GFCol, parseGenField } from "@/gen/utils";
 import { cn } from "@/utils";
 import { fields_map } from "@/utils/format-value";
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
 import { Loader2 } from "lucide-react";
-import { ChangeEvent, FC, MouseEvent, useEffect, useState } from "react";
+import { ChangeEvent, FC, MouseEvent, useEffect } from "react";
 import DataGrid, {
   ColumnOrColumnGroup,
   Row,
-  SortColumn,
-  SelectColumn,
-  textEditor,
-  RenderCheckboxProps,
   SELECT_COLUMN_KEY,
+  SortColumn
 } from "react-data-grid";
 import "react-data-grid/lib/styles.css";
 import { createPortal } from "react-dom";
 import { Toaster, toast } from "sonner";
 import { getProp } from "../md/utils/get-prop";
 import { Skeleton } from "../ui/skeleton";
-import { sortTree } from "./sort-tree";
-import { GFCol, parseGenField } from "@/gen/utils";
+import { sortTree } from "./utils/sort-tree";
 
 type OnRowClick = (arg: {
   row: any;
