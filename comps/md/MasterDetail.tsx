@@ -116,7 +116,7 @@ export const MasterDetail: FC<{
     return (
       <div
         className={cx(
-          "c-flex-1 c-flex-col c-flex c-w-full c-h-full c-overflow-hidden"
+          "c-flex-1 c-flex-col c-flex c-w-full c-h-full c-overflow-hidden",
         )}
       >
         {md.props.show_head === "always" && (

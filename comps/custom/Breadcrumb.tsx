@@ -1,7 +1,6 @@
 import { useLocal } from "@/utils/use-local";
-import { FC, ReactNode, useEffect } from "react";
+import { FC, ReactNode } from "react";
 import { Skeleton } from "../ui/skeleton";
-import { MDLocal } from "../md/utils/typings";
 
 export type BreadItem = {
   label: React.ReactNode;
