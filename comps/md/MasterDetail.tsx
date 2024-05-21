@@ -25,7 +25,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     on_init,
     _item,
   } = arg;
-  const _ref = useRef({ PassProp, item: _item });
+  const _ref = useRef({ PassProp, item: _item, childs: {} });
   const mdr = _ref.current;
   const md = useLocal<MDLocalInternal>({
     name,
@@ -58,7 +58,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
         masterDetailApplyParams(md);
       },
     },
-    master: { internal: null, render() {} },
+    master: { render() {} },
     panel: {
       size: 25,
       min_size: 0,
@@ -67,11 +67,12 @@ export const MasterDetail: FC<MDProps> = (arg) => {
 
   mdr.PassProp = PassProp;
   mdr.item = _item;
-  if (isEditor && md.status === "init") {
+
+  mdRenderLoop(md, mdr, arg);
+
+  if (isEditor) {
     editorMDInit(md, mdr, arg);
   }
-
-  mdRenderLoop(md, mdr, arg); 
 
   return (
     <div
@@ -80,9 +81,13 @@ export const MasterDetail: FC<MDProps> = (arg) => {
       )}
     >
       {md.props.show_head === "always" && <MDHeader md={md} mdr={mdr} />}
-      {/* {md.props.mode === "full" && <ModeFull md={md} mdr={mdr} />}
-      {md.props.mode === "v-split" && <ModeVSplit md={md} mdr={mdr} />}
-      {md.props.mode === "h-split" && <ModeHSplit md={md} mdr={mdr} />} */}
+      {md.status === "ready" && (
+        <>
+          {md.props.mode === "full" && <ModeFull md={md} mdr={mdr} />}
+          {md.props.mode === "v-split" && <ModeVSplit md={md} mdr={mdr} />}
+          {md.props.mode === "h-split" && <ModeHSplit md={md} mdr={mdr} />}
+        </>
+      )}
     </div>
   );
 };

@@ -1,12 +1,18 @@
 import { GFCol } from "@/gen/utils";
 import { useLocal } from "@/utils/use-local";
 import { ChangeEvent, FC, MouseEvent } from "react";
+import { Workbook } from 'exceljs';
 // import * as XLSX from "xlsx";
 
 type ImportExcelProps = {
   gen_fields: string[];
   gen_table: string;
 };
+
+type RowData = {
+  pk: string | number;
+  rows: any;
+}
 
 export const ImportExcel: FC<ImportExcelProps> = ({
   gen_fields,
@@ -17,16 +23,16 @@ export const ImportExcel: FC<ImportExcelProps> = ({
     columns: [] as string[],
     fields: [] as string[],
     tableName: "",
-    selectedRows: [] as {
-      pk: string | number;
-      rows: any;
-    }[],
+    selectedRows: [] as RowData[],
     pk: null as null | GFCol,
     columnMappings: [] as { column: string; selectedColumn: string }[],
     isLoading: false,
     progress: 0,
     showPreviewExcel: false,
-    insertedData: [] as any[]
+    insertedData: [] as any[],
+    isStopped: false,
+    processedRows: 0,
+    firstRow: [] as string[]
   });
 
   const pk = local.pk?.name || "id";
@@ -41,29 +47,64 @@ export const ImportExcel: FC<ImportExcelProps> = ({
     return Array.from(keysSet);
   };
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  // const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
+
+  //   const reader = new FileReader();
+
+  //   reader.onload = (event: ProgressEvent<FileReader>) => {
+  //     if (!event.target?.result) return;
+
+  //     const workbook = XLSX.read(event.target.result, { type: "binary" });
+  //     const sheetName = workbook.SheetNames[0];
+  //     const sheet = workbook.Sheets[sheetName];
+  //     const sheetData = XLSX.utils.sheet_to_json(sheet);
+  //     local.data = sheetData;
+  //     local.columns = getAllKeys(local.data);
+  //     gen_fields.forEach((data: any) => {
+  //       local.fields.push(JSON.parse(data).name);
+  //     });
+  //     local.tableName = gen_table;
+  //     local.showPreviewExcel = true;
+  //     local.render();
+  //   };
+  //   reader.readAsBinaryString(file);
+  // };
+
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
 
-    reader.onload = (event: ProgressEvent<FileReader>) => {
+    reader.onload = async (event: ProgressEvent<FileReader>) => {
       if (!event.target?.result) return;
 
-      // const workbook = XLSX.read(event.target.result, { type: "binary" });
-      // const sheetName = workbook.SheetNames[0];
-      // const sheet = workbook.Sheets[sheetName];
-      // const sheetData = XLSX.utils.sheet_to_json(sheet);
-      // local.data = sheetData;
-      // local.columns = getAllKeys(local.data);
-      // gen_fields.forEach((data: any) => {
-      //   local.fields.push(JSON.parse(data).name);
-      // });
-      // local.tableName = gen_table;
-      // local.showPreviewExcel = true;
-      // local.render();
+      const buffer = new Uint8Array(event.target.result as ArrayBuffer);
+      const workbook = new Workbook();
+      await workbook.xlsx.load(buffer);
+
+      const worksheet = workbook.worksheets[0];
+      if (worksheet) {
+        let sheetData = worksheet.getRows(1, worksheet.actualRowCount)?.map(row => row.values);
+        let firstRow = sheetData!.shift();
+        local.data = sheetData!;
+        if (firstRow) {
+          local.firstRow = firstRow as string[];
+        } else {
+          console.log('firstRow is undefined');
+        }
+        local.columns = getAllKeys(local.data);
+        gen_fields.forEach((data: any) => {
+          local.fields.push(JSON.parse(data).name);
+        });
+        local.tableName = gen_table;
+        local.showPreviewExcel = true;
+        local.render();
+      }
     };
-    reader.readAsBinaryString(file);
+    reader.readAsArrayBuffer(file);
   };
 
   const executeImport = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -75,31 +116,44 @@ export const ImportExcel: FC<ImportExcelProps> = ({
       local.progress = 0;
       local.insertedData = [];
       local.render();
-        const totalRows = local.selectedRows.length;
-        let processedRows = 0;
-        for (const row of local.selectedRows) {
+      const totalRows = local.selectedRows.length;
+      local.processedRows = 0;
+      let rowIndex = 0;
+      for (const row of local.selectedRows) {
+        if (!local.isStopped) {
           let insertRow: any = {};
           local.columnMappings.forEach((columnMapping) => {
+            insertRow[pk] = rowIndex;
             insertRow[columnMapping.selectedColumn] = row.rows[columnMapping.column];
           });
-          
-          let insertedData = await table.create({ data: insertRow });
-          local.insertedData.push(insertedData);
+          rowIndex++;
+
+          // let insertedData = await table.create({ data: insertRow });
+          // local.insertedData.push({
+          //   pk: insertedData.id,
+          //   rows: insertedData
+          // });
+          local.insertedData.push({
+            pk: insertRow[pk],
+            rows: insertRow
+          });
           local.render();
-          processedRows++;
-          local.progress = Math.round((processedRows / totalRows) * 100);
+          local.processedRows++;
+          local.progress = Math.round((local.processedRows / totalRows) * 100);
           local.render();
+          await new Promise(resolve => setTimeout(resolve, 2000));
         }
-        local.isLoading = false;
-        local.render();
+      }
+      local.isLoading = false;
+      local.render();
     }
   };
 
   const headerCheckboxClick = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      local.data.forEach((data) => {
+      local.data.forEach((data, key) => {
         local.selectedRows.push({
-          pk: data[pk],
+          pk: data[pk] === undefined ? key : data[pk],
           rows: data,
         });
       });
@@ -116,7 +170,6 @@ export const ImportExcel: FC<ImportExcelProps> = ({
     e.preventDefault();
     e.stopPropagation();
     const checked = !!local.selectedRows.find((data) => data.pk === rowId);
-    console.log(checked);
     if (!checked) {
       const checkedRowData = local.data.filter((row) => row[pk] === rowId);
       local.selectedRows.push({
@@ -134,6 +187,52 @@ export const ImportExcel: FC<ImportExcelProps> = ({
     }
   };
 
+  const handleStopProgress = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    local.isStopped = true;
+    local.render();
+  };
+
+  const continueProgress = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    let ids = [] as any[];
+    local.insertedData.forEach((row) => {
+      ids.push(row.pk);
+    });
+    const table = (db as any)[local.tableName];
+    if (table) {
+      let remainingData = local.selectedRows.filter((row) => !ids.includes(row.pk));
+      local.showPreviewExcel = false;
+      local.isLoading = true;
+      local.render();
+      const totalRows = local.selectedRows.length;
+      for (const row of remainingData) {
+        let insertRow: any = {};
+        local.columnMappings.forEach((columnMapping) => {
+          insertRow[columnMapping.selectedColumn] = row.rows[columnMapping.column];
+        });
+
+        // let insertedData = await table.create({ data: insertRow });
+        // local.insertedData.push({
+        //   pk: insertedData.id,
+        //   rows: insertedData
+        // });
+        local.insertedData.push({
+          pk: insertRow[pk],
+          rows: insertRow
+        });
+        local.render();
+        local.processedRows++;
+        local.progress = Math.round((local.processedRows / totalRows) * 100);
+        local.render();
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+      local.isLoading = false;
+      local.isStopped = false;
+      local.render();
+    }
+  }
+
   const columnMappingChange =
     (col: string) => (e: ChangeEvent<HTMLSelectElement>) => {
       const selectedValue = e.target.value;
@@ -147,11 +246,6 @@ export const ImportExcel: FC<ImportExcelProps> = ({
 
   const isRowChecked = (id: any) => {
     return local.selectedRows.some((checked) => checked.pk === id);
-  };
-
-  const isConfirmed = (e: MouseEvent<HTMLButtonElement>) => {
-    console.log("selected rows", local.selectedRows);
-    console.log("column mappings", local.columnMappings);
   };
 
   return (
@@ -184,12 +278,12 @@ export const ImportExcel: FC<ImportExcelProps> = ({
                 <th style={{ border: "1px solid black", padding: "8px" }}>
                   <input type="checkbox" onChange={headerCheckboxClick} />
                 </th>
-                {local.columns.map((col) => (
+                {local.columns.map((col: any) => (
                   <th
                     key={col}
                     style={{ border: "1px solid black", padding: "8px" }}
                   >
-                    {col}{" "}
+                    {local.firstRow[col]}{" "}
                     <select
                       onChange={columnMappingChange(col)}
                       style={{
@@ -227,7 +321,7 @@ export const ImportExcel: FC<ImportExcelProps> = ({
                       <input
                         className="c-pointer-events-none"
                         type="checkbox"
-                        checked={isRowChecked(row[pk])}
+                        checked={isRowChecked(row[pk] === undefined ? index : row[pk])}
                       />
                     </div>
                   </td>
@@ -272,27 +366,67 @@ export const ImportExcel: FC<ImportExcelProps> = ({
       )}
       {local.insertedData.length > 0 && (
         <div>
+          {local.insertedData.length !== local.selectedRows.length && (
+            <div>
+              {!local.isStopped && (<button
+                onClick={handleStopProgress}
+                style={{
+                  backgroundColor: "red",
+                  border: "none",
+                  color: "white",
+                  padding: "15px 32px",
+                  textAlign: "center",
+                  textDecoration: "none",
+                  display: "inline-block",
+                  fontSize: "16px",
+                  margin: "4px 2px",
+                  cursor: "pointer",
+                  borderRadius: "10px",
+                }}
+              >
+                Pause Progress
+              </button>)}
+              {local.isStopped && (
+                <button
+                  onClick={continueProgress}
+                  style={{
+                    backgroundColor: "green",
+                    border: "none",
+                    color: "white",
+                    padding: "15px 32px",
+                    textAlign: "center",
+                    textDecoration: "none",
+                    display: "inline-block",
+                    fontSize: "16px",
+                    margin: "4px 2px",
+                    cursor: "pointer",
+                    borderRadius: "10px",
+                  }}
+                >
+                  Continue Progress
+                </button>
+              )}
+            </div>
+          )}
           <h2>Inserted Data:</h2>
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
               <tr>
-                {local.columns.map((col) => (
-                  <th key={col} style={{ border: "1px solid black", padding: "8px" }}>
-                    {col}
+                {local.columnMappings.map((col) => (
+                  <th key={col.selectedColumn} style={{ border: "1px solid black", padding: "8px" }}>
+                    {col.selectedColumn}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {local.insertedData.map((row, index) => (
-                <tr key={index}>
-                  {local.columns.map((col) => (
-                    <td key={col} style={{ border: "1px solid black", padding: "8px" }}>
-                      {row[col]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+              <tr>
+                {local.columnMappings.map((col) => (
+                  <td key={col.selectedColumn} style={{ border: "1px solid black", padding: "8px" }}>
+                    {local.insertedData[local.insertedData.length - 1].rows[col.selectedColumn]}
+                  </td>
+                ))}
+              </tr>
             </tbody>
           </table>
         </div>

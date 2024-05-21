@@ -1,4 +1,3 @@
-import { getPathname } from "@/exports";
 import { useLocal } from "@/utils/use-local";
 import { FC, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
@@ -7,6 +6,7 @@ import { FMInternal, FMProps } from "./typings";
 import { editorFormData } from "./utils/ed-data";
 import { formInit } from "./utils/init";
 import { formReload } from "./utils/reload";
+import { getPathname } from "lib/utils/pathname";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 

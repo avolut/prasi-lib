@@ -42,7 +42,7 @@ export type MDLocalInternal = {
     list: string[];
   };
   internal: { action_should_refresh: boolean };
-  master: { internal: any; render: () => void };
+  master: { render: () => void };
   params: {
     hash: any;
     tabs: any;
@@ -67,7 +67,6 @@ export type MDLocalInternal = {
       hide: () => void;
       show: () => void;
       render: () => void;
-      internal: any;
       fm?: FMLocal;
       md?: MDLocal;
       list?: any;
@@ -78,12 +77,17 @@ export type MDLocalInternal = {
     min_size: number;
   };
 };
-export type MDRef = { PassProp: any; item: PrasiItem };
+export type MDRef = {
+  PassProp: any;
+  item: PrasiItem;
+  master?: PrasiItem;
+  childs: Record<string, PrasiItem>;
+};
 export type MDLocal = MDLocalInternal & { render: (force?: boolean) => void };
 
 export const MasterDetailType = `const md = {
   name: string;
-  status: "init" | "unready" | "ready";
+  status: string;
   breadcrumb: {
     label: React.ReactNode;
     url?: string;

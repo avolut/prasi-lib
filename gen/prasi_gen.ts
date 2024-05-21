@@ -6,6 +6,7 @@ import { gen_export } from "./gen_table_list/gen_export";
 import { gen_master_detail } from "./master_detail/gen";
 import { gen_prop_fields } from "./prop/gen_prop_fields";
 import { gen_props_table } from "./prop/gen_prop_table";
+import { gen_object_rel } from "./prop/gen_object_rel";
 
 export const prasi_gen = {
   actions_tab: gen_action,
@@ -17,5 +18,6 @@ export const prasi_gen = {
   prop: {
     fields: gen_prop_fields,
     table: gen_props_table,
+    rel: gen_object_rel,
   },
 };
