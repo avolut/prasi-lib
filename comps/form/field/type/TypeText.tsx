@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { FMLocal, FieldLocal } from "../../typings";
+import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { useLocal } from "@/utils/use-local";
 import parser from "any-date-parser";
 import { AutoHeightTextarea } from "@/comps/custom/AutoHeightTextarea";
@@ -36,7 +36,8 @@ export const FieldTypeText: FC<{
   field: FieldLocal;
   fm: FMLocal;
   prop: PropTypeText;
-}> = ({ field, fm, prop }) => {
+  arg: FieldProp;
+}> = ({ field, fm, prop, arg }) => {
   let type_field = prop.sub_type;
   switch (type_field) {
     case "datetime":
@@ -90,6 +91,7 @@ export const FieldTypeText: FC<{
             field.focused = true;
             field.render();
           }}
+          placeholder={arg.placeholder || ""}
           onBlur={() => {
             field.focused = false;
             field.render();
@@ -163,6 +165,7 @@ export const FieldTypeText: FC<{
             }
             fm.render();
           }}
+          placeholder={arg.placeholder || ""}
           value={value}
           disabled={field.disabled}
           className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"

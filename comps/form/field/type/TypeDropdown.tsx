@@ -55,7 +55,7 @@ export const TypeDropdown: FC<{
   } else {
     selected = value;
   }
-  console.log({list})
+  console.log({selected})
   return (
     <>
       {field.status === "loading" ? (
@@ -73,7 +73,7 @@ export const TypeDropdown: FC<{
             if (input.list && input.pk) {
               for (const item of input.list) {
                 if (item[input.pk] === val) {
-                  fm.data[field.name] = item;
+                  fm.data[field.name] = val;
                   fm.render();
                   break;
                 }

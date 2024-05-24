@@ -10,6 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "c-bg-primary c-text-primary-foreground hover:c-bg-primary/90",
+        // default: "#FDB813",
         destructive:
           "c-bg-destructive c-text-destructive-foreground hover:c-bg-destructive/90",
         outline:
@@ -24,6 +25,7 @@ const buttonVariants = cva(
         sm: "c-h-9 c-rounded-md c-px-3",
         lg: "c-h-11 c-rounded-md c-px-8",
         icon: "c-h-10 c-w-10",
+        nozise: ""
       },
     },
     defaultVariants: {
@@ -64,7 +66,7 @@ const FloatButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
           buttonVariants({ variant, className }),
           `btn-${
             variant || "default"
-          } btn c-transition-all c-duration-300 c-w-10 c-h-10 c-rounded-full c-z-50 c-absolute c-bottom-7 c-right-6 c-shadow-sm`
+          } btn c-transition-all c-duration-300 c-rounded-full c-z-50 c-absolute c-bottom-7 c-right-6 c-shadow-sm`
         )}
         ref={ref}
         {...props}

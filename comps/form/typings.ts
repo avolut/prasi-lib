@@ -50,6 +50,7 @@ export type FieldProp = {
   on_row: (row: any) => string;
   pk: string;
   sub_type: string;
+  placeholder: string;
 };
 
 export type FMInternal = {

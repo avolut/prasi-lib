@@ -20,3 +20,9 @@ export const timeAgo = (date: string | Date) => {
   }
   return "-";
 };
+export const formatTime = (date: string | Date) => {
+  if (date instanceof Date || typeof date === "string") {
+    return format(date, "HH:MM");
+  }
+  return "-";
+};

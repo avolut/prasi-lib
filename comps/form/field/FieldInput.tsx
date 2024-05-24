@@ -74,6 +74,7 @@ export const FieldInput: FC<{
             <FieldTypeText
               field={field}
               fm={fm}
+              arg={arg}
               prop={{ type: type_field as any, sub_type: arg.sub_type, prefix, suffix } as PropTypeText}
             />
           ) : ["single-option"].includes(type_field) ? (

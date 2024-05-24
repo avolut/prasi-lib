@@ -1,51 +1,39 @@
-import { getPathname } from "lib/utils/pathname";
-import { useLocal } from "lib/utils/use-local";
+
 import get from "lodash.get";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { FC, ReactNode, useEffect } from "react";
-type IMenu = [string, any, string | IMenu[]];
-export type MenuProp = {
-  role: string;
-  on_init: () => string;
-  menu: () => Record<string, IMenu[]>;
-  PassProp: any;
-  child: ReactNode;
-};
-type MenuActive = {
-  label: string;
-  path: string;
-  expand: boolean;
-  active: true;
-};
-export const Menu: FC<MenuProp> = (props) => {
-  const imenu = props.menu();
-  let role = props.role;
-  if (!isEditor) {
-    role = props.on_init();
-  }
-  const PassProp = props.PassProp;
-  const menu = imenu[role] || [];
-  const pathname = getPathname();
+import { MenuProp } from "../../preset/menu/utils/type-menu";
 
+export const Menu: FC<MenuProp> = (props) => {
+  const imenu = props.menu;
+  console.log(imenu)
+  let role = props.role;
+  role = props.on_init() as string;
+
+  const PassProp = props.PassProp;
+  let menu = imenu[role] || [];
+  const pathname = getPathname();
   const local = useLocal({
-    open: [] as Array<MenuActive>,
+    open: [] as Array<any>,
     cache: false,
+    active: null as any,
   });
   if (!local.open.length && !local.cache) {
     const result = findChildMenu(menu, (e: any) => e[2] === pathname);
     if (Array.isArray(result)) {
-      local.open.push({
-        label: result[0],
-        path: pathname,
-        expand: true,
-        active: true,
-      });
+      local.open.push(result);
+      local.active = result;
       local.cache = true;
       local.render();
     }
   }
   return (
-    <div className="c-h-full c-w-full c-flex c-flex-row c-flex-grow c-px-3 c-py-4 c-overflow-y-auto c-rounded ">
+    <div
+      className={cx(
+        props.mode === "mini" ? "c-max-w-[35px]" : "",
+        "c-h-full c-w-full c-flex c-flex-row c-flex-grow c-px-3 c-py-4 c-overflow-y-auto c-rounded "
+      )}
+    >
       <SideBar data={menu} local={local} pm={props} />
     </div>
   );
@@ -57,6 +45,7 @@ export const SideBar: FC<{
   pm: MenuProp;
 }> = ({ data, local, dept, pm }) => {
   const PassProp = pm.PassProp;
+  console.log({ data });
   return (
     <div className="c-flex c-flex-col c-flex-grow">
       {data.map((item) => {
@@ -65,17 +54,33 @@ export const SideBar: FC<{
           icon: item[1],
           value: item[2],
         };
-        const expand = true
+        return <div key={item[0]}>asdas {typeof menu.icon}</div>;
+        const find_child = findChild(item, (e: any) => local.open.includes(e));
+        let expand = find_child;
+        if (find_child && !local.open.includes(item)) local.open.push(item);
         return (
           <div className="w-full c-flex c-flex-col">
-            <div onClick={() => {
-              
-            }}>
+            <div
+              onClick={() => {
+                const childs = getChilds(item) || [];
+                if (local.open.includes(item)) {
+                  local.open = local.open.filter(
+                    (e: any) => e !== item && !childs.includes(e)
+                  );
+                } else {
+                  local.open.push(item);
+                }
+                local.active = item;
+                local.render();
+              }}
+            >
               <PassProp
                 item={menu}
                 dept={dept || 0}
-                hasChild={false}
-                selected={false}
+                hasChild={Array.isArray(menu.value)}
+                selected={local.active === item}
+                expand={expand}
+                mode={pm.mode}
               >
                 {pm.child}
               </PassProp>
@@ -193,6 +198,21 @@ export const SideBar: FC<{
   );
 };
 
+const getChilds = (data: Array<any>) => {
+  let childs = [];
+  childs.push(data);
+  const children = data[2]; // array index ke-2 bisa berupa array atau string
+  if (Array.isArray(children)) {
+    for (let child of children) {
+      childs.push(child);
+      if (Array.isArray(child[2])) {
+        const result: any = getChilds(child);
+        childs = childs.concat(result);
+      }
+    }
+  }
+  return childs;
+};
 
 const found = (data: Array<any>, predicate: any) => {
   const result = findChild(data, predicate);
@@ -231,4 +251,8 @@ const findChildMenu = (data: Array<any>, predicate: any) => {
     });
   }
   return result;
+};
+
+export const MenuIcon: FC<{ child: any }> = ({ child }) => {
+  return <>{child}</>;
 };

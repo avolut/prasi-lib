@@ -50,16 +50,40 @@ export { Button, FloatButton } from "@/comps/ui/button";
 export { prasi_gen } from "@/gen/prasi_gen";
 
 /** Session */
-export {registerSession, RG, UserSession} from "@/comps/login/utils/register"
-export {prasi_user} from "@/comps/login/utils/user"
-export {Login} from "@/comps/login/Login"
-export {logout} from "@/comps/login/utils/logout"
-export {generateLogin} from "@/comps/login/utils/generate"
+export {
+  registerSession,
+  RG,
+  UserSession,
+} from "@/preset/login/utils/register";
+export { prasi_user } from "@/preset/login/utils/user";
+export { Login } from "@/preset/login/Login";
+export { logout } from "@/preset/login/utils/logout";
+export { generateLogin } from "@/preset/login/utils/generate";
+export { select as generateSelect } from "@/preset/login/utils/select";
+ 
+// export card
+export {Card} from "@/comps/custom/Card";
+
+
 /** Layout */
-export {Layout} from "@/comps/custom/Layout"
+export { Layout } from "@/preset/menu/Layout";
 
 /* MENU */
-export {Menu} from "@/comps/menu/Menu"
+export { Menu, MenuIcon } from "@/preset/menu/Menu";
 
 /* Bcrypt */
-export {password} from "@/utils/password"
+export { password } from "@/utils/password";
+
+/*Panel Tab*/
+export {PanelTab} from "@/comps/tab/Tab";
+export {PanelBody} from "@/comps/tab/parts/PanelBody";
+export {PanelHeader} from "@/comps/tab/parts/PanelHead";
+export {ShowHidePanel} from "@/comps/custom/ShowHidePanel";
+/*Popup*/
+export {Popup} from "@/comps/popup/PopUp"
+// Detail
+export { Detail } from "@/comps/custom/Detail";
+export {Profile} from "@/preset/profile/Profile"
+export {generateProfile} from "@/preset/profile/utils/generate"
+export {ButtonUpload} from "@/preset/profile/ButtonUpload"
+export  {longDate, shortDate, timeAgo, formatTime} from "@/utils/date";
