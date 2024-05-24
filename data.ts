@@ -4,8 +4,9 @@ import { lazify } from "./utils/lazify";
 export const MasterDetail = lazify(
   async () => (await import("@/comps/md/MasterDetail")).MasterDetail
 );
-export const MDMaster = lazify(
-  async () => (await import("@/comps/md/parts/MDMaster")).MDMaster
+
+export const MDRenderMaster = lazify(
+  async () => (await import("@/comps/md/parts/MDMaster")).MDRenderMaster
 );
 export const MDAction = lazify(
   async () => (await import("@/comps/md/parts/MDAction")).MDAction
@@ -48,6 +49,7 @@ export { GetValue } from "@/utils/get-value";
 export { TableListType } from "lib/comps/list/utils/typings";
 export { Button, FloatButton } from "@/comps/ui/button";
 export { prasi_gen } from "@/gen/prasi_gen";
+export { password } from "@/utils/password";
 
 /** Session */
 export {
@@ -60,10 +62,8 @@ export { Login } from "@/preset/login/Login";
 export { logout } from "@/preset/login/utils/logout";
 export { generateLogin } from "@/preset/login/utils/generate";
 export { select as generateSelect } from "@/preset/login/utils/select";
- 
-// export card
-export {Card} from "@/comps/custom/Card";
 
+export { Card } from "@/comps/custom/Card";
 
 /** Layout */
 export { Layout } from "@/preset/menu/Layout";
@@ -71,19 +71,18 @@ export { Layout } from "@/preset/menu/Layout";
 /* MENU */
 export { Menu, MenuIcon } from "@/preset/menu/Menu";
 
-/* Bcrypt */
-export { password } from "@/utils/password";
-
 /*Panel Tab*/
-export {PanelTab} from "@/comps/tab/Tab";
-export {PanelBody} from "@/comps/tab/parts/PanelBody";
-export {PanelHeader} from "@/comps/tab/parts/PanelHead";
-export {ShowHidePanel} from "@/comps/custom/ShowHidePanel";
+export { PanelTab } from "@/comps/tab/Tab";
+export { PanelBody } from "@/comps/tab/parts/PanelBody";
+export { PanelHeader } from "@/comps/tab/parts/PanelHead";
+export { ShowHidePanel } from "@/comps/custom/ShowHidePanel";
+
 /*Popup*/
-export {Popup} from "@/comps/popup/PopUp"
+export { Popup } from "@/comps/popup/PopUp";
+
 // Detail
 export { Detail } from "@/comps/custom/Detail";
-export {Profile} from "@/preset/profile/Profile"
-export {generateProfile} from "@/preset/profile/utils/generate"
-export {ButtonUpload} from "@/preset/profile/ButtonUpload"
-export  {longDate, shortDate, timeAgo, formatTime} from "@/utils/date";
+export { Profile } from "@/preset/profile/Profile";
+export { generateProfile } from "@/preset/profile/utils/generate";
+export { ButtonUpload } from "@/preset/profile/ButtonUpload";
+export { longDate, shortDate, timeAgo, formatTime } from "@/utils/date";

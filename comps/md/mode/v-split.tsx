@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { MDMain } from "../parts/MDMaster";
+import { MDMaster } from "../parts/MDMaster";
 import { MDLocal, MDRef } from "../utils/typings";
-import { MDTab, should_show_tab } from "../parts/MDTab";
+import { MDDetail, should_show_tab } from "../parts/MDDetail";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 export const ModeVSplit: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
@@ -13,7 +13,7 @@ export const ModeVSplit: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
           defaultSize={md.panel.size}
           minSize={md.panel.min_size}
         >
-          <MDMain md={md} mdr={mdr} />
+          <MDMaster md={md} mdr={mdr} />
         </Panel>
         <>
           <PanelResizeHandle />
@@ -29,7 +29,7 @@ export const ModeVSplit: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
               }
             }}
           >
-            <MDTab md={md} mdr={mdr} />
+            <MDDetail md={md} mdr={mdr} />
           </Panel>
         </>
       </PanelGroup>

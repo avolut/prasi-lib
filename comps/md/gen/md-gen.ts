@@ -6,7 +6,7 @@ export const generateMasterDetail = async (item: PrasiItem) => {
   );
 
   if (master) {
-    master.edit.setProp("on_load", {
+    master.edit.setProp("on_init", {
       mode: "raw",
       value: `async (text: string) => {
         alert("ASdas");

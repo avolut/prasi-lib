@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { MDLocal, MDRef, w } from "../utils/typings";
+import { MDLocal, MDRef } from "../utils/typings";
 import { MDHeader } from "./MDHeader";
 
 export const should_show_tab = (md: MDLocal) => {
@@ -9,7 +9,7 @@ export const should_show_tab = (md: MDLocal) => {
   return false;
 };
 
-export const MDTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
+export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   const detail = md.childs[md.tab.active];
   const PassProp = mdr.PassProp;
   if (!detail) {
@@ -27,7 +27,7 @@ export const MDTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
         {md.props.tab_mode !== "hidden" && md.tab.list.length > 1 && (
           <MDNavTab md={md} mdr={mdr} />
         )}
-        {/* <PassProp md={md}>{detail.internal}</PassProp> */}
+        <PassProp md={md}>{mdr.childs[md.tab.active]}</PassProp>
       </div>
     </>
   );
