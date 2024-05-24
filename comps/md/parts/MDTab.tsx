@@ -27,7 +27,7 @@ export const MDTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
         {md.props.tab_mode !== "hidden" && md.tab.list.length > 1 && (
           <MDNavTab md={md} mdr={mdr} />
         )}
-        <PassProp md={md}>{detail.internal}</PassProp>
+        {/* <PassProp md={md}>{detail.internal}</PassProp> */}
       </div>
     </>
   );

@@ -34,7 +34,7 @@ export const MDMain: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   return (
     <>
       {md.props.show_head === "only-master" && <MDHeader md={md} mdr={mdr} />}
-      <PassProp md={md}>{md.master.internal}</PassProp>
+      {/* <PassProp md={md}>{md.master.internal}</PassProp> */}
     </>
   );
 };

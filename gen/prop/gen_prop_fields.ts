@@ -33,8 +33,8 @@ const single = {} as Record<
 const load_single = async (table: string) => {
   if (!single[table]) {
     single[table] = {
-      cols: await db._schema.columns(table),
-      rels: await db._schema.rels(table),
+      cols: await db._schema.columns(table as any),
+      rels: await db._schema.rels(table as any),
     };
   }
   return single[table];

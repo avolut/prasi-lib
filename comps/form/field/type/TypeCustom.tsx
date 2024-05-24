@@ -44,10 +44,6 @@ export const TypeCustom: FC<{ field: FieldLocal; fm: FMLocal }> = ({
   if (local.result) {
     if (isValidElement(local.result)) {
       el = local.result;
-    } else {
-      if (local.result.field === "text") {
-        el = <FieldTypeText field={field} fm={fm} prop={local.result} />;
-      }
     }
   }
 
