@@ -3,7 +3,8 @@ import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
 import { FC, ReactNode, useEffect } from "react";
 import { IMenu, MenuProp } from "./utils/type-menu";
-import { icon } from "../../..";
+// import { icon } from "../../..";
+
 export const Menu: FC<MenuProp> = (props) => {
   const imenu = props.menu;
   let role = props.role;
@@ -15,12 +16,11 @@ export const Menu: FC<MenuProp> = (props) => {
     cache: false,
     active: null as any,
     mode: "full" as "full" | "mini",
-    
   });
-  useEffect(( )=>{
+  useEffect(() => {
     local.mode = props.mode;
     local.render();
-  }, [props.mode])
+  }, [props.mode]);
   if (!local.open.length && !local.cache) {
     const result = findChildMenu(menu, (e: any) => e[2] === pathname);
     if (Array.isArray(result)) {
@@ -37,16 +37,25 @@ export const Menu: FC<MenuProp> = (props) => {
         "c-h-full c-w-full c-flex c-flex-col c-flex-grow c-px-3 c-py-4 c-overflow-y-auto  c-rounded "
       )}
     >
-      <div className="c-px-2 c-py-2" onClick={async () => {
-        const item = props.item;
-        // item.edit.setProp("mode", props.mode === "mini" ? "full": "mini");
-        // await item.edit.commit();
-        local.mode = local.mode === "mini" ? "full": "mini";
-        local.render();
-      }}>
-        {icon.hamburger}
+      <div
+        className="c-px-2 c-py-2"
+        onClick={async () => {
+          const item = props.item;
+          // item.edit.setProp("mode", props.mode === "mini" ? "full": "mini");
+          // await item.edit.commit();
+          local.mode = local.mode === "mini" ? "full" : "mini";
+          local.render();
+        }}
+      >
+        {/* {icon.hamburger} */}
       </div>
-      <SideBar data={menu} local={local} pm={props} depth={0} mode={local.mode}/>
+      <SideBar
+        data={menu}
+        local={local}
+        pm={props}
+        depth={0}
+        mode={local.mode}
+      />
     </div>
   );
 };
@@ -55,11 +64,16 @@ export const SideBar: FC<{
   local: any;
   depth: number;
   pm: MenuProp;
-  mode: "full" | "mini"
-}> = ({ data, local, depth, pm , mode}) => {
+  mode: "full" | "mini";
+}> = ({ data, local, depth, pm, mode }) => {
   const PassProp = pm.PassProp;
   return (
-    <div className={cx("c-flex c-flex-col c-flex-grow c-mb-1", depth > 0 ? " c-overflow-hidden" : "")}>
+    <div
+      className={cx(
+        "c-flex c-flex-col c-flex-grow c-mb-1",
+        depth > 0 ? " c-overflow-hidden" : ""
+      )}
+    >
       {data.map((item) => {
         const menu = {
           label: item[0],
@@ -83,8 +97,11 @@ export const SideBar: FC<{
                 }
                 local.active = item;
                 local.render();
-                if(!Array.isArray(menu.value) && typeof menu.value === "string"){
-                  navigate(menu.value)
+                if (
+                  !Array.isArray(menu.value) &&
+                  typeof menu.value === "string"
+                ) {
+                  navigate(menu.value);
                 }
               }}
             >
@@ -93,7 +110,7 @@ export const SideBar: FC<{
                 depth={depth || 0}
                 hasChild={Array.isArray(menu.value) && mode === "full"}
                 selected={local.active === item}
-                expand={expand && Array.isArray(menu.value)  && mode === "full"}
+                expand={expand && Array.isArray(menu.value) && mode === "full"}
                 mode={mode}
               >
                 {pm.child}

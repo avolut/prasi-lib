@@ -14,6 +14,7 @@ export const TitleBack: FC<{
     }
     local.render();
   });
+
   return (
     <div className="c-bg-white c-px-2 c-w-full c-min-h-[20px] c-flex c-py-2">
       <div
@@ -27,7 +28,16 @@ export const TitleBack: FC<{
         {icon.left}
       </div>
 
-      <div className="c-font-bold">{local.label || "-"}</div>
+      <div
+        onClick={() => {
+          if (typeof on_back === "function") {
+            on_back();
+          }
+        }}
+        className="c-font-bold c-w-full"
+      >
+        {local.label || "-"}
+      </div>
     </div>
   );
 };
