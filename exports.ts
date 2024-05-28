@@ -32,6 +32,11 @@ export const ExportExcel = lazify(
   async () => (await import("@/comps/list/ExportExcel")).ExportExcel
 );
 
+/** Filter */
+export const MasterFilter = lazify(
+  async () => (await import("@/comps/filter/Filter")).MasterFilter
+);
+
 /** Generator */
 export { generateMasterDetail } from "lib/comps/md/gen/md-gen";
 
