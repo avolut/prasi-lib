@@ -13,27 +13,24 @@ export const generateMasterDetail: GenFn<{ item: PrasiItem, table: string, field
   const {item} = arg;
   // loading generate MD
   w.generating_prasi_md = {
-    master_detail: true,
+    master_detail: true,  
   };
 
   await generateList(arg, data);
 
-  // const result: any = {};
-  // modify(result);
+  // const childs = item.edit.childs[0].edit.childs;
 
-  const childs = item.edit.childs[0].edit.childs;
+  // const master = childs.find(
+  //   (e) => e.component?.id === "c68415ca-dac5-44fe-aeb6-936caf8cc491"
+  // );
 
-  const master = childs.find(
-    (e) => e.component?.id === "c68415ca-dac5-44fe-aeb6-936caf8cc491"
-  );
+  // if (master) {
+  //   master.edit.setProp("on_init", {
+  //     mode: "raw",
+  //     value: `async (text: string) => {
+  //     }`,
+  //   });
 
-  if (master) {
-    master.edit.setProp("on_init", {
-      mode: "raw",
-      value: `async (text: string) => {
-      }`,
-    });
-
-    await master.edit.commit();
-  }
+  //   await master.edit.commit();
+  // }
 };

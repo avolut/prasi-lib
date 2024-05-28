@@ -1,3 +1,4 @@
+import get from "lodash.get";
 import { MDLocal, MDProps, MDRef } from "./typings";
 
 export const editorMDInit = (md: MDLocal, mdr: MDRef, arg: MDProps) => {
@@ -18,10 +19,8 @@ export const editorMDInit = (md: MDLocal, mdr: MDRef, arg: MDProps) => {
   md.props.gen_table = gen_table;
   md.props.on_init = on_init;
 
-  if (
-    !mdr.master ||
-    (mdr.master && mdr.master.edit.childs[0].childs.length === 0)
-  ) {
+  console.log(get(mdr, "master.edit.childs.0"));
+  if (!mdr.master || (mdr.master && !get(mdr, "master.edit.childs.0.childs.length"))) {
     md.breadcrumb = [
       {
         label: (

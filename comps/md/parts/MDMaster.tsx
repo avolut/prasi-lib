@@ -24,10 +24,12 @@ export const MDRenderMaster: FC<{
       size: width,
       min_size: min_width,
     });
-    md.panel.min_size = min_width;
-    md.panel.size = width;
+    if (md.panel) {
+      md.panel.min_size = min_width;
+      md.panel.size = width;
+    }
   }
-  
+
   return <>{child}</>;
 };
 

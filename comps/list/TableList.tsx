@@ -69,9 +69,7 @@ export const TableList: FC<TableListProp> = ({
   feature,
   filter_name,
 }) => {
-  console.log(`prasi_filter.${filter_name}`);
   const where = get(w, `prasi_filter.${filter_name}`);
-  console.log(w.prasi_filter);
   if (mode === "auto") {
     if (w.isMobile) {
       mode = "list";
