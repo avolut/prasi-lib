@@ -35,5 +35,4 @@ export const gen_master_detail: GenFn<GenMasterDetailArg> = async (
 
   delete w.generating_prasi_md["master_detail"];
   modify(result);
-
 };

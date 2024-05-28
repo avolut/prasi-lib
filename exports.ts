@@ -4,7 +4,6 @@ import { lazify } from "./utils/lazify";
 export const MasterDetail = lazify(
   async () => (await import("@/comps/md/MasterDetail")).MasterDetail
 );
-
 export const MDRenderMaster = lazify(
   async () => (await import("@/comps/md/parts/MDMaster")).MDRenderMaster
 );

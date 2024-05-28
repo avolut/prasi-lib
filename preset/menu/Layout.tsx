@@ -62,8 +62,6 @@ export const Layout: FC<LYTChild> = (props) => {
   fn();
   const path = getPathname();
   const no_layout = props.exception;
-  console.log({no_layout})
-  console.log(props.defaultLayout)
   if (Array.isArray(no_layout))
     if (no_layout.length) {
       if (no_layout.includes(path)) {

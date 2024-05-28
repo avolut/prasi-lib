@@ -8,7 +8,8 @@ export type MenuProp = {
   PassProp: any;
   child: ReactNode;
   mode: "full" | "mini";
-  item: PrasiItem
+  item: PrasiItem;
+  style: "navbar" | "sidebar"
 };
 export type MenuActive = {
   data: any;

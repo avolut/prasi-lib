@@ -75,6 +75,7 @@ export const TypeDropdown: FC<{
                 if (item[input.pk] === val) {
                   fm.data[field.name] = val;
                   fm.render();
+                  arg.on_change({value: item})
                   break;
                 }
               }

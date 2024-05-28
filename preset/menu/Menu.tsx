@@ -16,11 +16,12 @@ export const Menu: FC<MenuProp> = (props) => {
     cache: false,
     active: null as any,
     mode: "full" as "full" | "mini",
+    
   });
-  useEffect(() => {
+  useEffect(( )=>{
     local.mode = props.mode;
     local.render();
-  }, [props.mode]);
+  }, [props.mode])
   if (!local.open.length && !local.cache) {
     const result = findChildMenu(menu, (e: any) => e[2] === pathname);
     if (Array.isArray(result)) {
@@ -30,6 +31,9 @@ export const Menu: FC<MenuProp> = (props) => {
       local.render();
     }
   }
+
+  const styles = props.style;
+  const PassProp = props.PassProp;
   return (
     <div
       className={cx(
@@ -37,25 +41,16 @@ export const Menu: FC<MenuProp> = (props) => {
         "c-h-full c-w-full c-flex c-flex-col c-flex-grow c-px-3 c-py-4 c-overflow-y-auto  c-rounded "
       )}
     >
-      <div
-        className="c-px-2 c-py-2"
-        onClick={async () => {
-          const item = props.item;
-          // item.edit.setProp("mode", props.mode === "mini" ? "full": "mini");
-          // await item.edit.commit();
-          local.mode = local.mode === "mini" ? "full" : "mini";
-          local.render();
-        }}
-      >
+      <div className="c-px-2 c-py-2" onClick={async () => {
+        const item = props.item;
+        // item.edit.setProp("mode", props.mode === "mini" ? "full": "mini");
+        // await item.edit.commit();
+        local.mode = local.mode === "mini" ? "full": "mini";
+        local.render();
+      }}>
         {/* {icon.hamburger} */}
       </div>
-      <SideBar
-        data={menu}
-        local={local}
-        pm={props}
-        depth={0}
-        mode={local.mode}
-      />
+      <SideBar data={menu} local={local} pm={props} depth={0} mode={local.mode}/>
     </div>
   );
 };

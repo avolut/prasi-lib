@@ -6,7 +6,6 @@ const parse = parser.exportAsFunctionAny("en-US");
 export const loadSession = (url_login?: string) => {
   try {
     const user = localStorage.getItem("user");
-    console.log({user})
     if (user) {
       const raw = JSON.parse(user);
       w.user = raw.data;

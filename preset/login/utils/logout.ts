@@ -1,3 +1,4 @@
+import { getPathname } from "lib/utils/pathname";
 import get from "lodash.get";
 
 const w = window as any;
@@ -7,11 +8,14 @@ export type RGSession = {
 };
 
 export const logout = (url_login?: string) => {
-  if(typeof get(w, "user") === "object"){
+  console.log("halo")
+  if (typeof get(w, "user") === "object") {
     w.user = null;
   }
-  if(localStorage.getItem("user")){
+  if (localStorage.getItem("user")) {
     localStorage.removeItem("user");
   }
-  if(url_login) navigate(url_login);
+  if (!getPathname().startsWith("/dev")) {
+    if (url_login) navigate(url_login);
+  }
 };
