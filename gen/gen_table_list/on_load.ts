@@ -1,5 +1,3 @@
-import { GFCol } from "../utils";
-
 export const on_load = ({
   pk,
   table,

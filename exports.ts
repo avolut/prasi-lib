@@ -54,6 +54,7 @@ export { TableListType } from "lib/comps/list/utils/typings";
 export { Button, FloatButton } from "@/comps/ui/button";
 export { prasi_gen } from "@/gen/prasi_gen";
 export { password } from "@/utils/password";
+export {generateTableList} from "@/comps/md/gen/md-table-list"
 
 /** Session */
 export {

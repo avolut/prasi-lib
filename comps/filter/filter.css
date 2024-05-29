@@ -1,0 +1,26 @@
+.filter-content {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.filter-regular {
+  width: 250px;
+  /* Styles specific to sidebar */
+}
+
+.filter-inline {
+  display: flex;
+  align-items: center;
+  /* Styles specific to topbar */
+}
+
+.filter-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  /* Styles specific to popup */
+}

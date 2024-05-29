@@ -16,8 +16,7 @@ export const generateMasterDetail: GenFn<{ item: PrasiItem, table: string, field
     master_detail: true,  
   };
 
-  await generateList(arg, data);
-
+  await generateList(arg, data, false);
   // const childs = item.edit.childs[0].edit.childs;
 
   // const master = childs.find(
@@ -31,6 +30,8 @@ export const generateMasterDetail: GenFn<{ item: PrasiItem, table: string, field
   //     }`,
   //   });
 
-  //   await master.edit.commit();
+  //  
   // }
+  await item.edit.commit();
+  console.log({item})
 };
