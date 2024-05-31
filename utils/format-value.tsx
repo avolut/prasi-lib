@@ -22,13 +22,13 @@ export const FormatValue: FC<{
             return {
               ...JSON.parse(e.value),
               checked: e.checked.map((ex: any) => {
-                if(typeof ex === "string"){
-                  return JSON.parse(e.value)
+                if (typeof ex === "string") {
+                  return JSON.parse(e.value);
                 }
-                try{
+                try {
                   return JSON.parse(ex["value"]);
-                }catch(em){
-                  return null
+                } catch (em) {
+                  return null;
                 }
               }),
             };
@@ -42,19 +42,20 @@ export const FormatValue: FC<{
     if (typeof value === "object" && value) {
       const rel = fields?.find((e) => e.name === name);
       if (rel && rel.checked) {
-        const result = rel.checked
-          .filter((e) => !e.is_pk)
-          .map((e) => {
-            return value[e.name];
-          })
-          .join(" - ");
+       
+        if (rel.type === "has-one") {
+          const result = [];
+          for (const [k,v] of Object.entries(value) as any ) {
+            if (!k.toLowerCase().includes('id')) result.push(v);
+          }
+          return result.join(' - ');
+        }
 
         if (Array.isArray(value)) {
           const len = value.length;
           if (len === 0) return ` - `;
           return `${len} item${len > 1 ? "s" : ""}`;
         }
-        return result;
       }
 
       return JSON.stringify(value);

@@ -10,11 +10,13 @@ export const parseGenField = (fields: PropOptRaw) => {
     if (typeof f === "string") {
       try {
         const field = JSON.parse(f);
+        field["value"] = f
         result.push(field);
       } catch (e) {}
     } else {
       const field = JSON.parse(f.value);
       field.relation.fields = parseGenField(f.checked);
+      field["value"] = f
       result.push(field);
     }
   }
@@ -46,6 +48,7 @@ export type GFCol = {
     to: { table: string; fields: string[] };
     fields: GFCol[];
   };
+  value: Array<string> | string;
 };
 
 export const formatName = (name: string) => {

@@ -36,7 +36,8 @@ type TableListProp = {
   }) => Promise<any[]>;
   on_init: (arg?: any) => any;
   mode: "table" | "list" | "grid" | "auto";
-  _meta: Record<string, any>;
+  // _meta: Record<string, any>;
+  _item: PrasiItem;
   gen_fields: string[];
   row_click: OnRowClick;
   selected: SelectedRow;
@@ -61,7 +62,7 @@ export const TableList: FC<TableListProp> = ({
   PassProp,
   mode,
   on_init,
-  _meta,
+  _item,
   gen_fields,
   row_click,
   selected,
@@ -247,7 +248,6 @@ export const TableList: FC<TableListProp> = ({
     e.preventDefault();
     e.stopPropagation();
     const checked = !!local.selectedRows.find((data) => data.pk === rowId);
-    console.log(checked);
     if (!checked) {
       // jika checkbox tercheck, maka rowData akan diambil jika memiliki id yang sama dengan rowId yang dikirim
       const checkedRowData = rowData.filter((row) => row[pk] === rowId);
@@ -256,14 +256,12 @@ export const TableList: FC<TableListProp> = ({
         rows: checkedRowData,
       });
       local.render();
-      console.log("selected", local.selectedRows);
     } else {
       // jika tidak, maka akan dihapus
       local.selectedRows = local.selectedRows.filter(
         (data) => data.pk !== rowId
       );
       local.render();
-      console.log("deselected", local.selectedRows);
     }
   };
 
@@ -271,9 +269,12 @@ export const TableList: FC<TableListProp> = ({
     (e: any) => e.name === sub_name || e.name === mode
   );
   if (mode_child) {
-    const meta = _meta[mode_child.id];
-    if (meta && meta.item.childs) {
-      childs = meta.item.childs;
+    const tbl = _item.edit.childs[0].edit.childs.find(
+      (e) => get(e, "id") === mode_child.id
+    );
+    const meta = tbl;
+    if (meta && meta.childs) {
+      childs = meta.childs;
     }
   }
   let columns: ColumnOrColumnGroup<any>[] = [];
@@ -322,37 +323,36 @@ export const TableList: FC<TableListProp> = ({
       cellClass: selectCellClassname,
     });
   }
-  // for (const child of childs) {
-  //   const key = getProp(child, "name", {});
-  //   const name = getProp(child, "title", {});
-  //   const width = parseInt(getProp(child, "width", {}));
+  for (const child of childs) {
+    const key = getProp(child, "name", {});
+    const name = getProp(child, "title", {});
+    const width = parseInt(getProp(child, "width", {}));
 
-  //   columns.push({
-  //     key,
-  //     name,
-  //     width: width > 0 ? width : undefined,
-  //     resizable: true,
-  //     sortable: true,
-  //     renderCell(props) {
-  //       return (
-  //         <PassProp
-  //           idx={props.rowIdx}
-  //           row={props.row}
-  //           col={{
-  //             name: props.column.key,
-  //             value: props.row[props.column.key],
-  //             depth: props.row.__depth || 0,
-  //           }}
-  //           rows={local.data}
-  //         >
-  //           {child}
-  //         </PassProp>
-  //       );
-  //     },
-  //   });
-  // }
+    columns.push({
+      key,
+      name,
+      width: width > 0 ? width : undefined,
+      resizable: true,
+      sortable: true,
+      renderCell(props) {
+        return (
+          <PassProp
+            idx={props.rowIdx}
+            row={props.row}
+            col={{
+              name: props.column.key,
+              value: props.row[props.column.key],
+              depth: props.row.__depth || 0,
+            }}
+            rows={local.data}
+          >
+            {child}
+          </PassProp>
+        );
+      },
+    });
+  }
   if (mode === "list") {
-    // ambil satu index saja;
     if (columns.length > 1) columns = columns.slice(0, 0 + 1);
   }
 
@@ -420,12 +420,19 @@ export const TableList: FC<TableListProp> = ({
   if (id_parent && local.pk && local.sort.columns.length === 0) {
     data = sortTree(local.data, id_parent, local.pk.name);
   }
+  console.log("render?")
+  // return "123"
   if (mode === "table") {
     return (
       <div
         className={cx(
           "c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
-          dataGridStyle(local)
+          dataGridStyle(local),
+          css`
+            .rdg {
+              display: grid !important;
+            }
+          `
         )}
         ref={(el) => {
           if (!local.el && el) {
@@ -485,7 +492,7 @@ export const TableList: FC<TableListProp> = ({
                             row: props.row,
                             rows: local.data,
                           });
-                          // return "halo"
+
                           return (
                             <Row
                               key={key}
@@ -650,4 +657,12 @@ function isAtBottom({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean {
     currentTarget.scrollTop + 10 >=
     currentTarget.scrollHeight - currentTarget.clientHeight
   );
+}
+
+function getProp(child: IItem, name: string, defaultValue?: any) {
+  const fn = new Function(
+    `return ${get(child, `component.props.${name}.valueBuilt`) || `null`}`
+  );
+
+  return fn() || defaultValue;
 }

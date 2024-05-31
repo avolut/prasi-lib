@@ -20,6 +20,16 @@ export type FMProps = {
   on_load_deps?: any[];
 };
 
+export type GenField = {
+  name: string,
+  is_pk: boolean,
+  type: string,
+  optional: boolean,
+} | {
+  checked: GenField[],
+  value: GFCol
+};
+
 type FieldType =
   | "-"
   | "relation"

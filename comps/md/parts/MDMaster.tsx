@@ -38,7 +38,18 @@ export const MDMaster: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   return (
     <>
       {md.props.show_head === "only-master" && <MDHeader md={md} mdr={mdr} />}
-      <PassProp md={md}>{mdr.master}</PassProp>
+      <div
+        className={cx(
+          css`
+            > div {
+              flex: 1;
+            }
+          `,
+          "c-flex c-flex-1"
+        )}
+      >
+        <PassProp md={md}>{mdr.master}</PassProp>
+      </div>
     </>
   );
 };

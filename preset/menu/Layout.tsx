@@ -62,12 +62,12 @@ export const Layout: FC<LYTChild> = (props) => {
   fn();
   const path = getPathname();
   const no_layout = props.exception;
+  loadSession("/auth/login");
   if (Array.isArray(no_layout))
     if (no_layout.length) {
       if (no_layout.includes(path)) {
         return <>{props.defaultLayout}</>;
       }
     }
-  loadSession("/dev/auth");
   return <>{props.children}</>;
 };

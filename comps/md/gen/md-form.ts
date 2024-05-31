@@ -2,7 +2,7 @@ import { createItem } from "lib/gen/utils";
 import get from "lodash.get";
 import { generateTableList } from "./gen-table-list";
 
-export const generateList = async (
+export const generateMDForm = async (
   arg: { item: PrasiItem; table: string; fields: any },
   data: any,
   commit: boolean
@@ -110,4 +110,13 @@ idx: any;
       props,
     },
   }]);
+  console.log({
+    type: "item",
+    name: "item",
+    component: {
+      id: "567d5362-2cc8-4ca5-a531-f771a5c866c2",
+      props,
+    },
+  })
+  // console.log(tablelist);
 };

@@ -19,7 +19,6 @@ export const editorMDInit = (md: MDLocal, mdr: MDRef, arg: MDProps) => {
   md.props.gen_table = gen_table;
   md.props.on_init = on_init;
 
-  console.log(get(mdr, "master.edit.childs.0"));
   if (!mdr.master || (mdr.master && !get(mdr, "master.edit.childs.0.childs.length"))) {
     md.breadcrumb = [
       {

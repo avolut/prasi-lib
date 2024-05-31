@@ -1,14 +1,12 @@
-import { FC } from "react";
-import { FMLocal, FieldLocal, FieldProp } from "../../typings";
+import { AutoHeightTextarea } from "@/comps/custom/AutoHeightTextarea";
 import { useLocal } from "@/utils/use-local";
 import parser from "any-date-parser";
-import { AutoHeightTextarea } from "@/comps/custom/AutoHeightTextarea";
-import { M } from "src/data/unitShortcuts";
 import { format } from "date-fns";
-import get from "lodash.get";
+import { FC } from "react";
+import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldMoney } from "./TypeMoney";
-import { FieldUpload } from "./TypeUpload";
 import { FieldRichText } from "./TypeRichText";
+import { FieldUpload } from "./TypeUpload";
 
 export type PropTypeText = {
   type: "text" | "date";
@@ -45,9 +43,11 @@ export const FieldTypeText: FC<{
       break;
     default:
   }
+
   const input = useLocal({});
   let display: any = null;
   let value: any = fm.data[field.name];
+
   // let value: any = "2024-05-14T05:58:01.376Z" // case untuk date time
   field.input = input;
   field.prop = prop;
@@ -75,6 +75,7 @@ export const FieldTypeText: FC<{
   } else if (["number"].includes(type_field)) {
     value = Number(value) || null;
   }
+
   return (
     <>
       {type_field === "textarea" ? (
@@ -153,7 +154,6 @@ export const FieldTypeText: FC<{
         <input
           type={type_field}
           onChange={(ev) => {
-            console.log("onchange");
             if (["date", "datetime", "datetime-local"].includes(type_field)) {
               let result = null;
               try {

@@ -73,8 +73,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
   if (isEditor) {
     editorMDInit(md, mdr, arg);
   }
-
-  return (
+  return ( 
     <div
       className={cx(
         "c-flex-1 c-flex-col c-flex c-w-full c-h-full c-overflow-hidden"
