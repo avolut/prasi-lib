@@ -14,11 +14,22 @@ export const default_filter_local = {
 };
 
 export const modifiers = {
-  text: { contains: "Contains", ends_with: "Ends With" },
-  boolean: {},
-  number: {},
+  text: { contains: "Contains", ends_with: "Ends With", equal: "Equal", not_equal: "Not Equal" },
+  boolean: {
+    is_true: "Is True",
+    is_false: "Is False"
+  },
+  number: {
+    equal: "Equal",
+    not_equal: "Not Equal",
+    between: "Between",
+    greater_than: "Greater Than",
+    less_than: "Less Than"
+  },
   date: {
     between: "Between",
+    greater_than: "Greater Than",
+    less_than: "Less Than"
   },
 };
 export type FilterModifier = typeof modifiers;

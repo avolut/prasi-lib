@@ -97,3 +97,7 @@ export { Profile } from "@/preset/profile/Profile";
 export { generateProfile } from "@/preset/profile/utils/generate";
 export { ButtonUpload } from "@/preset/profile/ButtonUpload";
 export { longDate, shortDate, timeAgo, formatTime } from "@/utils/date";
+
+
+export * from '@/comps/ui/typeahead'
+export * from '@/comps/ui/input'

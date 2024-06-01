@@ -67,7 +67,8 @@ export const generateForm = async (
           childs: childs,
         }),
       });
-      // await item.edit.commit();
+      await item.edit.commit();
+      // console.log("done")
     } else {
       
     }

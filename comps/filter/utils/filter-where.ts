@@ -17,21 +17,71 @@ export const filterWhere = (filter_name: string) => {
             {
               if (modifier === "contains")
                 where[name] = {
-                  contains: value,
+                  contains: "%" + value + "%",
                   mode: "insensitive",
                 };
+              else if (modifier === "starts_with")
+                where[name] = {
+                  contains: value + "%",
+                  mode: "insensitive",
+                };
+              else if (modifier === "ends_with")
+                where[name] = {
+                  contains: "%" + value,
+                  mode: "insensitive",
+                };
+              else if (modifier === "not_equal") {
+                where[name] = {
+                  NOT: value,
+                };
+              } else if (modifier === "equal") {
+                where[name] = {
+                  value,
+                };
+              }
             }
             break;
-          case "date": {
-            let is_value_valid = false;
-            // TODO: pastikan value bisa diparse pakai any-date-parser
-            if (is_value_valid) {
-              if (modifier === "between") {
+          case "date":
+            {
+              let is_value_valid = false;
+              // TODO: pastikan value bisa diparse pakai any-date-parser
+              if (is_value_valid) {
+                if (modifier === "between") {
+                  AND.push({ [name]: { gt: value } });
+                  AND.push({ [name]: { lt: value } });
+                } else if (modifier === "greater_than") {
+                  AND.push({ [name]: { gt: value } });
+                } else if (modifier === "less_than") {
+                  AND.push({ [name]: { lt: value } });
+                }
+              }
+            }
+            break;
+          case "number":
+            {
+              if (modifier === "equal") {
+                AND.push({ [name]: { value } });
+              } else if (modifier === "not_equal") {
+                AND.push({ [name]: { NOT: value } });
+              } else if (modifier === "greater_than") {
+                AND.push({ [name]: { gt: value } });
+              } else if (modifier === "less_than") {
+                AND.push({ [name]: { lt: value } });
+              } else if (modifier === "between") {
                 AND.push({ [name]: { gt: value } });
                 AND.push({ [name]: { lt: value } });
               }
             }
-          }
+            break;
+          case "boolean":
+            {
+              if (modifier === "is_true") {
+                AND.push({ [name]: true });
+              } else if (modifier === "is_false") {
+                AND.push({ [name]: false });
+              }
+            }
+            break;
         }
       }
     }

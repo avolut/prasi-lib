@@ -1,15 +1,16 @@
 import { FC, useEffect } from "react";
 import { BaseField } from "../form/base/BaseField";
-import { FilterLocal, filter_window } from "./utils/types";
+import { FilterFieldType, FilterLocal, filter_window } from "./utils/types";
 import { FieldTypeText } from "../form/field/type/TypeText";
 import { FieldModifier } from "./FieldModifier";
 import { useLocal } from "lib/utils/use-local";
+import { FieldToggle } from "../form/field/type/TypeToggle";
 
 export const FilterField: FC<{
   filter: FilterLocal;
   name?: string;
   label?: string;
-  type: "text" | "number" | "boolean";
+  type: FilterFieldType;
 }> = ({ filter, name, label, type }) => {
   const internal = useLocal({ render_timeout: null as any });
   if (!name) return <>No Name</>;
@@ -66,6 +67,33 @@ export const FilterField: FC<{
                 suffix: "",
               }}
             />
+          )}
+          {type === "date" && (
+            <>
+              <FieldTypeText
+                {...field}
+                prop={{
+                  type: "text",
+                  sub_type: "date",
+                  prefix: "",
+                  suffix: "",
+                }}
+              />
+              {filter.modifiers[name] === 'Between' && (
+                <FieldTypeText
+                  {...field}
+                  prop={{
+                    type: "text",
+                    sub_type: "date",
+                    prefix: "",
+                    suffix: "",
+                  }}
+                />
+              )}
+            </>
+          )}
+          {type === "boolean" && (
+            <FieldToggle {...field} />
           )}
         </>
       )}
