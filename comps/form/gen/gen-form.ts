@@ -34,7 +34,6 @@ export const generateForm = async (
     alert("Failed to generate! Primary Key not found. ");
     return;
   }
-  console.log({ pk, table, select, pks })
   if (pk) {
     if (data["on_load"]) {
       result.on_load = {
@@ -51,7 +50,6 @@ export const generateForm = async (
     result.body = data["body"];
 
     const childs = [];
-    console.log({fields})
     for (const item of fields.filter((e) => !e.is_pk)) {
       let value = [] as Array<string>;
       if (["has-one", "has-many"].includes(item.type)) {
@@ -60,17 +58,13 @@ export const generateForm = async (
       const field = newField(item, { parent_table: table, value });
       childs.push(field);
     }
-    console.log(childs)
     if (commit) {
-      item.edit.setProp("body", {
-        mode: "jsx",
-        value: {
-          id: createId(),
+      item.edit.setProp("body", { 
+        mode: "jsx", 
+        value: createItem({
           name: "item",
-          type: "item",
           childs: childs,
-          edit: null as any,
-        },
+        }),
       });
       await item.edit.commit();
     } else {
