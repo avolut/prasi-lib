@@ -1,7 +1,7 @@
 export const gen_label = ({
   pk,
   table,
-  select
+  select,
 }: {
   pk: string;
   table: string;
@@ -16,21 +16,22 @@ export const gen_label = ({
   }
 
   return `\
-    (row: { value: string; label: string; item?: any }) => {
-      const cols = ${JSON.stringify(cols)};
-      const getLabel = (data: any) => {
-        const result = [];
-        cols.map((e) => {
-          if (data[e]) {
-            result.push(data[e]);
-          }
-        });
-        return result.join(" - ");
-      };
-      if (isEditor) {
-        return row.label;
+(row: { value: string; label: string; item?: any }) => {
+  const cols = ${JSON.stringify(cols)};
+  
+  if (isEditor) {
+    return row.label;
+  }
+  const result = [];
+  if (!!row.item && !Array.isArray(row.item)) {
+    cols.map((e) => {
+      if (row.item[e]) {
+        result.push(row.item[e]);
       }
-      return getLabel(row.item);
-    }
+    });
+    return result.join(" - ");
+  }
+  return row.label;
+}
   `;
 };

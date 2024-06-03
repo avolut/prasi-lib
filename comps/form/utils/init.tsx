@@ -54,13 +54,20 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           }
         }
         if (should_load) {
-          const res = on_load({ fm });
-
-          if (typeof res === "object" && res instanceof Promise) {
-            fm.data = await res;
+          const on_load_result = on_load({ fm });
+          let result = undefined;
+          if (
+            typeof on_load_result === "object" &&
+            on_load_result instanceof Promise
+          ) {
+            result = await on_load_result;
           } else {
-            fm.data = res;
+            result = on_load_result;
           }
+          if (!!result) {
+            fm.data = result;
+          }
+
           if (!fm.data) {
             fm.data = {};
           }

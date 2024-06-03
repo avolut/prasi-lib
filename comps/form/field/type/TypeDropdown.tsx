@@ -26,7 +26,6 @@ export const TypeDropdown: FC<{
         options.then((res) => {
           if (Array.isArray(res)) {
             const list: any = res.map((e: any) => {
-              console.log({e})
               return {
                 label: arg.opt_get_label(e),
                 value: e.value,

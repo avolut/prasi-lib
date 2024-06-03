@@ -29,49 +29,49 @@ export const on_load_rel = ({
     }
   
     return `\
-  (arg: {
-    reload: () => Promise<void>;
-    orderBy?: Record<string, "asc" | "desc">;
-    paging: { take: number; skip: number };
-    mode: 'count' | 'query'
-  }) => {
-    if (isEditor) return [${JSON.stringify(sample)}];
-  
-    return new Promise(async (done) => {
-      if (arg.mode === 'count') {
-        return await db.${table}.count();
+(arg: {
+  reload: () => Promise<void>;
+  orderBy?: Record<string, "asc" | "desc">;
+  paging: { take: number; skip: number };
+  mode: 'count' | 'query'
+}) => {
+  if (isEditor) return [${JSON.stringify(sample)}];
+
+  return new Promise(async (done) => {
+    if (arg.mode === 'count') {
+      return await db.${table}.count();
+    }
+
+    const items = await db.${table}.findMany({
+      select: ${JSON.stringify(select)},
+      orderBy: arg.orderBy || {
+        ${pk}: "desc"
+      },
+      ...arg.paging,
+    });
+    if(items.length){
+      const cols = ${JSON.stringify(cols)};
+      const getLabel = (data: any)  => {
+        const result = [];
+        cols.map((e) => {
+          if(data[e]){
+            result.push(data[e]);
+          }
+        })
+        return result.join(" - ");
       }
-  
-      const items = await db.${table}.findMany({
-        select: ${JSON.stringify(select)},
-        orderBy: arg.orderBy || {
-          ${pk}: "desc"
-        },
-        ...arg.paging,
-      });
-      if(items.length){
-        const cols = ${JSON.stringify(cols)};
-        const getLabel = (data: any)  => {
-          const result = [];
-          cols.map((e) => {
-            if(data[e]){
-              result.push(data[e]);
-            }
-          })
-          return result.join(" - ");
-        }
-        done(items.map((e) => {
-            return {
-                value: e.${pk},
-                label: getLabel(e),
-                data: e,
-            }
-        }))
-      } else {
-        done([])
-      }
-    })
-  }
+      done(items.map((e) => {
+          return {
+              value: e.${pk},
+              label: getLabel(e),
+              data: e,
+          }
+      }))
+    } else {
+      done([])
+    }
+  })
+}
   `;
   };
   
