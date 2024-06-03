@@ -5,7 +5,6 @@ export const filterWhere = (filter_name: string) => {
   const pf = filter_window.prasi_filter?.[getPathname()]?.[filter_name];
   const where: any = {};
   const AND: any[] = [];
-
   if (pf) {
     for (const [k, filter] of Object.entries(pf)) {
       for (const [name, value] of Object.entries(filter.data)) {
@@ -79,6 +78,19 @@ export const filterWhere = (filter_name: string) => {
                 AND.push({ [name]: true });
               } else if (modifier === "is_false") {
                 AND.push({ [name]: false });
+              }
+            }
+            break;
+          case "options":
+            {
+              if (modifier === "equal") {
+                AND.push({ [name]: { value } });
+              } else if (modifier === "not_equal") {
+                AND.push({ [name]: { NOT: value } });
+              } else if (modifier === "includes") {
+                AND.push({ [name]: { hasEvery: value } });
+              } else if (modifier === "excludes") {
+                AND.push({ [name]: { notIn: value } });
               }
             }
             break;

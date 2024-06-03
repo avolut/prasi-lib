@@ -27,7 +27,6 @@ export const on_load_rel = ({
         sample[k] = "sample";
       }
     }
-    console.log({cols})
   
     return `\
   (arg: {

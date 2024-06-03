@@ -4,6 +4,7 @@ import { createItem, parseGenField } from "lib/gen/utils";
 import capitalize from "lodash.capitalize";
 import { ArrowBigDown } from "lucide-react";
 import { on_load_rel } from "./on_load_rel";
+import { createId } from "@paralleldrive/cuid2";
 export type GFCol = {
   name: string;
   type: string;
@@ -68,9 +69,7 @@ export const newField = (
       },
     });
   } else if (["has-many", "has-one"].includes(arg.type) && arg.relation) {
-    if (["has-one"].includes(arg.type)) {
-      console.log(opt.value);
-      const fields = parseGenField(opt.value);
+    const fields = parseGenField(opt.value);
       const res = generateSelect(fields);
       const load = on_load_rel({
         pk: res.pk,
@@ -78,6 +77,7 @@ export const newField = (
         select: res.select,
         pks: {},
       });
+    if (["has-one"].includes(arg.type)) {
       return createItem({
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
@@ -87,63 +87,48 @@ export const newField = (
             type: "single-option",
             sub_type: "dropdown",
             rel__gen_table: arg.name,
-            // rel__gen_fields: [`[${opt.value.join(",")}]`],
-            opt__on_load: [
-              `\
-            ${load}
-            `,
-            ],
+            opt__on_load: [load],
             child: {
               childs: [],
             },
           },
         },
       });
-      // return {
-      //     name: "item",
-      //     type: "item",
-      //     component: {
-      //       id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
-      //       props: {
-      //         name: {
-      //             mode: "string",
-      //             value: arg.name
-      //         },
-      //         label: {
-      //             mode: "string",
-      //             value: formatName(arg.name)
-      //         },
-      //         type: {
-      //             mode: "string",
-      //             value: "single-option"
-      //         },
-      //         sub_type:  {
-      //             mode: "string",
-      //             value: "dropdown"
-      //         },
-      //         rel__gen_table:  {
-      //             mode: "string",
-      //             value: arg.name
-      //         },
-      //         rel__gen_fields:  {
-      //             mode: "raw",
-      //             value: `${JSON.stringify(opt.val)}`
-      //         }
-      //       },
-      //     },
-      //   };
     } else {
-      
-      const fields = parseGenField(opt.value);
-      const res = generateSelect(fields);
-      const load = on_load_rel({
-        pk: res.pk,
-        table: arg.name,
-        select: res.select,
-        pks: {},
-      });
-      console.log(load)
-      
+      return {
+        id: createId(),
+        name: "item",
+        type: "item",
+        childs: [],
+        edit: null as any,
+        component: {
+          id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
+          props: {
+            name: {
+              type: "string",
+              value: arg.name,
+            },
+            label: {
+              type: "string",
+              value: formatName(arg.name),
+            },
+            sub_type: {
+              type: "string",
+              value: "single-option",
+            },
+            rel__gen_table: {
+              type: "string",
+              value: arg.name,
+            },
+            opt__on_load: {
+              type: "raw",
+              value: `\
+              ${load}
+              `,
+            },
+          },
+        },
+      };
       return createItem({
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",

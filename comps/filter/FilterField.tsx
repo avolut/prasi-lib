@@ -4,7 +4,7 @@ import { FilterFieldType, FilterLocal, filter_window } from "./utils/types";
 import { FieldTypeText } from "../form/field/type/TypeText";
 import { FieldModifier } from "./FieldModifier";
 import { useLocal } from "lib/utils/use-local";
-import { FieldToggle } from "../form/field/type/TypeToggle";
+import { FieldCheckbox } from "../form/field/type/TypeCheckbox";
 
 export const FilterField: FC<{
   filter: FilterLocal;
@@ -42,6 +42,7 @@ export const FilterField: FC<{
             type={type}
           />
         ),
+        opt_get_value: () => { }
       })}
     >
       {(field) => (
@@ -79,7 +80,7 @@ export const FilterField: FC<{
                   suffix: "",
                 }}
               />
-              {filter.modifiers[name] === 'Between' && (
+              {filter.modifiers[name] === 'between' && (
                 <FieldTypeText
                   {...field}
                   prop={{
@@ -93,10 +94,10 @@ export const FilterField: FC<{
             </>
           )}
           {type === "boolean" && (
-            <FieldToggle {...field} />
+            <FieldCheckbox arg={field.arg} field={field.field} fm={field.fm} />
           )}
         </>
       )}
-    </BaseField>
+    </BaseField >
   );
 };

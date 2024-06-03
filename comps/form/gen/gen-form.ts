@@ -4,6 +4,7 @@ import { newField } from "./fields";
 import { generateSelect } from "../../md/gen/md-select";
 import { on_load } from "../../md/gen/tbl-list/on_load";
 import { on_submit } from "../../md/gen/tbl-list/on_submit";
+import { createId } from "@paralleldrive/cuid2";
 
 export const generateForm = async (
   modify: (data: any) => void,
@@ -59,12 +60,17 @@ export const generateForm = async (
       const field = newField(item, { parent_table: table, value });
       childs.push(field);
     }
+    console.log(childs)
     if (commit) {
       item.edit.setProp("body", {
         mode: "jsx",
-        value: createItem({
+        value: {
+          id: createId(),
+          name: "item",
+          type: "item",
           childs: childs,
-        }),
+          edit: null as any,
+        },
       });
       await item.edit.commit();
     } else {

@@ -21,6 +21,8 @@ export const FieldCheckbox: FC<{
     else callback(res);
   }, []);
 
+  console.log('arg', arg);
+
   let value = arg.opt_get_value({
     fm,
     name: field.name,
@@ -36,15 +38,15 @@ export const FieldCheckbox: FC<{
             let isChecked = false;
             try {
               isChecked = value.some((e: any) => e === item[arg.pk]);
-            } catch (ex) {}
+            } catch (ex) { }
 
             return (
               <div
                 onClick={() => {
                   let selected = Array.isArray(value)
                     ? value.map((row) => {
-                        return local.list.find((e) => e.value === row);
-                      })
+                      return local.list.find((e) => e.value === row);
+                    })
                     : [];
                   if (isChecked) {
                     selected = selected.filter(

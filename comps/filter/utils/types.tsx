@@ -1,7 +1,7 @@
 import { BaseFormLocal } from "../../form/base/types";
 import { GenField } from "../../form/typings";
 
-export type FilterFieldType = "text" | "number" | "boolean" | "date";
+export type FilterFieldType = "text" | "number" | "boolean" | "date" | "options";
 export const default_filter_local = {
   data: {} as any,
   columns: [] as string[],
@@ -29,8 +29,14 @@ export const modifiers = {
   date: {
     between: "Between",
     greater_than: "Greater Than",
-    less_than: "Less Than"
+    less_than: "Less Than",
   },
+  options: {
+    equal: "Equal",
+    not_equal: "Not Equal",
+    includes: "Includes",
+    excludes: "Excludes"
+  }
 };
 export type FilterModifier = typeof modifiers;
 

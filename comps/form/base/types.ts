@@ -12,6 +12,7 @@ type CreateFieldArg = {
   prefix?: ReactNode | (() => ReactNode);
   onChange?: (value: any) => void;
   render?: () => void;
+  opt_get_value?: (value: any) => any
 };
 
 export type BaseFormLocal<T> = Omit<typeof default_base_form_local, "data"> & {

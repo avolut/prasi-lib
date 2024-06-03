@@ -19,15 +19,14 @@ export const TypeDropdown: FC<{
     options: local.options,
     type: field.type,
   });
-  console.log({ value });
   useEffect(() => {
     if (typeof arg.on_load === "function") {
-      const options = arg.on_load({ mode: "query" });
-      console.log("Masuk");
-      // console.log(options)
+      console.log("masuk")
+      const options = arg.on_load();
+      console.log({options})
       if (options instanceof Promise) {
         options.then((res) => {
-          console.log({ res });
+          console.log({res})
           local.options = res;
           local.loaded = true;
           local.render();
@@ -70,28 +69,30 @@ export const TypeDropdown: FC<{
     );
 
   return (
-    <Typeahead
-      value={value}
-      onSelect={({ search, item }) => {
-        return item?.value || search;
-      }}
-      onChange={(values) => {
-        arg.opt_set_value({
-          fm,
-          name: field.name,
-          type: field.type,
-          options: local.options,
-          selected: values,
-        });
-      }}
-      allowNew={false}
-      autoPopupWidth={true}
-      focusOpen={true}
-      mode={"multi"}
-      placeholder={arg.placeholder}
-      options={() => {
-        return local.options;
-      }}
-    />
+    <>
+      <Typeahead
+        value={value}
+        onSelect={({ search, item }) => {
+          return item?.value || search;
+        }}
+        onChange={(values) => {
+          arg.opt_set_value({
+            fm,
+            name: field.name,
+            type: field.type,
+            options: local.options,
+            selected: values,
+          });
+        }}
+        allowNew={false}
+        autoPopupWidth={true}
+        focusOpen={true}
+        mode={"multi"}
+        placeholder={arg.placeholder}
+        options={() => {
+          return local.options;
+        }}
+      />
+    </>
   );
 };
