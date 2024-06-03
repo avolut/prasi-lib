@@ -1,11 +1,12 @@
 import { useLocal } from "lib/utils/use-local";
-import { X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { FC, KeyboardEvent, useCallback, useEffect, useRef } from "react";
-import { Popover } from "../custom/Popover";
 import { Badge } from "./badge";
+import { TypeaheadOptions } from "./typeahead-opt";
 
 export const Typeahead: FC<{
   value?: string[];
+  placeholder?: string;
   options?: (arg: {
     search: string;
     existing: { value: string; label: string }[];
@@ -16,10 +17,14 @@ export const Typeahead: FC<{
     search: string;
     item?: null | { value: string; label: string };
   }) => string | false;
+  onChange?: (selected: string[]) => void;
   unique?: boolean;
   allowNew?: boolean;
   localSearch?: boolean;
+  autoPopupWidth?: boolean;
   focusOpen?: boolean;
+  disabled?: boolean;
+  mode?: "multi" | "single";
 }> = ({
   value,
   options: options_fn,
@@ -28,6 +33,11 @@ export const Typeahead: FC<{
   allowNew: allow_new,
   focusOpen: on_focus_open,
   localSearch: local_search,
+  autoPopupWidth: auto_popup_width,
+  placeholder,
+  mode,
+  disabled,
+  onChange,
 }) => {
   const local = useLocal({
     value: [] as string[],
@@ -42,9 +52,12 @@ export const Typeahead: FC<{
       result: null as null | { value: string; label: string }[],
     },
     unique: typeof unique === "undefined" ? true : unique,
-    allow_new: typeof allow_new === "undefined" ? true : allow_new,
-    on_focus_open: typeof on_focus_open === "undefined" ? false : on_focus_open,
+    allow_new: typeof allow_new === "undefined" ? false : allow_new,
+    on_focus_open: typeof on_focus_open === "undefined" ? true : on_focus_open,
     local_search: typeof local_search === "undefined" ? true : local_search,
+    mode: typeof mode === "undefined" ? "multi" : mode,
+    auto_popup_width:
+      typeof auto_popup_width === "undefined" ? false : auto_popup_width,
     select: null as null | { value: string; label: string },
   });
   const input = useRef<HTMLInputElement>(null);
@@ -55,26 +68,30 @@ export const Typeahead: FC<{
     options.push({ value: local.search.input, label: local.search.input });
   }
   const added = new Set<string>();
-  options = options.filter((e) => {
-    if (!added.has(e.value)) added.add(e.value);
-    else return false;
-    if (local.select && local.select.value === e.value) select_found = true;
-    if (local.unique) {
-      if (local.value.includes(e.value)) {
-        return false;
+  if (local.mode === "multi") {
+    options = options.filter((e) => {
+      if (!added.has(e.value)) added.add(e.value);
+      else return false;
+      if (local.select && local.select.value === e.value) select_found = true;
+      if (local.unique) {
+        if (local.value.includes(e.value)) {
+          return false;
+        }
       }
-    }
-    return true;
-  });
+      return true;
+    });
 
-  if (!select_found) {
-    local.select = options[0];
+    if (!select_found) {
+      local.select = options[0];
+    }
   }
 
   useEffect(() => {
-    if (typeof value === "object" && value) {
-      local.value = value;
-      local.render();
+    if (!isEditor) {
+      if (typeof value === "object" && value) {
+        local.value = value;
+        local.render();
+      }
     }
   }, [value]);
 
@@ -110,17 +127,26 @@ export const Typeahead: FC<{
         if (result) {
           local.value.push(result);
           local.render();
+          return result;
         } else {
           return false;
         }
       } else {
+        let val = false as any;
         if (arg.item) {
           local.value.push(arg.item.value);
+          val = arg.item.value;
         } else {
           if (!arg.search) return false;
           local.value.push(arg.search);
+          val = arg.search;
+        }
+
+        if (typeof onChange === "function") {
+          onChange(local.value);
         }
         local.render();
+        return val;
       }
       return true;
     },
@@ -129,6 +155,14 @@ export const Typeahead: FC<{
 
   const keydown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
+      if (!local.open) {
+        e.preventDefault();
+        e.stopPropagation();
+        local.open = true;
+        local.render();
+        return;
+      }
+
       if (e.key === "Backspace") {
         if (local.value.length > 0 && e.currentTarget.selectionStart === 0) {
           local.value.pop();
@@ -136,17 +170,32 @@ export const Typeahead: FC<{
         }
       }
       if (e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+
         const selected = select({
           search: local.search.input,
           item: local.select,
         });
 
-        if (selected) {
-          resetSearch();
-          local.render();
+        if (local.mode === "single") {
+          local.open = false;
         }
+        if (typeof selected === "string") {
+          resetSearch();
+          if (local.mode === "single") {
+            const item = local.options.find((item) => item.value === selected);
+            if (item) {
+              local.search.input = item.label;
+            }
+          }
+        }
+        local.render();
+
+        return;
       }
       if (options.length > 0) {
+        local.open = true;
         if (e.key === "ArrowDown") {
           e.preventDefault();
           const idx = options.findIndex((item) => {
@@ -170,10 +219,10 @@ export const Typeahead: FC<{
             if (item.value === local.select?.value) return true;
           });
           if (idx >= 0) {
-            if (idx + 1 < options.length) {
-              local.select = options[idx + 1];
+            if (idx - 1 >= 0) {
+              local.select = options[idx - 1];
             } else {
-              local.select = options[0];
+              local.select = options[options.length - 1];
             }
           } else {
             local.select = options[0];
@@ -220,40 +269,59 @@ export const Typeahead: FC<{
     clearTimeout(local.search.timeout);
   };
 
+  if (local.mode === "single" && local.value.length > 1) {
+    local.value = [local.value.pop() || ""];
+  }
+  const valueLabel = local.value.map((value) => {
+    const item = local.options.find((item) => item.value === value);
+
+    if (local.mode === "single") {
+      if (!local.open) {
+        local.select = item || null;
+        local.search.input = item?.label || "";
+      }
+    }
+    return item;
+  });
+
   return (
     <div
       className={cx(
-        "c-flex c-cursor-text c-space-x-2 c-flex-wrap c-p-2 c-pb-0 c-items-center c-w-full c-h-full c-flex-1",
-        css`
-          min-height: 40px;
-        `
+        local.mode === "single" ? "c-cursor-pointer" : "c-cursor-text",
+        "c-flex c-relative c-space-x-2 c-flex-wrap c-pt-2 c-px-2 c-pb-0 c-items-center c-w-full c-h-full c-flex-1"
       )}
       onClick={() => {
         input.current?.focus();
       }}
     >
-      {local.value.map((e, idx) => {
-        return (
-          <Badge
-            key={idx}
-            variant={"outline"}
-            className="c-space-x-1 c-mb-2 c-cursor-pointer hover:c-bg-red-100"
-            onClick={(ev) => {
-              ev.stopPropagation();
-              ev.preventDefault();
-              local.value = local.value.filter((val) => e !== val);
-              local.render();
-              input.current?.focus();
-            }}
-          >
-            <div>{e}</div>
-            <X size={12} />
-          </Badge>
-        );
-      })}
+      {local.mode === "multi" ? (
+        <>
+          {valueLabel.map((e, idx) => {
+            return (
+              <Badge
+                key={idx}
+                variant={"outline"}
+                className="c-space-x-1 c-mb-2 c-cursor-pointer hover:c-bg-red-100"
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  ev.preventDefault();
+                  local.value = local.value.filter((val) => e?.value !== val);
+                  local.render();
+                  input.current?.focus();
+                }}
+              >
+                <div>{e?.label}</div>
+                <X size={12} />
+              </Badge>
+            );
+          })}
+        </>
+      ) : (
+        <></>
+      )}
 
-      <WrapOptions
-        wrap={true}
+      <TypeaheadOptions
+        popup={true}
         onOpenChange={(open) => {
           if (!open) {
             local.select = null;
@@ -267,19 +335,32 @@ export const Typeahead: FC<{
         onSelect={(value) => {
           local.open = false;
           local.value.push(value);
+
           resetSearch();
+          if (local.mode === "single") {
+            const item = local.options.find((item) => item.value === value);
+            if (item) {
+              local.search.input = item.label;
+            }
+          }
           local.render();
         }}
-        selected={local.select?.value}
+        width={local.auto_popup_width ? input.current?.offsetWidth : undefined}
+        selected={({ item, options, idx }) => {
+          if (item.value === local.select?.value) {
+            return true;
+          }
+          return false;
+        }}
       >
         <input
+          placeholder={local.mode === "multi" ? placeholder : ""}
           type="text"
           ref={input}
           value={local.search.input}
           onClick={(e) => {
             e.stopPropagation();
-          }}
-          onFocus={(e) => {
+
             if (!local.open) {
               if (local.on_focus_open) {
                 openOptions();
@@ -313,6 +394,15 @@ export const Typeahead: FC<{
                   local.search.result = local.options.filter((e) =>
                     e.label.toLowerCase().includes(search)
                   );
+
+                  if (
+                    local.search.result.length > 0 &&
+                    !local.search.result.find(
+                      (e) => e.value === local.select?.value
+                    )
+                  ) {
+                    local.select = local.search.result[0];
+                  }
                 } else {
                   local.search.result = null;
                 }
@@ -335,7 +425,6 @@ export const Typeahead: FC<{
                       });
                       local.search.searching = false;
                       local.search.promise = null;
-                      local.render();
                     } else {
                       local.search.result = result.map((item) => {
                         if (typeof item === "string")
@@ -343,95 +432,43 @@ export const Typeahead: FC<{
                         return item;
                       });
                       local.search.searching = false;
-                      local.render();
                     }
+
+                    if (
+                      local.search.result.length > 0 &&
+                      !local.search.result.find(
+                        (e) => e.value === local.select?.value
+                      )
+                    ) {
+                      local.select = local.search.result[0];
+                    }
+
+                    local.render();
                   }
                 }, 100);
               }
             }
           }}
           spellCheck={false}
-          className={cx("c-flex-1 c-mb-2 c-text-sm c-outline-none")}
+          className={cx(
+            "c-flex-1 c-mb-2 c-text-sm c-outline-none",
+            local.mode === "single" ? "c-cursor-pointer" : ""
+          )}
           onKeyDown={keydown}
         />
-      </WrapOptions>
-    </div>
-  );
-};
+      </TypeaheadOptions>
 
-const WrapOptions: FC<{
-  wrap: boolean;
-  children: any;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  options: { value: string; label: string }[];
-  selected?: string;
-  onSelect: (value: string) => void;
-  searching?: boolean;
-}> = ({
-  wrap,
-  children,
-  open,
-  onOpenChange,
-  options,
-  selected,
-  onSelect,
-  searching,
-}) => {
-  if (!wrap) return children;
-
-  return (
-    <Popover
-      open={open}
-      arrow={false}
-      onOpenChange={onOpenChange}
-      placement="bottom-start"
-      content={
+      {local.mode === "single" && (
         <div
           className={cx(
-            css`
-              min-width: 150px;
-            `
+            "c-absolute c-pointer-events-none c-z-10 c-inset-0 c-left-auto c-flex c-items-center ",
+            "c-bg-white c-justify-center c-w-6 c-mr-1 c-my-2",
+            disabled && "c-hidden"
           )}
         >
-          {options.map((item, idx) => {
-            return (
-              <div
-                tabIndex={0}
-                key={item.value + "_" + idx}
-                className={cx(
-                  "c-px-3 c-py-1 cursor-pointer option-item",
-                  item.value === selected
-                    ? "c-bg-blue-600 c-text-white"
-                    : "hover:c-bg-blue-50",
-                  idx > 0 && "c-border-t"
-                )}
-                onClick={() => {
-                  onSelect(item.value);
-                }}
-              >
-                {item.label}
-              </div>
-            );
-          })}
-
-          {searching ? (
-            <div className="c-px-4 c-w-full c-text-xs c-text-slate-400">
-              Loading...
-            </div>
-          ) : (
-            <>
-              {options.length === 0 && (
-                <div className="c-p-4 c-w-full c-text-center c-text-sm c-text-slate-400">
-                  &mdash; Empty &mdash;
-                </div>
-              )}
-            </>
-          )}
+          <ChevronDown size={14} />
         </div>
-      }
-    >
-      {children}
-    </Popover>
+      )}
+    </div>
   );
 };

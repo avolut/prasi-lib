@@ -1,10 +1,10 @@
+import { set } from "lib/utils/set";
 import capitalize from "lodash.capitalize";
-import { GFCol, createItem, parseGenField } from "../../../gen/utils";
-import { generateSelect } from "./md-select";
-import { on_load } from "./tbl-list/on_load";
-import { modeTableList } from "./mode-table-list";
 import get from "lodash.get";
-import set from "lodash.set";
+import { createItem, parseGenField } from "../../../gen/utils";
+import { generateSelect } from "./md-select";
+import { modeTableList } from "./mode-table-list";
+import { on_load } from "./tbl-list/on_load";
 
 export const generateTableList = async (
   modify: (data: any) => void,

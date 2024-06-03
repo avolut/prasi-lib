@@ -1,6 +1,9 @@
-import { createItem } from "lib/gen/utils";
+import { generateSelect } from "lib/comps/md/gen/md-select";
+import { on_load } from "lib/comps/md/gen/tbl-list/on_load";
+import { createItem, parseGenField } from "lib/gen/utils";
 import capitalize from "lodash.capitalize";
 import { ArrowBigDown } from "lucide-react";
+import { on_load_rel } from "./on_load_rel";
 export type GFCol = {
   name: string;
   type: string;
@@ -16,7 +19,6 @@ export const newField = (
   arg: GFCol,
   opt: { parent_table: string; value: Array<string> }
 ) => {
-  console.log({ arg, opt });
   let type = "input";
   if (["int", "string", "text"].includes(arg.type)) {
     if (["int"].includes(arg.type)) {
@@ -67,6 +69,15 @@ export const newField = (
     });
   } else if (["has-many", "has-one"].includes(arg.type) && arg.relation) {
     if (["has-one"].includes(arg.type)) {
+      console.log(opt.value);
+      const fields = parseGenField(opt.value);
+      const res = generateSelect(fields);
+      const load = on_load_rel({
+        pk: res.pk,
+        table: arg.name,
+        select: res.select,
+        pks: {},
+      });
       return createItem({
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
@@ -76,15 +87,10 @@ export const newField = (
             type: "single-option",
             sub_type: "dropdown",
             rel__gen_table: arg.name,
-            rel__gen_fields: [`[${opt.value.join(",")}]`],
+            // rel__gen_fields: [`[${opt.value.join(",")}]`],
             opt__on_load: [
               `\
-            () => {
-              console.log("halo");
-              return {
-                label: "halo", value: "value"
-              }
-            }
+            ${load}
             `,
             ],
             child: {
@@ -127,6 +133,38 @@ export const newField = (
       //     },
       //   };
     } else {
+      
+      const fields = parseGenField(opt.value);
+      const res = generateSelect(fields);
+      const load = on_load_rel({
+        pk: res.pk,
+        table: arg.name,
+        select: res.select,
+        pks: {},
+      });
+      console.log(load)
+      
+      return createItem({
+        component: {
+          id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
+          props: {
+            name: arg.name,
+            label: formatName(arg.name),
+            type: "single-option",
+            sub_type: "dropdown",
+            rel__gen_table: arg.name,
+            // rel__gen_fields: [`[${opt.value.join(",")}]`],
+            opt__on_load: [
+              `\
+            ${load}
+            `,
+            ],
+            child: {
+              childs: [],
+            },
+          },
+        },
+      });
       return createItem({
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",

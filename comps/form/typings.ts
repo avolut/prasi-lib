@@ -20,15 +20,17 @@ export type FMProps = {
   on_load_deps?: any[];
 };
 
-export type GenField = {
-  name: string,
-  is_pk: boolean,
-  type: string,
-  optional: boolean,
-} | {
-  checked: GenField[],
-  value: GFCol
-};
+export type GenField =
+  | {
+      name: string;
+      is_pk: boolean;
+      type: string;
+      optional: boolean;
+    }
+  | {
+      checked: GenField[];
+      value: GFCol;
+    };
 
 type FieldType =
   | "-"
@@ -56,8 +58,26 @@ export type FieldProp = {
   width: "auto" | "full" | "¾" | "½" | "⅓" | "¼";
   _item: PrasiItem;
   custom?: () => CustomField;
-  on_load: () => any | Promise<any>;
-  on_row: (row: any) => string;
+  on_load: (arg?: any) => any | Promise<any>;
+  opt_get_label: (row: any) => string;
+  opt_get_value: (arg: {
+    options: { label: string; value: string; item?: string }[];
+    fm: FMLocal;
+    name: string;
+    type: string;
+  }) => any;
+  opt_set_value: (arg: {
+    selected: string[];
+    options: { label: string; value: string; item?: string }[];
+    fm: FMLocal;
+    name: string;
+    type: string;
+  }) => any;
+  opt_selected: (arg: {
+    item: { value: string; label: string; item?: any };
+    current: any;
+    options: { value: string; label: string; item?: any }[];
+  }) => boolean;
   pk: string;
   sub_type: string;
   placeholder: string;
@@ -119,6 +139,9 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   custom: FieldProp["custom"];
   input: Record<string, any> & {
     render: () => void;
+  };
+  options: {
+    on_load?: () => Promise<{ value: string; label: string }[]>;
   };
   prop?: any;
 };

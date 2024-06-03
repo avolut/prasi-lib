@@ -10,22 +10,24 @@ export const FieldCheckbox: FC<{
 }> = ({ field, fm, arg }) => {
   const local = useLocal({
     list: [] as any[],
-    value: [] as any[],
   });
   useEffect(() => {
     const callback = (res: any[]) => {
       local.list = res;
-      if (Array.isArray(res)) {
-        local.value = res.map((e) => get(e, arg.pk));
-      }
       local.render();
     };
     const res = arg.on_load();
     if (res instanceof Promise) res.then(callback);
     else callback(res);
   }, []);
-  let value: any = Array.isArray(fm.data[field.name]) ?fm.data[field.name] : [];
-  console.log({value})
+
+  let value = arg.opt_get_value({
+    fm,
+    name: field.name,
+    options: local.list,
+    type: field.type,
+  });
+
   return (
     <>
       <div className={cx("c-flex c-items-center c-w-full c-flex-row")}>
@@ -33,25 +35,32 @@ export const FieldCheckbox: FC<{
           {local.list.map((item) => {
             let isChecked = false;
             try {
-              isChecked = value.some((e: any) => e[arg.pk] === item[arg.pk]);
+              isChecked = value.some((e: any) => e === item[arg.pk]);
             } catch (ex) {}
-            console.log(item[arg.pk], isChecked)
+
             return (
               <div
                 onClick={() => {
-                  console.log(item);
-                  if (!Array.isArray(fm.data[field.name]))
-                    fm.data[field.name] = [];
-                  console.log(isChecked);
+                  let selected = Array.isArray(value)
+                    ? value.map((row) => {
+                        return local.list.find((e) => e.value === row);
+                      })
+                    : [];
                   if (isChecked) {
-                    fm.data[field.name] = fm.data[field.name].filter(
-                      (e: any) => e[arg.pk] !== item[arg.pk]
+                    selected = selected.filter(
+                      (e: any) => e.value !== item.value
                     );
                   } else {
-                    fm.data[field.name].push(item);
+                    selected.push(item);
                   }
-                  fm.render();
-                  console.log({data: fm.data})
+
+                  arg.opt_set_value({
+                    fm,
+                    name: field.name,
+                    selected: selected.map((e) => e.value),
+                    options: local.list,
+                    type: field.type,
+                  });
                 }}
                 className="c-flex c-flex-row c-space-x-1 cursor-pointer c-items-center rounded-full p-0.5"
               >
@@ -81,7 +90,7 @@ export const FieldCheckbox: FC<{
                     />
                   </svg>
                 )}
-                <div className="">{arg.on_row(item)}</div>
+                <div className="">{arg.opt_get_label(item)}</div>
               </div>
             );
           })}

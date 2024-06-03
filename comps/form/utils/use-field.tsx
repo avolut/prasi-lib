@@ -2,10 +2,12 @@ import { useLocal } from "@/utils/use-local";
 import { useEffect } from "react";
 import { FieldInternal, FieldProp } from "../typings";
 
-export const useField = (arg: Omit<FieldProp, 'name' | 'label'> & {
-  name: string | (() => string);
-  label: string | (() => string)
-}) => {
+export const useField = (
+  arg: Omit<FieldProp, "name" | "label"> & {
+    name: string | (() => string);
+    label: string | (() => string);
+  }
+) => {
   const field = useLocal<FieldInternal<typeof arg.type>>({
     status: "init",
     Child: () => {
@@ -14,9 +16,10 @@ export const useField = (arg: Omit<FieldProp, 'name' | 'label'> & {
     input: {},
   } as any);
 
-  const name = typeof arg.name === 'string' ? arg.name : arg.name();
-  const label = typeof arg.label === 'string' ? arg.label : arg.label();
-  const required = typeof arg.required === 'string' ? arg.required : arg.required();
+  const name = typeof arg.name === "string" ? arg.name : arg.name();
+  const label = typeof arg.label === "string" ? arg.label : arg.label();
+  const required =
+    typeof arg.required === "string" ? arg.required : arg.required();
 
   const update_field = {
     name: name.replace(/\s*/gi, ""),
@@ -31,6 +34,7 @@ export const useField = (arg: Omit<FieldProp, 'name' | 'label'> & {
     required_msg: arg.required_msg,
     disabled: arg.disabled === "y",
   };
+
   if (field.status === "init" || isEditor) {
     for (const [k, v] of Object.entries(update_field)) {
       (field as any)[k] = v;

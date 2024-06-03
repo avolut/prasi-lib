@@ -1,96 +1,97 @@
-import { FC, useEffect } from "react";
-import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { useLocal } from "@/utils/use-local";
-import { OptionItem, RawDropdown } from "../raw/Dropdown";
-import { FieldLoading } from "../raw/FieldLoading";
-import get from "lodash.get";
+import { FC, useEffect } from "react";
+import { Typeahead } from "../../../../..";
+import { FMLocal, FieldLocal, FieldProp } from "../../typings";
+import { FieldLoading } from "lib/comps/ui/field-loading";
 
 export const TypeDropdown: FC<{
   field: FieldLocal;
   fm: FMLocal;
   arg: FieldProp;
 }> = ({ field, fm, arg }) => {
-  const input = useLocal({
-    list: null as null | any[],
-    pk: "",
+  const local = useLocal({
+    loaded: false,
+    options: [],
   });
-  const value = fm.data[field.name];
-  field.input = input;
+  let value = arg.opt_get_value({
+    fm,
+    name: field.name,
+    options: local.options,
+    type: field.type,
+  });
+  console.log({ value });
   useEffect(() => {
-    if (!isEditor && input.list === null) {
-      field.status = "loading";
-      input.pk = arg.pk;
-      field.render();
-      const callback = (arg: any[]) => {
-        input.list = arg;
-        field.status = "ready";
-        input.render();
-      };
-      const res = arg.on_load();
-      if (res instanceof Promise) res.then(callback);
-      else callback(res);
+    if (typeof arg.on_load === "function") {
+      const options = arg.on_load({ mode: "query" });
+      console.log("Masuk");
+      // console.log(options)
+      if (options instanceof Promise) {
+        options.then((res) => {
+          console.log({ res });
+          local.options = res;
+          local.loaded = true;
+          local.render();
+        });
+      } else {
+        local.options = options;
+        local.render();
+      }
     }
   }, []);
 
-  let list: OptionItem[] = [];
-  if (input.list && input.list.length) {
-    input.list.map((e: any) => {
-      let id = null;
-      try {
-        id = e[arg.pk];
-      } catch (ex: any) {
-        console.error(
-          "Error: PK Invalid atau tidak ditemukan, cek lagi keys yang ingin dijadikan value"
-        );
-      }
-      list.push({
-        value: id,
-        label: arg.on_row(e),
-      });
-    });
-  }
-  let selected = null;
-  if (value && typeof value === "object") {
-    if (input.pk) selected = value[input.pk];
-  } else {
-    selected = value;
-  }
+  if (!local.loaded) return <FieldLoading />;
+
+  if (field.type === "single-option")
+    return (
+      <Typeahead
+        value={value}
+        onSelect={({ search, item }) => {
+          if (item) {
+            arg.opt_set_value({
+              fm,
+              name: field.name,
+              type: field.type,
+              options: local.options,
+              selected: [item.value],
+            });
+          }
+
+          return item?.value || search;
+        }}
+        allowNew={false}
+        autoPopupWidth={true}
+        focusOpen={true}
+        mode={"single"}
+        placeholder={arg.placeholder}
+        options={() => {
+          return local.options;
+        }}
+      />
+    );
+
   return (
-    <>
-      {field.status === "loading" ? (
-        <FieldLoading />
-      ) : (
-        <RawDropdown
-          options={list}
-          value={selected}
-          onChange={(val) => {
-            if (val === null) {
-              fm.data[field.name] = null;
-              fm.render();
-              return;
-            }
-            if (input.list && input.pk) {
-              for (const item of input.list) {
-                if (item[input.pk] === val) {
-                  fm.data[field.name] = val;
-                  fm.render();
-                  break;
-                }
-              }
-            }
-          }}
-          className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full c-h-full"
-          disabled={field.disabled}
-          onFocus={() => {
-            field.focused = true;
-            field.render();
-          }}
-          onBlur={() => {
-            field.focused = false;
-            field.render();
-          }}
-        />
-      )}
-    </>
+    <Typeahead
+      value={value}
+      onSelect={({ search, item }) => {
+        return item?.value || search;
+      }}
+      onChange={(values) => {
+        arg.opt_set_value({
+          fm,
+          name: field.name,
+          type: field.type,
+          options: local.options,
+          selected: values,
+        });
+      }}
+      allowNew={false}
+      autoPopupWidth={true}
+      focusOpen={true}
+      mode={"multi"}
+      placeholder={arg.placeholder}
+      options={() => {
+        return local.options;
+      }}
+    />
   );
 };

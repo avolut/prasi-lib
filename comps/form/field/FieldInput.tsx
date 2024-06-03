@@ -1,6 +1,6 @@
 import { FC, isValidElement } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../typings";
-import { FieldLoading } from "./raw/FieldLoading";
+import { FieldLoading } from "../../ui/field-loading";
 import { MultiOption } from "./type/TypeMultiOption";
 import { SingleOption } from "./type/TypeSingleOption";
 import { FieldTypeText, PropTypeText } from "./type/TypeText";

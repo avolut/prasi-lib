@@ -8,14 +8,17 @@ export const useLocal = <T extends object>(
   deps?: any[]
 ): {
   [K in keyof T]: T[K] extends Promise<any> ? null | Awaited<T[K]> : T[K];
-} & { render: (force?: boolean) => void } => {
+} & { render: () => void } => {
   const [, _render] = useState({});
   const _ = useRef({
     data: data as unknown as T & {
-      render: (force?: boolean) => void;
+      render: () => void;
     },
     deps: (deps || []) as any[],
     ready: false,
+    _loading: {} as any,
+    lastRender: 0,
+    lastRenderCount: 0,
   });
   const local = _.current;
 
@@ -25,9 +28,23 @@ export const useLocal = <T extends object>(
   }, []);
 
   if (local.ready === false) {
-    local.data.render = (force) => {
-      if (force) _render({});
-      else if (local.ready) _render({});
+    local._loading = {};
+
+    local.data.render = () => {
+      if (local.ready) {
+        if (Date.now() - local.lastRender < 200) {
+          local.lastRenderCount++;
+        } else {
+          local.lastRenderCount = 0;
+        }
+
+        if (local.lastRenderCount > 20) {
+          throw new Error("local.render more than 20 times in less than 200ms");
+        }
+
+        local.lastRender = Date.now();
+        _render({});
+      }
     };
   } else {
     if (local.deps.length > 0 && deps) {

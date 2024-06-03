@@ -1,4 +1,4 @@
-import set from "lodash.set";
+import { set } from "lib/utils/set";
 
 const cache: any = [];
 

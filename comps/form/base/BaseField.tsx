@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../typings";
 import { Label } from "../field/Label";
-import { FieldLoading } from "../field/raw/FieldLoading";
+import { FieldLoading } from "../../ui/field-loading";
 
 export const BaseField = (prop: {
   field: FieldLocal;

@@ -3,7 +3,7 @@ import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
 import { OptionItem, RawDropdown } from "../raw/Dropdown";
-import { FieldLoading } from "../raw/FieldLoading";
+import { FieldLoading } from "../../../ui/field-loading";
 
 export type PropTypeRelation = {
   type: "has-one" | "has-many";

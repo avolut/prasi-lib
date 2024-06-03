@@ -1,6 +1,6 @@
 import { select } from "@/preset/login/utils/select";
+import { set } from "lib/utils/set";
 import get from "lodash.get";
-import set from "lodash.set";
 
 type typeFieldLogin = {
   upload: string;
@@ -29,7 +29,7 @@ export const generateProfile = async (
             `,
     });
   }
-  console.log({btn})
+  console.log({ btn });
   if (btn) {
     const upload = btn.edit.childs.find(
       (e) => get(e, "component.id") === "296825f3-dac7-4a13-8871-9743718bc411"

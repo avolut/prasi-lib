@@ -42,7 +42,7 @@ export const FilterField = lazify(
 );
 
 /** Generator */
-export { generateMasterDetail } from "lib/comps/md/gen/md-gen";
+export { generateMasterDetail } from "@/comps/md/gen/md-gen";
 
 /** ETC */
 export { filterWhere } from "@/comps/filter/utils/filter-where";
@@ -55,12 +55,12 @@ export {
 export { MasterDetailType } from "@/comps/md/utils/typings";
 export { FormatValue } from "@/utils/format-value";
 export { GetValue } from "@/utils/get-value";
-export { TableListType } from "lib/comps/list/utils/typings";
+export { TableListType } from "@/comps/list/utils/typings";
 export { Button, FloatButton } from "@/comps/ui/button";
 export { prasi_gen } from "@/gen/prasi_gen";
 export { password } from "@/utils/password";
 export { generateTableList } from "@/comps/md/gen/gen-table-list";
-export { generateForm } from "@/comps/md/gen/gen-form";
+export { generateForm } from "@/comps/form/gen/gen-form";
 
 /** Session */
 export {
@@ -97,7 +97,7 @@ export { Profile } from "@/preset/profile/Profile";
 export { generateProfile } from "@/preset/profile/utils/generate";
 export { ButtonUpload } from "@/preset/profile/ButtonUpload";
 export { longDate, shortDate, timeAgo, formatTime } from "@/utils/date";
-
-
+export { getPathname } from "./utils/pathname";
+ 
 export * from '@/comps/ui/typeahead'
-export * from '@/comps/ui/input'
+export * from '@/comps/ui/input'  
