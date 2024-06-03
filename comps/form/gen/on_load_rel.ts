@@ -64,6 +64,7 @@ export const on_load_rel = ({
             return {
                 value: e.${pk},
                 label: getLabel(e),
+                data: e,
             }
         }))
       } else {

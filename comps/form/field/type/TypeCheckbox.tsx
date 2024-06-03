@@ -21,14 +21,15 @@ export const FieldCheckbox: FC<{
     else callback(res);
   }, []);
 
-  console.log('arg', arg);
-
-  let value = arg.opt_get_value({
-    fm,
-    name: field.name,
-    options: local.list,
-    type: field.type,
-  });
+  let value =
+    typeof arg.opt_get_value === "function"
+      ? arg.opt_get_value({
+          fm,
+          name: field.name,
+          options: local.list,
+          type: field.type,
+        })
+      : fm.data[field.name];
 
   return (
     <>
@@ -37,17 +38,18 @@ export const FieldCheckbox: FC<{
           {local.list.map((item) => {
             let isChecked = false;
             try {
-              isChecked = value.some((e: any) => e === item[arg.pk]);
-            } catch (ex) { }
+              isChecked = value.some((e: any) => e === item.value);
+            } catch (ex) {}
 
             return (
               <div
                 onClick={() => {
                   let selected = Array.isArray(value)
                     ? value.map((row) => {
-                      return local.list.find((e) => e.value === row);
-                    })
+                        return local.list.find((e) => e.value === row);
+                      })
                     : [];
+
                   if (isChecked) {
                     selected = selected.filter(
                       (e: any) => e.value !== item.value
@@ -56,13 +58,19 @@ export const FieldCheckbox: FC<{
                     selected.push(item);
                   }
 
-                  arg.opt_set_value({
-                    fm,
-                    name: field.name,
-                    selected: selected.map((e) => e.value),
-                    options: local.list,
-                    type: field.type,
-                  });
+                  if (typeof arg.opt_set_value === "function") {
+                    arg.opt_set_value({
+                      fm,
+                      name: field.name,
+                      selected: selected.map((e) => e.value),
+                      options: local.list,
+                      type: field.type,
+                    });
+                  } else {
+                    fm.data[field.name] = selected.map((e) => e.value);
+                    console.log(fm.data);
+                    fm.render();
+                  }
                 }}
                 className="c-flex c-flex-row c-space-x-1 cursor-pointer c-items-center rounded-full p-0.5"
               >
@@ -92,7 +100,11 @@ export const FieldCheckbox: FC<{
                     />
                   </svg>
                 )}
-                <div className="">{arg.opt_get_label(item)}</div>
+                <div className="">
+                  {typeof arg.opt_get_label === "function"
+                    ? arg.opt_get_label(item)
+                    : item.label}
+                </div>
               </div>
             );
           })}

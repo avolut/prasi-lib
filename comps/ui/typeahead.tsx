@@ -334,15 +334,20 @@ export const Typeahead: FC<{
         searching={local.search.searching}
         onSelect={(value) => {
           local.open = false;
-          local.value.push(value);
 
           resetSearch();
           if (local.mode === "single") {
             const item = local.options.find((item) => item.value === value);
             if (item) {
               local.search.input = item.label;
+              
+              select({
+                search: local.search.input,
+                item,
+              });
             }
           }
+
           local.render();
         }}
         width={local.auto_popup_width ? input.current?.offsetWidth : undefined}

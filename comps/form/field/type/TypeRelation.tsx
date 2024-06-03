@@ -2,7 +2,7 @@ import { sortTree } from "@/comps/list/utils/sort-tree";
 import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
-import { OptionItem, RawDropdown } from "../raw/Dropdown";
+// import { OptionItem, RawDropdown } from "../raw/Dropdown";
 import { FieldLoading } from "../../../ui/field-loading";
 
 export type PropTypeRelation = {
@@ -96,121 +96,122 @@ const HasOne: FC<{
   PassProp: any;
   child: any;
 }> = ({ field, fm, prop, PassProp, child }) => {
-  const input = useLocal({
-    list: null as null | any[],
-    pk: "",
-  });
-  const name = field.name;
-  const value = fm.data[name];
-  field.input = input;
-  field.prop = prop;
+  return <>1223</>
+  // const input = useLocal({
+  //   list: null as null | any[],
+  //   pk: "",
+  // });
+  // const name = field.name;
+  // const value = fm.data[name];
+  // field.input = input;
+  // field.prop = prop;
 
-  useEffect(() => {
-    if (!isEditor && input.list === null) {
-      field.status = "loading";
-      field.render();
+  // useEffect(() => {
+  //   if (!isEditor && input.list === null) {
+  //     field.status = "loading";
+  //     field.render();
 
-      const callback = (arg: { items: any[]; pk: string }) => {
-        input.list = arg.items;
-        input.pk = arg.pk;
-        field.status = "ready";
-        input.render();
-      };
-      const res = prop.on_load({ value });
-      if (res instanceof Promise) res.then(callback);
-      else callback(res);
-    }
-  }, []);
+  //     const callback = (arg: { items: any[]; pk: string }) => {
+  //       input.list = arg.items;
+  //       input.pk = arg.pk;
+  //       field.status = "ready";
+  //       input.render();
+  //     };
+  //     const res = prop.on_load({ value });
+  //     if (res instanceof Promise) res.then(callback);
+  //     else callback(res);
+  //   }
+  // }, []);
 
-  let list: OptionItem[] = [];
-  if (input.list && input.pk && input.list.length) {
-    if (fm.field_def[name]?.optional) {
-      list.push({
-        value: null,
-        label: "-",
-      });
-    }
+  // let list: OptionItem[] = [];
+  // if (input.list && input.pk && input.list.length) {
+  //   if (fm.field_def[name]?.optional) {
+  //     list.push({
+  //       value: null,
+  //       label: "-",
+  //     });
+  //   }
 
-    let sorted = input.list;
-    if (prop.id_parent && input.pk) {
-      sorted = sortTree(sorted, prop.id_parent, input.pk);
-    }
+  //   let sorted = input.list;
+  //   if (prop.id_parent && input.pk) {
+  //     sorted = sortTree(sorted, prop.id_parent, input.pk);
+  //   }
 
-    for (const item of sorted) {
-      if (typeof item !== "object") continue;
-      let label = "";
+  //   for (const item of sorted) {
+  //     if (typeof item !== "object") continue;
+  //     let label = "";
 
-      if (typeof prop.label === "function") {
-        label = prop.label(item, input.pk);
+  //     if (typeof prop.label === "function") {
+  //       label = prop.label(item, input.pk);
 
-        if (!label) {
-          const label_arr: string[] = [];
+  //       if (!label) {
+  //         const label_arr: string[] = [];
 
-          for (const [k, v] of Object.entries(item)) {
-            if (k !== input.pk) label_arr.push(v as any);
-          }
-          label = label_arr.join(" ");
-        }
-      } else {
-        const label_arr: string[] = [];
+  //         for (const [k, v] of Object.entries(item)) {
+  //           if (k !== input.pk) label_arr.push(v as any);
+  //         }
+  //         label = label_arr.join(" ");
+  //       }
+  //     } else {
+  //       const label_arr: string[] = [];
 
-        for (const [k, v] of Object.entries(item)) {
-          if (k !== input.pk) label_arr.push(v as any);
-        }
-        label = label_arr.join(" ");
-      }
+  //       for (const [k, v] of Object.entries(item)) {
+  //         if (k !== input.pk) label_arr.push(v as any);
+  //       }
+  //       label = label_arr.join(" ");
+  //     }
 
-      list.push({
-        value: item[input.pk],
-        label,
-        el: <PassProp item={item}>{child}</PassProp>,
-      });
-    }
-  }
+  //     list.push({
+  //       value: item[input.pk],
+  //       label,
+  //       el: <PassProp item={item}>{child}</PassProp>,
+  //     });
+  //   }
+  // }
 
-  let selected = null;
-  if (value && typeof value === "object") {
-    if (input.pk) selected = value[input.pk];
-  } else {
-    selected = value;
-  }
+  // let selected = null;
+  // if (value && typeof value === "object") {
+  //   if (input.pk) selected = value[input.pk];
+  // } else {
+  //   selected = value;
+  // }
 
-  return (
-    <>
-      {field.status === "loading" ? (
-        <FieldLoading />
-      ) : (
-        <RawDropdown
-          options={list}
-          value={selected}
-          onChange={(val) => {
-            if (val === null) {
-              fm.data[name] = null;
-              fm.render();
-              return;
-            }
-            if (input.list && input.pk) {
-              for (const item of input.list) {
-                if (item[input.pk] === val) {
-                  fm.data[name] = item;
-                  fm.render();
-                  break;
-                }
-              }
-            }
-          }}
-          className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full c-h-full"
-          disabled={field.disabled}
-          onFocus={() => {
-            field.focused = true;
-            field.render();
-          }}
-          onBlur={() => {
-            field.focused = false;
-            field.render();
-          }}
-        />
-      )}
-    </>
-  );
+  // return (
+  //   <>
+  //     {field.status === "loading" ? (
+  //       <FieldLoading />
+  //     ) : (
+  //       <RawDropdown
+  //         options={list}
+  //         value={selected}
+  //         onChange={(val) => {
+  //           if (val === null) {
+  //             fm.data[name] = null;
+  //             fm.render();
+  //             return;
+  //           }
+  //           if (input.list && input.pk) {
+  //             for (const item of input.list) {
+  //               if (item[input.pk] === val) {
+  //                 fm.data[name] = item;
+  //                 fm.render();
+  //                 break;
+  //               }
+  //             }
+  //           }
+  //         }}
+  //         className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full c-h-full"
+  //         disabled={field.disabled}
+  //         onFocus={() => {
+  //           field.focused = true;
+  //           field.render();
+  //         }}
+  //         onBlur={() => {
+  //           field.focused = false;
+  //           field.render();
+  //         }}
+  //       />
+  //     )}
+  //   </>
+  // );
 };

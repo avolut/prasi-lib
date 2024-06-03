@@ -1,8 +1,8 @@
 import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
-import { Typeahead } from "../../../../..";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldLoading } from "lib/comps/ui/field-loading";
+import { Typeahead } from "lib/comps/ui/typeahead";
 
 export const TypeDropdown: FC<{
   field: FieldLocal;
@@ -13,26 +13,38 @@ export const TypeDropdown: FC<{
     loaded: false,
     options: [],
   });
-  let value = arg.opt_get_value({
+  let value = typeof arg.opt_get_value === "function" ? arg.opt_get_value({
     fm,
     name: field.name,
     options: local.options,
     type: field.type,
-  });
+  }) : fm.data[field.name];;
   useEffect(() => {
     if (typeof arg.on_load === "function") {
-      console.log("masuk")
-      const options = arg.on_load();
-      console.log({options})
+      const options = arg.on_load({});
       if (options instanceof Promise) {
         options.then((res) => {
-          console.log({res})
-          local.options = res;
+          if (Array.isArray(res)) {
+            const list: any = res.map((e: any) => {
+              return {
+                label: arg.opt_get_label({
+                  label: e.label,
+                  value: e.value,
+                  item: e.data,
+                }),
+                value: e.value,
+              };
+            });
+            local.options = list;
+          } else {
+            local.options = res;
+          }
           local.loaded = true;
           local.render();
         });
       } else {
-        local.options = options;
+        local.loaded = true;
+        local.options = [];
         local.render();
       }
     }
@@ -45,6 +57,7 @@ export const TypeDropdown: FC<{
       <Typeahead
         value={value}
         onSelect={({ search, item }) => {
+          console.log({ search, item })
           if (item) {
             arg.opt_set_value({
               fm,
@@ -54,7 +67,6 @@ export const TypeDropdown: FC<{
               selected: [item.value],
             });
           }
-
           return item?.value || search;
         }}
         allowNew={false}

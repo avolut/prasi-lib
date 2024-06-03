@@ -13,6 +13,7 @@ export type LGProps = {
 
 export const Login: FC<LGProps> = (props) => {
   w.prasi_home = props.url_home[0];
+  console.log("render?");
   try {
     const home = prasi_user.prasi_home[prasi_user.user.m_role.name];
     navigate(home);

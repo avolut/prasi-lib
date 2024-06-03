@@ -43,7 +43,7 @@ export const FieldButton: FC<{
             {local.list.map((item) => {
               let isChecked = false;
               try {
-                isChecked = value.some((e: any) => e === item[arg.pk]);
+                isChecked = value.some((e: any) => e === item.value);
               } catch (ex) {}
 
               return (

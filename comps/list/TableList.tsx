@@ -269,6 +269,7 @@ export const TableList: FC<TableListProp> = ({
     (e: any) => e.name === sub_name || e.name === mode
   );
   if (mode_child) {
+    console.log({_item})
     const tbl = _item.edit.childs[0].edit.childs.find(
       (e) => get(e, "id") === mode_child.id
     );
@@ -639,6 +640,7 @@ const dataGridStyle = (local: { height: number }) => css`
   }
   div[role="columnheader"] span svg {
     margin: 12px 2px;
+    /* color: #ffffff */
   }
   div[aria-selected="true"] {
     outline: none;

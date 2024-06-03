@@ -5,6 +5,7 @@ import { FieldTypeText } from "../form/field/type/TypeText";
 import { FieldModifier } from "./FieldModifier";
 import { useLocal } from "lib/utils/use-local";
 import { FieldCheckbox } from "../form/field/type/TypeCheckbox";
+import { SingleOption } from "../form/field/type/TypeSingleOption";
 
 export const FilterField: FC<{
   filter: FilterLocal;
@@ -42,7 +43,10 @@ export const FilterField: FC<{
             type={type}
           />
         ),
-        opt_get_value: () => { }
+        onLoad() {
+          return [{ label: 'halo', 'value': 'asda' }]
+        },
+        subType: "dropdown"
       })}
     >
       {(field) => (
@@ -95,6 +99,9 @@ export const FilterField: FC<{
           )}
           {type === "boolean" && (
             <FieldCheckbox arg={field.arg} field={field.field} fm={field.fm} />
+          )}
+          {type === "options" && (
+            <p>Haloha</p>
           )}
         </>
       )}

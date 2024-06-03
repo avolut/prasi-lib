@@ -37,7 +37,11 @@ export const BaseForm = <T extends Record<string, any>>(
   }, [on_submit]);
 
   form.createArg = (arg) => {
-    const prop: FieldProp = { name: arg.name } as any;
+    const prop: FieldProp = {
+      name: arg.name,
+      on_load: arg.onLoad,
+      sub_type: arg.subType
+    } as any;
     if (arg.onChange) prop.on_change = arg.onChange;
     return prop;
   };

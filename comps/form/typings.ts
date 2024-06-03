@@ -58,7 +58,11 @@ export type FieldProp = {
   width: "auto" | "full" | "¾" | "½" | "⅓" | "¼";
   _item: PrasiItem;
   custom?: () => CustomField;
-  on_load: (arg?: any) => any | Promise<any>;
+  on_load: (
+    arg?: any
+  ) =>
+    | { value: string; label: string }[]
+    | Promise<{ value: string; label: string }[]>;
   opt_get_label: (row: any) => string;
   opt_get_value: (arg: {
     options: { label: string; value: string; item?: string }[];

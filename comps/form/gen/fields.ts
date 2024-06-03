@@ -5,6 +5,9 @@ import capitalize from "lodash.capitalize";
 import { ArrowBigDown } from "lucide-react";
 import { on_load_rel } from "./on_load_rel";
 import { createId } from "@paralleldrive/cuid2";
+import { gen_label } from "./gen-label";
+import { get_value } from "./get-value";
+import { set_value } from "./set-value";
 export type GFCol = {
   name: string;
   type: string;
@@ -70,13 +73,14 @@ export const newField = (
     });
   } else if (["has-many", "has-one"].includes(arg.type) && arg.relation) {
     const fields = parseGenField(opt.value);
-      const res = generateSelect(fields);
-      const load = on_load_rel({
-        pk: res.pk,
-        table: arg.name,
-        select: res.select,
-        pks: {},
-      });
+    const res = generateSelect(fields);
+    const load = on_load_rel({
+      pk: res.pk,
+      table: arg.name,
+      select: res.select,
+      pks: {},
+    });
+    console.log("halo");
     if (["has-one"].includes(arg.type)) {
       return createItem({
         component: {
@@ -88,6 +92,27 @@ export const newField = (
             sub_type: "dropdown",
             rel__gen_table: arg.name,
             opt__on_load: [load],
+            opt__label: [
+              gen_label({
+                pk: res.pk,
+                table: arg.name,
+                select: res.select,
+              }),
+            ],
+            opt__get_value: [
+              get_value({
+                pk: res.pk,
+                table: arg.name,
+                select: res.select,
+              }),
+            ],
+            opt__set_value: [
+              set_value({
+                pk: res.pk,
+                table: arg.name,
+                select: res.select,
+              }),
+            ],
             child: {
               childs: [],
             },
