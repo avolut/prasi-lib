@@ -104,6 +104,8 @@ render(React.createElement("div", Object.assign({}, props, { className: cx(props
     });
     childs.push(child_sub_name);
 
+db
+
     if (commit) {
       Object.keys(result).map((e) => {
         item.edit.setProp(e, result[e]);

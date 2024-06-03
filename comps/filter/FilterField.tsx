@@ -6,6 +6,7 @@ import { FieldModifier } from "./FieldModifier";
 import { useLocal } from "lib/utils/use-local";
 import { FieldCheckbox } from "../form/field/type/TypeCheckbox";
 import { SingleOption } from "../form/field/type/TypeSingleOption";
+import { MultiOption } from "../form/field/type/TypeMultiOption";
 
 export const FilterField: FC<{
   filter: FilterLocal;
@@ -18,6 +19,9 @@ export const FilterField: FC<{
   if (!filter.form) return <div>Loading...</div>;
 
   filter.types[name] = type;
+
+  const singleOptions = ["equal", "not_equal"];
+  const multiOptions = ["includes", "excludes"];
 
   useEffect(() => {
     clearTimeout(internal.render_timeout);
@@ -44,9 +48,9 @@ export const FilterField: FC<{
           />
         ),
         onLoad() {
-          return [{ label: 'halo', 'value': 'asda' }]
+          return [{ label: "halo", value: "asda" }];
         },
-        subType: "dropdown"
+        subType: singleOptions.includes(filter.modifiers[name]) ? "dropdown" : "typeahead",
       })}
     >
       {(field) => (
@@ -63,20 +67,36 @@ export const FilterField: FC<{
             />
           )}
           {type === "number" && (
-            <FieldTypeText
-              {...field}
-              prop={{
-                type: "text",
-                sub_type: "number",
-                prefix: "",
-                suffix: "",
-              }}
-            />
+            <>
+              <FieldTypeText
+                {...field}
+                field={{ ...field.field, name: filter.modifiers[name] === "between" ? name : `${name}_from` }}
+                prop={{
+                  type: "text",
+                  sub_type: "number",
+                  prefix: "",
+                  suffix: "",
+                }}
+              />
+              {filter.modifiers[name] === "between" && (
+                <FieldTypeText
+                  {...field}
+                  field={{ ...field.field, name: `${name}_to` }}
+                  prop={{
+                    type: "text",
+                    sub_type: "number",
+                    prefix: "",
+                    suffix: "",
+                  }}
+                />
+              )}
+            </>
           )}
           {type === "date" && (
             <>
               <FieldTypeText
                 {...field}
+                field={{ ...field.field, name: filter.modifiers[name] === "between" ? name : `${name}_from` }}
                 prop={{
                   type: "text",
                   sub_type: "date",
@@ -84,9 +104,10 @@ export const FilterField: FC<{
                   suffix: "",
                 }}
               />
-              {filter.modifiers[name] === 'between' && (
+              {filter.modifiers[name] === "between" && (
                 <FieldTypeText
                   {...field}
+                  field={{ ...field.field, name: `${name}_to` }}
                   prop={{
                     type: "text",
                     sub_type: "date",
@@ -101,10 +122,17 @@ export const FilterField: FC<{
             <FieldCheckbox arg={field.arg} field={field.field} fm={field.fm} />
           )}
           {type === "options" && (
-            <p>Haloha</p>
+            <>
+              {singleOptions.includes(filter.modifiers[name]) && (
+                <SingleOption {...field} />
+              )}
+              {multiOptions.includes(filter.modifiers[name]) && (
+                <MultiOption {...field} />
+              )}
+            </>
           )}
         </>
       )}
-    </BaseField >
+    </BaseField>
   );
 };

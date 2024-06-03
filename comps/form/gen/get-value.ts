@@ -28,7 +28,7 @@ export const get_value = ({
       let result = null;
       result =  fm.data[name];
       try{
-        const data = fm.data[${table}];
+        const data = fm.data["${table}"];
         if(typeof data === "object"){
           if(typeof data?.connect?.${pk} === "string"){
             result = data.connect.${pk};

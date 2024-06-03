@@ -26,12 +26,9 @@ export const TypeDropdown: FC<{
         options.then((res) => {
           if (Array.isArray(res)) {
             const list: any = res.map((e: any) => {
+              console.log({e})
               return {
-                label: arg.opt_get_label({
-                  label: e.label,
-                  value: e.value,
-                  item: e.data,
-                }),
+                label: arg.opt_get_label(e),
                 value: e.value,
               };
             });
@@ -49,15 +46,12 @@ export const TypeDropdown: FC<{
       }
     }
   }, []);
-
   if (!local.loaded) return <FieldLoading />;
-
   if (field.type === "single-option")
     return (
       <Typeahead
         value={value}
         onSelect={({ search, item }) => {
-          console.log({ search, item })
           if (item) {
             arg.opt_set_value({
               fm,

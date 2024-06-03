@@ -68,7 +68,6 @@ export const FieldCheckbox: FC<{
                     });
                   } else {
                     fm.data[field.name] = selected.map((e) => e.value);
-                    console.log(fm.data);
                     fm.render();
                   }
                 }}
