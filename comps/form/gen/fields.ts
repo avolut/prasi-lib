@@ -80,7 +80,7 @@ export const newField = (
       select: res.select,
       pks: {},
     });
-    console.log("halo");
+    // console.log("halo");
     if (["has-one"].includes(arg.type)) {
       return createItem({
         component: {
