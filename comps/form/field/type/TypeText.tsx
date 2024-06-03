@@ -7,6 +7,7 @@ import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldMoney } from "./TypeMoney";
 import { FieldRichText } from "./TypeRichText";
 import { FieldUpload } from "./TypeUpload";
+import { EyeIcon, EyeOff } from "lucide-react";
 
 export type PropTypeText = {
   type: "text" | "date";
@@ -36,6 +37,9 @@ export const FieldTypeText: FC<{
   prop: PropTypeText;
   arg: FieldProp;
 }> = ({ field, fm, prop, arg }) => {
+  const input = useLocal({
+    showHidePassword: false,
+  });
   let type_field = prop.sub_type;
   switch (type_field) {
     case "datetime":
@@ -44,7 +48,10 @@ export const FieldTypeText: FC<{
     default:
   }
 
-  const input = useLocal({});
+  if (input.showHidePassword) {
+    type_field = "text";
+  }
+
   let display: any = null;
   let value: any = fm.data[field.name];
 
@@ -151,35 +158,55 @@ export const FieldTypeText: FC<{
           <FieldRichText field={field} fm={fm} prop={prop} />
         </>
       ) : (
-        <input
-          type={type_field}
-          onChange={(ev) => {
-            if (["date", "datetime", "datetime-local"].includes(type_field)) {
-              let result = null;
-              try {
-                result = new Date(ev.currentTarget.value);
-              } catch (ex) {}
-              fm.data[field.name] = result;
-            } else {
-              fm.data[field.name] = ev.currentTarget.value;
-            }
-            fm.render();
-          }}
-          placeholder={arg.placeholder || ""}
-          value={value}
-          disabled={field.disabled}
-          className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
-          spellCheck={false}
-          onFocus={() => {
-            field.focused = true;
-            display = "halo dek";
-            field.render();
-          }}
-          onBlur={() => {
-            field.focused = false;
-            field.render();
-          }}
-        />
+        <>
+          <input
+            type={type_field}
+            onChange={(ev) => {
+              if (["date", "datetime", "datetime-local"].includes(type_field)) {
+                let result = null;
+                try {
+                  result = new Date(ev.currentTarget.value);
+                } catch (ex) {}
+                fm.data[field.name] = result;
+              } else {
+                fm.data[field.name] = ev.currentTarget.value;
+              }
+              fm.render();
+            }}
+            placeholder={arg.placeholder || ""}
+            value={value}
+            disabled={field.disabled}
+            className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
+            spellCheck={false}
+            onFocus={() => {
+              field.focused = true;
+              display = "";
+              field.render();
+            }}
+            onBlur={() => {
+              field.focused = false;
+              field.render();
+            }}
+          />
+
+          {arg.sub_type === "password" && (
+            <div
+              className="c-absolute c-right-0 c-h-full c-flex c-items-center c-cursor-pointer"
+              onClick={() => {
+                input.showHidePassword = !input.showHidePassword;
+                input.render();
+              }}
+            >
+              <div className="">
+                {input.showHidePassword ? (
+                  <EyeIcon className="c-h-4" />
+                ) : (
+                  <EyeOff className="c-h-4" />
+                )}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </>
   );
