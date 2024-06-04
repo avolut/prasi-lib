@@ -1,5 +1,7 @@
 import { GenFn } from "lib/gen/utils";
 import { generateList } from "./md-list";
+import { generateForm } from "../../../..";
+import { generateMDForm } from "./md-form";
 
 const w = window as unknown as {
   generating_prasi_md: Record<string, true>;
@@ -17,6 +19,7 @@ export const generateMasterDetail: GenFn<{ item: PrasiItem, table: string, field
   };
 
   await generateList(arg, data, false);
+  await generateMDForm(arg, data, false)
   // const childs = item.edit.childs[0].edit.childs;
 
   // const master = childs.find(

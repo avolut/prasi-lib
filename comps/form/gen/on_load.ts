@@ -7,7 +7,7 @@ export const on_load = ({
   pks,
   opt,
 }: {
-  pk: GFCol;
+  pk: string;
   table: string;
   select: any;
   pks: Record<string, string>;
@@ -44,14 +44,14 @@ async (opt) => {
   ${
     opt?.before_load
       ? opt.before_load
-      : `let id = ${pk.type === "int" ? "parseInt(raw_id)" : "raw_id"};`
+      : `let id = raw_id`
   }
   
   let item = {};
   if (id){
     item = await db.${table}.findFirst({
       where: {
-        ${pk.name}: id,
+        ${pk}: id,
       },
       select: ${JSON.stringify(select, null, 2).split("\n").join("\n      ")},
     });

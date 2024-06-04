@@ -56,7 +56,7 @@ export const BaseField = (prop: {
         <div
           className={cx(
             !["toogle", "button", "radio", "checkbox"].includes(arg.sub_type)
-              ? "field-outer c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm c-flex-wrap"
+              ? "field-outer c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm"
               : "",
             fm.status === "loading"
               ? css`

@@ -17,12 +17,9 @@ export const ShowHidePanel: FC<{
       },
     },
     () => {
-      console.log(local.open);
-      console.log({ body });
     }
   );
   useEffect(() => {
-    console.log({ open });
     local.open = open === "true" ? true : false;
     local.render();
   }, [open]);

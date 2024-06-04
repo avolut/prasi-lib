@@ -6,6 +6,7 @@ export const filterWhere = (filter_name: string) => {
   const where: any = {};
   const AND: any[] = [];
   if (pf) {
+    console.log(pf);
     for (const [k, filter] of Object.entries(pf)) {
       for (const [name, value] of Object.entries(filter.data)) {
         const type = filter.types[name];
@@ -42,7 +43,7 @@ export const filterWhere = (filter_name: string) => {
             break;
           case "date":
             {
-              let is_value_valid = false;
+              let is_value_valid = true;
               // TODO: pastikan value bisa diparse pakai any-date-parser
               if (is_value_valid) {
                 if (modifier === "between") {

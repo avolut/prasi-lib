@@ -13,7 +13,8 @@ export const generateTableList = async (
   arg: { mode: "table" | "list" | "grid" | "auto"; id_parent?: string },
   commit: boolean
 ) => {
-  const table = JSON.parse(data.gen_table.value) as string;
+  console.log({data})
+  const table = data.gen_table.value as string;
   const raw_fields = JSON.parse(data.gen_fields.value) as (
     | string
     | { value: string; checked: string[] }
@@ -103,14 +104,12 @@ render(React.createElement("div", Object.assign({}, props, { className: cx(props
         .filter((e) => e) as any,
     });
     childs.push(child_sub_name);
-
-db
+    console.log({childs})
 
     if (commit) {
       Object.keys(result).map((e) => {
         item.edit.setProp(e, result[e]);
       });
-      console.log({ childs });
       item.edit.setChilds(childs);
       await item.edit.commit();
     } else {

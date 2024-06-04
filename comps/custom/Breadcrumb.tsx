@@ -44,7 +44,6 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({
 
     local.render();
   }, []);
-
   return (
     <div
       className={cx(

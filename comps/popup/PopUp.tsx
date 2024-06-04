@@ -13,11 +13,9 @@ export const Popup: FC<PopupProp> = ({ on_close, open, child }) => {
     open: false,
   });
   useEffect(() => {
-    console.log(open);
     const open_props = typeof open === "function" ? open() : open;
     local.open = open_props;
     local.render();
-    console.log(local.open);
   }, [open]);
 
   if (document.getElementsByClassName("prasi-popup").length === 0) {

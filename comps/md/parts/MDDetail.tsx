@@ -11,10 +11,12 @@ export const should_show_tab = (md: MDLocal) => {
 
 export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   const detail = md.childs[md.tab.active];
+  console.log({detail, md})
   const PassProp = mdr.PassProp;
   if (!detail) {
     return null;
   }
+  // return "cek"
   return (
     <>
       {md.props.show_head === "only-child" && <MDHeader md={md} mdr={mdr} />}
@@ -24,9 +26,9 @@ export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
           md.props.tab_mode === "v-tab" && "c-flex-col"
         )}
       >
-        {md.props.tab_mode !== "hidden" && md.tab.list.length > 1 && (
+        {/* {md.props.tab_mode !== "hidden" && md.tab.list.length > 1 && (
           <MDNavTab md={md} mdr={mdr} />
-        )}
+        )} */}
         <PassProp md={md}>{mdr.childs[md.tab.active]}</PassProp>
       </div>
     </>

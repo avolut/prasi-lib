@@ -8,6 +8,8 @@ import { createId } from "@paralleldrive/cuid2";
 import { gen_label } from "./gen-label";
 import { get_value } from "./get-value";
 import { set_value } from "./set-value";
+import get from "lodash.get";
+import { gen_rel_many } from "./gen-rel-many";
 export type GFCol = {
   name: string;
   type: string;
@@ -72,6 +74,7 @@ export const newField = (
       },
     });
   } else if (["has-many", "has-one"].includes(arg.type) && arg.relation) {
+    console.log(arg.type)
     const fields = parseGenField(opt.value);
     const res = generateSelect(fields);
     const load = on_load_rel({
@@ -80,7 +83,6 @@ export const newField = (
       select: res.select,
       pks: {},
     });
-    // console.log("halo");
     if (["has-one"].includes(arg.type)) {
       return createItem({
         component: {
@@ -120,69 +122,21 @@ export const newField = (
         },
       });
     } else {
-      return {
-        id: createId(),
-        name: "item",
-        type: "item",
-        childs: [],
-        edit: null as any,
-        component: {
-          id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
-          props: {
-            name: {
-              type: "string",
-              value: arg.name,
-            },
-            label: {
-              type: "string",
-              value: formatName(arg.name),
-            },
-            sub_type: {
-              type: "string",
-              value: "single-option",
-            },
-            rel__gen_table: {
-              type: "string",
-              value: arg.name,
-            },
-            opt__on_load: {
-              type: "raw",
-              value: `\
-              ${load}
-              `,
-            },
-          },
-        },
-      };
+      const result = gen_rel_many({table_parent: opt.parent_table, arg, rel: fields })
+      console.log({result})
       return createItem({
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
           props: {
             name: arg.name,
             label: formatName(arg.name),
-            type: "single-option",
-            sub_type: "dropdown",
+            type: "multi-option",
+            sub_type: "checkbox",
             rel__gen_table: arg.name,
-            // rel__gen_fields: [`[${opt.value.join(",")}]`],
-            opt__on_load: [
-              `\
-            ${load}
-            `,
-            ],
-            child: {
-              childs: [],
-            },
-          },
-        },
-      });
-      return createItem({
-        component: {
-          id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
-          props: {
-            name: arg.name,
-            label: formatName(arg.name),
-            type: "date",
-            sub_type: "datetime",
+            opt__on_load: [result.on_load],
+            opt__label: [result.get_label],
+            opt__get_value: [result.get_value],
+            opt__set_value: [result.set_value],
             child: {
               childs: [],
             },

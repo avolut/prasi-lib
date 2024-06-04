@@ -9,22 +9,15 @@ export const on_load_rel = ({
     select: any;
     pks: Record<string, string>;
   }) => {
-    const sample = {} as any;
+    const sample = {
+      label: "sample",
+      value: "sample",
+      data: null
+    } as any;
     const cols = [];
     for (const [k, v] of Object.entries(select) as any) {
       if(k !== pk && typeof v !== "object"){
         cols.push(k);
-      }
-      if (typeof v === "object") {
-        sample[k] = {};
-  
-        Object.keys(v.select)
-          .filter((e) => e !== pks[k])
-          .map((e) => {
-            sample[k][e] = "sample";
-          });
-      } else {
-        sample[k] = "sample";
       }
     }
   

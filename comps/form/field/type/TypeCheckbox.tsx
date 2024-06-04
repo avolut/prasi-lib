@@ -13,10 +13,20 @@ export const FieldCheckbox: FC<{
   });
   useEffect(() => {
     const callback = (res: any[]) => {
-      local.list = res;
+      if (Array.isArray(res)) {
+        const list: any = res.map((e: any) => {
+          return {
+            label: arg.opt_get_label(e),
+            value: e.value,
+          };
+        });
+        local.list = list;
+      } else {
+        local.list = []
+      }
       local.render();
     };
-    const res = arg.on_load();
+    const res = arg.on_load({});
     if (res instanceof Promise) res.then(callback);
     else callback(res);
   }, []);

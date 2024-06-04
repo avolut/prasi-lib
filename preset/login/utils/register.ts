@@ -1,17 +1,18 @@
-import { addSeconds } from "date-fns";
+import day from "dayjs";
+
 const w = window as any;
 export type RG = {
   data: any;
   expired: number; // second
 };
 export type UserSession = {
-    data: any;
-    expired: Date; // second
-  };
+  data: any;
+  expired: Date; // second
+};
 export const registerSession = (session: RG) => {
   const data = {
     data: session.data,
-    expired: session.expired ? addSeconds(new Date(), session.expired) : null,
+    expired: session.expired ? day().add(session.expired, "seconds") : null,
   };
   localStorage.setItem("user", JSON.stringify(data));
   w.user = session.data;

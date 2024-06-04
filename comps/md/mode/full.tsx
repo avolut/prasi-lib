@@ -7,7 +7,6 @@ export const ModeFull: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   if (should_show_tab(md)) {
     return <MDDetail md={md} mdr={mdr} />;
   }
-
   return (
     <>
       {!md.selected && <MDMaster md={md} mdr={mdr} />}

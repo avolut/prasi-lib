@@ -1,12 +1,12 @@
 import { AutoHeightTextarea } from "@/comps/custom/AutoHeightTextarea";
 import { useLocal } from "@/utils/use-local";
 import parser from "any-date-parser";
-import { format } from "date-fns";
 import { FC } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldMoney } from "./TypeMoney";
 import { FieldRichText } from "./TypeRichText";
 import { FieldUpload } from "./TypeUpload";
+import day from "dayjs";
 import { EyeIcon, EyeOff } from "lucide-react";
 
 export type PropTypeText = {
@@ -62,10 +62,11 @@ export const FieldTypeText: FC<{
     if (typeof value === "string" || value instanceof Date) {
       let date = parse(value);
       if (typeof date === "object" && date instanceof Date) {
-        if (type_field === "date") value = format(date, "yyyy-MM-dd");
-        else if (type_field === "datetime-local")
-          value = format(date, "yyyy-MM-dd HH:mm");
-        else if (type_field === "time") value = format(date, "HH:mm");
+        if (type_field === "date") value = day(date).format("YYYY-MM-DD");
+        // if (type_field === "date") value = format(date, "yyyy-MM-dd");
+        // else if (type_field === "datetime-local")
+        //   value = format(date, "yyyy-MM-dd HH:mm");
+        // else if (type_field === "time") value = format(date, "HH:mm");
       } else if (type_field === "time") {
         if (value && !isTimeString(value)) value = null;
       } else {

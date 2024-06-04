@@ -16,6 +16,7 @@ import { createPortal } from "react-dom";
 import { Toaster, toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
 import { sortTree } from "./utils/sort-tree";
+import { filterWhere } from "../filter/utils/filter-where";
 
 type OnRowClick = (arg: {
   row: any;
@@ -70,7 +71,8 @@ export const TableList: FC<TableListProp> = ({
   feature,
   filter_name,
 }) => {
-  const where = get(w, `prasi_filter.${filter_name}`);
+  const where = get(w, `prasi_filter.${filter_name}`) ?? "hello";
+  const whereQuery = filterWhere("hello");
   if (mode === "auto") {
     if (w.isMobile) {
       mode = "list";
@@ -178,7 +180,7 @@ export const TableList: FC<TableListProp> = ({
 
         const orderBy = local.sort.orderBy || undefined;
         const load_args: any = {
-          async reload() {},
+          async reload() { },
           where,
           orderBy,
           paging: { take: local.paging.take, skip: local.paging.skip },
@@ -269,7 +271,6 @@ export const TableList: FC<TableListProp> = ({
     (e: any) => e.name === sub_name || e.name === mode
   );
   if (mode_child) {
-    console.log({_item})
     const tbl = _item.edit.childs[0].edit.childs.find(
       (e) => get(e, "id") === mode_child.id
     );
@@ -282,7 +283,7 @@ export const TableList: FC<TableListProp> = ({
   let isCheckbox = false;
   try {
     if (feature?.find((e) => e === "checkbox")) isCheckbox = true;
-  } catch (e) {}
+  } catch (e) { }
   if (childs.length && isCheckbox) {
     columns.push({
       key: SELECT_COLUMN_KEY,
@@ -325,7 +326,7 @@ export const TableList: FC<TableListProp> = ({
     });
   }
   for (const child of childs) {
-    const key = getProp(child, "name", {});
+    let key = getProp(child, "name", {});
     const name = getProp(child, "title", {});
     const width = parseInt(getProp(child, "width", {}));
 
@@ -402,7 +403,7 @@ export const TableList: FC<TableListProp> = ({
   if (isEditor && local.status !== "ready") {
     if (local.data.length === 0) {
       const load_args: any = {
-        async reload() {},
+        async reload() { },
         where,
         paging: { take: local.paging.take, skip: local.paging.skip },
       };
@@ -421,8 +422,7 @@ export const TableList: FC<TableListProp> = ({
   if (id_parent && local.pk && local.sort.columns.length === 0) {
     data = sortTree(local.data, id_parent, local.pk.name);
   }
-  console.log("render?")
-  // return "123"
+  // return "pagi"
   if (mode === "table") {
     return (
       <div
@@ -486,54 +486,54 @@ export const TableList: FC<TableListProp> = ({
                   local.status !== "ready"
                     ? undefined
                     : {
-                        renderRow(key, props) {
-                          const is_selected = selected_idx === props.rowIdx;
-                          const isSelect = selected({
-                            idx: props.rowIdx,
-                            row: props.row,
-                            rows: local.data,
-                          });
+                      renderRow(key, props) {
+                        const is_selected = selected_idx === props.rowIdx;
+                        const isSelect = selected({
+                          idx: props.rowIdx,
+                          row: props.row,
+                          rows: local.data,
+                        });
 
-                          return (
-                            <Row
-                              key={key}
-                              {...props}
-                              onClick={(ev) => {
-                                if (
-                                  !isEditor &&
-                                  typeof row_click === "function"
-                                ) {
-                                  row_click({
-                                    event: ev,
-                                    idx: props.rowIdx,
-                                    row: props.row,
-                                    rows: local.data,
-                                  });
-                                }
-                              }}
-                              isRowSelected={true}
-                              className={cx(
-                                props.className,
-                                isSelect && "row-selected"
-                              )}
-                            />
-                          );
-                        },
-                        noRowsFallback: (
-                          <div className="c-flex-1 c-w-full absolute inset-0 c-flex c-flex-col c-items-center c-justify-center">
-                            <div className="c-max-w-[15%] c-flex c-flex-col c-items-center">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 128 140"
-                              >
-                                <path d="M52.77 74.89a2 2 0 002.83 0l8.4-8.4 8.4 8.4a2 2 0 002.83-2.83l-8.4-8.4 8.4-8.4a2 2 0 00-2.83-2.83l-8.4 8.4-8.4-8.4a2 2 0 00-2.83 2.83l8.4 8.4-8.4 8.4a2 2 0 000 2.83z"></path>
-                                <path d="M127.11 36.34l-24-16A2 2 0 00102 20H2a2 2 0 00-1.49.68A2 2 0 000 22v68a2 2 0 00.89 1.66l24 16A2.29 2.29 0 0026 108h100a2 2 0 002-2V38a2 2 0 00-.89-1.66zM104 25.74L119.39 36H104zm-80 76.52L8.61 92H24zM24 88H4V25.74l20 13.33zM8.61 24H100v12H26.61zM100 40v48H28V40zm-72 64V92h73.39l18 12zm96-1.74l-20-13.33V40h20z"></path>
-                              </svg>
-                              <div className="c-text-lg">No Data</div>
-                            </div>
+                        return (
+                          <Row
+                            key={key}
+                            {...props}
+                            onClick={(ev) => {
+                              if (
+                                !isEditor &&
+                                typeof row_click === "function"
+                              ) {
+                                row_click({
+                                  event: ev,
+                                  idx: props.rowIdx,
+                                  row: props.row,
+                                  rows: local.data,
+                                });
+                              }
+                            }}
+                            isRowSelected={true}
+                            className={cx(
+                              props.className,
+                              isSelect && "row-selected"
+                            )}
+                          />
+                        );
+                      },
+                      noRowsFallback: (
+                        <div className="c-flex-1 c-w-full absolute inset-0 c-flex c-flex-col c-items-center c-justify-center">
+                          <div className="c-max-w-[15%] c-flex c-flex-col c-items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 128 140"
+                            >
+                              <path d="M52.77 74.89a2 2 0 002.83 0l8.4-8.4 8.4 8.4a2 2 0 002.83-2.83l-8.4-8.4 8.4-8.4a2 2 0 00-2.83-2.83l-8.4 8.4-8.4-8.4a2 2 0 00-2.83 2.83l8.4 8.4-8.4 8.4a2 2 0 000 2.83z"></path>
+                              <path d="M127.11 36.34l-24-16A2 2 0 00102 20H2a2 2 0 00-1.49.68A2 2 0 000 22v68a2 2 0 00.89 1.66l24 16A2.29 2.29 0 0026 108h100a2 2 0 002-2V38a2 2 0 00-.89-1.66zM104 25.74L119.39 36H104zm-80 76.52L8.61 92H24zM24 88H4V25.74l20 13.33zM8.61 24H100v12H26.61zM100 40v48H28V40zm-72 64V92h73.39l18 12zm96-1.74l-20-13.33V40h20z"></path>
+                            </svg>
+                            <div className="c-text-lg">No Data</div>
                           </div>
-                        ),
-                      }
+                        </div>
+                      ),
+                    }
                 }
               />
             </>

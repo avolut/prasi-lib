@@ -69,10 +69,15 @@ export const MasterDetail: FC<MDProps> = (arg) => {
   mdr.item = _item;
 
   mdRenderLoop(md, mdr, arg);
-
+  md.selected = true;
+  md.tab.active = "detail"
   if (isEditor) {
     editorMDInit(md, mdr, arg);
+  }else{
+    md.status = "ready";
+    md.render()
   }
+  console.log({md})
   return ( 
     <div
       className={cx(

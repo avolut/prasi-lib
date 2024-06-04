@@ -78,9 +78,11 @@ export const TypeDropdown: FC<{
       <Typeahead
         value={value}
         onSelect={({ search, item }) => {
+          console.log("halo")
           return item?.value || search;
         }}
         onChange={(values) => {
+          console.log({values})
           arg.opt_set_value({
             fm,
             name: field.name,
