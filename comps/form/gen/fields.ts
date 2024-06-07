@@ -74,7 +74,6 @@ export const newField = (
       },
     });
   } else if (["has-many", "has-one"].includes(arg.type) && arg.relation) {
-    console.log(arg.type)
     const fields = parseGenField(opt.value);
     const res = generateSelect(fields);
     const load = on_load_rel({

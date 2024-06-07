@@ -14,7 +14,9 @@ export const generateTableList = async (
   commit: boolean
 ) => {
   console.log({data})
-  const table = data.gen_table.value as string;
+  console.log(typeof data.gen_table.value)
+  const table = eval(data.gen_table.value) as string;
+  console.log({table})
   const raw_fields = JSON.parse(data.gen_fields.value) as (
     | string
     | { value: string; checked: string[] }
@@ -22,6 +24,7 @@ export const generateTableList = async (
   let pk = "";
   let pks: Record<string, string> = {};
   const fields = parseGenField(raw_fields);
+  console.log({fields})
   // convert ke bahasa prisma untuk select
   const res = generateSelect(fields);
   pk = res.pk;
@@ -46,14 +49,14 @@ export const generateTableList = async (
     rows = rows.filter((e: PrasiItem) => e.name !== sub_name);
     childs = childs.concat(rows);
 
-    if (data["on_load"]) {
-      result.on_load = {
+    if (data["opt__on_load"]) {
+      result.opt__on_load = {
         mode: "raw",
         value: on_load({ pk, table, select, pks }),
       };
     }
+    console.log(result.opt__on_load?.value)
     let first = true;
-
     const child_sub_name = createItem({
       name: sub_name,
       childs: fields
@@ -88,7 +91,7 @@ export const generateTableList = async (
                       adv: {
                         js: `\
 <div {...props} className={cx(props.className, "")}>
-<FormatValue value={col.value} name={col.name} gen_fields={gen_fields} ${tree_depth} />
+${arg.mode === "list" ? "{JSON.stringify(row)}" : "<FormatValue value={col.value} name={col.name} gen_fields={gen_fields} ${tree_depth} />"}
 </div>`,
                         jsBuilt: `\
 render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen_fields, ${tree_depth_built} })));
@@ -103,9 +106,8 @@ render(React.createElement("div", Object.assign({}, props, { className: cx(props
         })
         .filter((e) => e) as any,
     });
-    childs.push(child_sub_name);
-    console.log({childs})
-
+    childs.push(child_sub_name)
+// console.log({childs})
     if (commit) {
       Object.keys(result).map((e) => {
         item.edit.setProp(e, result[e]);

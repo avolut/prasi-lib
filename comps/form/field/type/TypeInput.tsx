@@ -8,9 +8,10 @@ import { FieldRichText } from "./TypeRichText";
 import { FieldUpload } from "./TypeUpload";
 import day from "dayjs";
 import { EyeIcon, EyeOff } from "lucide-react";
+import Datepicker from "lib/comps/custom/Datepicker";
 
-export type PropTypeText = {
-  type: "text" | "date";
+export type PropTypeInput = {
+  type: "input";
   sub_type:
     | "text"
     | "password"
@@ -31,10 +32,10 @@ export type PropTypeText = {
 
 const parse = parser.exportAsFunctionAny("en-US");
 
-export const FieldTypeText: FC<{
+export const FieldTypeInput: FC<{
   field: FieldLocal;
   fm: FMLocal;
-  prop: PropTypeText;
+  prop: PropTypeInput;
   arg: FieldProp;
 }> = ({ field, fm, prop, arg }) => {
   const input = useLocal({
@@ -62,11 +63,6 @@ export const FieldTypeText: FC<{
     if (typeof value === "string" || value instanceof Date) {
       let date = parse(value);
       if (typeof date === "object" && date instanceof Date) {
-        if (type_field === "date") value = day(date).format("YYYY-MM-DD");
-        // if (type_field === "date") value = format(date, "yyyy-MM-dd");
-        // else if (type_field === "datetime-local")
-        //   value = format(date, "yyyy-MM-dd HH:mm");
-        // else if (type_field === "time") value = format(date, "HH:mm");
       } else if (type_field === "time") {
         if (value && !isTimeString(value)) value = null;
       } else {
@@ -158,8 +154,23 @@ export const FieldTypeText: FC<{
         <>
           <FieldRichText field={field} fm={fm} prop={prop} />
         </>
-      ) : (
+      ) : type_field === "date" ? (
         <>
+          <Datepicker
+            value={{ startDate: value, endDate: value }}
+            displayFormat="DD MMM YYYY"
+            asSingle={true}
+            useRange={false}
+            onChange={(value) => {
+              fm.data[field.name] = value?.startDate
+                ? new Date(value?.startDate)
+                : null;
+              fm.render();
+            }}
+          />
+        </>
+      ) : (
+        <div className="c-flex c-relative c-flex-1">
           <input
             type={type_field}
             onChange={(ev) => {
@@ -207,7 +218,7 @@ export const FieldTypeText: FC<{
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
     </>
   );

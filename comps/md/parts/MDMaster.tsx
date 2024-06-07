@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { MDLocal, MDRef } from "../utils/typings";
 import { MDHeader } from "./MDHeader";
 
@@ -10,25 +10,29 @@ export const MDRenderMaster: FC<{
   min_size: any;
   child: any;
   on_init: () => MDLocal;
-}> = ({ child, on_init, min_size, size }) => {
-  let md = on_init();
-
-  if (md) {
-    let width = 0;
-    let min_width = 0;
-    try {
-      width = Number(size) || 0;
-      min_width = Number(min_size) || 0;
-    } catch (e: any) {}
-    w.md_panel_master = JSON.stringify({
-      size: width,
-      min_size: min_width,
-    });
-    if (md.panel) {
-      md.panel.min_size = min_width;
-      md.panel.size = width;
-    }
-  }
+  breadcrumb: () => Array<any>
+}> = ({ child, on_init, min_size, size, breadcrumb }) => {
+  useEffect(() => {
+    let md = on_init();
+    md.breadcrumb.list = breadcrumb();
+    md.breadcrumb.render();
+    if (md) {
+      let width = 0;
+      let min_width = 0;
+      try {
+        width = Number(size) || 0;
+        min_width = Number(min_size) || 0;
+      } catch (e: any) {}
+      w.md_panel_master = JSON.stringify({
+        size: width,
+        min_size: min_width,
+      });
+      if (md.panel) {
+        md.panel.min_size = min_width;
+        md.panel.size = width;
+      }
+    };
+  }, [])
 
   return <>{child}</>;
 };

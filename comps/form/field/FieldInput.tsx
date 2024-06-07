@@ -3,7 +3,7 @@ import { FMLocal, FieldLocal, FieldProp } from "../typings";
 import { FieldLoading } from "../../ui/field-loading";
 import { MultiOption } from "./type/TypeMultiOption";
 import { SingleOption } from "./type/TypeSingleOption";
-import { FieldTypeText, PropTypeText } from "./type/TypeText";
+import { FieldTypeInput, PropTypeInput } from "./type/TypeInput";
 import { isValid } from "date-fns";
 
 const modify = {
@@ -47,7 +47,9 @@ export const FieldInput: FC<{
       }
     }
   }
-
+  if(type_field === "multi-option" && arg.sub_type === "table-edit"){
+    return <>{arg.child}</>
+  }
   return (
     <div
       className={cx(
@@ -97,7 +99,7 @@ export const FieldInput: FC<{
           ) : (
             <>
               {["date", "input"].includes(type_field) ? (
-                <FieldTypeText
+                <FieldTypeInput
                   field={field}
                   fm={fm}
                   arg={arg}
@@ -107,7 +109,7 @@ export const FieldInput: FC<{
                       sub_type: arg.sub_type,
                       prefix,
                       suffix,
-                    } as PropTypeText
+                    } as PropTypeInput
                   }
                 />
               ) : ["single-option"].includes(type_field) ? (

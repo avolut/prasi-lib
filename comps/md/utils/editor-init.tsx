@@ -18,9 +18,8 @@ export const editorMDInit = (md: MDLocal, mdr: MDRef, arg: MDProps) => {
   md.props.gen_fields = gen_fields;
   md.props.gen_table = gen_table;
   md.props.on_init = on_init;
-
   if (!mdr.master || (mdr.master && !get(mdr, "master.edit.childs.0.childs.length"))) {
-    md.breadcrumb = [
+    md.breadcrumb.list = [
       {
         label: (
           <>
@@ -40,7 +39,7 @@ export const editorMDInit = (md: MDLocal, mdr: MDRef, arg: MDProps) => {
     ];
     md.status = "unready";
   } else {
-    md.breadcrumb = [];
+    md.breadcrumb.list = [];
     md.status = "ready";
   }
 };

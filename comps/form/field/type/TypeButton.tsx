@@ -16,7 +16,7 @@ export const FieldButton: FC<{
       local.list = res;
       local.render();
     };
-    const res = arg.on_load();
+    const res = arg.on_load({});
     if (res instanceof Promise) res.then(callback);
     else callback(res);
   }, []);
@@ -26,9 +26,7 @@ export const FieldButton: FC<{
     options: local.list,
     type: field.type,
   });
-
   if (arg.type === "multi-option") {
-    value = fm.data[field.name] || [];
     return (
       <>
         <div className={cx("c-flex c-items-center c-w-full c-flex-row")}>
@@ -45,7 +43,6 @@ export const FieldButton: FC<{
               try {
                 isChecked = value.some((e: any) => e === item.value);
               } catch (ex) {}
-
               return (
                 <div
                   onClick={() => {
@@ -61,7 +58,6 @@ export const FieldButton: FC<{
                     } else {
                       selected.push(item);
                     }
-
                     arg.opt_set_value({
                       fm,
                       name: field.name,

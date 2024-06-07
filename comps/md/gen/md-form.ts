@@ -2,6 +2,7 @@ import { createItem } from "lib/gen/utils";
 import get from "lodash.get";
 import { generateTableList } from "./gen-table-list";
 import { generateForm } from "lib/comps/form/gen/gen-form";
+import { formatName } from "lib/comps/form/gen/fields";
 
 export const generateMDForm = async (
   arg: { item: PrasiItem; table: string; fields: any },
@@ -49,32 +50,56 @@ export const generateMDForm = async (
       props,
     },
   };
-  console.log({
-    props,
-    tablelist,
-    false: false
+  generateForm(async (props: any) => {}, props, tablelist, false);
+  tab_detail?.edit.setProp("breadcrumb", {
+    mode: "raw",
+    value: `\
+    () => {
+      const breads: BreadItem[] = [
+        {
+          label: "List ${formatName(arg.table)}",
+          onClick: () => {
+            md.selected = null;
+            md.internal.action_should_refresh = true;
+            md.params.apply();
+            md.render();
+          },
+        },
+      ];
+    
+      if (isEditor) {
+        breads.push({ label: "Add New" });
+      } else {
+        if (
+          md.selected &&
+          typeof md.selected === "object"
+        ) {
+          if (Object.keys(md.selected).length === 0){
+            breads.push({ label: "Add New" });
+          } else {
+            breads.push({ label: "Edit" });
+          }
+        }
+      }
+    
+      return breads;
+    };
+    
+    type BreadItem = {
+      label: React.ReactNode;
+      url?: string;
+      onClick?: () => void;
+    }
+    `
   })
-  generateForm(
-    async (props: any) => {},
-    props,
-    tablelist,
-    false
-  );
-  console.clear();
-  console.log({
-    type: "item",
-    name: "item",
-    component: {
-      id: "567d5362-2cc8-4ca5-a531-f771a5c866c2",
-      props,
+  tab_detail?.edit.setChilds([
+    {
+      type: "item",
+      name: "item",
+      component: {
+        id: "c4e65c26-4f36-48aa-a5b3-0771feac082e",
+        props,
+      },
     },
-  })
-  tab_detail?.edit.setChilds([ {
-    type: "item",
-    name: "item",
-    component: {
-      id: "c4e65c26-4f36-48aa-a5b3-0771feac082e",
-      props,
-    },
-  }]);
+  ]);
 };

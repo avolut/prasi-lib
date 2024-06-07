@@ -2,11 +2,11 @@ import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
 import { FC } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
-import { PropTypeText } from "./TypeText";
+import { PropTypeInput } from "./TypeInput";
 export const FieldUpload: FC<{
   field: FieldLocal;
   fm: FMLocal;
-  prop: PropTypeText;
+  prop: PropTypeInput;
 }> = ({ field, fm, prop }) => {
   let type_field = prop.sub_type;
   let value: any = fm.data[field.name];

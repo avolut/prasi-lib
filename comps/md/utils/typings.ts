@@ -34,7 +34,7 @@ export type MDActions = {
 export type MDLocalInternal = {
   name: string;
   status: "init" | "unready" | "ready";
-  breadcrumb: BreadItem[];
+  breadcrumb: {list:BreadItem[], render: () => void, reload: () => void};
   actions: MDActions;
   selected: any;
   tab: {
@@ -58,6 +58,7 @@ export type MDLocalInternal = {
     gen_fields: any;
     gen_table: string;
     on_init: (md: any) => void;
+    item: PrasiItem;
   };
   childs: Record<
     string,

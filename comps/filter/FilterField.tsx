@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 import { BaseField } from "../form/base/BaseField";
 import { FilterFieldType, FilterLocal, filter_window } from "./utils/types";
-import { FieldTypeText } from "../form/field/type/TypeText";
+import { FieldTypeInput } from "../form/field/type/TypeInput";
 import { FieldModifier } from "./FieldModifier";
 import { useLocal } from "lib/utils/use-local";
 import { FieldCheckbox } from "../form/field/type/TypeCheckbox";
@@ -50,16 +50,18 @@ export const FilterField: FC<{
         onLoad() {
           return [{ label: "halo", value: "asda" }];
         },
-        subType: singleOptions.includes(filter.modifiers[name]) ? "dropdown" : "typeahead",
+        subType: singleOptions.includes(filter.modifiers[name])
+          ? "dropdown"
+          : "typeahead",
       })}
     >
       {(field) => (
         <>
           {type === "text" && (
-            <FieldTypeText
+            <FieldTypeInput
               {...field}
               prop={{
-                type: "text",
+                type: "input",
                 sub_type: "text",
                 prefix: "",
                 suffix: "",
@@ -68,22 +70,28 @@ export const FilterField: FC<{
           )}
           {type === "number" && (
             <>
-              <FieldTypeText
+              <FieldTypeInput
                 {...field}
-                field={{ ...field.field, name: filter.modifiers[name] === "between" ? name : `${name}_from` }}
+                field={{
+                  ...field.field,
+                  name:
+                    filter.modifiers[name] === "between"
+                      ? name
+                      : `${name}_from`,
+                }}
                 prop={{
-                  type: "text",
+                  type: "input",
                   sub_type: "number",
                   prefix: "",
                   suffix: "",
                 }}
               />
               {filter.modifiers[name] === "between" && (
-                <FieldTypeText
+                <FieldTypeInput
                   {...field}
                   field={{ ...field.field, name: `${name}_to` }}
                   prop={{
-                    type: "text",
+                    type: "input",
                     sub_type: "number",
                     prefix: "",
                     suffix: "",
@@ -94,22 +102,28 @@ export const FilterField: FC<{
           )}
           {type === "date" && (
             <>
-              <FieldTypeText
+              <FieldTypeInput
                 {...field}
-                field={{ ...field.field, name: filter.modifiers[name] === "between" ? name : `${name}_from` }}
+                field={{
+                  ...field.field,
+                  name:
+                    filter.modifiers[name] === "between"
+                      ? name
+                      : `${name}_from`,
+                }}
                 prop={{
-                  type: "text",
+                  type: "input",
                   sub_type: "date",
                   prefix: "",
                   suffix: "",
                 }}
               />
               {filter.modifiers[name] === "between" && (
-                <FieldTypeText
+                <FieldTypeInput
                   {...field}
                   field={{ ...field.field, name: `${name}_to` }}
                   prop={{
-                    type: "text",
+                    type: "input",
                     sub_type: "date",
                     prefix: "",
                     suffix: "",

@@ -1,6 +1,7 @@
 import { createItem } from "lib/gen/utils";
 import get from "lodash.get";
 import { generateTableList } from "./gen-table-list";
+import { formatName } from "lib/comps/form/gen/fields";
 
 export const generateList = async (
   arg: { item: PrasiItem; table: string; fields: any },
@@ -14,7 +15,7 @@ export const generateList = async (
   const props: Record<string, PropVal> = {
     gen_table: {
       mode: "string",
-      value: arg.table,
+      value: `"${arg.table}"`,
     },
     name: {
       mode: "string",
@@ -24,16 +25,17 @@ export const generateList = async (
       mode: "string",
       value: "y",
     },
-    on_load: {
+    opt__on_load: {
       mode: "string",
       value: "",
     },
-    row_click: {
+    opt__row_click: {
       mode: "raw",
       value: `\
 ({ row, rows, idx, event }: OnRowClick) => {
 md.selected = row;
 md.internal.action_should_refresh = true;
+md.tab.active = "detail";
 md.params.apply();
 md.render();
 };
@@ -46,7 +48,7 @@ event: React.MouseEvent<HTMLDivElement, MouseEvent>;
 }
 `,
     },
-    selected: {
+    opt__selected: {
       mode: "raw",
       value: `\
 ({ row, rows, idx }: SelectedRow) => {
@@ -102,6 +104,21 @@ idx: any;
     { mode: "table" },
     false
   );
+  tab_master?.edit.setProp("breadcrumb", {
+    mode: "raw",
+    value: `\
+    () => {
+      return [
+        { label: "List ${formatName(arg.table)}" },
+      ] as BreadItem[];
+    };
+    type BreadItem = {
+      label: React.ReactNode;
+      url?: string;
+      onClick?: () => void;
+    }
+    `
+  })
   tab_master?.edit.setChilds([ {
     type: "item",
     name: "item",

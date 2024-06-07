@@ -46,7 +46,6 @@ export const FilterContent: FC<{
         data={filter.data}
         on_submit={(form) => {
           console.log("skrg nyubmit");
-          console.log(form.data);
         }}
         render={internal.render}
       >

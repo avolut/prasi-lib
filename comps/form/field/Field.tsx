@@ -7,6 +7,7 @@ import { Label } from "./Label";
 import { useLocal } from "@/utils/use-local";
 
 export const Field: FC<FieldProp> = (arg) => {
+  const showlabel = arg.show_label || "y";
   const { fm } = arg;
   const field = useField(arg);
   const name = field.name;
@@ -22,9 +23,7 @@ export const Field: FC<FieldProp> = (arg) => {
       fm.render();
     }
   }, [fm.data[name]]);
-
   if (field.status === "init" && !isEditor) return null;
-
   const errors = fm.error.get(name);
   const props = { ...arg.props };
   delete props.className;
@@ -48,7 +47,8 @@ export const Field: FC<FieldProp> = (arg) => {
       )}
       {...props}
     >
-      {mode !== "hidden" && <Label field={field} fm={fm} />}
+     
+      {mode !== "hidden" && showlabel === "y" && <Label field={field} fm={fm} />}
       <div className="field-inner c-flex c-flex-1 c-flex-col">
         <FieldInput
           field={field}

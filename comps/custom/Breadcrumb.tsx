@@ -1,6 +1,7 @@
 import { useLocal } from "@/utils/use-local";
 import { FC, ReactNode, useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
+import get from "lodash.get";
 
 export type BreadItem = {
   label: React.ReactNode;
@@ -9,7 +10,7 @@ export type BreadItem = {
 };
 
 type BreadcrumbProps = {
-  on_load?: () => Promise<BreadItem[]>;
+  on_load?: (e?: any) => Promise<BreadItem[]>;
   className?: string;
   value?: BreadItem[];
   item?: PrasiItem;
@@ -25,6 +26,19 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({
     list: [] as BreadItem[],
     status: "init" as "init" | "loading" | "ready",
     params: {},
+    reload: () => {
+      if (typeof on_load === "function") {
+        local.status = "loading";
+        on_load(local).then((res: any) => {
+          if(typeof res === "object"){
+            local.list = get(res, "list") || [];
+          }
+          local.status = "ready";
+          local.render();
+        });
+      }
+      local.render();
+    }
   });
 
   useEffect(() => {
@@ -32,17 +46,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({
       local.list = value;
       local.status = "ready";
     }
-
-    if (typeof on_load === "function") {
-      local.status = "loading";
-      on_load().then((list) => {
-        local.list = list;
-        local.status = "ready";
-        local.render();
-      });
-    }
-
-    local.render();
+    local.reload();
   }, []);
   return (
     <div

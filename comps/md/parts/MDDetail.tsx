@@ -1,22 +1,20 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { MDLocal, MDRef } from "../utils/typings";
 import { MDHeader } from "./MDHeader";
 
 export const should_show_tab = (md: MDLocal) => {
   if (isEditor) {
-    if (md.tab.active !== "") return true;
+    if (md.tab.active !== "" && md.tab.active !== "master") return true;
   }
   return false;
 };
 
 export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   const detail = md.childs[md.tab.active];
-  console.log({detail, md})
   const PassProp = mdr.PassProp;
   if (!detail) {
     return null;
   }
-  // return "cek"
   return (
     <>
       {md.props.show_head === "only-child" && <MDHeader md={md} mdr={mdr} />}
@@ -26,10 +24,22 @@ export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
           md.props.tab_mode === "v-tab" && "c-flex-col"
         )}
       >
-        {/* {md.props.tab_mode !== "hidden" && md.tab.list.length > 1 && (
+        {md.props.tab_mode !== "hidden" && md.tab.list.length > 1 && (
           <MDNavTab md={md} mdr={mdr} />
-        )} */}
-        <PassProp md={md}>{mdr.childs[md.tab.active]}</PassProp>
+        )}
+        <div
+          className={cx(
+            "md-tab " + md.tab.active,
+            css`
+              > div {
+                flex: 1;
+              }
+            `,
+            "c-flex c-flex-1"
+          )}
+        >
+          <PassProp md={md}>{mdr.childs[md.tab.active]}</PassProp>
+        </div>
       </div>
     </>
   );
@@ -68,8 +78,10 @@ export const MDNavTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
                 )
             )}
             key={tab_name}
-            onClick={() => {
+            onClick={async () => {
               if (isEditor) {
+                md.props.item.edit.setProp("editor_tab", tab_name);
+                await md.props.item.edit.commit();
                 return;
               }
               md.tab.active = tab_name;
@@ -94,4 +106,18 @@ export const MDNavTab: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
       })}
     </div>
   );
+};
+
+export const MDRenderTab: FC<{
+  child: any;
+  on_init: () => MDLocal;
+  breadcrumb: () => Array<any>;
+}> = ({ child, on_init, breadcrumb }) => {
+  useEffect(() => {
+
+    let md = on_init();
+    md.breadcrumb.list = breadcrumb();
+    md.breadcrumb.render();
+  }, [])
+  return <>{child}</>;
 };

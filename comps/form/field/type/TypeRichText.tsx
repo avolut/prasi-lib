@@ -3,12 +3,12 @@ import Quill from "quill";
 import "quill/dist/quill.snow.css"; // Import CSS untuk tema Quill
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
-import { PropTypeText } from "./TypeText";
+import { PropTypeInput } from "./TypeInput";
 
 export const FieldRichText: FC<{
   field: FieldLocal;
   fm: FMLocal;
-  prop: PropTypeText;
+  prop: PropTypeInput;
 }> = ({ field, fm, prop }) => {
   const local = useLocal({
     ref: null as any,

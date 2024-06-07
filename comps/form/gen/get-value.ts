@@ -32,6 +32,8 @@ export const get_value = ({
         if(typeof data === "object"){
           if(typeof data?.connect?.${pk} === "string"){
             result = data.connect.${pk};
+          }else if (typeof data?.id === "string") {
+            result = data.id;
           }
         }
       }catch(ex){

@@ -21,7 +21,6 @@ export const gen_rel_many = (prop: {
     select: select.select,
     pks: {},
   });
-  console.log({ result, select, table_parent, arg, rel, parent, master });
   const pk_master = master.relation.fields.find((e: any) => get(e, "is_pk"))
   const get_value = `\
   (arg: {
@@ -43,6 +42,8 @@ export const gen_rel_many = (prop: {
           if (typeof data === "object") {
             if (typeof data?.connect?.id === "string") {
               result = data.connect.id;
+            }else if (typeof data?.id === "string") {
+              result = data.id;
             }
           }
         } catch (ex) { }
@@ -56,6 +57,8 @@ export const gen_rel_many = (prop: {
               if (typeof e === "object") {
                 if (typeof e["${master.name}"].connect?.${pk_master.name} === "string") {
                   selected.push(e["${master.name}"].connect.${pk_master.name});
+                } else if (typeof e["${master.name}"]?.${pk_master.name} === "string") {
+                  selected.push(e["${master.name}"].${pk_master.name});
                 }
               }
             } catch (ex) { }
@@ -118,7 +121,6 @@ export const gen_rel_many = (prop: {
       cols.push(k);
     }
   }
-  console.log({cols})
   const get_label = `\
   (row: { value: string; label: string; item?: any }) => {
     const cols = ${JSON.stringify(cols)};

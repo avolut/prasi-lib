@@ -11,6 +11,9 @@ import {
 } from "./utils/md-hash";
 import { MDLocalInternal, MDProps } from "./utils/typings";
 import { mdRenderLoop } from "./utils/md-render-loop";
+import { parseGenField } from "lib/gen/utils";
+import { NDT } from "src/data/timezoneNames";
+import { mdBread } from "./utils/md-bread";
 
 export const MasterDetail: FC<MDProps> = (arg) => {
   const {
@@ -29,9 +32,13 @@ export const MasterDetail: FC<MDProps> = (arg) => {
   const mdr = _ref.current;
   const md = useLocal<MDLocalInternal>({
     name,
-    status: "init",
+    status: isEditor ? "init" : "ready",
     actions: [],
-    breadcrumb: [],
+    breadcrumb: {
+      list: [],
+      render: () => {},
+      reload: () => {}
+    },
     selected: null,
     tab: {
       active: "",
@@ -47,6 +54,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
       gen_fields,
       gen_table,
       on_init,
+      item: _item,
     },
     params: {
       hash: {},
@@ -67,18 +75,31 @@ export const MasterDetail: FC<MDProps> = (arg) => {
 
   mdr.PassProp = PassProp;
   mdr.item = _item;
-
   mdRenderLoop(md, mdr, arg);
-  md.selected = true;
-  md.tab.active = "detail"
   if (isEditor) {
+    md.tab.active = editor_tab;
     editorMDInit(md, mdr, arg);
-  }else{
+  } else {
     md.status = "ready";
-    md.render()
+    const fields = parseGenField(gen_fields);
+    const pk = fields.find((e) => e.is_pk); 
+    md.pk = pk
+    md.params.parse();
+    if (pk) {
+      const value = md.params.hash[md.name];
+      if (value) {
+        md.selected = { [pk.name]: value };
+        const tab = md.params.tabs[md.name];
+        if (tab && md.tab.list.includes(tab)) {
+          md.tab.active = tab;
+        }else{
+          md.tab.active = "detail"
+        }
+      }
+    }
   }
-  console.log({md})
-  return ( 
+  md.breadcrumb.reload();
+  return (
     <div
       className={cx(
         "c-flex-1 c-flex-col c-flex c-w-full c-h-full c-overflow-hidden"

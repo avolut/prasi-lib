@@ -23,7 +23,6 @@ export const generateForm = async (
   const fields = parseGenField(raw_fields);
   const res = generateSelect(fields);
   const rel_many = get_rel_many(fields);
-  console.log({rel_many})
   pk = res.pk;
   const select = res.select as any;
   const result: Record<string, PropVal> = {};
@@ -31,7 +30,6 @@ export const generateForm = async (
     alert("Failed to generate! Primary Key not found. ");
     return;
   }
-  console.log({fields, res})
   if (pk) {
     if (data["on_load"]) {
       result.on_load = {
@@ -106,12 +104,14 @@ export const generateForm = async (
                       },
                     };
                   });
-                  await db[current.table].batch_upsert({
+                  await db._batch.upsert({
+                    table: current.table,
                     where: {
                       [current.fk]: form.${pk},
                     },
                     data: data,
-                  });
+                    mode: "relation",
+                  } as any);
         
                   if (list.length > 1) {
                     try {

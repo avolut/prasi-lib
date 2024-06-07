@@ -25,7 +25,7 @@ export const FieldTag: FC<{
       focusOpen={false}
       placeholder={arg.placeholder}
       options={async () => {
-        if (typeof arg.on_load === "function") return await arg.on_load();
+        if (typeof arg.on_load === "function") return await arg.on_load({});;
         return [];
       }}
     />

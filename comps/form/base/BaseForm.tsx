@@ -96,13 +96,13 @@ export const BaseForm = <T extends Record<string, any>>(
         form.submit();
       }}
       className={cx(
-        "form c-flex-1 c-flex-col c-w-full c-h-full c-relative c-overflow-auto",
+        "form c-flex-1 c-flex-col c-w-full c-h-full c-relative c-overflow-auto c-contents",
         className
       )}
     >
       <div
         className={cx(
-          "form-inner c-flex c-flex-1 c-flex-wrap c-items-start c-content-start c-absolute c-inset-0",
+          "form-inner c-flex-1 c-flex-wrap c-items-start c-content-start c-absolute c-inset-0 c-contents",
           css`
             padding-right: 10px;
           `
