@@ -75,6 +75,7 @@ export const BaseForm = <T extends Record<string, any>>(
           return [];
         },
       },
+      submit: () => on_submit?.(form),
       size: { field: size },
       render: form.render,
     } as any;
