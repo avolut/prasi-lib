@@ -200,7 +200,6 @@ export const FieldTypeInput: FC<{
               field.render();
             }}
           />
-
           {arg.sub_type === "password" && (
             <div
               className="c-absolute c-right-0 c-h-full c-flex c-items-center c-cursor-pointer"

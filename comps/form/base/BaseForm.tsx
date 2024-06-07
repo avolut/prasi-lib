@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { BaseFormLocal, default_base_form_local } from "./types";
 import { useLocal } from "lib/utils/use-local";
-import { FieldLocal, FieldProp } from "../typings";
+import { FieldLocal, FieldProp, fieldType } from "../typings";
 
 export type BaseFormProps<T> = {
   data: T;
@@ -47,6 +47,8 @@ export const BaseForm = <T extends Record<string, any>>(
   };
 
   form.createField = (arg) => {
+    if (form.fields[arg.name]) return form.fields[arg.name];
+
     const prop: FieldLocal = {
       name: arg.name,
       label: typeof arg.label !== "undefined" ? arg.label : arg.name,
@@ -54,6 +56,7 @@ export const BaseForm = <T extends Record<string, any>>(
       width: "auto",
       prefix: arg.prefix,
     } as any;
+    form.fields[arg.name] = prop;
     return prop;
   };
 

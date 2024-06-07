@@ -8,6 +8,7 @@ export const default_base_form_local = {
     width: 0,
   },
   fm: null as null | FMLocal,
+  fields: {} as Record<string, any>,
 };
 
 type CreateFieldArg = {
