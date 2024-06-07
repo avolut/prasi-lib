@@ -7,6 +7,7 @@ export const default_base_form_local = {
   internal: {
     width: 0,
   },
+  fm: null as null | FMLocal,
 };
 
 type CreateFieldArg = {

@@ -58,12 +58,16 @@ export const BaseForm = <T extends Record<string, any>>(
   };
 
   form.createFm = () => {
+    if (form.fm) {
+      form.fm.data = form.data;
+      return form.fm;
+    }
     let size = "full";
 
     if (form.internal.width > 650) {
       size = "half";
     }
-    return {
+    form.fm = {
       data: form.data,
       props: { label_mode: "vertical" },
       error: {
@@ -74,6 +78,7 @@ export const BaseForm = <T extends Record<string, any>>(
       size: { field: size },
       render: form.render,
     } as any;
+    return form.fm as any;
   };
 
   form.fieldProps = (arg) => {
@@ -115,6 +120,7 @@ export const BaseForm = <T extends Record<string, any>>(
         ref={(el) => {
           if (el?.offsetWidth) {
             form.internal.width = el?.offsetWidth;
+            form.createFm();
           }
         }}
       >
