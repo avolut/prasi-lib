@@ -4,6 +4,9 @@ import { FMLocal, FieldLocal, FieldProp } from "../typings";
 export const default_base_form_local = {
   status: "init" as "init" | "submitting" | "ready",
   data: {} as any,
+  internal: {
+    width: 0,
+  },
 };
 
 type CreateFieldArg = {
@@ -13,7 +16,7 @@ type CreateFieldArg = {
   onChange?: (value: any) => void;
   render?: () => void;
   onLoad?: () => { value: string; label: string }[];
-  subType?: string
+  subType?: string;
 };
 
 export type BaseFormLocal<T> = Omit<typeof default_base_form_local, "data"> & {

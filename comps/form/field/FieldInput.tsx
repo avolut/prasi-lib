@@ -1,10 +1,9 @@
 import { FC, isValidElement } from "react";
-import { FMLocal, FieldLocal, FieldProp } from "../typings";
 import { FieldLoading } from "../../ui/field-loading";
+import { FMLocal, FieldLocal, FieldProp } from "../typings";
+import { FieldTypeInput, PropTypeInput } from "./type/TypeInput";
 import { MultiOption } from "./type/TypeMultiOption";
 import { SingleOption } from "./type/TypeSingleOption";
-import { FieldTypeInput, PropTypeInput } from "./type/TypeInput";
-import { isValid } from "date-fns";
 
 const modify = {
   timeout: null as any,

@@ -40,7 +40,7 @@ export const BaseForm = <T extends Record<string, any>>(
     const prop: FieldProp = {
       name: arg.name,
       on_load: arg.onLoad,
-      sub_type: arg.subType
+      sub_type: arg.subType,
     } as any;
     if (arg.onChange) prop.on_change = arg.onChange;
     return prop;
@@ -58,6 +58,11 @@ export const BaseForm = <T extends Record<string, any>>(
   };
 
   form.createFm = () => {
+    let size = "full";
+
+    if (form.internal.width > 650) {
+      size = "half";
+    }
     return {
       data: form.data,
       props: { label_mode: "vertical" },
@@ -66,7 +71,7 @@ export const BaseForm = <T extends Record<string, any>>(
           return [];
         },
       },
-      size: { field: "full" },
+      size: { field: size },
       render: form.render,
     } as any;
   };
@@ -96,19 +101,26 @@ export const BaseForm = <T extends Record<string, any>>(
         form.submit();
       }}
       className={cx(
-        "form c-flex-1 c-flex-col c-w-full c-h-full c-relative c-overflow-auto c-contents",
+        "form c-flex-1 c-flex c-flex-col c-w-full c-h-full c-relative c-overflow-auto c-contents",
         className
       )}
     >
       <div
         className={cx(
-          "form-inner c-flex-1 c-flex-wrap c-items-start c-content-start c-absolute c-inset-0 c-contents",
+          "form-inner c-flex-1 c-flex c-flex-row c-flex-wrap c-items-start c-content-start c-absolute c-inset-0 c-contents",
           css`
             padding-right: 10px;
           `
         )}
+        ref={(el) => {
+          if (el?.offsetWidth) {
+            form.internal.width = el?.offsetWidth;
+          }
+        }}
       >
-        {typeof children === "function" ? children(form) : children}
+        {form.internal.width && (
+          <>{typeof children === "function" ? children(form) : children}</>
+        )}
       </div>
     </form>
   );
