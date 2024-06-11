@@ -5,12 +5,13 @@ export const softDeleteFilter = (
     type: "boolean" | "nullable";
   }
 ) => {
-    console.log({where})
-    const defaultParam = typeof where === "object" ? where : {}
-    const result = {
-        AND: [
-            typeof where === "object" ? { ...defaultParam },
-          {
+  console.log({ where });
+  const defaultParam = typeof where === "object" ? where : {};
+  const result = {
+    AND: [
+      typeof where === "object"
+        ? { ...defaultParam }
+        : {
             [soft.field]:
               soft.type === "boolean"
                 ? true
@@ -18,8 +19,8 @@ export const softDeleteFilter = (
                     not: null,
                   },
           },
-        ],
-      }
-      console.log(result)
+    ],
+  };
+  console.log(result);
   return result;
 };
