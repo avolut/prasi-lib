@@ -30,15 +30,19 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({
       if (typeof on_load === "function") {
         local.status = "loading";
         on_load(local).then((res: any) => {
-          if(typeof res === "object"){
-            local.list = get(res, "list") || [];
+          if (typeof res === "object") {
+            if (!Array.isArray(res)) {
+              local.list = get(res, "list") || [];
+            } else {
+              local.list = res;
+            }
           }
           local.status = "ready";
           local.render();
         });
       }
       local.render();
-    }
+    },
   });
 
   useEffect(() => {
@@ -48,6 +52,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({
     }
     local.reload();
   }, []);
+
   return (
     <div
       className={cx(
