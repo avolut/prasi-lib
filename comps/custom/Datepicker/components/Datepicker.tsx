@@ -19,6 +19,8 @@ import { Period, DatepickerType, ColorKeys } from "../types";
 
 import { Arrow, VerticalDash } from "./utils";
 import { createPortal } from "react-dom";
+import { Popover } from "../../Popover";
+import { useLocal } from "lib/utils/use-local";
 
 const Datepicker: React.FC<DatepickerType> = ({
   primaryColor = "blue",
@@ -50,6 +52,7 @@ const Datepicker: React.FC<DatepickerType> = ({
   classNames = undefined,
   popoverDirection = undefined,
 }) => {
+  const local = useLocal({ open: false });
   // Ref
   const containerRef = useRef<HTMLDivElement | null>(null);
   const calendarContainerRef = useRef<HTMLDivElement | null>(null);
@@ -80,26 +83,8 @@ const Datepicker: React.FC<DatepickerType> = ({
 
   // Functions
   const hideDatepicker = useCallback(() => {
-    const div = calendarContainerRef.current;
-    const arrow = arrowRef.current;
-    if (arrow && div && div.classList.contains("c-block")) {
-      div.classList.remove("c-block");
-      div.classList.remove("c-translate-y-0");
-      div.classList.remove("c-opacity-1");
-      div.classList.add("c-translate-y-4");
-      div.classList.add("c-opacity-0");
-      setTimeout(() => {
-        div.classList.remove("c-bottom-full");
-        div.classList.add("c-hidden");
-        div.classList.add("c-mb-2.5");
-        div.classList.add("c-mt-2.5");
-        arrow.classList.remove("-c-bottom-2");
-        arrow.classList.remove("c-border-r");
-        arrow.classList.remove("c-border-b");
-        arrow.classList.add("c-border-l");
-        arrow.classList.add("c-border-t");
-      }, 300);
-    }
+    local.open = false;
+    local.render();
   }, []);
 
   /* Start First */
@@ -338,81 +323,71 @@ const Datepicker: React.FC<DatepickerType> = ({
     return typeof containerClassName === "function"
       ? containerClassName(defaultContainerClassName)
       : typeof containerClassName === "string" && containerClassName !== ""
-      ? containerClassName
-      : defaultContainerClassName;
+        ? containerClassName
+        : defaultContainerClassName;
   }, [containerClassName]);
 
-  const toaster = document.querySelector(".prasi-toaster");
-  const rect = inputRef.current?.getBoundingClientRect();
   return (
     <DatepickerContext.Provider value={contextValues}>
-      <div className={containerClassNameOverload} ref={containerRef}>
-        <Input setContextRef={setInputRef} />
+      <Popover
+        arrow={false}
+        className=""
+        onOpenChange={(open) => {
+          local.open = open;
+          local.render();
+        }}
+        open={local.open}
+        content={
+          <div
+            className={cx("c-text-sm 2xl:c-text-sm")}
+            ref={calendarContainerRef}
+          >
+            <div className="c-flex c-flex-col lg:c-flex-row c-py-2">
+              {showShortcuts && <Shortcuts />}
 
-        {toaster &&
-          createPortal(
-            <div
-              className={cx(
-                "c-transition-all c-ease-out c-absolute c-z-50 c-duration-300 c-mt-[1px] c-text-sm 2xl:c-text-sm c-translate-y-4 c-hidden c-opacity-0",
-                rect &&
-                  css`
-                    top: ${rect.top +
-                    rect.height +
-                    rect.height / 2}px !important;
-                    left: ${rect.left -
-                    rect.width +
-                    rect.width / 2}px !important;
-                  `
-              )}
-              ref={calendarContainerRef}
-            >
-              <Arrow ref={arrowRef} />
+              <div
+                className={`c-flex c-items-stretch c-flex-col md:c-flex-row c-space-y-4 md:c-space-y-0 md:c-space-x-1.5 ${
+                  showShortcuts ? "md:pl-2" : "md:c-pl-1"
+                } c-pr-2 lg:c-pr-1`}
+              >
+                <Calendar
+                  date={firstDate}
+                  onClickPrevious={previousMonthFirst}
+                  onClickNext={nextMonthFirst}
+                  changeMonth={changeFirstMonth}
+                  changeYear={changeFirstYear}
+                  minDate={minDate}
+                  maxDate={maxDate}
+                />
 
-              <div className=" c-mt-2.5 c-shadow-sm c-border c-border-gray-300 c-px-1 c-py-0.5 c-bg-white dark:c-bg-slate-800 dark:c-text-white dark:c-border-slate-600 c-rounded-lg">
-                <div className="c-flex c-flex-col lg:c-flex-row c-py-2">
-                  {showShortcuts && <Shortcuts />}
+                {useRange && (
+                  <>
+                    <div className="c-flex c-items-center">
+                      <VerticalDash />
+                    </div>
 
-                  <div
-                    className={`c-flex c-items-stretch c-flex-col md:c-flex-row c-space-y-4 md:c-space-y-0 md:c-space-x-1.5 ${
-                      showShortcuts ? "md:pl-2" : "md:c-pl-1"
-                    } c-pr-2 lg:c-pr-1`}
-                  >
                     <Calendar
-                      date={firstDate}
-                      onClickPrevious={previousMonthFirst}
-                      onClickNext={nextMonthFirst}
-                      changeMonth={changeFirstMonth}
-                      changeYear={changeFirstYear}
+                      date={secondDate}
+                      onClickPrevious={previousMonthSecond}
+                      onClickNext={nextMonthSecond}
+                      changeMonth={changeSecondMonth}
+                      changeYear={changeSecondYear}
                       minDate={minDate}
                       maxDate={maxDate}
                     />
-
-                    {useRange && (
-                      <>
-                        <div className="c-flex c-items-center">
-                          <VerticalDash />
-                        </div>
-
-                        <Calendar
-                          date={secondDate}
-                          onClickPrevious={previousMonthSecond}
-                          onClickNext={nextMonthSecond}
-                          changeMonth={changeSecondMonth}
-                          changeYear={changeSecondYear}
-                          minDate={minDate}
-                          maxDate={maxDate}
-                        />
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                {showFooter && <Footer />}
+                  </>
+                )}
               </div>
-            </div>,
-            toaster
-          )}
-      </div>
+            </div>
+
+            {showFooter && <Footer />}
+          </div>
+        }
+      >
+        <div className={containerClassNameOverload} ref={containerRef}>
+          <Input setContextRef={setInputRef} />
+        </div>
+      </Popover>
     </DatepickerContext.Provider>
   );
 };

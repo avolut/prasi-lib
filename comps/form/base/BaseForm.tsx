@@ -133,13 +133,13 @@ export const BaseForm = <T extends Record<string, any>>(
         form.submit();
       }}
       className={cx(
-        "form c-flex-1 c-flex c-flex-col c-w-full c-h-full c-relative c-overflow-auto c-contents",
+        "form c-flex-1 c-flex c-flex-col c-w-full c-h-full c-relative c-overflow-auto",
         className
       )}
     >
       <div
         className={cx(
-          "form-inner c-flex-1 c-flex c-flex-row c-flex-wrap c-items-start c-content-start c-absolute c-inset-0 c-contents",
+          "form-inner c-flex-1 c-flex c-flex-row c-flex-wrap c-items-start c-content-start c-absolute c-inset-0",
           css`
             padding-right: 10px;
           `
