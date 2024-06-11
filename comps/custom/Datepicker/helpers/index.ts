@@ -14,39 +14,39 @@ export function classNames(...classes: (false | null | undefined | string)[]) {
 export function getTextColorByPrimaryColor(color: string) {
   switch (color) {
     case "blue":
-      return "text-blue-500";
+      return "c-text-blue-500";
     case "orange":
-      return "text-orange-500";
+      return "c-text-orange-500";
     case "yellow":
-      return "text-yellow-500";
+      return "c-text-yellow-500";
     case "red":
-      return "text-red-500";
+      return "c-text-red-500";
     case "purple":
-      return "text-purple-500";
+      return "c-text-purple-500";
     case "amber":
-      return "text-amber-500";
+      return "c-text-amber-500";
     case "lime":
-      return "text-lime-500";
+      return "c-text-lime-500";
     case "green":
-      return "text-green-500";
+      return "c-text-green-500";
     case "emerald":
-      return "text-emerald-500";
+      return "c-text-emerald-500";
     case "teal":
-      return "text-teal-500";
+      return "c-text-teal-500";
     case "cyan":
-      return "text-cyan-500";
+      return "c-text-cyan-500";
     case "sky":
-      return "text-sky-500";
+      return "c-text-sky-500";
     case "indigo":
-      return "text-indigo-500";
+      return "c-text-indigo-500";
     case "violet":
-      return "text-violet-500";
+      return "c-text-violet-500";
     case "fuchsia":
-      return "text-fuchsia-500";
+      return "c-text-fuchsia-500";
     case "pink":
-      return "text-pink-500";
+      return "c-text-pink-500";
     case "rose":
-      return "text-rose-500";
+      return "c-text-rose-500";
     default:
       return "";
   }

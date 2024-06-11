@@ -25,8 +25,10 @@ export const Typeahead: FC<{
   focusOpen?: boolean;
   disabled?: boolean;
   mode?: "multi" | "single";
+  note?: string;
 }> = ({
   value,
+  note,
   options: options_fn,
   onSelect,
   unique,
@@ -93,6 +95,9 @@ export const Typeahead: FC<{
         loadOptions().then(() => {
           if (typeof value === "object" && value) {
             local.value = value;
+            local.render();
+          } else if (typeof value === "string") {
+            local.value = [value];
             local.render();
           }
         });
@@ -257,6 +262,7 @@ export const Typeahead: FC<{
         search: local.search.input,
         existing: local.options,
       });
+
       if (res) {
         const applyOptions = (
           result: (string | { value: string; label: string })[]
@@ -267,8 +273,10 @@ export const Typeahead: FC<{
           });
           local.render();
         };
+
         if (res instanceof Promise) {
-          applyOptions(await res);
+          const result = await res;
+          applyOptions(result);
         } else {
           applyOptions(res);
         }
@@ -385,7 +393,9 @@ export const Typeahead: FC<{
         }}
       >
         <input
-          placeholder={local.mode === "multi" ? placeholder : ""}
+          placeholder={
+            local.mode === "multi" ? placeholder : valueLabel[0]?.label
+          }
           type="text"
           ref={input}
           value={local.search.input}
@@ -482,7 +492,7 @@ export const Typeahead: FC<{
           }}
           spellCheck={false}
           className={cx(
-            "c-flex-1 c-mb-2 c-text-sm c-outline-none",
+            "c-flex-1 c-mb-2 c-text-sm c-outline-none c-bg-transparent",
             local.mode === "single" ? "c-cursor-pointer" : ""
           )}
           onKeyDown={keydown}
@@ -493,7 +503,7 @@ export const Typeahead: FC<{
         <div
           className={cx(
             "c-absolute c-pointer-events-none c-z-10 c-inset-0 c-left-auto c-flex c-items-center ",
-            "c-bg-white c-justify-center c-w-6 c-mr-1 c-my-2",
+            " c-justify-center c-w-6 c-mr-1 c-my-2 c-bg-transparent",
             disabled && "c-hidden"
           )}
         >

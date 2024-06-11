@@ -15,7 +15,9 @@ export const MDRenderMaster: FC<{
   useEffect(() => {
     let md = on_init();
     md.breadcrumb.list = breadcrumb();
-    md.breadcrumb.render();
+    if(!isEditor){
+    md.breadcrumb.reload();
+    }
     if (md) {
       let width = 0;
       let min_width = 0;

@@ -9,6 +9,7 @@ export type BaseFormProps<T> = {
   on_submit?: (form: BaseFormLocal<T>) => Promise<any> | any;
   children: ReactNode | ((form: BaseFormLocal<T>) => ReactNode);
   render?: () => void;
+  is_form?: boolean;
 };
 export const BaseForm = <T extends Record<string, any>>(
   props: BaseFormProps<T>
@@ -101,7 +102,29 @@ export const BaseForm = <T extends Record<string, any>>(
   if (form.status === "init") {
     form.status = "ready";
   }
-
+  if (typeof props.is_form === "boolean") {
+    if (!props.is_form) {
+      return (
+        <div
+          className={cx(
+            "form c-flex-1 c-flex-col c-w-full c-h-full c-relative c-overflow-auto c-contents",
+            className
+          )}
+        >
+          <div
+            className={cx(
+              "form-inner c-flex-1 c-flex-wrap c-items-start c-content-start c-absolute c-inset-0 c-contents",
+              css`
+                padding-right: 10px;
+              `
+            )}
+          >
+            {typeof children === "function" ? children(form) : children}
+          </div>
+        </div>
+      );
+    }
+  }
   return (
     <form
       onSubmit={(e) => {

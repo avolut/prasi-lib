@@ -18,6 +18,7 @@ import useOnClickOutside from "../hooks";
 import { Period, DatepickerType, ColorKeys } from "../types";
 
 import { Arrow, VerticalDash } from "./utils";
+import { createPortal } from "react-dom";
 
 const Datepicker: React.FC<DatepickerType> = ({
   primaryColor = "blue",
@@ -70,8 +71,8 @@ const Datepicker: React.FC<DatepickerType> = ({
   const [inputRef, setInputRef] = useState(React.createRef<HTMLInputElement>());
 
   // Custom Hooks use
-  useOnClickOutside(containerRef, () => {
-    const container = containerRef.current;
+  useOnClickOutside(calendarContainerRef, () => {
+    const container = calendarContainerRef.current;
     if (container) {
       hideDatepicker();
     }
@@ -341,59 +342,76 @@ const Datepicker: React.FC<DatepickerType> = ({
       : defaultContainerClassName;
   }, [containerClassName]);
 
+  const toaster = document.querySelector(".prasi-toaster");
+  const rect = inputRef.current?.getBoundingClientRect();
   return (
     <DatepickerContext.Provider value={contextValues}>
       <div className={containerClassNameOverload} ref={containerRef}>
         <Input setContextRef={setInputRef} />
 
-        <div
-          className="c-transition-all c-ease-out c-duration-300 c-absolute c-z-10 c-mt-[1px] c-text-sm 2xl:c-text-sm c-translate-y-4 c-opacity-0 c-hidden"
-          ref={calendarContainerRef}
-        >
-          <Arrow ref={arrowRef} />
+        {toaster &&
+          createPortal(
+            <div
+              className={cx(
+                "c-transition-all c-ease-out c-absolute c-z-50 c-duration-300 c-mt-[1px] c-text-sm 2xl:c-text-sm c-translate-y-4 c-hidden c-opacity-0",
+                rect &&
+                  css`
+                    top: ${rect.top +
+                    rect.height +
+                    rect.height / 2}px !important;
+                    left: ${rect.left -
+                    rect.width +
+                    rect.width / 2}px !important;
+                  `
+              )}
+              ref={calendarContainerRef}
+            >
+              <Arrow ref={arrowRef} />
 
-          <div className=" c-mt-2.5 c-shadow-sm c-border c-border-gray-300 c-px-1 c-py-0.5 c-bg-white dark:c-bg-slate-800 dark:c-text-white dark:c-border-slate-600 c-rounded-lg">
-            <div className="c-flex c-flex-col lg:c-flex-row c-py-2">
-              {showShortcuts && <Shortcuts />}
+              <div className=" c-mt-2.5 c-shadow-sm c-border c-border-gray-300 c-px-1 c-py-0.5 c-bg-white dark:c-bg-slate-800 dark:c-text-white dark:c-border-slate-600 c-rounded-lg">
+                <div className="c-flex c-flex-col lg:c-flex-row c-py-2">
+                  {showShortcuts && <Shortcuts />}
 
-              <div
-                className={`c-flex c-items-stretch c-flex-col md:c-flex-row c-space-y-4 md:c-space-y-0 md:c-space-x-1.5 ${
-                  showShortcuts ? "md:pl-2" : "md:c-pl-1"
-                } c-pr-2 lg:c-pr-1`}
-              >
-                <Calendar
-                  date={firstDate}
-                  onClickPrevious={previousMonthFirst}
-                  onClickNext={nextMonthFirst}
-                  changeMonth={changeFirstMonth}
-                  changeYear={changeFirstYear}
-                  minDate={minDate}
-                  maxDate={maxDate}
-                />
-
-                {useRange && (
-                  <>
-                    <div className="c-flex c-items-center">
-                      <VerticalDash />
-                    </div>
-
+                  <div
+                    className={`c-flex c-items-stretch c-flex-col md:c-flex-row c-space-y-4 md:c-space-y-0 md:c-space-x-1.5 ${
+                      showShortcuts ? "md:pl-2" : "md:c-pl-1"
+                    } c-pr-2 lg:c-pr-1`}
+                  >
                     <Calendar
-                      date={secondDate}
-                      onClickPrevious={previousMonthSecond}
-                      onClickNext={nextMonthSecond}
-                      changeMonth={changeSecondMonth}
-                      changeYear={changeSecondYear}
+                      date={firstDate}
+                      onClickPrevious={previousMonthFirst}
+                      onClickNext={nextMonthFirst}
+                      changeMonth={changeFirstMonth}
+                      changeYear={changeFirstYear}
                       minDate={minDate}
                       maxDate={maxDate}
                     />
-                  </>
-                )}
-              </div>
-            </div>
 
-            {showFooter && <Footer />}
-          </div>
-        </div>
+                    {useRange && (
+                      <>
+                        <div className="c-flex c-items-center">
+                          <VerticalDash />
+                        </div>
+
+                        <Calendar
+                          date={secondDate}
+                          onClickPrevious={previousMonthSecond}
+                          onClickNext={nextMonthSecond}
+                          changeMonth={changeSecondMonth}
+                          changeYear={changeSecondYear}
+                          minDate={minDate}
+                          maxDate={maxDate}
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {showFooter && <Footer />}
+              </div>
+            </div>,
+            toaster
+          )}
       </div>
     </DatepickerContext.Provider>
   );

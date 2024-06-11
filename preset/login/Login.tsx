@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { prasi_user } from "./utils/user";
 
 const w = window as unknown as {
@@ -13,11 +13,11 @@ export type LGProps = {
 
 export const Login: FC<LGProps> = (props) => {
   w.prasi_home = props.url_home[0];
-  console.log("render?");
-  try {
-    const home = prasi_user.prasi_home[prasi_user.user.m_role.name];
-    navigate(home);
-  } catch (e: any) {
-  }
+  useEffect(() => {
+    try {
+      const home = prasi_user.prasi_home[prasi_user.user.m_role.name];
+      navigate(home);
+    } catch (e: any) {}
+  }, []);
   return <>{props.body}</>;
 };

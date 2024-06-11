@@ -11,7 +11,7 @@ import DataGrid, {
   SELECT_COLUMN_KEY,
   SortColumn,
 } from "react-data-grid";
-import "react-data-grid/lib/styles.css";
+import "./TableList.css";
 import { createPortal } from "react-dom";
 import { Toaster, toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
@@ -29,7 +29,8 @@ type TableListProp = {
   child: any;
   PassProp: any;
   name: string;
-  on_load: (arg: {
+  value?: any[];
+  on_load?: (arg: {
     reload: () => Promise<void>;
     orderBy?: Record<string, "asc" | "desc" | Record<string, "asc" | "desc">>;
     paging: { take: number; skip: number };
@@ -47,7 +48,7 @@ type TableListProp = {
   filter_name: string;
   render_row?: (child: any, data: any) => ReactNode;
   rowHeight?: number;
-  render_col?: (props: any) => ReactNode
+  render_col?: (props: any) => ReactNode;
 };
 const w = window as any;
 const selectCellClassname = css`
@@ -73,7 +74,10 @@ export const TableList: FC<TableListProp> = ({
   id_parent,
   feature,
   filter_name,
-  render_row,rowHeight,render_col
+  render_row,
+  rowHeight,
+  render_col,
+  value
 }) => {
   const where = get(w, `prasi_filter.${filter_name}`) ?? "hello";
   const whereQuery = filterWhere("hello");
@@ -121,50 +125,52 @@ export const TableList: FC<TableListProp> = ({
     sort: {
       columns: [] as SortColumn[],
       on_change: (cols: SortColumn[]) => {
-        local.sort.columns = cols;
-        local.paging.skip = 0;
+        if (feature?.find((e) => e === "sorting")) {
+          local.sort.columns = cols;
+          local.paging.skip = 0;
 
-        if (cols.length > 0) {
-          const { columnKey, direction } = cols[0];
+          if (cols.length > 0) {
+            const { columnKey, direction } = cols[0];
 
-          let should_set = true;
-          const gf = JSON.stringify(gen_fields);
-          const fields = fields_map.get(gf);
+            let should_set = true;
+            const gf = JSON.stringify(gen_fields);
+            const fields = fields_map.get(gf);
 
-          if (fields) {
-            const rel = fields?.find((e) => e.name === columnKey);
-            if (rel && rel.checked) {
-              should_set = false;
+            if (fields) {
+              const rel = fields?.find((e) => e.name === columnKey);
+              if (rel && rel.checked) {
+                should_set = false;
 
-              if (rel.type === "has-many") {
-                local.sort.orderBy = {
-                  [columnKey]: {
-                    _count: direction === "ASC" ? "asc" : "desc",
-                  },
-                };
-              } else {
-                const field = rel.checked.find((e) => !e.is_pk);
-                if (field) {
+                if (rel.type === "has-many") {
                   local.sort.orderBy = {
                     [columnKey]: {
-                      [field.name]: direction === "ASC" ? "asc" : "desc",
+                      _count: direction === "ASC" ? "asc" : "desc",
                     },
                   };
+                } else {
+                  const field = rel.checked.find((e) => !e.is_pk);
+                  if (field) {
+                    local.sort.orderBy = {
+                      [columnKey]: {
+                        [field.name]: direction === "ASC" ? "asc" : "desc",
+                      },
+                    };
+                  }
                 }
               }
             }
-          }
 
-          if (should_set) {
-            local.sort.orderBy = {
-              [columnKey]: direction === "ASC" ? "asc" : "desc",
-            };
+            if (should_set) {
+              local.sort.orderBy = {
+                [columnKey]: direction === "ASC" ? "asc" : "desc",
+              };
+            }
+          } else {
+            local.sort.orderBy = null;
           }
-        } else {
-          local.sort.orderBy = null;
+          local.status = "reload";
+          local.render();
         }
-        local.status = "reload";
-        local.render();
       },
       orderBy: null as null | Record<
         string,
@@ -172,6 +178,9 @@ export const TableList: FC<TableListProp> = ({
       >,
     },
   });
+  if(typeof value !== "undefined"){
+    local.data = value;
+  }
   // code ini digunakan untuk mengambil nama dari pk yang akan digunakan sebagai key untuk id
   const pk = local.pk?.name || "id";
   useEffect(() => {
@@ -207,7 +216,6 @@ export const TableList: FC<TableListProp> = ({
       }
     })();
   }, [local.status, on_load, local.sort.orderBy]);
-
   const raw_childs = get(
     child,
     "props.meta.item.component.props.child.content.childs"
@@ -233,7 +241,7 @@ export const TableList: FC<TableListProp> = ({
 
   // function untuk menghandle checkbox di header (digunakan untuk check all)
   const headerCheckboxClick = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
+    if (e.target.checked && Array.isArray(rowData)) {
       // jika checbox checked, maka semua rowData akan dimasukkan ke dalam local selected rows
       rowData.forEach((data) => {
         local.selectedRows.push({
@@ -270,7 +278,6 @@ export const TableList: FC<TableListProp> = ({
       local.render();
     }
   };
-
   const mode_child = raw_childs.find(
     (e: any) => e.name === sub_name || e.name === mode
   );
@@ -288,6 +295,7 @@ export const TableList: FC<TableListProp> = ({
   try {
     if (feature?.find((e) => e === "checkbox")) isCheckbox = true;
   } catch (e) {}
+
   if (childs.length && isCheckbox) {
     columns.push({
       key: SELECT_COLUMN_KEY,
@@ -341,7 +349,8 @@ export const TableList: FC<TableListProp> = ({
       resizable: true,
       sortable: true,
       renderCell(props) {
-        if(typeof render_col === "function") return render_col({props,tbl: local, child})
+        if (typeof render_col === "function")
+          return render_col({ props, tbl: local, child });
         return (
           <PassProp
             idx={props.rowIdx}
@@ -403,22 +412,23 @@ export const TableList: FC<TableListProp> = ({
       }
     }
   }
-
-  if (isEditor && local.status !== "ready") {
-    if (local.data.length === 0) {
-      const load_args: any = {
-        async reload() {},
-        where,
-        paging: { take: local.paging.take, skip: local.paging.skip },
-      };
-
-      if (id_parent) load_args.paging = {};
-      if (typeof on_load === "function") {
-        local.data = on_load({ ...load_args, mode: "query" }) as any;
+  if(typeof value === "undefined")
+    if (isEditor && local.status !== "ready") {
+      if (local.data.length === 0) {
+        const load_args: any = {
+          async reload() {},
+          where,
+          paging: { take: local.paging.take, skip: local.paging.skip },
+        };
+  
+        if (id_parent) load_args.paging = {};
+        if (typeof on_load === "function") {
+          local.data = on_load({ ...load_args, mode: "query" }) as any;
+        }
       }
+      local.status = "ready";
     }
-    local.status = "ready";
-  }
+  
 
   let selected_idx = -1;
 
@@ -426,7 +436,6 @@ export const TableList: FC<TableListProp> = ({
   if (id_parent && local.pk && local.sort.columns.length === 0) {
     data = sortTree(local.data, id_parent, local.pk.name);
   }
-  // return "halo dek"
   if (mode === "table") {
     return (
       <div
@@ -446,7 +455,6 @@ export const TableList: FC<TableListProp> = ({
           }
         }}
       >
-        123
         {local.status !== "ready" && (
           <div className="c-flex c-flex-col c-space-y-2 c-m-4 c-absolute c-left-0 c-top-0">
             <Skeleton className={cx("c-w-[200px] c-h-[11px]")} />
@@ -482,7 +490,7 @@ export const TableList: FC<TableListProp> = ({
           ) : (
             <>
               <DataGrid
-              rowHeight={rowHeight || 35}
+                rowHeight={rowHeight || 35}
                 sortColumns={local.sort.columns}
                 onSortColumnsChange={local.sort.on_change}
                 columns={columns}
@@ -530,9 +538,7 @@ export const TableList: FC<TableListProp> = ({
 
                           return (
                             <>
-                              <div className="c-contents">
-                                {child_row}
-                              </div>
+                              <div className="c-contents">{child_row}</div>
                             </>
                           );
                         },

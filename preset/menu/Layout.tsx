@@ -1,5 +1,5 @@
 import { getPathname } from "lib/utils/pathname";
-import { FC, ReactNode, useLayoutEffect, useState } from "react";
+import { FC, ReactNode, useEffect, useLayoutEffect, useState } from "react";
 import { loadSession } from "../login/utils/load";
 
 const w = window as any;
@@ -62,7 +62,9 @@ export const Layout: FC<LYTChild> = (props) => {
   fn();
   const path = getPathname();
   const no_layout = props.exception;
-  loadSession("/auth/login");
+  useEffect(() => {
+    loadSession("/auth/login");
+  }, []);
   if (Array.isArray(no_layout))
     if (no_layout.length) {
       if (no_layout.includes(path)) {

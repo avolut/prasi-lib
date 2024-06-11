@@ -1,13 +1,17 @@
+import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
 import { FieldProp } from "../typings";
 import { useField } from "../utils/use-field";
 import { validate } from "../utils/validate";
 import { FieldInput } from "./FieldInput";
 import { Label } from "./Label";
-import { useLocal } from "@/utils/use-local";
 
 export const Field: FC<FieldProp> = (arg) => {
   const showlabel = arg.show_label || "y";
+
+  let type: any = typeof arg.type === "function" ? arg.type() : arg.type; // tipe field
+  let sub_type: any = arg.sub_type; // tipe field
+
   const { fm } = arg;
   const field = useField(arg);
   const name = field.name;
@@ -27,6 +31,46 @@ export const Field: FC<FieldProp> = (arg) => {
   const errors = fm.error.get(name);
   const props = { ...arg.props };
   delete props.className;
+  if (type === "-" || !type || sub_type === "-" || !sub_type) {
+    return (
+      <>
+        <div className="c-p-4">
+          ⚠️ Field {arg.label} is not ready
+          <br />
+          <div
+            className={css`
+              font-size: 12px;
+              font-weight: normal;
+            `}
+          >
+            {arg.msg_error}
+          </div>
+        </div>
+      </>
+    );
+  }
+  if (
+    (type === "multi-option" && sub_type === "-") ||
+    (type === "multi-option" && sub_type === "table-edit" && (!arg.gen_table || arg.gen_table === ""))
+  ) {
+    return (
+      <>
+        <div className="c-p-4">
+          ⚠️ Table Edit {arg.label} is not ready
+          <br />
+          <div
+            className={css`
+              font-size: 12px;
+              font-weight: normal;
+            `}
+          >
+            {arg.msg_error}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <label
       className={cx(
@@ -35,8 +79,8 @@ export const Field: FC<FieldProp> = (arg) => {
         css`
           padding: 5px 0px 0px 10px;
         `,
+
         w === "auto" && fm.size.field === "full" && "c-w-full",
-        w === "auto" && fm.size.field === "half" && "c-w-1/2",
         w === "full" && "c-w-full",
         w === "¾" && "c-w-3/4",
         w === "½" && "c-w-1/2",
@@ -47,8 +91,9 @@ export const Field: FC<FieldProp> = (arg) => {
       )}
       {...props}
     >
-     
-      {mode !== "hidden" && showlabel === "y" && <Label field={field} fm={fm} />}
+      {mode !== "hidden" && showlabel === "y" && (
+        <Label field={field} fm={fm} />
+      )}
       <div className="field-inner c-flex c-flex-1 c-flex-col">
         <FieldInput
           field={field}

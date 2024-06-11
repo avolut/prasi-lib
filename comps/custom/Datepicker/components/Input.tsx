@@ -62,7 +62,7 @@ const Input: React.FC<Props> = (e: Props) => {
         primaryColor as keyof (typeof RING_COLOR)["second-focus"]
       ];
 
-    const defaultInputClassName = `c-relative c-transition-all c-duration-300 c-pl-2 c-pr-14 c-w-full c-border-gray-300 dark:c-bg-slate-800 dark:c-text-white/80 dark:c-border-slate-600 c-rounded-lg c-tracking-wide c-font-light c-text-sm c-placeholder-gray-400 c-bg-white c-outline-none focus:c-ring-0 disabled:c-opacity-40 disabled:c-cursor-not-allowed ${border} ${ring}`;
+    const defaultInputClassName = `c-relative c-transition-all c-duration-300 c-pl-2 c-pr-14 c-w-full c-border-gray-300 dark:c-bg-slate-800 dark:c-text-white/80 dark:c-border-slate-600 c-rounded-lg c-tracking-wide c-font-light c-text-sm c-placeholder-gray-400 c-bg-transparent c-outline-none focus:c-ring-0 disabled:c-opacity-40 disabled:c-cursor-not-allowed ${border} ${ring}`;
 
     return typeof inputClassName === "function"
       ? inputClassName(defaultInputClassName)

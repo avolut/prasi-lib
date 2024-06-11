@@ -86,6 +86,8 @@ export type FieldProp = {
   sub_type: string;
   placeholder: string;
   show_label: boolean;
+  msg_error: string;
+  gen_table: string;
 };
 
 export type FMInternal = {

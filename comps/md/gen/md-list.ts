@@ -119,6 +119,14 @@ idx: any;
     }
     `
   })
+  console.log({
+    type: "item",
+    name: "item",
+    component: {
+      id: "567d5362-2cc8-4ca5-a531-f771a5c866c2",
+      props,
+    },
+  })
   tab_master?.edit.setChilds([ {
     type: "item",
     name: "item",

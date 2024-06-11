@@ -15,6 +15,7 @@ export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   if (!detail) {
     return null;
   }
+  console.log(md.tab.list);
   return (
     <>
       {md.props.show_head === "only-child" && <MDHeader md={md} mdr={mdr} />}
@@ -114,10 +115,11 @@ export const MDRenderTab: FC<{
   breadcrumb: () => Array<any>;
 }> = ({ child, on_init, breadcrumb }) => {
   useEffect(() => {
-
     let md = on_init();
     md.breadcrumb.list = breadcrumb();
-    md.breadcrumb.render();
-  }, [])
+    if (!isEditor) {
+      md.breadcrumb.reload();
+    }
+  }, []);
   return <>{child}</>;
 };

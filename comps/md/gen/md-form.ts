@@ -60,6 +60,7 @@ export const generateMDForm = async (
           label: "List ${formatName(arg.table)}",
           onClick: () => {
             md.selected = null;
+            md.tab.active = "master";
             md.internal.action_should_refresh = true;
             md.params.apply();
             md.render();
@@ -92,6 +93,14 @@ export const generateMDForm = async (
     }
     `
   })
+  console.log({form: {
+    type: "item",
+    name: "item",
+    component: {
+      id: "c4e65c26-4f36-48aa-a5b3-0771feac082e",
+      props,
+    },
+  }})
   tab_detail?.edit.setChilds([
     {
       type: "item",

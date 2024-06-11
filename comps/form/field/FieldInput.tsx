@@ -1,6 +1,8 @@
+import get from "lodash.get";
 import { FC, isValidElement } from "react";
 import { FieldLoading } from "../../ui/field-loading";
 import { FMLocal, FieldLocal, FieldProp } from "../typings";
+import { TableEdit } from "./table-edit/TableEdit";
 import { FieldTypeInput, PropTypeInput } from "./type/TypeInput";
 import { MultiOption } from "./type/TypeMultiOption";
 import { SingleOption } from "./type/TypeSingleOption";
@@ -16,20 +18,20 @@ export const FieldInput: FC<{
   child: any;
   _item: PrasiItem;
   arg: FieldProp;
-}> = ({ field, fm, arg }) => {
+}> = ({ field, fm, arg, _item, PassProp, child}) => {
   // return <></>
   const prefix =
     typeof field.prefix === "function"
       ? field.prefix()
       : typeof field.prefix === "string"
-        ? field.prefix
-        : null;
+      ? field.prefix
+      : null;
   const suffix =
     typeof field.suffix === "function"
       ? field.suffix()
       : typeof field.suffix === "string"
-        ? field.prefix
-        : null;
+      ? field.prefix
+      : null;
   const name = field.name;
   const errors = fm.error.get(name);
   let type_field: any = typeof arg.type === "function" ? arg.type() : arg.type; // tipe field
@@ -46,8 +48,29 @@ export const FieldInput: FC<{
       }
     }
   }
-  if(type_field === "multi-option" && arg.sub_type === "table-edit"){
-    return <>{arg.child}</>
+  if (type_field === "multi-option" && arg.sub_type === "table-edit") {
+    const childsTableEdit = get(
+      _item,
+      "edit.props.child.value.childs"
+    ) as unknown as Array<PrasiItem>;
+    const tableEdit = {
+      child: get(_item, "edit.props.child.value") as PrasiItem,
+      bottom: childsTableEdit.find((e) => e.name === "bottom") as PrasiItem,
+    };
+    return (
+      <TableEdit
+        on_init={() => {
+          return fm;
+        }}
+        name={arg.name}
+        child={child}
+        PassProp={PassProp}
+        item={_item}
+        bottom={tableEdit.bottom}
+        body={tableEdit.child}
+      />
+    );
+    return <>{arg.child}</>;
   }
   return (
     <div
@@ -60,13 +83,12 @@ export const FieldInput: FC<{
               border-color: transparent;
             `
           : field.disabled
-            ? "c-border-gray-100"
-            : errors.length > 0
-              ? field.focused
-                ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
-                : "c-border-red-600 c-bg-red-50"
-              : field.focused &&
-                "c-border-blue-700 c-outline c-outline-blue-700",
+          ? "c-border-gray-100"
+          : errors.length > 0
+          ? field.focused
+            ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
+            : "c-border-red-600 c-bg-red-50"
+          : field.focused && "c-border-blue-700 c-outline c-outline-blue-700",
         css`
           & > .field-inner {
             min-height: 35px;

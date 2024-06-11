@@ -148,7 +148,7 @@ export const FieldTypeInput: FC<{
         </>
       ) : type_field === "money" ? (
         <>
-          <FieldMoney field={field} fm={fm} prop={prop} />
+          <FieldMoney field={field} fm={fm} prop={prop} arg={arg} />
         </>
       ) : type_field === "rich-text" ? (
         <>

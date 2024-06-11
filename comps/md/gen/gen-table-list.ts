@@ -13,10 +13,12 @@ export const generateTableList = async (
   arg: { mode: "table" | "list" | "grid" | "auto"; id_parent?: string },
   commit: boolean
 ) => {
-  console.log({data})
-  console.log(typeof data.gen_table.value)
-  const table = eval(data.gen_table.value) as string;
-  console.log({table})
+  let table = "" as string;
+  try {
+    table = eval(data.gen_table.value);
+  } catch (e) {
+    table = data.gen_table.value;
+  }
   const raw_fields = JSON.parse(data.gen_fields.value) as (
     | string
     | { value: string; checked: string[] }
@@ -24,7 +26,6 @@ export const generateTableList = async (
   let pk = "";
   let pks: Record<string, string> = {};
   const fields = parseGenField(raw_fields);
-  console.log({fields})
   // convert ke bahasa prisma untuk select
   const res = generateSelect(fields);
   pk = res.pk;
@@ -55,7 +56,6 @@ export const generateTableList = async (
         value: on_load({ pk, table, select, pks }),
       };
     }
-    console.log(result.opt__on_load?.value)
     let first = true;
     const child_sub_name = createItem({
       name: sub_name,
@@ -106,16 +106,14 @@ render(React.createElement("div", Object.assign({}, props, { className: cx(props
         })
         .filter((e) => e) as any,
     });
-    childs.push(child_sub_name)
-// console.log({childs})
     if (commit) {
       Object.keys(result).map((e) => {
         item.edit.setProp(e, result[e]);
       });
-      item.edit.setChilds(childs);
+      item.edit.setChilds([child_sub_name]);
       await item.edit.commit();
     } else {
-      set(data, "child.value.childs", childs);
+      set(data, "child.value.childs", [child_sub_name]);
       Object.keys(result).map((e) => {
         set(data, e, result[e]);
       });

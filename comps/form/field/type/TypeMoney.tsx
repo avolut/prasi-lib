@@ -1,12 +1,13 @@
 import { useLocal } from "@/utils/use-local";
 import { FC } from "react";
-import { FMLocal, FieldLocal } from "../../typings";
+import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
 export const FieldMoney: FC<{
   field: FieldLocal;
   fm: FMLocal;
   prop: PropTypeInput;
-}> = ({ field, fm, prop }) => {
+  arg: FieldProp;
+}> = ({ field, fm, prop, arg }) => {
   let type_field = prop.sub_type;
   let value: any = fm.data[field.name];
   const input = useLocal({
@@ -15,13 +16,14 @@ export const FieldMoney: FC<{
     ref: null as any,
   });
   let display: any = null;
-  // console.log({ prop });
+  const money = formatMoney(Number(value) || 0)
   return (
     <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full">
       <div
         className={cx(
           input.display ? "c-hidden" : "",
-          "c-flex-grow c-px-2 c-flex c-flex-row c-items-center"
+          "c-flex-grow c-px-2 c-flex c-flex-row c-items-center",
+          money === "0" ? "c-text-gray-400" : ""
         )}
         onClick={() => {
           if (input.ref) {
@@ -31,7 +33,7 @@ export const FieldMoney: FC<{
           }
         }}
       >
-        {formatMoney(Number(value) || 0)}
+        {money === "0" ? arg.placeholder : money}
       </div>
       <input
         ref={(el) => (input.ref = el)}

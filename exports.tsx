@@ -1,4 +1,5 @@
-import { lazify } from "./utils/lazify";
+export { FieldLoading } from "./comps/ui/field-loading";
+import { lazify, lazifyMany } from "./utils/lazify";
 
 /** Master - Detail - List - Form */
 export const MasterDetail = lazify(
@@ -19,15 +20,17 @@ export const Breadcrumb = lazify(
 export const TableList = lazify(
   async () => (await import("@/comps/list/TableList")).TableList
 );
-export const Form = lazify(
-  async () => (await import("@/comps/form/Form")).Form
-);
 export const TableEdit = lazify(
-  async () => (await import("@/comps/form/field/table-edit/TableEdit")).TableEdit
+  async () =>
+    (await import("@/comps/form/field/table-edit/TableEdit")).TableEdit
 );
-export const Field = lazify(
-  async () => (await import("@/comps/form/field/Field")).Field
-);
+
+const form = lazifyMany({
+  Form: async () => (await import("@/comps/form/Form")).Form,
+  Field: async () => (await import("@/comps/form/field/Field")).Field,
+});
+export const Form = form.Form;
+export const Field = form.Field;
 
 /** Export - Import */
 export const ImportExcel = lazify(
@@ -49,7 +52,10 @@ export const FilterField = lazify(
 
 /** Generator */
 export { generateMasterDetail } from "@/comps/md/gen/md-gen";
-
+export { genTableEdit } from "@/comps/form/gen/gen-table-edit";
+export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";
+export { generateRelation } from "@/comps/form/gen/gen-rel";
+export { parseGenField } from "@/gen/utils";
 /** ETC */
 export { filterModifier } from "@/comps/filter/utils/filter-modifier";
 export { filterWhere } from "@/comps/filter/utils/filter-where";
