@@ -49,6 +49,8 @@ type TableListProp = {
   render_row?: (child: any, data: any) => ReactNode;
   rowHeight?: number;
   render_col?: (props: any) => ReactNode;
+  soft_delete_field: string;
+  
 };
 const w = window as any;
 const selectCellClassname = css`

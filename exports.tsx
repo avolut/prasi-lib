@@ -114,3 +114,4 @@ export { getPathname } from "./utils/pathname";
 
 export * from "@/comps/ui/typeahead";
 export * from "@/comps/ui/input";
+export {softDeleteFilter} from "@/utils/soft-delete-filter"

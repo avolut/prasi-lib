@@ -50,7 +50,8 @@ type TableOnLoad = {
   reload: () => Promise<void>;
   orderBy?: Record<string, "asc" | "desc">;
   paging: { take: number; skip: number };
-  mode: 'count' | 'query'
+  mode: 'count' | 'query';
+  where?: any
 }
 `;
 };
