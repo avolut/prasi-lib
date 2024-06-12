@@ -13,7 +13,6 @@ export const MDRenderMaster: FC<{
   breadcrumb: () => Array<any>;
 }> = ({ child, on_init, min_size, size, breadcrumb }) => {
   useEffect(() => {
-    console.log("master");
     let md = on_init();
     md.header.breadcrumb = breadcrumb();
     md.header.render();
