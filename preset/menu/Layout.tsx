@@ -32,9 +32,9 @@ type LYTChild = {
   desktop?: ReactNode;
   tablet?: ReactNode;
   child?: ReactNode;
-  children: ReactNode;
+  default_layout: ReactNode;
   exception?: Array<string>;
-  defaultLayout: ReactNode;
+  blank_layout: ReactNode;
 };
 
 export const Layout: FC<LYTChild> = (props) => {
@@ -64,12 +64,18 @@ export const Layout: FC<LYTChild> = (props) => {
   const no_layout = props.exception;
   useEffect(() => {
     loadSession("/auth/login");
+    render();
   }, []);
-  if (Array.isArray(no_layout))
+
+  if (!isEditor && Array.isArray(no_layout)) {
     if (no_layout.length) {
       if (no_layout.includes(path)) {
-        return <>{props.defaultLayout}</>;
+        return <>{props.blank_layout}</>;
       }
     }
-  return <>{props.children}</>;
+  }
+
+  if (!w.user) return props.blank_layout;
+
+  return <>{props.default_layout}</>;
 };

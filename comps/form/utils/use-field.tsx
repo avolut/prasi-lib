@@ -33,6 +33,7 @@ export const useField = (
     required: required === "y",
     required_msg: arg.required_msg,
     disabled: arg.disabled === "y",
+    on_change: arg.on_change,
   };
 
   if (field.status === "init" || isEditor) {

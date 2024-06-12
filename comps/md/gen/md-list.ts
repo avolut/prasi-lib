@@ -1,7 +1,7 @@
+import { formatName } from "lib/comps/form/gen/fields";
 import { createItem } from "lib/gen/utils";
 import get from "lodash.get";
 import { generateTableList } from "./gen-table-list";
-import { formatName } from "lib/comps/form/gen/fields";
 
 export const generateList = async (
   arg: { item: PrasiItem; table: string; fields: any },
@@ -13,7 +13,7 @@ export const generateList = async (
     (e) => get(e, "component.id") === "c68415ca-dac5-44fe-aeb6-936caf8cc491"
   );
   const props: Record<string, PropVal> = {
-    gen_table: {
+    gen__table: {
       mode: "string",
       value: `"${arg.table}"`,
     },
@@ -77,7 +77,7 @@ rows: any[];
 idx: any;
 }`,
     },
-    gen_fields: {
+    gen__fields: {
       mode: "raw",
       value: `${JSON.stringify(arg.fields)}`,
     },
@@ -117,22 +117,17 @@ idx: any;
       url?: string;
       onClick?: () => void;
     }
-    `
-  })
-  console.log({
-    type: "item",
-    name: "item",
-    component: {
-      id: "567d5362-2cc8-4ca5-a531-f771a5c866c2",
-      props,
+    `,
+  });
+
+  tab_master?.edit.setChilds([
+    {
+      type: "item",
+      name: "item",
+      component: {
+        id: "567d5362-2cc8-4ca5-a531-f771a5c866c2",
+        props,
+      },
     },
-  })
-  tab_master?.edit.setChilds([ {
-    type: "item",
-    name: "item",
-    component: {
-      id: "567d5362-2cc8-4ca5-a531-f771a5c866c2",
-      props,
-    },
-  }]);
+  ]);
 };

@@ -15,8 +15,6 @@ export const FieldRichText: FC<{
   });
   useEffect(() => {
     if (local.ref) {
-      console.log(local.ref);
-      console.log(local.ref.current);
       const q = new Quill(local.ref, {
         theme: "snow",
         modules: {

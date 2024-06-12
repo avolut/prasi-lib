@@ -36,5 +36,4 @@ export const generateMasterDetail: GenFn<{ item: PrasiItem, table: string, field
   //  
   // }
   await item.edit.commit();
-  console.log({item})
 };

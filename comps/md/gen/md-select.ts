@@ -8,13 +8,22 @@ export const generateSelect = (data: Array<any>) => {
         select: {},
       };
       for (const r of f.relation.fields) {
-        select[f.name].select[r.name] = true;
+        if (r.type === "has-one") {
+          select[f.name].select[r.name] = { select: {} };
+          for (const rel of r.relation.fields) {
+            select[f.name].select[r.name].select[rel.name] = true;
+          }
+        } else {
+          select[f.name].select[r.name] = true;
+        }
       }
     }
+
     if (f.is_pk) {
       pk = f.name;
     }
   }
+
   return {
     pk,
     select,

@@ -12,8 +12,8 @@ export const on_load = ({
   select: any;
   pks: Record<string, string>;
   opt?: {
-    before_load: string;
-    after_load: string;
+    before_load?: string;
+    after_load?: string;
   };
 }) => {
   const sample: any = {};
@@ -41,19 +41,19 @@ async (opt) => {
     }
   }
 
-  ${
-    opt?.before_load
-      ? opt.before_load
-      : `let id = raw_id`
-  }
-  
+  ${opt?.before_load ? opt.before_load : `let id = raw_id`}
   let item = {};
+  let where = {
+    ${pk}: id,
+  };
   if (id){
-    item = await db.${table}.findFirst({
-      where: {
-        ${pk}: id,
-      },
-      select: ${JSON.stringify(select, null, 2).split("\n").join("\n      ")},
+    const table = db[gen__table] as any;
+    const fields = parseGenField(gen__fields);
+
+    const gen = generateSelect(fields);
+    item = await table?.findFirst({
+      where,
+      select: gen.select,
     });
 
     ${opt?.after_load ? opt?.after_load : ""}

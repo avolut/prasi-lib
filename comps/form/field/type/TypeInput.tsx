@@ -39,7 +39,8 @@ export const FieldTypeInput: FC<{
   arg: FieldProp;
 }> = ({ field, fm, prop, arg }) => {
   const input = useLocal({
-    showHidePassword: false,
+    show_pass: false,
+    change_timeout: null as any,
   });
   let type_field = prop.sub_type;
   switch (type_field) {
@@ -49,7 +50,7 @@ export const FieldTypeInput: FC<{
     default:
   }
 
-  if (input.showHidePassword) {
+  if (input.show_pass) {
     type_field = "text";
   }
 
@@ -80,13 +81,23 @@ export const FieldTypeInput: FC<{
     value = Number(value) || null;
   }
 
+  const renderOnChange = () => {
+    input.render();
+    if (field.on_change) {
+      field.on_change({ value: fm.data[field.name], name: field.name, fm });
+    }
+
+    clearTimeout(input.change_timeout);
+    input.change_timeout = setTimeout(fm.render, 300);
+  };
+
   return (
     <>
       {type_field === "textarea" ? (
         <AutoHeightTextarea
           onChange={(ev) => {
             fm.data[field.name] = ev.currentTarget.value;
-            fm.render();
+            renderOnChange();
           }}
           value={value || ""}
           disabled={field.disabled}
@@ -165,7 +176,7 @@ export const FieldTypeInput: FC<{
               fm.data[field.name] = value?.startDate
                 ? new Date(value?.startDate)
                 : null;
-              fm.render();
+              renderOnChange();
             }}
           />
         </>
@@ -173,6 +184,7 @@ export const FieldTypeInput: FC<{
         <div className="c-flex c-relative c-flex-1">
           <input
             type={type_field}
+            tabIndex={0}
             onChange={(ev) => {
               if (["date", "datetime", "datetime-local"].includes(type_field)) {
                 let result = null;
@@ -183,7 +195,7 @@ export const FieldTypeInput: FC<{
               } else {
                 fm.data[field.name] = ev.currentTarget.value;
               }
-              fm.render();
+              renderOnChange();
             }}
             placeholder={arg.placeholder || ""}
             value={value}
@@ -195,6 +207,9 @@ export const FieldTypeInput: FC<{
               display = "";
               field.render();
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && fm.status === "ready") fm.submit();
+            }}
             onBlur={() => {
               field.focused = false;
               field.render();
@@ -204,12 +219,12 @@ export const FieldTypeInput: FC<{
             <div
               className="c-absolute c-right-0 c-h-full c-flex c-items-center c-cursor-pointer"
               onClick={() => {
-                input.showHidePassword = !input.showHidePassword;
+                input.show_pass = !input.show_pass;
                 input.render();
               }}
             >
               <div className="">
-                {input.showHidePassword ? (
+                {input.show_pass ? (
                   <EyeIcon className="c-h-4" />
                 ) : (
                   <EyeOff className="c-h-4" />

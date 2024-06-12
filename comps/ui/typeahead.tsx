@@ -5,7 +5,7 @@ import { Badge } from "./badge";
 import { TypeaheadOptions } from "./typeahead-opt";
 
 export const Typeahead: FC<{
-  value?: string[];
+  value?: string[] | null;
   placeholder?: string;
   options?: (arg: {
     search: string;
@@ -90,6 +90,7 @@ export const Typeahead: FC<{
   }
 
   useEffect(() => {
+    if (!value) return;
     if (!isEditor) {
       if (local.options.length === 0) {
         loadOptions().then(() => {
@@ -104,6 +105,9 @@ export const Typeahead: FC<{
       } else {
         if (typeof value === "object" && value) {
           local.value = value;
+          local.render();
+        } else {
+          local.value = [];
           local.render();
         }
       }
@@ -299,7 +303,17 @@ export const Typeahead: FC<{
   if (local.mode === "single" && local.value.length > 1) {
     local.value = [local.value.pop() || ""];
   }
-  const valueLabel = local.value.map((value) => {
+
+  if (local.value.length === 0) {
+    if (local.mode === "single") {
+      if (!local.open) {
+        local.select = null;
+        local.search.input = "";
+      }
+    }
+  }
+
+  const valueLabel = local.value?.map((value) => {
     const item = local.options.find((item) => item.value === value);
 
     if (local.mode === "single") {
@@ -341,7 +355,7 @@ export const Typeahead: FC<{
                   }
                 }}
               >
-                <div>{e?.label}</div>
+                <div>{e?.label || <>&nbsp;</>}</div>
                 <X size={12} />
               </Badge>
             );
@@ -503,7 +517,7 @@ export const Typeahead: FC<{
         <div
           className={cx(
             "c-absolute c-pointer-events-none c-z-10 c-inset-0 c-left-auto c-flex c-items-center ",
-            " c-justify-center c-w-6 c-mr-1 c-my-2 c-bg-transparent",
+            " c-justify-center c-w-6 c-mr-1 c-my-2 c-bg-white",
             disabled && "c-hidden"
           )}
         >

@@ -1,7 +1,7 @@
 export const get_value = ({
   pk,
   table,
-  select
+  select,
 }: {
   pk: string;
   table: string;
@@ -15,30 +15,32 @@ export const get_value = ({
     }
   }
   return `\
-    (arg: {
-      options: { label: string; value: string; item?: string }[];
-      fm: FMLocal;
-      name: string;
-      type: string;
-    }) => {
-      const { options, fm, name, type } = arg;
-      if(isEditor){
-        return fm.data[name];
+(arg: {
+  options: { label: string; value: string; item?: string }[];
+  fm: FMLocal;
+  name: string;
+  type: string;
+}) => {
+  const { options, fm, name, type } = arg;
+  if(isEditor){
+    return fm.data[name];
+  }
+  let result = null;
+  result =  fm.data[name];
+  try{
+    const data = fm.data["${table}"];
+    if(typeof data === "object"){
+      if(typeof data?.connect?.${pk} === "string"){
+        result = data.connect.${pk};
+      } else if (typeof data?.id === "string") {
+        result = data.id;
+      } else if (data?.disconnect === true) {
+        result = undefined;
       }
-      let result = null;
-      result =  fm.data[name];
-      try{
-        const data = fm.data["${table}"];
-        if(typeof data === "object"){
-          if(typeof data?.connect?.${pk} === "string"){
-            result = data.connect.${pk};
-          }else if (typeof data?.id === "string") {
-            result = data.id;
-          }
-        }
-      }catch(ex){
-      }
-      return result;
     }
+  }catch(ex){
+  }
+  return result;
+}
   `;
 };

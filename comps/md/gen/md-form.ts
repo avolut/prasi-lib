@@ -50,7 +50,7 @@ export const generateMDForm = async (
       props,
     },
   };
-  generateForm(async (props: any) => {}, props, tablelist, false);
+  generateForm(async (props: any) => {}, props, tablelist, false, true);
   tab_detail?.edit.setProp("breadcrumb", {
     mode: "raw",
     value: `\
@@ -93,14 +93,7 @@ export const generateMDForm = async (
     }
     `
   })
-  console.log({form: {
-    type: "item",
-    name: "item",
-    component: {
-      id: "c4e65c26-4f36-48aa-a5b3-0771feac082e",
-      props,
-    },
-  }})
+  
   tab_detail?.edit.setChilds([
     {
       type: "item",

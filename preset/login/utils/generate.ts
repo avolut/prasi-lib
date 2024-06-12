@@ -54,7 +54,8 @@ export const generateLogin = async (
                   });
                   if (data_user) {
                     registerSession({ data: data_user, expired: null });
-                    const home = prasi_user.prasi_home[prasi_user.user.m_role.name];
+                    const w = window as any;
+                    const home = w.prasi_home[w.user.m_role.name];
                     navigate(home);
                   }
             }else{

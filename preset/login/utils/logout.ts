@@ -14,7 +14,5 @@ export const logout = (url_login?: string) => {
   if (localStorage.getItem("user")) {
     localStorage.removeItem("user");
   }
-  if (!getPathname().startsWith("/dev")) {
-    if (url_login) navigate(url_login);
-  }
+  if (url_login) navigate(url_login);
 };

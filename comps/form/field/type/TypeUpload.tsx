@@ -14,27 +14,27 @@ export const FieldUpload: FC<{
     value: 0 as any,
     display: false as any,
     ref: null as any,
-    drop: false as boolean
+    drop: false as boolean,
   });
   let display: any = null;
   return (
     <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full">
       <div
         onDrop={(e: any) => {
-          console.log({ e });
           e.preventDefault();
           input.drop = false;
           input.render();
         }}
-        onDragOver={(e:any) => {
-          console.log("File(s) in drop zone");
-
+        onDragOver={(e: any) => {
           // Prevent default behavior (Prevent file from being opened)
           e.preventDefault();
           input.drop = true;
           input.render();
         }}
-        className={cx(input.drop ? "c-bg-gray-100": "", "hover:c-bg-gray-100 c-m-1 c-relative c-flex-grow c-p-4 c-items-center c-flex c-flex-row c-text-gray-400 c-border c-border-gray-200 c-border-dashed c-rounded c-cursor-pointer")}
+        className={cx(
+          input.drop ? "c-bg-gray-100" : "",
+          "hover:c-bg-gray-100 c-m-1 c-relative c-flex-grow c-p-4 c-items-center c-flex c-flex-row c-text-gray-400 c-border c-border-gray-200 c-border-dashed c-rounded c-cursor-pointer"
+        )}
       >
         <div className="c-flex-row c-flex c-flex-grow c-space-x-2">
           <svg

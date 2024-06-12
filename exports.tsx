@@ -74,6 +74,7 @@ export { prasi_gen } from "@/gen/prasi_gen";
 export { password } from "@/utils/password";
 export { generateTableList } from "@/comps/md/gen/gen-table-list";
 export { generateForm } from "@/comps/form/gen/gen-form";
+export { generateSelect } from "@/comps/md/gen/md-select";
 
 /** Session */
 export {
@@ -81,11 +82,9 @@ export {
   RG,
   UserSession,
 } from "@/preset/login/utils/register";
-export { prasi_user } from "@/preset/login/utils/user";
 export { Login } from "@/preset/login/Login";
 export { logout } from "@/preset/login/utils/logout";
 export { generateLogin } from "@/preset/login/utils/generate";
-export { select as generateSelect } from "@/preset/login/utils/select";
 
 export { Card } from "@/comps/custom/Card";
 
@@ -114,4 +113,4 @@ export { getPathname } from "./utils/pathname";
 
 export * from "@/comps/ui/typeahead";
 export * from "@/comps/ui/input";
-export {softDeleteFilter} from "@/utils/soft-delete-filter"
+export { softDeleteFilter } from "@/utils/soft-delete-filter";

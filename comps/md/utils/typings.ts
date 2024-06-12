@@ -34,7 +34,7 @@ export type MDActions = {
 export type MDLocalInternal = {
   name: string;
   status: "init" | "unready" | "ready";
-  breadcrumb: {list:BreadItem[], render: () => void, reload: () => void};
+  header: { breadcrumb: BreadItem[]; render: () => void };
   actions: MDActions;
   selected: any;
   tab: {
@@ -89,11 +89,13 @@ export type MDLocal = MDLocalInternal & { render: (force?: boolean) => void };
 export const MasterDetailType = `const md = {
   name: string;
   status: string;
-  breadcrumb: {
-    label: React.ReactNode;
-    url?: string;
-    onClick?: () => void;
-  }[];
+  header: {
+    breadcrumb: {
+      label: React.ReactNode;
+      url?: string;
+      onClick?: () => void;
+    }[]
+  };
   actions: (
     { 
       action?: string;

@@ -24,11 +24,17 @@ export const set_value = ({
   }) => {
     const { selected, options, fm, name, type } = arg;
     if (type === "single-option") {
-      fm.data[name] = {
-        connect: {
-          ${pk}: selected[0],
-        },
-      };
+      if (selected[0]) {
+        fm.data[name] = {
+          connect: {
+            ${pk}: selected[0],
+          },
+        };
+      } else {
+        fm.data[name] = {
+          disconnect: true,
+        };
+      }
     } else {
       fm.data[name] = selected.map((e) => e);
     }

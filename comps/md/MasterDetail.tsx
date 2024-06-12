@@ -12,8 +12,6 @@ import {
 import { MDLocalInternal, MDProps } from "./utils/typings";
 import { mdRenderLoop } from "./utils/md-render-loop";
 import { parseGenField } from "lib/gen/utils";
-import { NDT } from "src/data/timezoneNames";
-import { mdBread } from "./utils/md-bread";
 
 export const MasterDetail: FC<MDProps> = (arg) => {
   const {
@@ -34,10 +32,9 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     name,
     status: isEditor ? "init" : "ready",
     actions: [],
-    breadcrumb: {
-      list: [],
+    header: {
+      breadcrumb: [],
       render: () => {},
-      reload: () => {}
     },
     selected: null,
     tab: {
@@ -82,8 +79,8 @@ export const MasterDetail: FC<MDProps> = (arg) => {
   } else {
     md.status = "ready";
     const fields = parseGenField(gen_fields);
-    const pk = fields.find((e) => e.is_pk); 
-    md.pk = pk
+    const pk = fields.find((e) => e.is_pk);
+    md.pk = pk;
     md.params.parse();
     if (pk) {
       const value = md.params.hash[md.name];
@@ -92,13 +89,12 @@ export const MasterDetail: FC<MDProps> = (arg) => {
         const tab = md.params.tabs[md.name];
         if (tab && md.tab.list.includes(tab)) {
           md.tab.active = tab;
-        }else{
-          md.tab.active = "detail"
+        } else {
+          md.tab.active = "detail";
         }
       }
     }
   }
-  md.breadcrumb.reload();
   return (
     <div
       className={cx(

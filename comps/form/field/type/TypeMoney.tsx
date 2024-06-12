@@ -16,7 +16,7 @@ export const FieldMoney: FC<{
     ref: null as any,
   });
   let display: any = null;
-  const money = formatMoney(Number(value) || 0)
+  const money = formatMoney(Number(value) || 0);
   return (
     <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full">
       <div
@@ -42,6 +42,13 @@ export const FieldMoney: FC<{
         onChange={(ev) => {
           fm.data[field.name] = ev.currentTarget.value;
           fm.render();
+          if (field.on_change) {
+            field.on_change({
+              value: fm.data[field.name],
+              name: field.name,
+              fm,
+            });
+          }
         }}
         value={value}
         disabled={field.disabled}

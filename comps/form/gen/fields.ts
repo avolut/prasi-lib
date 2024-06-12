@@ -1,16 +1,13 @@
 import { generateSelect } from "lib/comps/md/gen/md-select";
-import { on_load } from "lib/comps/md/gen/tbl-list/on_load";
 import { createItem, parseGenField } from "lib/gen/utils";
 import capitalize from "lodash.capitalize";
-import { ArrowBigDown } from "lucide-react";
-import { on_load_rel } from "./on_load_rel";
-import { createId } from "@paralleldrive/cuid2";
 import { gen_label } from "./gen-label";
-import { get_value } from "./get-value";
-import { set_value } from "./set-value";
-import get from "lodash.get";
+import { generateRelation } from "./gen-rel";
 import { gen_rel_many } from "./gen-rel-many";
-import { genTableEdit } from "./gen-table-edit";
+import { get_value } from "./get-value";
+import { on_load_rel } from "./on_load_rel";
+import { set_value } from "./set-value";
+import { createId } from "@paralleldrive/cuid2";
 export type GFCol = {
   name: string;
   type: string;
@@ -22,9 +19,9 @@ export type GFCol = {
     fields: GFCol[];
   };
 };
-export const newField = (
+export const newField = async (
   arg: GFCol,
-  opt: { parent_table: string; value: Array<string> },
+  opt: { parent_table: string; value: Array<string>; on_change?: string },
   show_label: boolean
 ) => {
   let show = typeof show_label === "boolean" ? show_label : true;
@@ -43,6 +40,9 @@ export const newField = (
             child: {
               childs: [],
             },
+            ext__on_change: opt.on_change
+              ? [opt.on_change, opt.on_change]
+              : undefined,
           },
         },
       });
@@ -59,6 +59,9 @@ export const newField = (
             child: {
               childs: [],
             },
+            ext__on_change: opt.on_change
+              ? [opt.on_change, opt.on_change]
+              : undefined,
           },
         },
       });
@@ -73,6 +76,9 @@ export const newField = (
           ext__show_label: show ? "y" : "n",
           type: "single-option",
           sub_type: "toogle",
+          ext__on_change: opt.on_change
+            ? [opt.on_change, opt.on_change]
+            : undefined,
         },
       },
     });
@@ -89,6 +95,9 @@ export const newField = (
           child: {
             childs: [],
           },
+          ext__on_change: opt.on_change
+            ? [opt.on_change, opt.on_change]
+            : undefined,
         },
       },
     });
@@ -102,6 +111,12 @@ export const newField = (
       pks: {},
     });
     if (["has-one"].includes(arg.type)) {
+      const rel__gen_fields = JSON.stringify(
+        arg.relation?.fields.map((e) => {
+          const v = (e as any).value;
+          return v;
+        })
+      );
       return createItem({
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
@@ -112,6 +127,7 @@ export const newField = (
             ext__show_label: show ? "y" : "n",
             sub_type: "dropdown",
             rel__gen_table: arg.name,
+            rel__gen_fields: [rel__gen_fields, rel__gen_fields],
             opt__on_load: [load],
             opt__label: [
               gen_label({
@@ -137,6 +153,9 @@ export const newField = (
             child: {
               childs: [],
             },
+            ext__on_change: opt.on_change
+              ? [opt.on_change, opt.on_change]
+              : undefined,
           },
         },
       });
@@ -146,48 +165,54 @@ export const newField = (
         arg,
         rel: fields,
       });
-      if (result.on_load) {
-        return createItem({
-          component: {
-            id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
-            props: {
-              name: arg.name,
-              label: formatName(arg.name),
-              type: "multi-option",
-              sub_type: "checkbox",
-              rel__gen_table: arg.name,
-              opt__on_load: [result.on_load],
-              ext__show_label: show ? "y" : "n",
-              opt__label: [result.get_label],
-              opt__get_value: [result.get_value],
-              opt__set_value: [result.set_value],
-              child: {
-                childs: [],
-              },
+
+      let child: any = { childs: [] };
+      let rel__gen_fields: any = undefined;
+      let sub_type = "checkbox";
+      if (arg.relation?.fields?.length > 1) {
+        sub_type = "table-edit";
+        rel__gen_fields = JSON.stringify(
+          arg.relation?.fields.map((e) => {
+            const v = (e as any).value;
+            return v;
+          })
+        );
+        child = createItem({
+          childs: await generateRelation(
+            {
+              rel__gen_fields: { value: rel__gen_fields },
+              rel__gen_table: { value: JSON.stringify(arg.name) },
+              sub_type: { value: "'table-edit'" },
             },
-          },
-        });
-      } else {
-        return createItem({
-          component: {
-            id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
-            props: {
-              name: arg.name,
-              ext__show_label: show ? "y" : "n",
-              label: formatName(arg.name),
-              type: "-",
-              ext__width: "full",
-              sub_type: "-",
-              msg_error: `\
-              Select type (multi-option) and sub type (table-edit) ➡️ select table(${arg.name}) and fields ➡️ Click generate
-              `,
-              child: {
-                childs: [],
-              },
-            },
-          },
+            createItem({}),
+            false
+          ),
         });
       }
+      return createItem({
+        component: {
+          id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
+          props: {
+            name: arg.name,
+            label: formatName(arg.name),
+            type: "multi-option",
+            sub_type,
+            rel__gen_table: arg.name,
+            opt__on_load: [result.on_load],
+            ext__show_label: show ? "y" : "n",
+            opt__label: [result.get_label],
+            opt__get_value: [result.get_value],
+            opt__set_value: [result.set_value],
+            rel__gen_fields: rel__gen_fields
+              ? [rel__gen_fields, rel__gen_fields]
+              : undefined,
+            child,
+            ext__on_change: opt.on_change
+              ? [opt.on_change, opt.on_change]
+              : undefined,
+          },
+        },
+      });
     }
   } else {
     // type not found,
@@ -203,6 +228,9 @@ export const newField = (
           child: {
             childs: [],
           },
+          ext__on_change: opt.on_change
+            ? [opt.on_change, opt.on_change]
+            : undefined,
         },
       },
     });

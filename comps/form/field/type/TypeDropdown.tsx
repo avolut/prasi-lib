@@ -1,8 +1,8 @@
 import { useLocal } from "@/utils/use-local";
-import { FC, useEffect } from "react";
-import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldLoading } from "lib/comps/ui/field-loading";
 import { Typeahead } from "lib/comps/ui/typeahead";
+import { FC, useEffect } from "react";
+import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 
 export const TypeDropdown: FC<{
   field: FieldLocal;
@@ -11,7 +11,7 @@ export const TypeDropdown: FC<{
 }> = ({ field, fm, arg }) => {
   const local = useLocal({
     loaded: false,
-    options: [],
+    options: [] as { value: string; label: string; data: any }[],
   });
   let value =
     typeof arg.opt_get_value === "function"
@@ -22,6 +22,7 @@ export const TypeDropdown: FC<{
           type: field.type,
         })
       : fm.data[field.name];
+
   useEffect(() => {
     if (typeof arg.on_load === "function") {
       const options = arg.on_load({});
@@ -38,6 +39,22 @@ export const TypeDropdown: FC<{
           } else {
             local.options = res;
           }
+
+          if (
+            field.type === "single-option" &&
+            !value &&
+            field.required &&
+            local.options.length > 0
+          ) {
+            arg.opt_set_value({
+              fm,
+              name: field.name,
+              type: field.type,
+              options: local.options,
+              selected: [local.options[0]?.value],
+            });
+          }
+
           local.loaded = true;
           local.render();
         });
@@ -48,12 +65,16 @@ export const TypeDropdown: FC<{
       }
     }
   }, []);
+
   if (!local.loaded) return <FieldLoading />;
-  if (field.type === "single-option")
+  if (field.type === "single-option") {
+    if (value === null) {
+      fm.data[field.name] = undefined;
+    }
     return (
       <>
         <Typeahead
-          value={value}
+          value={Array.isArray(value) ? value : [value]}
           onSelect={({ search, item }) => {
             if (item) {
               arg.opt_set_value({
@@ -77,6 +98,7 @@ export const TypeDropdown: FC<{
         />
       </>
     );
+  }
 
   return (
     <>

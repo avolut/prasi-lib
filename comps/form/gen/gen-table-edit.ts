@@ -1,9 +1,8 @@
+import { createId } from "@paralleldrive/cuid2";
 import { generateSelect } from "lib/comps/md/gen/md-select";
 import { createItem, parseGenField } from "lib/gen/utils";
 import get from "lodash.get";
 import { formatName, newField } from "./fields";
-import { set } from "lib/utils/set";
-import { createId } from "@paralleldrive/cuid2";
 
 export const genTableEdit = async (
   item: PrasiItem,
@@ -33,41 +32,51 @@ export const genTableEdit = async (
   }
   const childs = [] as Array<any>;
   let first = true;
-  fields
-    .map((e, idx) => {
-      if (e.is_pk) return;
-      let value = [] as Array<string>;
-      if (["has-one", "has-many"].includes(e.type)) {
-        value = get(e, "value.checked") as any;
-      }
-      const field = newField(e, { parent_table: table, value }, false);
-      let tree_depth = "";
-      let tree_depth_built = "";
-      if (first) {
-        tree_depth = `tree_depth={col.depth}`;
-        tree_depth_built = `tree_depth:col.depth`;
-        first = false;
-      }
-      childs.push({
-        component: {
-          id: "297023a4-d552-464a-971d-f40dcd940b77",
-          props: {
-            name: e.name,
-            title: formatName(e.name),
-            child: createItem({
-              childs: [field],
-            }),
+  await Promise.all(
+    fields
+      .map(async (e, idx) => {
+        if (e.is_pk) return;
+        let value = [] as Array<string>;
+        if (["has-one", "has-many"].includes(e.type)) {
+          value = get(e, "value.checked") as any;
+        }
+        const field = await newField(
+          e,
+          {
+            parent_table: table,
+            value,
+            on_change: `() => { ext_fm.change(); }`,
           },
-        },
-      });
-    })
-    .filter((e) => e) as any;
+          false
+        );
+        let tree_depth = "";
+        let tree_depth_built = "";
+        if (first) {
+          tree_depth = `tree_depth={col.depth}`;
+          tree_depth_built = `tree_depth:col.depth`;
+          first = false;
+        }
+        childs.push({
+          component: {
+            id: "297023a4-d552-464a-971d-f40dcd940b77",
+            props: {
+              name: e.name,
+              title: formatName(e.name),
+              child: createItem({
+                childs: [field],
+              }),
+            },
+          },
+        });
+      })
+      .filter((e) => e)
+  );
   childs.push({
     component: {
       id: "297023a4-d552-464a-971d-f40dcd940b77",
       props: {
         name: "option",
-        title: "option",
+        title: "",
         child: {
           id: createId(),
           name: "option",
@@ -133,7 +142,11 @@ export const genTableEdit = async (
                               name: "new_text",
                               text: "",
                               type: "text",
-                              layout: { dir: "col", gap: 0, align: "center" },
+                              layout: {
+                                dir: "col",
+                                gap: 0,
+                                align: "left",
+                              },
                               script: {},
                             },
                           ],
@@ -240,7 +253,7 @@ export const genTableEdit = async (
                               name: "new_text",
                               text: "",
                               type: "text",
-                              layout: { dir: "col", gap: 0, align: "center" },
+                              layout: { dir: "col", gap: 0, align: "left" },
                               script: {},
                             },
                           ],
@@ -285,7 +298,7 @@ export const genTableEdit = async (
             dir: "row",
             gap: 10,
             wrap: "flex-nowrap",
-            align: "top-left",
+            align: "left",
           },
           padding: { b: 0, l: 10, r: 10, t: 0 },
         },
@@ -304,6 +317,7 @@ export const genTableEdit = async (
         name: "btn-submit",
         type: "item",
         edit: null as any,
+        padding: { b: 10, l: 10, r: 10, t: 0 },
         childs: [
           {
             id: createId(),
@@ -354,12 +368,17 @@ export const genTableEdit = async (
     const option = {
       id: createId(),
       name: "bottom",
+      padding: { b: 10, l: 10, r: 10, t: 0 },
       type: "item",
       childs: [
         {
           id: createId(),
-          name: "bottom",
+          name: "wrapper",
           type: "item",
+          dim: {
+            h: "fit",
+            w: "fit",
+          },
           childs: [
             {
               id: createId(),
@@ -380,7 +399,7 @@ export const genTableEdit = async (
                   variant: { value: ' "primary";\n' },
                   on_click: {
                     value:
-                      ' (e) => {\n  e.preventDefault();\n  e.stopPropagation();\n  if (typeof ext_fm === "object") {\n    console.log("masuk");\n    ext_fm.add();\n  }\n};\n',
+                      ' (e) => {\n  e.preventDefault();\n  e.stopPropagation();\n  if (typeof ext_fm === "object") {\n     ext_fm.add();\n  }\n};\n',
                   },
                 },
               },
@@ -436,7 +455,7 @@ export const genTableEdit = async (
                               name: "new_text",
                               text: "",
                               type: "text",
-                              layout: { dir: "col", gap: 0, align: "center" },
+                              layout: { dir: "col", gap: 0, align: "left" },
                               script: {},
                             },
                             {
@@ -456,9 +475,9 @@ export const genTableEdit = async (
                           ],
                           layout: {
                             dir: "row",
-                            gap: 10,
+                            gap: 5,
                             wrap: "flex-nowrap",
-                            align: "top-left",
+                            align: "left",
                           },
                         },
                       ],
@@ -488,9 +507,9 @@ export const genTableEdit = async (
                     name: "prop_1",
                     type: "string",
                     value:
-                      '(e) => {\n  e.preventDefault();\n  e.stopPropagation();\n  if (typeof ext_fm === "object") {\n    console.log("masuk")\n    ext_fm.add();\n    // const value = fm.data[name] || [];\n    // if (Array.isArray(value)) {\n    //   value.push({});\n    //   fm.render();\n    // } else {\n    //   value = [];\n    //   fm.render();\n    // }\n  }\n}',
+                      '(e) => {\n  e.preventDefault();\n  e.stopPropagation();\n  if (typeof ext_fm === "object") {\n     ext_fm.add();\n     }\n}',
                     valueBuilt:
-                      ' (e) => {\n  e.preventDefault();\n  e.stopPropagation();\n  if (typeof ext_fm === "object") {\n    console.log("masuk");\n    ext_fm.add();\n  }\n};\n',
+                      ' (e) => {\n  e.preventDefault();\n  e.stopPropagation();\n  if (typeof ext_fm === "object") {\n       ext_fm.add();\n  }\n};\n',
                   },
                 },
                 ref_ids: {},

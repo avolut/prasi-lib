@@ -7,13 +7,14 @@ import { editorFormData } from "./utils/ed-data";
 import { formInit } from "./utils/init";
 import { formReload } from "./utils/reload";
 import { getPathname } from "lib/utils/pathname";
+import { sofDeleteField } from "lib/utils/soft-del-rel";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
 export { FMLocal } from "./typings";
 
 export const Form: FC<FMProps> = (props) => {
-  const { PassProp, body } = props;
+  const { PassProp, body, feature, sfd_field } = props;
   const fm = useLocal<FMInternal>({
     data: editorFormData[props.item.id]
       ? editorFormData[props.item.id].data
@@ -51,8 +52,30 @@ export const Form: FC<FMProps> = (props) => {
         ? editorFormWidth[props.item.id].f
         : "full",
     },
+    soft_delete: {
+      field: null
+    }
   });
-
+  useEffect(() => {
+    // deteksi jika ada softdelete
+    if(Array.isArray(props.feature)){
+      if(props.feature?.find((e) => e === "soft_delete")){
+        const result = sofDeleteField(props.gen_table, sfd_field)
+        if (result instanceof Promise) {
+          result.then((e) => {
+            // simpan fields yang berisi name dan type fields soft delete
+            fm.soft_delete.field = e;
+            if(!isEditor){
+              fm.render();
+            }
+          });
+        }
+      }else{
+        fm.soft_delete.field = null;
+      }
+    }
+   
+  }, [])
   const ref = useRef({
     el: null as null | HTMLFormElement,
     rob: new ResizeObserver(([e]) => {

@@ -15,6 +15,7 @@ export const on_submit = ({
 
   return `\
 async ({ form, error }: IForm) => {
+  if (isEditor) return false;
   if (typeof form !== "object") return false;
   if (typeof error === "object" && Object.keys(error).length > 0) return false;
 

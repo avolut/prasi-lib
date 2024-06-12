@@ -50,7 +50,11 @@ export const TypeaheadOptions: FC<{
                 `
               : css`
                   min-width: 150px;
-                `
+                `,
+            css`
+              max-height: 400px;
+              overflow: auto;
+            `
           )}
         >
           {options.map((item, idx) => {
@@ -75,7 +79,7 @@ export const TypeaheadOptions: FC<{
                   onSelect?.(item.value);
                 }}
               >
-                {item.label}
+                {item.label || <>&nbsp;</>}
               </div>
             );
           })}

@@ -1,43 +1,66 @@
 export const on_load = ({
-    pk,
-    table,
-    select,
-    pks,
-  }: {
-    pk: string;
-    table: string;
-    select: any;
-    pks: Record<string, string>;
-  }) => {
-    const sample = {} as any;
-  
-    for (const [k, v] of Object.entries(select) as any) {
-      if (typeof v === "object") {
-        sample[k] = {};
-  
-        Object.keys(v.select)
-          .filter((e) => e !== pks[k])
-          .map((e) => {
-            sample[k][e] = "sample";
-          });
-      } else {
-        sample[k] = "sample";
+  pk,
+  table,
+  select,
+  pks,
+  fields,
+}: {
+  pk: string;
+  table: string;
+  select: any;
+  pks: Record<string, string>;
+  fields: Array<any>;
+}) => {
+  const sample = {} as any;
+
+  for (const [k, v] of Object.entries(select) as any) {
+    if (typeof v === "object") {
+      const val = {} as any;
+      Object.keys(v.select)
+        .filter((e) => e !== pks[k])
+        .map((e) => {
+          val[e] = "sample";
+        });
+      const field = fields.find((e) => e.name === k);
+      sample[k] = val;
+      if(field){
+        if(field.type === "has-many"){
+          sample[k] = [val];
+        }
       }
+    } else {
+      sample[k] = "sample";
     }
-  
-    return `\
+  }
+
+  return `\
   (arg: TableOnLoad) => {
     if (isEditor) return [${JSON.stringify(sample)}];
   
     return new Promise(async (done) => {
+    let where = arg.where;
+    try {
+      if (!isEditor)
+        where = softDeleteFilter(where, {
+          feature: opt__feature,
+          field: sft__fields,
+          type: sft__type,
+        });
+    } catch (e) {}
       if (arg.mode === 'count') {
-        return await db.${table}.count();
+        return await db.${table}.count({
+          where: {
+            ...where,
+          }
+        });
       }
-  
       const items = await db.${table}.findMany({
         select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
         orderBy: arg.orderBy || {
           ${pk}: "desc"
+        },
+        where: {
+          ...where,
         },
         ...arg.paging,
       });
@@ -54,5 +77,4 @@ export const on_load = ({
     where?: any
   }
   `;
-  };
-  
+};

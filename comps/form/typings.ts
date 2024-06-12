@@ -18,6 +18,8 @@ export type FMProps = {
   gen_fields: any;
   gen_table: string;
   on_load_deps?: any[];
+  feature?: any[];
+  sfd_field?: any;
 };
 
 export type GenField =
@@ -87,7 +89,8 @@ export type FieldProp = {
   placeholder: string;
   show_label: boolean;
   msg_error: string;
-  gen_table: string;
+  gen_table?: string;
+  gen_fields?: string;
 };
 
 export type FMInternal = {
@@ -125,6 +128,9 @@ export type FMInternal = {
     height: number;
     field: "full" | "half";
   };
+  soft_delete: {
+    field: any;
+  };
 };
 export type FMLocal = FMInternal & { render: () => void };
 
@@ -150,6 +156,7 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   options: {
     on_load?: () => Promise<{ value: string; label: string }[]>;
   };
+  on_change?: (arg: { value: any, name: string, fm: FMLocal }) => void | Promise<void>;
   prop?: any;
 };
 export type FieldLocal = FieldInternal<any> & {

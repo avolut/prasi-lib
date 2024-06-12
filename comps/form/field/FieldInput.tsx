@@ -18,7 +18,7 @@ export const FieldInput: FC<{
   child: any;
   _item: PrasiItem;
   arg: FieldProp;
-}> = ({ field, fm, arg, _item, PassProp, child}) => {
+}> = ({ field, fm, arg, _item, PassProp, child }) => {
   // return <></>
   const prefix =
     typeof field.prefix === "function"
@@ -48,6 +48,8 @@ export const FieldInput: FC<{
       }
     }
   }
+
+  let table_edit = null;
   if (type_field === "multi-option" && arg.sub_type === "table-edit") {
     const childsTableEdit = get(
       _item,
@@ -57,7 +59,7 @@ export const FieldInput: FC<{
       child: get(_item, "edit.props.child.value") as PrasiItem,
       bottom: childsTableEdit.find((e) => e.name === "bottom") as PrasiItem,
     };
-    return (
+    table_edit = (
       <TableEdit
         on_init={() => {
           return fm;
@@ -70,13 +72,38 @@ export const FieldInput: FC<{
         body={tableEdit.child}
       />
     );
-    return <>{arg.child}</>;
   }
+
+  let not_ready: any = false;
+  if (
+    arg.type === "multi-option" &&
+    arg.sub_type === "table-edit" &&
+    (!arg.gen_fields?.length || arg.gen_fields?.length === 1)
+  ) {
+    not_ready = (
+      <>
+        <div className="c-m-1 c-p-2 c-border c-border-red-500">
+          ⚠️ Field: {arg.label} is not ready
+          <br />
+          <div
+            className={css`
+              font-size: 12px;
+              font-weight: normal;
+              white-space: pre;
+            `}
+          >
+            Please select fields in relation and click generate.
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <div
       className={cx(
         !["toogle", "button", "radio", "checkbox"].includes(arg.sub_type)
-          ? "field-outer c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm"
+          ? "field-outer c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm c-bg-white"
           : "",
         fm.status === "loading"
           ? css`
@@ -115,30 +142,40 @@ export const FieldInput: FC<{
             field.disabled && "c-pointer-events-none"
           )}
         >
-          {type_field === "custom" && arg.custom ? (
-            <>{custom}</>
+          {not_ready ? (
+            not_ready
           ) : (
             <>
-              {["date", "input"].includes(type_field) ? (
-                <FieldTypeInput
-                  field={field}
-                  fm={fm}
-                  arg={arg}
-                  prop={
-                    {
-                      type: type_field as any,
-                      sub_type: arg.sub_type,
-                      prefix,
-                      suffix,
-                    } as PropTypeInput
-                  }
-                />
-              ) : ["single-option"].includes(type_field) ? (
-                <SingleOption arg={arg} field={field} fm={fm} />
-              ) : ["multi-option"].includes(type_field) ? (
-                <MultiOption arg={arg} field={field} fm={fm} />
+              {type_field === "custom" && arg.custom ? (
+                <>{custom}</>
               ) : (
-                <>{isValidElement(type_field) && type_field}</>
+                <>
+                  {["date", "input"].includes(type_field) ? (
+                    <FieldTypeInput
+                      field={field}
+                      fm={fm}
+                      arg={arg}
+                      prop={
+                        {
+                          type: type_field as any,
+                          sub_type: arg.sub_type,
+                          prefix,
+                          suffix,
+                        } as PropTypeInput
+                      }
+                    />
+                  ) : ["single-option"].includes(type_field) ? (
+                    <SingleOption arg={arg} field={field} fm={fm} />
+                  ) : ["multi-option"].includes(type_field) ? (
+                    arg.sub_type === "table-edit" ? (
+                      table_edit
+                    ) : (
+                      <MultiOption arg={arg} field={field} fm={fm} />
+                    )
+                  ) : (
+                    <>{isValidElement(type_field) && type_field}</>
+                  )}
+                </>
               )}
             </>
           )}

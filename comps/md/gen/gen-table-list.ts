@@ -15,11 +15,11 @@ export const generateTableList = async (
 ) => {
   let table = "" as string;
   try {
-    table = eval(data.gen_table.value);
+    table = eval(data.gen__table.value);
   } catch (e) {
-    table = data.gen_table.value;
+    table = data.gen__table.value;
   }
-  const raw_fields = JSON.parse(data.gen_fields.value) as (
+  const raw_fields = JSON.parse(data.gen__fields.value) as (
     | string
     | { value: string; checked: string[] }
   )[];
@@ -53,7 +53,7 @@ export const generateTableList = async (
     if (data["opt__on_load"]) {
       result.opt__on_load = {
         mode: "raw",
-        value: on_load({ pk, table, select, pks }),
+        value: on_load({ pk, table, select, pks,fields }),
       };
     }
     let first = true;
@@ -91,10 +91,10 @@ export const generateTableList = async (
                       adv: {
                         js: `\
 <div {...props} className={cx(props.className, "")}>
-${arg.mode === "list" ? "{JSON.stringify(row)}" : "<FormatValue value={col.value} name={col.name} gen_fields={gen_fields} ${tree_depth} />"}
+${arg.mode === "list" ? "{JSON.stringify(row)}" : `<FormatValue value={col.value} name={col.name} gen_fields={gen__fields} ${tree_depth} />`}
 </div>`,
                         jsBuilt: `\
-render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen_fields, ${tree_depth_built} })));
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields, ${tree_depth_built} })));
                 `,
                       },
                     }),

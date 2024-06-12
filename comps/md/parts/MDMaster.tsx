@@ -10,14 +10,14 @@ export const MDRenderMaster: FC<{
   min_size: any;
   child: any;
   on_init: () => MDLocal;
-  breadcrumb: () => Array<any>
+  breadcrumb: () => Array<any>;
 }> = ({ child, on_init, min_size, size, breadcrumb }) => {
   useEffect(() => {
+    console.log("master");
     let md = on_init();
-    md.breadcrumb.list = breadcrumb();
-    if(!isEditor){
-    md.breadcrumb.reload();
-    }
+    md.header.breadcrumb = breadcrumb();
+    md.header.render();
+
     if (md) {
       let width = 0;
       let min_width = 0;
@@ -33,8 +33,8 @@ export const MDRenderMaster: FC<{
         md.panel.min_size = min_width;
         md.panel.size = width;
       }
-    };
-  }, [])
+    }
+  }, []);
 
   return <>{child}</>;
 };

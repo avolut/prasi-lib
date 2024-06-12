@@ -21,17 +21,24 @@ export const generateRelation = async (
       },
       false
     )) as any;
-    item.edit.setProp("child", {
-      mode: "jsx",
-      value: {
-        id: createId(),
-        name: "item",
-        type: "item",
-        edit: null as any,
-        childs: result,
-      },
-    });
-    await item.edit.commit();
+    if (commit) {
+      item.edit.setProp("child", {
+        mode: "jsx",
+        value: {
+          id: createId(),
+          name: "item",
+          type: "item",
+          edit: null as any,
+          childs: result,
+        },
+      });
+      await item.edit.commit();
+      return;
+    } else {
+      return result;
+    }
+  } else {
+    console.log(item.edit.props);
   }
 };
 

@@ -16,20 +16,29 @@ export const gen_label = ({
   }
 
   return `\
-(row: { value: string; label: string; item?: any }) => {
+(row: { value: string; label: string; data?: any }) => {
   const cols = ${JSON.stringify(cols)};
   
   if (isEditor) {
     return row.label;
   }
   const result = [];
-  if (!!row.item && !Array.isArray(row.item)) {
-    cols.map((e) => {
-      if (row.item[e]) {
-        result.push(row.item[e]);
-      }
-    });
-    return result.join(" - ");
+  if (!!row.data && !row.label && !Array.isArray(row.data)) {
+    if(cols.length > 0){
+      cols.map((e) => {
+        if (row.data[e]) {
+          result.push(row.data[e]);
+        }
+      });
+      return result.join(" - ");
+    } else {
+      const fields = parseGenField(rel__gen_fields);
+      return fields
+        .filter((e) => !e.is_pk)
+        .map((e) => row.data[e.name])
+        .filter((e) => e)
+        .join(" - ");
+    }
   }
   return row.label;
 }

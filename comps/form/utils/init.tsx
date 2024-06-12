@@ -13,7 +13,6 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
   }
   const { on_load, sonar } = fm.props;
   fm.error = formError(fm);
-
   fm.field_def = {};
   const defs = parseGenField(fm.props.gen_fields);
   for (const d of defs) {
@@ -110,7 +109,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         };
 
         if (typeof fm.props.on_submit === "function") {
-          if (fm.props.sonar === "on") {
+          if (fm.props.sonar === "on" && !isEditor) {
             toast.loading(
               <>
                 <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
@@ -126,7 +125,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
 
           toast.dismiss();
           done_all(success);
-          if (fm.props.sonar === "on") {
+          if (fm.props.sonar === "on" && !isEditor) {
             setTimeout(() => {
               toast.dismiss();
 

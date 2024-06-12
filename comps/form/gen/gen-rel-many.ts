@@ -8,7 +8,6 @@ export const gen_rel_many = (prop: {
   rel: any;
 }) => {
   const { table_parent, arg, rel } = prop;
-  console.log({ rel });
   const parent = rel.find((e: any) => e.name === table_parent);
   const master = rel.find(
     (e: any) => e.name !== table_parent && e.type === "has-one"
@@ -124,20 +123,29 @@ export const gen_rel_many = (prop: {
       }
     }
     const get_label = `\
-    (row: { value: string; label: string; item?: any }) => {
+    (row: { value: string; label: string; data?: any }) => {
       const cols = ${JSON.stringify(cols)};
       
       if (isEditor) {
         return row.label;
       }
       const result = [];
-      if (!!row.item && !Array.isArray(row.item)) {
-        cols.map((e) => {
-          if (row.item[e]) {
-            result.push(row.item[e]);
-          }
-        });
-        return result.join(" - ");
+      if (!!row.data && !row.label && !Array.isArray(row.data)) {
+        if(cols.length > 0){
+          cols.map((e) => {
+            if (row.data[e]) {
+              result.push(row.data[e]);
+            }
+          });
+          return result.join(" - ");
+        } else {
+          const fields = parseGenField(rel__gen_fields);
+          return fields
+            .filter((e) => !e.is_pk)
+            .map((e) => row.data[e.name])
+            .filter((e) => e)
+            .join(" - ");
+        }
       }
       return row.label;
     }
@@ -147,13 +155,13 @@ export const gen_rel_many = (prop: {
     result.get_value = get_value;
     result.set_value = set_value;
   } else {
-    console.log("tidak punya master");
-
     result.get_label = `\
   (row: { value: string; label: string; item?: any }) => {
     return row.label;
   }
   `;
+
+  
     result.get_value = `\
   (arg: {
     options: { label: string; value: string; item?: string }[];

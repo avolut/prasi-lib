@@ -4,19 +4,27 @@ import { fields_map } from "@/utils/format-value";
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
 import { Loader2 } from "lucide-react";
-import { ChangeEvent, FC, MouseEvent, ReactNode, useEffect } from "react";
+import {
+  ChangeEvent,
+  FC,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  useEffect,
+} from "react";
 import DataGrid, {
   ColumnOrColumnGroup,
+  RenderCellProps,
   Row,
   SELECT_COLUMN_KEY,
   SortColumn,
 } from "react-data-grid";
-import "./TableList.css";
 import { createPortal } from "react-dom";
 import { Toaster, toast } from "sonner";
-import { Skeleton } from "../ui/skeleton";
-import { sortTree } from "./utils/sort-tree";
 import { filterWhere } from "../filter/utils/filter-where";
+import { Skeleton } from "../ui/skeleton";
+import "./TableList.css";
+import { sortTree } from "./utils/sort-tree";
 
 type OnRowClick = (arg: {
   row: any;
@@ -38,7 +46,6 @@ type TableListProp = {
   }) => Promise<any[]>;
   on_init: (arg?: any) => any;
   mode: "table" | "list" | "grid" | "auto";
-  // _meta: Record<string, any>;
   _item: PrasiItem;
   gen_fields: string[];
   row_click: OnRowClick;
@@ -47,10 +54,16 @@ type TableListProp = {
   feature?: Array<any>;
   filter_name: string;
   render_row?: (child: any, data: any) => ReactNode;
-  rowHeight?: number;
-  render_col?: (props: any) => ReactNode;
-  soft_delete_field: string;
-  
+  row_height?: number;
+  render_col?: (arg: {
+    props: RenderCellProps<any, unknown>;
+    tbl: any;
+    child: any;
+  }) => ReactNode;
+  softdel_field?: string;
+  gen_table?: string;
+  softdel_type?: string;
+  cache_row?: boolean;
 };
 const w = window as any;
 const selectCellClassname = css`
@@ -77,11 +90,12 @@ export const TableList: FC<TableListProp> = ({
   feature,
   filter_name,
   render_row,
-  rowHeight,
+  row_height: rowHeight,
   render_col,
-  value
+  value,
+  cache_row,
 }) => {
-  const where = get(w, `prasi_filter.${filter_name}`) ?? "hello";
+  const where = get(w, `prasi_filter.${filter_name}`) ? {} : {};
   const whereQuery = filterWhere("hello");
   if (mode === "auto") {
     if (w.isMobile) {
@@ -124,13 +138,13 @@ export const TableList: FC<TableListProp> = ({
         }
       },
     },
+    cached_row: new WeakMap<any, ReactElement>(),
     sort: {
       columns: [] as SortColumn[],
       on_change: (cols: SortColumn[]) => {
         if (feature?.find((e) => e === "sorting")) {
           local.sort.columns = cols;
           local.paging.skip = 0;
-
           if (cols.length > 0) {
             const { columnKey, direction } = cols[0];
 
@@ -179,14 +193,18 @@ export const TableList: FC<TableListProp> = ({
         "asc" | "desc" | Record<string, "asc" | "desc">
       >,
     },
+    soft_delete: {
+      field: null as any,
+    },
   });
-  if(typeof value !== "undefined"){
-    local.data = value;
-  }
+
   // code ini digunakan untuk mengambil nama dari pk yang akan digunakan sebagai key untuk id
   const pk = local.pk?.name || "id";
   useEffect(() => {
-    if (isEditor) return;
+    if (isEditor || value) {
+      on_init(local);
+      return;
+    }
     (async () => {
       on_init(local);
       if (local.status === "reload" && typeof on_load === "function") {
@@ -198,7 +216,10 @@ export const TableList: FC<TableListProp> = ({
           async reload() {},
           where,
           orderBy,
-          paging: { take: local.paging.take, skip: local.paging.skip },
+          paging: {
+            take: local.paging.take > 0 ? local.paging.take : undefined,
+            skip: local.paging.skip,
+          },
         };
         if (id_parent) {
           load_args.paging = {};
@@ -218,6 +239,7 @@ export const TableList: FC<TableListProp> = ({
       }
     })();
   }, [local.status, on_load, local.sort.orderBy]);
+
   const raw_childs = get(
     child,
     "props.meta.item.component.props.child.content.childs"
@@ -341,7 +363,7 @@ export const TableList: FC<TableListProp> = ({
   }
   for (const child of childs) {
     let key = getProp(child, "name", {});
-    const name = getProp(child, "title", {});
+    const name = getProp(child, "title", "");
     const width = parseInt(getProp(child, "width", {}));
 
     columns.push({
@@ -352,7 +374,12 @@ export const TableList: FC<TableListProp> = ({
       sortable: true,
       renderCell(props) {
         if (typeof render_col === "function")
-          return render_col({ props, tbl: local, child });
+          return render_col({
+            props,
+            tbl: local,
+            child,
+          });
+
         return (
           <PassProp
             idx={props.rowIdx}
@@ -389,9 +416,6 @@ export const TableList: FC<TableListProp> = ({
         </>,
         {
           dismissible: true,
-          className: css`
-            background: #e4f7ff;
-          `,
         }
       );
     } else {
@@ -414,15 +438,20 @@ export const TableList: FC<TableListProp> = ({
       }
     }
   }
-  if(typeof value === "undefined")
+  if (typeof value !== "undefined") {
+    local.data = value;
+    local.status = "ready" as any;
+  } else {
     if (isEditor && local.status !== "ready") {
       if (local.data.length === 0) {
         const load_args: any = {
           async reload() {},
           where,
-          paging: { take: local.paging.take, skip: local.paging.skip },
+          paging: {
+            take: local.paging.take > 0 ? local.paging.take : undefined,
+            skip: local.paging.skip,
+          },
         };
-  
         if (id_parent) load_args.paging = {};
         if (typeof on_load === "function") {
           local.data = on_load({ ...load_args, mode: "query" }) as any;
@@ -430,9 +459,7 @@ export const TableList: FC<TableListProp> = ({
       }
       local.status = "ready";
     }
-  
-
-  let selected_idx = -1;
+  }
 
   let data = local.data || [];
   if (id_parent && local.pk && local.sort.columns.length === 0) {
@@ -498,12 +525,20 @@ export const TableList: FC<TableListProp> = ({
                 columns={columns}
                 rows={data}
                 onScroll={local.paging.scroll}
+                selectedRows={new Set() as ReadonlySet<any>}
+                onSelectedCellChange={() => {}}
+                onSelectedRowsChange={() => {}}
                 renderers={
                   local.status !== "ready"
                     ? undefined
                     : {
                         renderRow(key, props) {
-                          const is_selected = selected_idx === props.rowIdx;
+                          if (
+                            cache_row === true &&
+                            local.cached_row.has(props.row)
+                          ) {
+                            return local.cached_row.get(props.row);
+                          }
                           const isSelect = selected({
                             idx: props.rowIdx,
                             row: props.row,
@@ -533,16 +568,10 @@ export const TableList: FC<TableListProp> = ({
                               )}
                             />
                           );
-                          if (typeof render_row === "function") {
-                            return render_row(child_row, props.row);
+                          if (cache_row) {
+                            local.cached_row.set(props.row, child_row);
                           }
-                          // return child_row;
-
-                          return (
-                            <>
-                              <div className="c-contents">{child_row}</div>
-                            </>
-                          );
+                          return child_row;
                         },
                         noRowsFallback: (
                           <div className="c-flex-1 c-w-full absolute inset-0 c-flex c-flex-col c-items-center c-justify-center">
