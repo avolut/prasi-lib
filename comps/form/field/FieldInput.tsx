@@ -64,6 +64,7 @@ export const FieldInput: FC<{
         on_init={() => {
           return fm;
         }}
+        show_header={arg.tbl_show_header}
         name={arg.name}
         child={child}
         PassProp={PassProp}

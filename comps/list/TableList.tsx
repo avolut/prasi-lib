@@ -50,6 +50,7 @@ type TableListProp = {
   gen_fields: string[];
   row_click: OnRowClick;
   selected: SelectedRow;
+  show_header?: boolean;
   id_parent?: string;
   feature?: Array<any>;
   filter_name: string;
@@ -92,6 +93,7 @@ export const TableList: FC<TableListProp> = ({
   render_row,
   row_height: rowHeight,
   render_col,
+  show_header,
   value,
   cache_row,
 }) => {
@@ -469,7 +471,7 @@ export const TableList: FC<TableListProp> = ({
     return (
       <div
         className={cx(
-          "c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
+          "table-list c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
           dataGridStyle(local),
           css`
             .rdg {
@@ -491,7 +493,7 @@ export const TableList: FC<TableListProp> = ({
             <Skeleton className={cx("c-w-[180px] c-h-[11px]")} />
           </div>
         )}
-        <div className="c-absolute c-inset-0">
+        <div className="table-list-inner c-absolute c-inset-0">
           {toaster_el && createPortal(<Toaster cn={cn} />, toaster_el)}
           {local.status === "init" ? (
             <DataGrid
@@ -528,6 +530,7 @@ export const TableList: FC<TableListProp> = ({
                 selectedRows={new Set() as ReadonlySet<any>}
                 onSelectedCellChange={() => {}}
                 onSelectedRowsChange={() => {}}
+                headerRowHeight={show_header === false ? 0 : undefined}
                 renderers={
                   local.status !== "ready"
                     ? undefined

@@ -19,6 +19,7 @@ const buttonVariants = cva(
           "c-bg-secondary c-text-secondary-foreground hover:c-bg-secondary/80",
         ghost: "hover:c-bg-accent hover:c-text-accent-foreground",
         link: "c-text-primary c-underline-offset-4 hover:c-underline",
+        "no-style": "",
       },
       size: {
         default: "c-h-10 c-px-4 c-py-2",
@@ -45,11 +46,17 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLDivElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
+
     return (
       <div
         className={cn(
           buttonVariants({ variant, size, className }),
-          `btn-${variant || "default"} btn c-transition-all c-duration-300`
+          `btn-${variant || "default"} btn c-transition-all c-duration-300`,
+          css`
+            > div {
+              border-radius: calc(var(--radius) - 2px);
+            }
+          `
         )}
         ref={ref}
         {...props}

@@ -368,7 +368,19 @@ export const genTableEdit = async (
     const option = {
       id: createId(),
       name: "bottom",
-      padding: { b: 10, l: 10, r: 10, t: 0 },
+      padding: {
+        b: 10,
+        l: 10,
+        r: 10,
+        t: 7,
+      },
+      border: {
+        style: "solid",
+        stroke: {
+          t: 1,
+        },
+        color: "#e6e6e6",
+      },
       type: "item",
       childs: [
         {

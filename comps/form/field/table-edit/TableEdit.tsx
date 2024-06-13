@@ -10,9 +10,10 @@ export const TableEdit: FC<{
   child: any;
   PassProp: any;
   item: PrasiItem;
+  show_header?: "y" | "n";
   bottom: any;
   body: any;
-}> = ({ on_init, name, child, PassProp, item, bottom, body }) => {
+}> = ({ on_init, name, child, PassProp, item, bottom, show_header }) => {
   const fm = on_init();
   const local = useLocal(
     {
@@ -36,9 +37,9 @@ export const TableEdit: FC<{
       <div className="c-w-full c-h-full c-flex c-flex-col">
         <div
           className={cx(
-            "c-h-[50px] c-w-full",
+            "c-w-full",
             css`
-              > .rdg {
+              .rdg {
                 overflow-y: hidden !important;
               }
               .rdg-cell > div {
@@ -53,40 +54,36 @@ export const TableEdit: FC<{
               .field-error {
                 display: none;
               }
-            `
+              .rdg-cell {
+                min-height: 50px !important;
+              }
+              .rdg-header-row {
+                border-top-right-radius: 5px;
+                border-top-left-radius: 5px;
+              }
+            `,
+            value.length === 0 &&
+              (show_header === "n"
+                ? css`
+                    display: none;
+                  `
+                : css`
+                    height: 50px;
+                  `),
+            value.length > 0 &&
+              css`
+                height: ${50 *
+                (show_header === "n" ? value.length : value.length + 1)}px;
+              `,
+            show_header === "n" &&
+              css`
+                .rdg-header-row {
+                  display: none;
+                }
+              `
           )}
-          style={{
-            height: isEditor
-              ? 100
-              : value.length === 0
-              ? 50
-              : value.length * 50 + 50,
-          }}
           ref={ref}
         >
-          {/* <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              db.milestone.create({
-                data: {
-                  goal_setting: {
-                    connect: {
-                      id: "456222b4-4c0c-4f53-b62e-3e1f685f9c4a",
-                    },
-                  },
-                  name: "124124",
-                  goal: {
-                    connect: {
-                      id: "9fa14b83-2d8b-4c3d-a18c-c17d99a37813",
-                    },
-                  },
-                },
-              });
-            }}
-          >
-            COBA
-          </button> */}
           <TableList
             row_height={50}
             feature={[]}
@@ -105,6 +102,7 @@ export const TableEdit: FC<{
               event.preventDefault();
               event.stopPropagation();
             }}
+            show_header={show_header === "y"}
             selected={() => {
               return false;
             }}

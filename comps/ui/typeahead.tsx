@@ -423,6 +423,10 @@ export const Typeahead: FC<{
                 local.render();
               }
             }
+
+            if (local.mode === "single") {
+              e.currentTarget.select();
+            }
           }}
           onChange={async (e) => {
             const val = e.currentTarget.value;

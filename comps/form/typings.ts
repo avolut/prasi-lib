@@ -72,6 +72,7 @@ export type FieldProp = {
     name: string;
     type: string;
   }) => any;
+  tbl_show_header?: "y" | "n"
   opt_set_value: (arg: {
     selected: string[];
     options: { label: string; value: string; item?: string }[];
