@@ -5,7 +5,6 @@ export const filterModifier = (type: keyof typeof modifiers) => {
     return {
       label: v,
       value: k,
-      checked: true,
     };
   });
 };

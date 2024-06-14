@@ -5,6 +5,7 @@ import { GenField } from "../form/typings";
 import { default_filter_local, filter_window } from "./utils/types";
 import { FilterContent } from "./FilterContent";
 import { getPathname } from "lib/utils/pathname";
+import { getFilter } from "./utils/get-filter";
 
 type FilterMode = "regular" | "inline" | "popup";
 
@@ -34,18 +35,25 @@ export const MasterFilter: FC<FilterProps> = ({
 }): ReactNode => {
   const filter = useLocal({ ...default_filter_local });
   filter.name = name;
+  filter.mode = mode;
 
   if (!isEditor) {
-    if (!filter_window.prasi_filter) {
-      filter_window.prasi_filter = {};
+    const wf = getFilter(name);
+    if (wf) {
+      wf.filter.ref[_item.id] = filter;
+      wf.list.render();
     }
-    const pf = filter_window.prasi_filter;
-    if (pf) {
-      const pathname = getPathname();
-      if (!pf[pathname]) pf[pathname] = {};
-      if (!pf[pathname][name]) pf[pathname][name] = {};
-      pf[pathname][name][_item.id] = filter;
-    }
+
+    // if (!filter_window.prasi_filter) {
+    //   filter_window.prasi_filter = {};
+    // }
+    // const pf = filter_window.prasi_filter;
+    // if (pf) {
+    //   const pathname = getPathname();
+    //   if (!pf[pathname]) pf[pathname] = {};
+    //   if (!pf[pathname][name]) pf[pathname][name] = {};
+    //   pf[pathname][name][_item.id] = filter;
+    // }
   }
 
   if (mode === "popup") {
@@ -92,12 +100,15 @@ export const MasterFilter: FC<FilterProps> = ({
   }
 
   return (
-    <FilterContent
-      PassProp={PassProp}
-      _item={_item}
-      child={child}
-      mode={mode}
-      filter={filter}
-    />
+    <>
+      <FilterContent
+        PassProp={PassProp}
+        _item={_item}
+        child={child}
+        mode={mode}
+        filter={filter}
+      />
+    </>
   );
 };
+

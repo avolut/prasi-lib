@@ -1,5 +1,5 @@
 import { useLocal } from "@/utils/use-local";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { FieldInternal, FieldProp } from "../typings";
 
 export const useField = (
@@ -14,8 +14,11 @@ export const useField = (
       return <arg.PassProp>{arg.child}</arg.PassProp>;
     },
     input: {},
+    ref: null as any,
   } as any);
-
+  const ref = useRef(null as any)
+  field.ref = ref;
+  
   const name = typeof arg.name === "string" ? arg.name : arg.name();
   const label = typeof arg.label === "string" ? arg.label : arg.label();
   const required =

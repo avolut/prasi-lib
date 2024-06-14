@@ -75,7 +75,7 @@ export const Layout: FC<LYTChild> = (props) => {
     }
   }
 
-  if (!w.user) return props.blank_layout;
+  if (!w.user && !isEditor) return props.blank_layout;
 
   return <>{props.default_layout}</>;
 };

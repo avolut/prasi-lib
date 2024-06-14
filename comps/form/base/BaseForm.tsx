@@ -97,6 +97,12 @@ export const BaseForm = <T extends Record<string, any>>(
   useEffect(() => {
     form.data = data;
     form.render();
+
+    if (form.internal.width === 0) {
+      setTimeout(() => {
+        form.render();
+      }, 1000);
+    }
   }, [data]);
 
   if (form.status === "init") {
@@ -125,6 +131,7 @@ export const BaseForm = <T extends Record<string, any>>(
       );
     }
   }
+
   return (
     <form
       onSubmit={(e) => {
@@ -151,10 +158,11 @@ export const BaseForm = <T extends Record<string, any>>(
           }
         }}
       >
-        {form.internal.width && (
+        {form.internal.width > 0 && (
           <>{typeof children === "function" ? children(form) : children}</>
         )}
       </div>
     </form>
   );
 };
+

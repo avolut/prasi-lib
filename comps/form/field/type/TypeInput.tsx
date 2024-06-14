@@ -1,14 +1,13 @@
 import { AutoHeightTextarea } from "@/comps/custom/AutoHeightTextarea";
 import { useLocal } from "@/utils/use-local";
 import parser from "any-date-parser";
-import { FC } from "react";
+import Datepicker from "lib/comps/custom/Datepicker";
+import { EyeIcon, EyeOff } from "lucide-react";
+import { FC, FocusEvent, MouseEvent } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldMoney } from "./TypeMoney";
 import { FieldRichText } from "./TypeRichText";
 import { FieldUpload } from "./TypeUpload";
-import day from "dayjs";
-import { EyeIcon, EyeOff } from "lucide-react";
-import Datepicker from "lib/comps/custom/Datepicker";
 
 export type PropTypeInput = {
   type: "input";
@@ -25,9 +24,11 @@ export type PropTypeInput = {
     | "rich-text"
     | "upload"
     | "file"
+    | "search"
     | "password";
-  suffix: string;
-  prefix: string;
+  placeholder?: string;
+  onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
+  onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
 };
 
 const parse = parser.exportAsFunctionAny("en-US");
@@ -91,9 +92,9 @@ export const FieldTypeInput: FC<{
     input.change_timeout = setTimeout(fm.render, 300);
   };
 
-  return (
-    <>
-      {type_field === "textarea" ? (
+  switch (type_field) {
+    case "textarea":
+      return (
         <AutoHeightTextarea
           onChange={(ev) => {
             fm.data[field.name] = ev.currentTarget.value;
@@ -113,128 +114,84 @@ export const FieldTypeInput: FC<{
             field.render();
           }}
         />
-      ) : type_field === "upload" ? (
-        <>
-          <FieldUpload field={field} fm={fm} prop={prop} />
-          {/* <input
-            type="file"
-            id="avatar"
-            name="avatar"
-            accept="image/png, image/jpeg"
-            onChange={async (event: any) => {
-              let file = null;
-              try {
-                file = event.target.files[0];
-              } catch (ex) {}
-              const formData = new FormData();
-              formData.append("file", file);
-              const response = await fetch(
-                "https://prasi.avolut.com/_proxy/https%3A%2F%2Feam.avolut.com%2F_upload",
-                {
-                  method: "POST",
-                  body: formData,
-                }
-              );
-
-              if (response.ok) {
-                const contentType: any = response.headers.get("content-type");
-                let result;
-                if (contentType.includes("application/json")) {
-                  result = await response.json();
-                } else if (contentType.includes("text/plain")) {
-                  result = await response.text();
-                } else {
-                  result = await response.blob();
-                }
-                if (Array.isArray(result)) {
-                  fm.data[field.name] = get(result, "[0]");
-                  fm.render();
-                } else {
-                  alert("Error upload");
-                }
-              } else {
-              }
-            }}
-          /> */}
-        </>
-      ) : type_field === "money" ? (
-        <>
-          <FieldMoney field={field} fm={fm} prop={prop} arg={arg} />
-        </>
-      ) : type_field === "rich-text" ? (
-        <>
-          <FieldRichText field={field} fm={fm} prop={prop} />
-        </>
-      ) : type_field === "date" ? (
-        <>
-          <Datepicker
-            value={{ startDate: value, endDate: value }}
-            displayFormat="DD MMM YYYY"
-            asSingle={true}
-            useRange={false}
-            onChange={(value) => {
-              fm.data[field.name] = value?.startDate
-                ? new Date(value?.startDate)
-                : null;
-              renderOnChange();
-            }}
-          />
-        </>
-      ) : (
-        <div className="c-flex c-relative c-flex-1">
-          <input
-            type={type_field}
-            tabIndex={0}
-            onChange={(ev) => {
-              if (["date", "datetime", "datetime-local"].includes(type_field)) {
-                let result = null;
-                try {
-                  result = new Date(ev.currentTarget.value);
-                } catch (ex) {}
-                fm.data[field.name] = result;
-              } else {
-                fm.data[field.name] = ev.currentTarget.value;
-              }
-              renderOnChange();
-            }}
-            placeholder={arg.placeholder || ""}
-            value={value}
-            disabled={field.disabled}
-            className="c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
-            spellCheck={false}
-            onFocus={() => {
-              field.focused = true;
-              display = "";
-              field.render();
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && fm.status === "ready") fm.submit();
-            }}
-            onBlur={() => {
-              field.focused = false;
-              field.render();
-            }}
-          />
-          {arg.sub_type === "password" && (
-            <div
-              className="c-absolute c-right-0 c-h-full c-flex c-items-center c-cursor-pointer"
-              onClick={() => {
-                input.show_pass = !input.show_pass;
-                input.render();
-              }}
-            >
-              <div className="">
-                {input.show_pass ? (
-                  <EyeIcon className="c-h-4" />
-                ) : (
-                  <EyeOff className="c-h-4" />
-                )}
-              </div>
-            </div>
-          )}
+      );
+    case "upload":
+      return <FieldUpload field={field} fm={fm} prop={prop} />;
+    case "money":
+      return <FieldMoney field={field} fm={fm} prop={prop} arg={arg} />;
+    case "rich-text":
+      return <FieldRichText field={field} fm={fm} prop={prop} />;
+    case "date":
+      return (
+        <Datepicker
+          value={{ startDate: value, endDate: value }}
+          displayFormat="DD MMM YYYY"
+          asSingle={true}
+          useRange={false}
+          onChange={(value) => {
+            fm.data[field.name] = value?.startDate
+              ? new Date(value?.startDate)
+              : null;
+            renderOnChange();
+          }}
+        />
+      );
+  }
+  return (
+    <div className="c-flex c-relative c-flex-1">
+      <input
+        type={type_field}
+        tabIndex={0}
+        onChange={(ev) => {
+          if (["date", "datetime", "datetime-local"].includes(type_field)) {
+            let result = null;
+            try {
+              result = new Date(ev.currentTarget.value);
+            } catch (ex) {}
+            fm.data[field.name] = result;
+          } else {
+            fm.data[field.name] = ev.currentTarget.value;
+          }
+          renderOnChange();
+        }}
+        placeholder={prop.placeholder || arg.placeholder || ""}
+        value={value}
+        disabled={field.disabled}
+        className="c-flex-1 c-transition-all c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
+        spellCheck={false}
+        onFocus={(e) => {
+          field.focused = true;
+          display = "";
+          field.render();
+          prop.onFocus?.(e);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && fm.status === "ready") fm.submit();
+        }}
+        onBlur={(e) => {
+          field.focused = false;
+          field.render();
+          prop.onBlur?.(e);
+        }}
+      />
+      {arg.sub_type === "password" && (
+        <div
+          className="c-absolute c-right-0 c-h-full c-flex c-items-center c-cursor-pointer"
+          onClick={() => {
+            input.show_pass = !input.show_pass;
+            input.render();
+          }}
+        >
+          <div className="">
+            {input.show_pass ? (
+              <EyeIcon className="c-h-4" />
+            ) : (
+              <EyeOff className="c-h-4" />
+            )}
+          </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 const isTimeString = (time: any) => {
@@ -242,3 +199,4 @@ const isTimeString = (time: any) => {
   const timePattern = /^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/;
   return timePattern.test(time);
 };
+

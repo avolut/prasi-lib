@@ -8,6 +8,7 @@ export const FieldCheckbox: FC<{
   fm: FMLocal;
   arg: FieldProp;
 }> = ({ field, fm, arg }) => {
+  // console.log({field, fm, arg})
   const local = useLocal({
     list: [] as any[],
   });

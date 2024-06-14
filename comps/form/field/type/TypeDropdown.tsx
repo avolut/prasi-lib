@@ -117,7 +117,7 @@ export const TypeDropdown: FC<{
             selected: values,
           });
         }}
-        allowNew={false}
+        allowNew={true}
         autoPopupWidth={true}
         focusOpen={true}
         mode={"multi"}

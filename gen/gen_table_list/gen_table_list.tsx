@@ -59,7 +59,7 @@ export const gen_table_list = async (
           sub_name = "tbl-col";
           break;
         case "list":
-          sub_name = "md-list";
+          sub_name = "list-row";
           break;
       }
 

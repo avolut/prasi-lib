@@ -1,5 +1,5 @@
 import { GFCol } from "@/gen/utils";
-import { ReactNode } from "react";
+import { MutableRefObject, ReactNode } from "react";
 import { editorFormData } from "./utils/ed-data";
 
 export type FMProps = {
@@ -49,6 +49,7 @@ export type FieldProp = {
   fm: FMLocal;
   type: FieldType | (() => FieldType);
   required: ("y" | "n") | (() => "y" | "n");
+  field_ref?: (ref: any) => void;
   required_msg: (name: string) => string;
   on_change: (arg: { value: any }) => void | Promise<void>;
   PassProp: any;
@@ -72,7 +73,7 @@ export type FieldProp = {
     name: string;
     type: string;
   }) => any;
-  tbl_show_header?: "y" | "n"
+  tbl_show_header?: "y" | "n";
   opt_set_value: (arg: {
     selected: string[];
     options: { label: string; value: string; item?: string }[];
@@ -157,7 +158,11 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   options: {
     on_load?: () => Promise<{ value: string; label: string }[]>;
   };
-  on_change?: (arg: { value: any, name: string, fm: FMLocal }) => void | Promise<void>;
+  on_change?: (arg: {
+    value: any;
+    name: string;
+    fm: FMLocal;
+  }) => void | Promise<void>;
   prop?: any;
 };
 export type FieldLocal = FieldInternal<any> & {
@@ -249,3 +254,4 @@ export const FieldTypeCustom = `type CustomField =
   { field: "text", type: "text" | "password" | "number" | "date" | "datetime" }
 | { field: "relation", type: "has-many" | "has-one" }
 `;
+

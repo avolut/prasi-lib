@@ -1,7 +1,6 @@
+import { useLocal } from "@/utils/use-local";
 import { FC, isValidElement } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
-import { useLocal } from "@/utils/use-local";
-import { FieldTypeInput } from "./TypeInput";
 
 export const TypeCustom: FC<{ field: FieldLocal; fm: FMLocal }> = ({
   field,

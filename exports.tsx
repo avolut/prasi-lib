@@ -75,7 +75,7 @@ export { password } from "@/utils/password";
 export { generateTableList } from "@/comps/md/gen/gen-table-list";
 export { generateForm } from "@/comps/form/gen/gen-form";
 export { generateSelect } from "@/comps/md/gen/md-select";
-
+export {generateField} from "@/comps/form/gen/gen-field";
 /** Session */
 export {
   registerSession,

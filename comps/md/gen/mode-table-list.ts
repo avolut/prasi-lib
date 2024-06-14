@@ -5,7 +5,7 @@ export const modeTableList = (mode: string) => {
       sub_name = "tbl-col";
       break;
     case "list":
-      sub_name = "md-list";
+      sub_name = "list-row";
       break;
   }
   return sub_name;

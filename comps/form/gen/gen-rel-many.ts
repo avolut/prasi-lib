@@ -116,12 +116,7 @@ export const gen_rel_many = (prop: {
       fm.render();
     }
     `;
-    const cols = [];
-    for (const [k, v] of Object.entries(select.select) as any) {
-      if (k !== select.pk && typeof v !== "object") {
-        cols.push(k);
-      }
-    }
+    const cols = getColumn(select) || [];
     const get_label = `\
     (row: { value: string; label: string; data?: any }) => {
       const cols = ${JSON.stringify(cols)};
@@ -161,7 +156,6 @@ export const gen_rel_many = (prop: {
   }
   `;
 
-  
     result.get_value = `\
   (arg: {
     options: { label: string; value: string; item?: string }[];
@@ -206,4 +200,14 @@ export const gen_rel_many = (prop: {
   `;
   }
   return result;
+};
+export const getColumn = (data: any) => {
+  const cols = [];
+
+  for (const [k, v] of Object.entries(data.select) as any) {
+    if (k !== data.pk && typeof v !== "object") {
+      cols.push(k);
+    }
+  }
+  return cols;
 };

@@ -7,7 +7,7 @@ import { editorFormData } from "./utils/ed-data";
 import { formInit } from "./utils/init";
 import { formReload } from "./utils/reload";
 import { getPathname } from "lib/utils/pathname";
-import { sofDeleteField } from "lib/utils/soft-del-rel";
+import { sofDeleteField as softDeleteField } from "lib/utils/soft-del-rel";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
@@ -60,7 +60,7 @@ export const Form: FC<FMProps> = (props) => {
     // deteksi jika ada softdelete
     if(Array.isArray(props.feature)){
       if(props.feature?.find((e) => e === "soft_delete")){
-        const result = sofDeleteField(props.gen_table, sfd_field)
+        const result = softDeleteField(props.gen_table, sfd_field)
         if (result instanceof Promise) {
           result.then((e) => {
             // simpan fields yang berisi name dan type fields soft delete

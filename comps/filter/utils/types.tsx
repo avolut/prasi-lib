@@ -2,6 +2,7 @@ import { BaseFormLocal } from "../../form/base/types";
 import { GenField } from "../../form/typings";
 
 export type FilterFieldType =
+  | "search-all"
   | "text"
   | "number"
   | "boolean"
@@ -17,9 +18,17 @@ export const default_filter_local = {
   modifiers: {} as Record<string, string>,
   types: {} as Record<string, FilterFieldType>,
   name: "",
+  mode: "",
 };
 
 export const modifiers = {
+  "search-all": {
+    contains: "Contains",
+    starts_with: "Starts With",
+    ends_with: "Ends With",
+    equal: "Equal",
+    not_equal: "Not Equal",
+  },
   text: {
     contains: "Contains",
     starts_with: "Starts With",
@@ -55,8 +64,22 @@ export type FilterModifier = typeof modifiers;
 export type FilterLocal = typeof default_filter_local & { render: () => void };
 
 export const filter_window = window as unknown as {
-  prasi_filter: Record<string, Record<string, Record<string, FilterLocal>>>;
+  prasi_filter: Record<
+    string,
+    Record<
+      string,
+      {
+        filter: {ref: Record<string, FilterLocal>, render: () => void;};
+        list: {
+          ref: Record<string, { reload: () => void }>;
+          reload: () => void;
+          render: () => void;
+        };
+      }
+    >
+  >;
   prasiContext: {
     render: () => void;
   };
 };
+

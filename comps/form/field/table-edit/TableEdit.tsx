@@ -1,7 +1,6 @@
 import { TableList } from "lib/comps/list/TableList";
 import { useLocal } from "lib/utils/use-local";
-import { FC, ReactElement, useEffect, useRef } from "react";
-import { BaseForm } from "../../base/BaseForm";
+import { FC, useRef } from "react";
 import { FMLocal } from "../../typings";
 
 export const TableEdit: FC<{
@@ -18,6 +17,7 @@ export const TableEdit: FC<{
   const local = useLocal(
     {
       tbl: null as any,
+      rowHeight: new WeakMap<any, Record<string, HTMLDivElement>>(),
     },
     () => {}
   );
@@ -41,6 +41,7 @@ export const TableEdit: FC<{
             css`
               .rdg {
                 overflow-y: hidden !important;
+                height: var(--rdg-scroll-height) !important;
               }
               .rdg-cell > div {
                 flex-direction: row;
@@ -54,12 +55,12 @@ export const TableEdit: FC<{
               .field-error {
                 display: none;
               }
-              .rdg-cell {
-                min-height: 50px !important;
-              }
               .rdg-header-row {
                 border-top-right-radius: 5px;
                 border-top-left-radius: 5px;
+              }
+              .table-list-inner {
+                position: relative !important;
               }
             `,
             value.length === 0 &&
@@ -68,13 +69,8 @@ export const TableEdit: FC<{
                     display: none;
                   `
                 : css`
-                    height: 50px;
+                    min-height: 35px;
                   `),
-            value.length > 0 &&
-              css`
-                height: ${50 *
-                (show_header === "n" ? value.length : value.length + 1)}px;
-              `,
             show_header === "n" &&
               css`
                 .rdg-header-row {
@@ -85,7 +81,16 @@ export const TableEdit: FC<{
           ref={ref}
         >
           <TableList
-            row_height={50}
+            row_height={(row) => {
+              const rh = local.rowHeight.get(row);
+              console.log(rh);
+              if (rh) {
+                for (const div of Object.values(rh)) {
+                  if (div.offsetHeight > 50) return div.offsetHeight + 6;
+                }
+              }
+              return 50;
+            }}
             feature={[]}
             child={child}
             PassProp={PassProp}
@@ -125,6 +130,17 @@ export const TableEdit: FC<{
                   }}
                   rows={tbl.data}
                   fm={fm_row}
+                  field_ref={(ref: any) => {
+                    if (ref) {
+                      if (!local.rowHeight.has(props.row)) {
+                        local.rowHeight.set(props.row, {});
+                      }
+                      const rh = local.rowHeight.get(props.row);
+                      if (rh) {
+                        rh[props.column.key] = ref;
+                      }
+                    }
+                  }}
                   ext_fm={{
                     change: () => {},
                     remove: () => {

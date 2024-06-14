@@ -16,7 +16,6 @@ export const MDRenderMaster: FC<{
     let md = on_init();
     md.header.breadcrumb = breadcrumb();
     md.header.render();
-
     if (md) {
       let width = 0;
       let min_width = 0;

@@ -38,7 +38,6 @@ export const generateRelation = async (
       return result;
     }
   } else {
-    console.log(item.edit.props);
   }
 };
 

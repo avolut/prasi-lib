@@ -8,6 +8,7 @@ import { get_value } from "./get-value";
 import { on_load_rel } from "./on_load_rel";
 import { set_value } from "./set-value";
 import { createId } from "@paralleldrive/cuid2";
+import get from "lodash.get";
 export type GFCol = {
   name: string;
   type: string;
@@ -166,17 +167,21 @@ export const newField = async (
         rel: fields,
       });
 
+      if (!result.on_load) {
+        result.on_load = `() => { return []; }`;
+      }
       let child: any = { childs: [] };
-      let rel__gen_fields: any = undefined;
-      let sub_type = "checkbox";
-      if (arg.relation?.fields?.length > 1) {
+      const relation = arg.relation?.fields.filter((e) => get(e, "name") !== opt.parent_table) || [];
+      let rel__gen_fields: any = JSON.stringify(
+        relation.map((e) => {
+          const v = (e as any).value;
+          return v;
+        })
+      );
+      let sub_type = "typeahead";
+
+      if (arg.relation?.fields?.length > 2) {
         sub_type = "table-edit";
-        rel__gen_fields = JSON.stringify(
-          arg.relation?.fields.map((e) => {
-            const v = (e as any).value;
-            return v;
-          })
-        );
         child = createItem({
           childs: await generateRelation(
             {

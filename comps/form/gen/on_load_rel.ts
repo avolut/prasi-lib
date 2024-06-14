@@ -1,13 +1,17 @@
+import { isEmptyString } from "lib/utils/is-empty-string";
+
 export const on_load_rel = ({
   pk,
   table,
   select,
   pks,
+  type
 }: {
   pk: string;
   table: string;
   select: any;
   pks: Record<string, string>;
+  type?: string;
 }) => {
   const sample = {
     label: "sample",
@@ -34,15 +38,15 @@ export const on_load_rel = ({
     if (arg.mode === 'count') {
       return await db.${table}.count();
     }
-
-    const fields = parseGenField(rel__gen_fields);
-    const res = generateSelect(fields);
+    ${!isEmptyString(type) && ["checkbox", "typeahead", "button"].includes(type as any) ? `` : `const fields = parseGenField(rel__gen_fields);
+    const res = generateSelect(fields);`}
+    
 
     const items = await db.${table}.findMany({
-      select: {
+      ${!isEmptyString(type) && ["checkbox", "typeahead", "button"].includes(type as any) ? `` : `select: {
         ...${JSON.stringify(select)}, 
         ...(res?.select || {}) 
-      },
+      },`}
       orderBy: arg.orderBy || {
         ${pk}: "desc"
       },

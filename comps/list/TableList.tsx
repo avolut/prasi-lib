@@ -10,6 +10,7 @@ import {
   MouseEvent,
   ReactElement,
   ReactNode,
+  useCallback,
   useEffect,
 } from "react";
 import DataGrid, {
@@ -25,6 +26,8 @@ import { filterWhere } from "../filter/utils/filter-where";
 import { Skeleton } from "../ui/skeleton";
 import "./TableList.css";
 import { sortTree } from "./utils/sort-tree";
+import { getFilter } from "../filter/utils/get-filter";
+import { callback } from "chart.js/dist/helpers/helpers.core";
 
 type OnRowClick = (arg: {
   row: any;
@@ -55,7 +58,7 @@ type TableListProp = {
   feature?: Array<any>;
   filter_name: string;
   render_row?: (child: any, data: any) => ReactNode;
-  row_height?: number;
+  row_height?: number | ((row: any) => number);
   render_col?: (arg: {
     props: RenderCellProps<any, unknown>;
     tbl: any;
@@ -76,6 +79,7 @@ const selectCellClassname = css`
     margin: 0;
   }
 `;
+
 export const TableList: FC<TableListProp> = ({
   name,
   on_load,
@@ -90,7 +94,6 @@ export const TableList: FC<TableListProp> = ({
   id_parent,
   feature,
   filter_name,
-  render_row,
   row_height: rowHeight,
   render_col,
   show_header,
@@ -200,6 +203,52 @@ export const TableList: FC<TableListProp> = ({
     },
   });
 
+  const reload = useCallback(() => {
+    if (typeof on_load === "function") {
+      local.status = "loading";
+      local.render();
+
+      const orderBy = local.sort.orderBy || undefined;
+      const load_args: any = {
+        async reload() {},
+        where,
+        orderBy,
+        paging: {
+          take: local.paging.take > 0 ? local.paging.take : undefined,
+          skip: local.paging.skip,
+        },
+      };
+      if (id_parent) {
+        load_args.paging = {};
+      }
+      const result = on_load({ ...load_args, mode: "query" });
+      const callback = (data: any[]) => {
+        if (local.paging.skip === 0) {
+          local.data = data;
+        } else {
+          local.data = [...local.data, ...data];
+        }
+        local.status = "ready";
+        local.render();
+      };
+      if (result instanceof Promise) result.then(callback);
+      else callback(result);
+    }
+  }, [
+    on_load,
+    local.sort.orderBy,
+    where,
+    local.paging.take,
+    local.paging.skip,
+  ]);
+
+  if (filter_name) {
+    const f = getFilter(filter_name);
+    if (f) {
+      f.list.ref[_item.id] = { reload };
+    }
+  }
+
   // code ini digunakan untuk mengambil nama dari pk yang akan digunakan sebagai key untuk id
   const pk = local.pk?.name || "id";
   useEffect(() => {
@@ -210,34 +259,7 @@ export const TableList: FC<TableListProp> = ({
     (async () => {
       on_init(local);
       if (local.status === "reload" && typeof on_load === "function") {
-        local.status = "loading";
-        local.render();
-
-        const orderBy = local.sort.orderBy || undefined;
-        const load_args: any = {
-          async reload() {},
-          where,
-          orderBy,
-          paging: {
-            take: local.paging.take > 0 ? local.paging.take : undefined,
-            skip: local.paging.skip,
-          },
-        };
-        if (id_parent) {
-          load_args.paging = {};
-        }
-        const result = on_load({ ...load_args, mode: "query" });
-        const callback = (data: any[]) => {
-          if (local.paging.skip === 0) {
-            local.data = data;
-          } else {
-            local.data = [...local.data, ...data];
-          }
-          local.status = "ready";
-          local.render();
-        };
-        if (result instanceof Promise) result.then(callback);
-        else callback(result);
+        reload();
       }
     })();
   }, [local.status, on_load, local.sort.orderBy]);
@@ -258,7 +280,7 @@ export const TableList: FC<TableListProp> = ({
       sub_name = "tbl-col";
       break;
     case "list":
-      sub_name = "md-list";
+      sub_name = "list-row";
       break;
   }
 
@@ -646,7 +668,7 @@ export const TableList: FC<TableListProp> = ({
                 {data.map((e, idx) => {
                   return (
                     <div
-                      className="flex-grow hover:c-bg-[#e2f1ff]"
+                      className="flex-grow"
                       onClick={(ev) => {
                         if (!isEditor && typeof row_click === "function") {
                           row_click({

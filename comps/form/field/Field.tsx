@@ -52,6 +52,7 @@ export const Field: FC<FieldProp> = (arg) => {
         mode === "vertical" && "c-flex-col c-space-y-1"
       )}
       {...props}
+      ref={typeof arg.field_ref === 'function' ? arg.field_ref : undefined}
     >
       {mode !== "hidden" && showlabel === "y" && (
         <Label field={field} fm={fm} />

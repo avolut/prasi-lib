@@ -52,11 +52,11 @@ export const BaseField = (prop: {
       )}
     >
       {mode !== "hidden" && <Label field={field} fm={fm} />}
-      <div className="field-inner c-flex c-flex-1 c-flex-col">
+      <div className="field-input c-flex c-flex-1 c-flex-col">
         <div
           className={cx(
             !["toogle", "button", "radio", "checkbox"].includes(arg.sub_type)
-              ? "field-outer c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm"
+              ? "field-outer c-overflow-hidden c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm"
               : "",
             fm.status === "loading"
               ? css`

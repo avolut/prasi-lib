@@ -23,8 +23,8 @@ export const on_load = ({
         });
       const field = fields.find((e) => e.name === k);
       sample[k] = val;
-      if(field){
-        if(field.type === "has-many"){
+      if (field) {
+        if (field.type === "has-many") {
           sample[k] = [val];
         }
       }
@@ -74,7 +74,7 @@ export const on_load = ({
     orderBy?: Record<string, "asc" | "desc">;
     paging: { take: number; skip: number };
     mode: 'count' | 'query';
-    where?: any
+    where?: Record<string, any>;
   }
   `;
 };

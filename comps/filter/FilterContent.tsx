@@ -28,7 +28,37 @@ export const FilterContent: FC<{
           &.filter-inline {
             display: flex;
             align-items: center;
-            /* Styles specific to topbar */
+
+            .field {
+              padding-top: 0px;
+              align-items: center;
+            }
+            .field > .label {
+              display: none;
+            }
+            .field-inner {
+              min-height: 25px;
+            }
+            .form-inner {
+              align-items: center;
+            }
+            .field-input {
+              margin-top: 0 !important;
+            }
+            .field-outer {
+              margin-top: 3px;
+              margin-bottom: 3px;
+            }
+
+            .search-all {
+              input {
+                width: 150px;
+              }
+            }
+
+            .search-focus {
+              width: 250px !important;
+            }
           }
 
           &.filter-popup {
@@ -38,6 +68,10 @@ export const FilterContent: FC<{
             transform: translate(-50%, -50%);
             z-index: 1000;
             /* Styles specific to popup */
+          }
+
+          .form-inner {
+            position: relative;
           }
         `
       )}
@@ -60,8 +94,7 @@ export const FilterContent: FC<{
           );
         }}
       </BaseForm>
-
-     
     </div>
   );
 };
+
