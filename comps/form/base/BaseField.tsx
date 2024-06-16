@@ -36,6 +36,7 @@ export const BaseField = (prop: {
     <label
       className={cx(
         "field",
+        name,
         "c-flex",
         css`
           padding: 5px 0px 0px 10px;
@@ -48,7 +49,13 @@ export const BaseField = (prop: {
         w === "⅓" && "c-w-1/3",
         w === "¼" && "c-w-1/4",
         mode === "horizontal" && "c-flex-row c-items-center",
-        mode === "vertical" && "c-flex-col c-space-y-1"
+        mode === "vertical" && "c-flex-col c-space-y-1",
+        field.focused && "focused",
+        field.disabled && "disabled",
+        typeof fm.data[name] !== "undefined" &&
+          fm.data[name] !== null &&
+          fm.data[name] !== "" &&
+          "filled"
       )}
     >
       {mode !== "hidden" && <Label field={field} fm={fm} />}

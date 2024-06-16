@@ -140,6 +140,7 @@ export const FieldInput: FC<{
         <div
           className={cx(
             "field-inner c-flex-1 c-flex c-items-center",
+            field.focused && "focused",
             field.disabled && "c-pointer-events-none"
           )}
         >
@@ -193,4 +194,3 @@ export const FieldInput: FC<{
     </div>
   );
 };
-

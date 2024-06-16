@@ -43,17 +43,6 @@ export const MasterFilter: FC<FilterProps> = ({
       wf.filter.ref[_item.id] = filter;
       wf.list.render();
     }
-
-    // if (!filter_window.prasi_filter) {
-    //   filter_window.prasi_filter = {};
-    // }
-    // const pf = filter_window.prasi_filter;
-    // if (pf) {
-    //   const pathname = getPathname();
-    //   if (!pf[pathname]) pf[pathname] = {};
-    //   if (!pf[pathname][name]) pf[pathname][name] = {};
-    //   pf[pathname][name][_item.id] = filter;
-    // }
   }
 
   if (mode === "popup") {
@@ -111,4 +100,3 @@ export const MasterFilter: FC<FilterProps> = ({
     </>
   );
 };
-

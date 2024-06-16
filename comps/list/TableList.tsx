@@ -22,12 +22,11 @@ import DataGrid, {
 } from "react-data-grid";
 import { createPortal } from "react-dom";
 import { Toaster, toast } from "sonner";
-import { filterWhere } from "../filter/utils/filter-where";
+import { filterWhere } from "../filter/parser/filter-where";
+import { getFilter } from "../filter/utils/get-filter";
 import { Skeleton } from "../ui/skeleton";
 import "./TableList.css";
 import { sortTree } from "./utils/sort-tree";
-import { getFilter } from "../filter/utils/get-filter";
-import { callback } from "chart.js/dist/helpers/helpers.core";
 
 type OnRowClick = (arg: {
   row: any;
@@ -50,6 +49,7 @@ type TableListProp = {
   on_init: (arg?: any) => any;
   mode: "table" | "list" | "grid" | "auto";
   _item: PrasiItem;
+  __props: any;
   gen_fields: string[];
   row_click: OnRowClick;
   selected: SelectedRow;
@@ -99,9 +99,8 @@ export const TableList: FC<TableListProp> = ({
   show_header,
   value,
   cache_row,
+  __props,
 }) => {
-  const where = get(w, `prasi_filter.${filter_name}`) ? {} : {};
-  const whereQuery = filterWhere("hello");
   if (mode === "auto") {
     if (w.isMobile) {
       mode = "list";
@@ -209,10 +208,11 @@ export const TableList: FC<TableListProp> = ({
       local.render();
 
       const orderBy = local.sort.orderBy || undefined;
+      const where = filterWhere(filter_name, __props);
       const load_args: any = {
         async reload() {},
-        where,
         orderBy,
+        where,
         paging: {
           take: local.paging.take > 0 ? local.paging.take : undefined,
           skip: local.paging.skip,
@@ -228,19 +228,14 @@ export const TableList: FC<TableListProp> = ({
         } else {
           local.data = [...local.data, ...data];
         }
+
         local.status = "ready";
         local.render();
       };
       if (result instanceof Promise) result.then(callback);
       else callback(result);
     }
-  }, [
-    on_load,
-    local.sort.orderBy,
-    where,
-    local.paging.take,
-    local.paging.skip,
-  ]);
+  }, [on_load, local.sort.orderBy, local.paging.take, local.paging.skip]);
 
   if (filter_name) {
     const f = getFilter(filter_name);
@@ -470,7 +465,7 @@ export const TableList: FC<TableListProp> = ({
       if (local.data.length === 0) {
         const load_args: any = {
           async reload() {},
-          where,
+          where: {},
           paging: {
             take: local.paging.take > 0 ? local.paging.take : undefined,
             skip: local.paging.skip,

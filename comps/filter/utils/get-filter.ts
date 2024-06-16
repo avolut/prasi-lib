@@ -25,7 +25,6 @@ export const getFilter = (name: string) => {
           },
         },
       };
-
     return pf[pathname][name];
   }
 };

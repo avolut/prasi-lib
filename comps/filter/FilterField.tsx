@@ -85,11 +85,8 @@ export const FilterField: FC<{
                   type: "input",
                   sub_type: "search",
                   placeholder: "Search...",
-                  onFocus(e) {
-                    e.currentTarget.classList.add("search-focus");
-                  },
                   onBlur(e) {
-                    e.currentTarget.classList.remove("search-focus");
+                    filter.form?.submit();
                   },
                 }}
               />
@@ -187,4 +184,3 @@ export const FilterField: FC<{
     </BaseField>
   );
 };
-

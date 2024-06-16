@@ -3,7 +3,7 @@ import { useLocal } from "@/utils/use-local";
 import parser from "any-date-parser";
 import Datepicker from "lib/comps/custom/Datepicker";
 import { EyeIcon, EyeOff } from "lucide-react";
-import { FC, FocusEvent, MouseEvent } from "react";
+import { FC, FocusEvent, KeyboardEvent, MouseEvent } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldMoney } from "./TypeMoney";
 import { FieldRichText } from "./TypeRichText";
@@ -199,4 +199,3 @@ const isTimeString = (time: any) => {
   const timePattern = /^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/;
   return timePattern.test(time);
 };
-

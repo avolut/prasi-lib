@@ -34,47 +34,40 @@ export const on_load = ({
   }
 
   return `\
-  (arg: TableOnLoad) => {
-    if (isEditor) return [${JSON.stringify(sample)}];
-  
-    return new Promise(async (done) => {
+(arg: TableOnLoad) => {
+  if (isEditor)
+    return [${JSON.stringify(sample)}];
+
+  return new Promise(async (done) => {
     let where = arg.where;
-    try {
-      if (!isEditor)
-        where = softDeleteFilter(where, {
-          feature: opt__feature,
-          field: sft__fields,
-          type: sft__type,
-        });
-    } catch (e) {}
-      if (arg.mode === 'count') {
-        return await db.${table}.count({
-          where: {
-            ...where,
-          }
-        });
-      }
-      const items = await db.${table}.findMany({
-        select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
-        orderBy: arg.orderBy || {
-          ${pk}: "desc"
-        },
+    if (arg.mode === "count") {
+      return await db.${table}.count({
         where: {
           ...where,
         },
-        ...arg.paging,
       });
-  
-      done(items);
-    })
-  }
-  
-  type TableOnLoad = {
-    reload: () => Promise<void>;
-    orderBy?: Record<string, "asc" | "desc">;
-    paging: { take: number; skip: number };
-    mode: 'count' | 'query';
-    where?: Record<string, any>;
-  }
-  `;
+    }
+    
+    const items = await db.${table}.findMany({
+      select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
+      orderBy: arg.orderBy || {
+        id: "desc",
+      },
+      where: {
+        ...where,
+      },
+      ...arg.paging,
+    });
+
+    done(items);
+  });
+};
+
+type TableOnLoad = {
+  reload: () => Promise<void>;
+  orderBy?: Record<string, "asc" | "desc">;
+  paging: { take: number; skip: number };
+  mode: "count" | "query";
+  where?: any;
+}`;
 };

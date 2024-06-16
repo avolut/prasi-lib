@@ -6,6 +6,7 @@ export const default_base_form_local = {
   data: {} as any,
   internal: {
     width: 0,
+    init_render: 0,
   },
   fm: null as null | FMLocal,
   fields: {} as Record<string, any>,

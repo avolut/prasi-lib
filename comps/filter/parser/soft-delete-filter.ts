@@ -1,4 +1,4 @@
-import { isEmptyString } from "./is-empty-string";
+import { isEmptyString } from "../../../utils/is-empty-string";
 
 export const softDeleteFilter = (
   where: any,
@@ -11,16 +11,15 @@ export const softDeleteFilter = (
   const feature = soft.feature || [];
   if (!feature.find((e) => e === "soft_delete")) return where;
   const defaultParam = typeof where === "object" ? where : {};
+
   if (isEmptyString(soft.field) || isEmptyString(soft.type))
     return defaultParam;
+
   const result = {
     AND: [
       typeof defaultParam === "object" ? { ...defaultParam } : {},
       {
-        [soft.field]:
-          soft.type === "boolean"
-            ? false
-            :null,
+        [soft.field]: soft.type === "boolean" ? false : null,
       },
     ],
   };

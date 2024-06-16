@@ -2,6 +2,7 @@ import { FC } from "react";
 import { BaseForm } from "../form/base/BaseForm";
 import { FilterLocal } from "./utils/types";
 import { useLocal } from "lib/utils/use-local";
+import { getFilter } from "./utils/get-filter";
 
 export const FilterContent: FC<{
   mode: string;
@@ -56,8 +57,18 @@ export const FilterContent: FC<{
               }
             }
 
-            .search-focus {
-              width: 250px !important;
+            .field.search {
+              &.focused,
+              &.filled {
+                input {
+                  width: 250px !important;
+                }
+              }
+              &.filled {
+                .field-outer {
+                  border: 2px solid blue;
+                }
+              }
             }
           }
 
@@ -79,7 +90,13 @@ export const FilterContent: FC<{
       <BaseForm
         data={filter.data}
         on_submit={(form) => {
-          console.log("skrg nyubmit");
+          const f = getFilter(filter.name);
+
+          if (f) {
+            for (const list of Object.values(f.list.ref)) {
+              list.reload();
+            }
+          }
         }}
         render={internal.render}
       >
@@ -97,4 +114,3 @@ export const FilterContent: FC<{
     </div>
   );
 };
-

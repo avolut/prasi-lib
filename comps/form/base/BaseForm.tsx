@@ -108,6 +108,7 @@ export const BaseForm = <T extends Record<string, any>>(
   if (form.status === "init") {
     form.status = "ready";
   }
+
   if (typeof props.is_form === "boolean") {
     if (!props.is_form) {
       return (
@@ -130,6 +131,16 @@ export const BaseForm = <T extends Record<string, any>>(
         </div>
       );
     }
+  }
+
+  if (form.internal.width === 0) {
+    if (form.internal.init_render > 30) {
+      return <>Failed to render BaseForm</>;
+    }
+    setTimeout(() => {
+      form.internal.init_render++;
+      form.render();
+    }, 50);
   }
 
   return (
@@ -165,4 +176,3 @@ export const BaseForm = <T extends Record<string, any>>(
     </form>
   );
 };
-
