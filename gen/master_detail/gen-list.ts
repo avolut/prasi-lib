@@ -5,7 +5,6 @@ import { gen_table_list } from "../gen_table_list/gen_table_list";
 export const genList = async (arg: GenMasterDetailArg, data: any) => {
   for (const c of get(data, "child.content.childs") || []) {
     if (c.component?.id === "c68415ca-dac5-44fe-aeb6-936caf8cc491") {
-      
       const res = await codeBuild({
         row_click: `\
 ({ row, rows, idx, event }: OnRowClick) => {
@@ -113,9 +112,10 @@ type ActionItem =
           },
         })
       );
+
       const data = childs[0].component.props;
       const modify = async (props: any) => {};
-      gen_table_list(modify, data, { mode: "table" });
+      gen_table_list(modify, data, { mode: "auto" });
     }
   }
 };

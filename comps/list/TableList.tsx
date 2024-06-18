@@ -49,7 +49,7 @@ type TableListProp = {
   on_init: (arg?: any) => any;
   mode: "table" | "list" | "grid" | "auto";
   _item: PrasiItem;
-  __props: any;
+  __props?: any;
   gen_fields: string[];
   row_click: OnRowClick;
   selected: SelectedRow;
@@ -416,6 +416,7 @@ export const TableList: FC<TableListProp> = ({
       },
     });
   }
+
   if (mode === "list") {
     if (columns.length > 1) columns = columns.slice(0, 0 + 1);
   }
@@ -457,6 +458,7 @@ export const TableList: FC<TableListProp> = ({
       }
     }
   }
+
   if (typeof value !== "undefined") {
     local.data = value;
     local.status = "ready" as any;
@@ -484,6 +486,7 @@ export const TableList: FC<TableListProp> = ({
   if (id_parent && local.pk && local.sort.columns.length === 0) {
     data = sortTree(local.data, id_parent, local.pk.name);
   }
+
   if (mode === "table") {
     return (
       <div

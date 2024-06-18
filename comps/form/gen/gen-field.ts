@@ -15,7 +15,7 @@ export const generateField = async (
     | string
     | { value: string; checked: string[] }
   )[];
-  if (["checkbox", "button"].includes(fieldType)) {
+  if (["checkbox", "button", "typeahead"].includes(fieldType)) {
     const fields = parseGenField(raw_fields);
     const res = generateSelect(fields);
     const master = fields.find(
@@ -102,15 +102,15 @@ export const generateField = async (
               let parent = {} as any;
               const fields = parseGenField(fm.props.gen_fields);
               const res = generateSelect(fields);
-              try {
-                parent = {
-                  [fm.props.gen_table]: {
-                    connect: {
-                      [res.pk]: fm.data.id || null,
-                    },
-                  },
-                };
-              } catch (e) {}
+              // try {
+              //   parent = {
+              //     [fm.props.gen_table]: {
+              //       connect: {
+              //         [res.pk]: fm.data.id || null,
+              //       },
+              //     },
+              //   };
+              // } catch (e) {}
               fm.data[name] = selected.map((e) => {
                 return {
                   ${master.name}: {

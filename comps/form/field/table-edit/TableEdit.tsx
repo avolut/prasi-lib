@@ -83,7 +83,6 @@ export const TableEdit: FC<{
           <TableList
             row_height={(row) => {
               const rh = local.rowHeight.get(row);
-              console.log(rh);
               if (rh) {
                 for (const div of Object.values(rh)) {
                   if (div.offsetHeight > 50) return div.offsetHeight + 6;

@@ -53,7 +53,7 @@ export const generateTableList = async (
     if (data["opt__on_load"]) {
       result.opt__on_load = {
         mode: "raw",
-        value: on_load({ pk, table, select, pks,fields }),
+        value: on_load({ pk, table, select, pks, fields }),
       };
     }
     let first = true;
@@ -64,7 +64,7 @@ export const generateTableList = async (
           if (idx >= 1 && arg.mode === "list") {
             return;
           }
-          if (e.is_pk && arg.mode === "table") return;
+          if (e.is_pk && (arg.mode === "table" || arg.mode === "auto")) return;
           let tree_depth = "";
           let tree_depth_built = "";
           if (first) {
@@ -91,7 +91,11 @@ export const generateTableList = async (
                       adv: {
                         js: `\
 <div {...props} className={cx(props.className, "")}>
-${arg.mode === "list" ? "{JSON.stringify(row)}" : `<FormatValue value={col.value} name={col.name} gen_fields={gen__fields} ${tree_depth} />`}
+${
+  arg.mode === "list"
+    ? "{JSON.stringify(row)}"
+    : `<FormatValue value={col.value} name={col.name} gen_fields={gen__fields} ${tree_depth} />`
+}
 </div>`,
                         jsBuilt: `\
 render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields, ${tree_depth_built} })));

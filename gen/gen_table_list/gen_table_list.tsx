@@ -4,9 +4,9 @@ import { on_load } from "./on_load";
 import { codeBuild } from "../master_detail/utils";
 
 export const gen_table_list = async (
-  modify: (data: any)            => void,
+  modify: (data: any) => void,
   data: any,
-  arg: { mode: "table" | "list" | "grid" | "auto"; id_parent?: string}
+  arg: { mode: "table" | "list" | "grid" | "auto"; id_parent?: string }
 ) => {
   const table = JSON.parse(data.gen_table.value) as string;
   const raw_fields = JSON.parse(data.gen_fields.value) as (
@@ -16,7 +16,7 @@ export const gen_table_list = async (
   const select = {} as any;
   let pk = "";
   let pks: Record<string, string> = {};
-  
+
   const fields = parseGenField(raw_fields);
   const result = {} as any;
   for (const f of fields) {
@@ -56,6 +56,7 @@ export const gen_table_list = async (
       let sub_name = "fields";
       switch (arg.mode) {
         case "table":
+        case "auto":
           sub_name = "tbl-col";
           break;
         case "list":
@@ -77,7 +78,8 @@ export const gen_table_list = async (
             if (idx >= 1 && arg.mode === "list") {
               return;
             }
-            if (e.is_pk && arg.mode === "table") return;
+            if (e.is_pk && (arg.mode === "table" || arg.mode === "auto"))
+              return;
             let tree_depth = "";
             let tree_depth_built = "";
             if (first) {

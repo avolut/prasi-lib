@@ -29,6 +29,7 @@ export type PropTypeInput = {
   placeholder?: string;
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
+  onChange?: (val: string) => void;
 };
 
 const parse = parser.exportAsFunctionAny("en-US");
@@ -153,6 +154,10 @@ export const FieldTypeInput: FC<{
             fm.data[field.name] = ev.currentTarget.value;
           }
           renderOnChange();
+
+          if (prop.onChange) {
+            prop.onChange(fm.data[field.name]);
+          }
         }}
         placeholder={prop.placeholder || arg.placeholder || ""}
         value={value}

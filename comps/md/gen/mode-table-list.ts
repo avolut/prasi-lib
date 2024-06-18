@@ -1,5 +1,5 @@
 export const modeTableList = (mode: string) => {
-  let sub_name = "fields";
+  let sub_name = "tbl-col";
   switch (mode) {
     case "table":
       sub_name = "tbl-col";

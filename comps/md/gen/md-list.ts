@@ -29,6 +29,10 @@ export const generateList = async (
       mode: "string",
       value: "",
     },
+    mode: {
+      mode: "string",
+      value: "auto",
+    },
     opt__row_click: {
       mode: "raw",
       value: `\
@@ -101,7 +105,7 @@ idx: any;
     async (props: any) => {},
     props,
     tablelist,
-    { mode: "table" },
+    { mode: "auto" },
     false
   );
   tab_master?.edit.setProp("breadcrumb", {
@@ -119,7 +123,7 @@ idx: any;
     }
     `,
   });
-
+  
   tab_master?.edit.setChilds([
     {
       type: "item",
