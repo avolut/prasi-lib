@@ -41,7 +41,7 @@ export const generateRelation = async (
   }
 };
 
-const getValueProp = (data: any) => {
+export const getValueProp = (data: any) => {
   let table = "" as string;
   try {
     table = eval(data);

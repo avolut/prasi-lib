@@ -3,6 +3,9 @@ import { parseGenField } from "lib/gen/utils";
 import { on_load_rel } from "./on_load_rel";
 import { gen_rel_many, getColumn } from "./gen-rel-many";
 import get from "lodash.get";
+import { getValueProp } from "./gen-rel";
+import { genTableEdit } from "./gen-table-edit";
+import { createId } from "@paralleldrive/cuid2";
 
 export const generateField = async (
   data: any,
@@ -241,6 +244,25 @@ export const generateField = async (
         mode: "raw",
         value: result[e],
       });
+    });
+    const res = (await genTableEdit(
+      item,
+      {
+        gen__table: data.rel__gen_table,
+        gen__fields: data.rel__gen_fields,
+      },
+      false
+    )) as any;
+    
+    item.edit.setProp("child", {
+      mode: "jsx",
+      value: {
+        id: createId(),
+        name: "item",
+        type: "item",
+        edit: null as any,
+        childs: res,
+      },
     });
     await item.edit.commit();
   }
