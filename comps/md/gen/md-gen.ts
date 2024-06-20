@@ -1,7 +1,6 @@
 import { GenFn } from "lib/gen/utils";
-import { generateList } from "./md-list";
-import { generateForm } from "../../../..";
 import { generateMDForm } from "./md-form";
+import { generateList } from "./md-list";
 
 const w = window as unknown as {
   generating_prasi_md: Record<string, true>;

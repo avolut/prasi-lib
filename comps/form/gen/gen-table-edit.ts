@@ -317,7 +317,6 @@ export const genTableEdit = async (
         name: "btn-submit",
         type: "item",
         edit: null as any,
-        padding: { b: 10, l: 10, r: 10, t: 0 },
         childs: [
           {
             id: createId(),

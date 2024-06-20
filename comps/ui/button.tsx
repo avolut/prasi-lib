@@ -43,27 +43,28 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-const Button = React.forwardRef<HTMLDivElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
+const Button = React.forwardRef<
+  HTMLDivElement | HTMLButtonElement,
+  ButtonProps
+>(({ className, variant, size, asChild = false, ...props }, ref) => {
+  const Comp = asChild ? Slot : "button";
 
-    return (
-      <div
-        className={cn(
-          buttonVariants({ variant, size, className }),
-          `btn-${variant || "default"} btn c-transition-all c-duration-300`,
-          css`
-            > div {
-              border-radius: calc(var(--radius) - 2px);
-            }
-          `
-        )}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
-);
+  return (
+    <div
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        `btn-${variant || "default"} btn c-transition-all c-duration-300`,
+        css`
+          > div {
+            border-radius: calc(var(--radius) - 2px);
+          }
+        `
+      )}
+      ref={ref as any}
+      {...props}
+    />
+  );
+});
 Button.displayName = "Button";
 
 const FloatButton = React.forwardRef<HTMLDivElement, ButtonProps>(

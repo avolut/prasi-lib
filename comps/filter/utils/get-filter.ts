@@ -1,4 +1,4 @@
-import { getPathname } from "../../../..";
+import { getPathname } from "lib/utils/pathname";
 import { filter_window } from "./types";
 
 export const getFilter = (name: string) => {

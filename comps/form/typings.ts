@@ -150,6 +150,7 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   disabled: boolean;
   required_msg: FieldProp["required_msg"];
   col?: GFCol;
+  ref?: any;
   Child: () => ReactNode;
   custom: FieldProp["custom"];
   input: Record<string, any> & {

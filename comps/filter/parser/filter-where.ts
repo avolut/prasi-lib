@@ -1,5 +1,4 @@
-import { GFCol } from "lib/gen/utils";
-import { parseGenField } from "../../../..";
+import { GFCol, parseGenField } from "lib/gen/utils";
 import { getFilter } from "../utils/get-filter";
 import { parseSingleFilter } from "./single-filter";
 import { softDeleteFilter } from "./soft-delete-filter";
