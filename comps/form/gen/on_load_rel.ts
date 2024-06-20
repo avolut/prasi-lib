@@ -26,18 +26,18 @@ export const on_load_rel = ({
   }
 
   return `\
-(arg: {
+async (arg: {
   reload: () => Promise<void>;
   orderBy?: Record<string, "asc" | "desc">;
   paging: { take: number; skip: number };
   mode: 'count' | 'query'
 }) => {
   if (isEditor) return [${JSON.stringify(sample)}];
+  if (arg.mode === 'count') {
+    return await db.${table}.count();
+  }
 
   return new Promise(async (done) => {
-    if (arg.mode === 'count') {
-      return await db.${table}.count();
-    }
     ${!isEmptyString(type) && ["checkbox", "typeahead", "button"].includes(type as any) ? `` : `const fields = parseGenField(rel__gen_fields);
     const res = generateSelect(fields);`}
     

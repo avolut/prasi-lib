@@ -265,10 +265,7 @@ export const TableList: FC<TableListProp> = ({
   );
   let childs: any[] = [];
 
-  let checkedBox: any[] = [];
-
   let sub_name = "fields";
-  // if (mode === "table") sub_name = "columns";
 
   switch (mode) {
     case "table":

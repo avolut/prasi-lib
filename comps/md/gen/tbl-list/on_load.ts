@@ -34,20 +34,20 @@ export const on_load = ({
   }
 
   return `\
-(arg: TableOnLoad) => {
+async (arg: TableOnLoad) => {
   if (isEditor)
     return [${JSON.stringify(sample)}];
 
+  let where = arg.where;
+  if (arg.mode === "count") {
+    return await db.${table}.count({
+      where: {
+        ...where,
+      },
+    });
+  }
+
   return new Promise(async (done) => {
-    let where = arg.where;
-    if (arg.mode === "count") {
-      return await db.${table}.count({
-        where: {
-          ...where,
-        },
-      });
-    }
-    
     const items = await db.${table}.findMany({
       select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
       orderBy: arg.orderBy || {
