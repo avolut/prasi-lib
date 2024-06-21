@@ -5,8 +5,15 @@ const w = window as any;
 const parse = parser.exportAsFunctionAny("en-US");
 export const loadSession = (url_login?: string) => {
   if (!isEditor) {
+    let id_site = ""
+    if (location.hostname === "prasi.avolut.com" ) {
+      const parts = location.pathname.split("/");
+      id_site = parts[2];
+    }
+
     try {
-      const user = localStorage.getItem("user");
+      const user = localStorage.getItem("user" + id_site);
+      console.log(user);
       if (user) {
         const raw = JSON.parse(user);
         w.user = raw.data;

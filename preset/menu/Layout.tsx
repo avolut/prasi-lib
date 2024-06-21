@@ -35,6 +35,7 @@ type LYTChild = {
   default_layout: ReactNode;
   exception?: Array<string>;
   blank_layout: ReactNode;
+  login_url: string;
 };
 
 export const Layout: FC<LYTChild> = (props) => {
@@ -62,8 +63,9 @@ export const Layout: FC<LYTChild> = (props) => {
   fn();
   const path = getPathname();
   const no_layout = props.exception;
+
   useEffect(() => {
-    loadSession("/auth/login");
+    loadSession(props.login_url || "/auth/login");
     render();
   }, []);
 

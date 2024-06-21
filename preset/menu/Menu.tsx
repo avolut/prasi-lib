@@ -1,7 +1,7 @@
 import { getPathname } from "lib/utils/pathname";
 import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
-import { FC, ReactNode, useEffect } from "react";
+import { FC, useEffect } from "react";
 import { IMenu, MenuProp } from "./utils/type-menu";
 // import { icon } from "../../..";
 
@@ -10,19 +10,24 @@ export const Menu: FC<MenuProp> = (props) => {
   let role = props.role;
   role = props.on_init();
   let menu = get(imenu, role) || [];
+  console.log(menu);
   const pathname = getPathname();
+
   const local = useLocal({
     open: [] as Array<any>,
     cache: false,
     active: null as any,
     mode: "full" as "full" | "mini",
   });
+
   useEffect(() => {
     local.mode = props.mode;
     local.render();
   }, [props.mode]);
+
   if (!local.open.length && !local.cache) {
-    const result = findChildMenu(menu, (e: any) => e[2] === pathname);
+    const result = findChildMenu(menu, (e: any) => e?.[2] === pathname);
+ 
     if (Array.isArray(result)) {
       local.open.push(result);
       local.active = result;
@@ -30,6 +35,7 @@ export const Menu: FC<MenuProp> = (props) => {
       local.render();
     }
   }
+
   return (
     <div
       className={cx(
@@ -147,7 +153,7 @@ const found = (data: Array<any>, predicate: any) => {
   return result ? true : false;
 };
 const findChild = (data: Array<any>, predicate: any) => {
-  const children = data[2]; // array index ke-2 bisa berupa array atau string
+  const children = data?.[2]; // array index ke-2 bisa berupa array atau string
   if (predicate(data)) {
     // kalau data ada yang cocok dari prediksi maka true, kalau gk jalankan false
     return data;
