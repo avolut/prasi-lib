@@ -3,7 +3,7 @@ import { GFCol, createItem, parseGenField } from "../utils";
 import { on_load } from "./on_load";
 import { codeBuild, codeBuildTest } from "../master_detail/utils";
 // import * as Excel from "exceljs";
-import ExcelJS from "exceljs";
+// import ExcelJS from "exceljs";
 
 export const gen_export = async (
   modify: (data: any) => void,
@@ -52,22 +52,22 @@ export const gen_export = async (
       `SELECT ${selectFields} FROM ${tableName};`
     );
 
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Sheet 1");
+    // const workbook = new ExcelJS.Workbook();
+    // const worksheet = workbook.addWorksheet("Sheet 1");
 
-    const columns = Object.keys(result[0]);
-    worksheet.addRow(columns);
+    // const columns = Object.keys(result[0]);
+    // worksheet.addRow(columns);
 
-    result.forEach((row) => {
-      const values = columns.map((col) => row[col]);
-      worksheet.addRow(values);
-    });
+    // result.forEach((row) => {
+    //   const values = columns.map((col) => row[col]);
+    //   worksheet.addRow(values);
+    // });
 
-    const buffer = await workbook.xlsx.writeBuffer();
+    // const buffer = await workbook.xlsx.writeBuffer();
 
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
+    // const blob = new Blob([buffer], {
+    //   type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    // });
 
     // FileSaver.saveAs(blob, "exported_data.xlsx");
 
