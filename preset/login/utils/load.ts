@@ -13,7 +13,6 @@ export const loadSession = (url_login?: string) => {
 
     try {
       const user = localStorage.getItem("user" + id_site);
-      console.log(user);
       if (user) {
         const raw = JSON.parse(user);
         w.user = raw.data;

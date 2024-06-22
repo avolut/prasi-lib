@@ -10,7 +10,6 @@ export const Menu: FC<MenuProp> = (props) => {
   let role = props.role;
   role = props.on_init();
   let menu = get(imenu, role) || [];
-  console.log(menu);
   const pathname = getPathname();
 
   const local = useLocal({
@@ -27,7 +26,7 @@ export const Menu: FC<MenuProp> = (props) => {
 
   if (!local.open.length && !local.cache) {
     const result = findChildMenu(menu, (e: any) => e?.[2] === pathname);
- 
+
     if (Array.isArray(result)) {
       local.open.push(result);
       local.active = result;
@@ -59,12 +58,15 @@ export const SideBar: FC<{
   depth: number;
   pm: MenuProp;
   mode: "full" | "mini";
-}> = ({ data, local, depth, pm, mode }) => {
+}> = ({ data: _data, local, depth, pm, mode }) => {
   const PassProp = pm.PassProp;
+
+  const data: IMenu[] = (typeof _data[0] === "string" ? [_data] : _data) as any;
+
   return (
     <div
       className={cx(
-        "c-flex c-flex-col c-flex-grow c-mb-1",
+        "c-flex c-flex-col c-flex-grow",
         depth > 0 ? " c-overflow-hidden" : ""
       )}
     >
@@ -75,12 +77,21 @@ export const SideBar: FC<{
           value: item[2],
         };
         const find_child = findChild(item, (e: any) => local.open.includes(e));
-        let expand = find_child;
-        if (find_child && !local.open.includes(item)) local.open.push(item);
+        if (find_child && !local.open.includes(item)) {
+          local.open.push(item);
+          setTimeout(() => {
+            local.render();
+          }, 100);
+        }
+
+        if (typeof menu.value === "string" && getPathname() === menu.value) {
+          local.active = item;
+        }
+
         return (
           <div className="w-full c-flex c-flex-col c-overflow-hidden">
             <div
-              onClick={() => {
+              onClick={async () => {
                 const childs = getChilds(item) || [];
                 if (local.open.includes(item)) {
                   local.open = local.open.filter(
@@ -89,12 +100,18 @@ export const SideBar: FC<{
                 } else {
                   local.open.push(item);
                 }
-                local.active = item;
                 local.render();
+
+                console.log(
+                  "hello",
+                  !Array.isArray(menu.value) && typeof menu.value === "string"
+                );
                 if (
                   !Array.isArray(menu.value) &&
                   typeof menu.value === "string"
                 ) {
+                  await preload(menu.value);
+                  console.log("preloaded", preload);
                   navigate(menu.value);
                 }
               }}
@@ -104,14 +121,16 @@ export const SideBar: FC<{
                 depth={depth || 0}
                 hasChild={Array.isArray(menu.value) && mode === "full"}
                 selected={local.active === item}
-                expand={expand && Array.isArray(menu.value) && mode === "full"}
+                expand={
+                  find_child && Array.isArray(menu.value) && mode === "full"
+                }
                 mode={mode}
               >
                 {pm.child}
               </PassProp>
             </div>
             <div className="c-flex c-flex-col">
-              {Array.isArray(menu.value) && expand && mode === "full" ? (
+              {Array.isArray(menu.value) && mode === "full" ? (
                 <>
                   <SideBar
                     data={menu.value}
@@ -138,10 +157,12 @@ const getChilds = (data: Array<any>) => {
   const children = data[2]; // array index ke-2 bisa berupa array atau string
   if (Array.isArray(children)) {
     for (let child of children) {
-      childs.push(child);
-      if (Array.isArray(child[2])) {
-        const result: any = getChilds(child);
-        childs = childs.concat(result);
+      if (child) {
+        childs.push(child);
+        if (Array.isArray(child[2])) {
+          const result: any = getChilds(child);
+          childs = childs.concat(result);
+        }
       }
     }
   }
