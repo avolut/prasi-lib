@@ -1,7 +1,7 @@
 import { GFCol } from "@/gen/utils";
 import { useLocal } from "@/utils/use-local";
 import { ChangeEvent, FC, MouseEvent } from "react";
-import { Workbook } from 'exceljs';
+// import { Workbook } from 'exceljs';
 // import * as XLSX from "xlsx";
 
 type ImportExcelProps = {
@@ -12,7 +12,7 @@ type ImportExcelProps = {
 type RowData = {
   pk: string | number;
   rows: any;
-}
+};
 
 export const ImportExcel: FC<ImportExcelProps> = ({
   gen_fields,
@@ -32,7 +32,7 @@ export const ImportExcel: FC<ImportExcelProps> = ({
     insertedData: [] as any[],
     isStopped: false,
     processedRows: 0,
-    firstRow: [] as string[]
+    firstRow: [] as string[],
   });
 
   const pk = local.pk?.name || "id";
@@ -81,28 +81,30 @@ export const ImportExcel: FC<ImportExcelProps> = ({
     reader.onload = async (event: ProgressEvent<FileReader>) => {
       if (!event.target?.result) return;
 
-      const buffer = new Uint8Array(event.target.result as ArrayBuffer);
-      const workbook = new Workbook();
-      await workbook.xlsx.load(buffer);
+    //   const buffer = new Uint8Array(event.target.result as ArrayBuffer);
+    //   const workbook = new Workbook();
+    //   await workbook.xlsx.load(buffer);
 
-      const worksheet = workbook.worksheets[0];
-      if (worksheet) {
-        let sheetData = worksheet.getRows(1, worksheet.actualRowCount)?.map(row => row.values);
-        let firstRow = sheetData!.shift();
-        local.data = sheetData!;
-        if (firstRow) {
-          local.firstRow = firstRow as string[];
-        } else {
-          console.log('firstRow is undefined');
-        }
-        local.columns = getAllKeys(local.data);
-        gen_fields.forEach((data: any) => {
-          local.fields.push(JSON.parse(data).name);
-        });
-        local.tableName = gen_table;
-        local.showPreviewExcel = true;
-        local.render();
-      }
+    //   const worksheet = workbook.worksheets[0];
+    //   if (worksheet) {
+    //     let sheetData = worksheet
+    //       .getRows(1, worksheet.actualRowCount)
+    //       ?.map((row) => row.values);
+    //     let firstRow = sheetData!.shift();
+    //     local.data = sheetData!;
+    //     if (firstRow) {
+    //       local.firstRow = firstRow as string[];
+    //     } else {
+    //       console.log("firstRow is undefined");
+    //     }
+    //     local.columns = getAllKeys(local.data);
+    //     gen_fields.forEach((data: any) => {
+    //       local.fields.push(JSON.parse(data).name);
+    //     });
+    //     local.tableName = gen_table;
+    //     local.showPreviewExcel = true;
+    //     local.render();
+    //   }
     };
     reader.readAsArrayBuffer(file);
   };
@@ -124,7 +126,8 @@ export const ImportExcel: FC<ImportExcelProps> = ({
           let insertRow: any = {};
           local.columnMappings.forEach((columnMapping) => {
             insertRow[pk] = rowIndex;
-            insertRow[columnMapping.selectedColumn] = row.rows[columnMapping.column];
+            insertRow[columnMapping.selectedColumn] =
+              row.rows[columnMapping.column];
           });
           rowIndex++;
 
@@ -135,13 +138,13 @@ export const ImportExcel: FC<ImportExcelProps> = ({
           // });
           local.insertedData.push({
             pk: insertRow[pk],
-            rows: insertRow
+            rows: insertRow,
           });
           local.render();
           local.processedRows++;
           local.progress = Math.round((local.processedRows / totalRows) * 100);
           local.render();
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 2000));
         }
       }
       local.isLoading = false;
@@ -201,7 +204,9 @@ export const ImportExcel: FC<ImportExcelProps> = ({
     });
     const table = (db as any)[local.tableName];
     if (table) {
-      let remainingData = local.selectedRows.filter((row) => !ids.includes(row.pk));
+      let remainingData = local.selectedRows.filter(
+        (row) => !ids.includes(row.pk)
+      );
       local.showPreviewExcel = false;
       local.isLoading = true;
       local.render();
@@ -209,7 +214,8 @@ export const ImportExcel: FC<ImportExcelProps> = ({
       for (const row of remainingData) {
         let insertRow: any = {};
         local.columnMappings.forEach((columnMapping) => {
-          insertRow[columnMapping.selectedColumn] = row.rows[columnMapping.column];
+          insertRow[columnMapping.selectedColumn] =
+            row.rows[columnMapping.column];
         });
 
         // let insertedData = await table.create({ data: insertRow });
@@ -219,19 +225,19 @@ export const ImportExcel: FC<ImportExcelProps> = ({
         // });
         local.insertedData.push({
           pk: insertRow[pk],
-          rows: insertRow
+          rows: insertRow,
         });
         local.render();
         local.processedRows++;
         local.progress = Math.round((local.processedRows / totalRows) * 100);
         local.render();
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       }
       local.isLoading = false;
       local.isStopped = false;
       local.render();
     }
-  }
+  };
 
   const columnMappingChange =
     (col: string) => (e: ChangeEvent<HTMLSelectElement>) => {
@@ -251,7 +257,7 @@ export const ImportExcel: FC<ImportExcelProps> = ({
   return (
     <div>
       <input type="file" onChange={handleFileUpload} />
-      {local.showPreviewExcel && (local.data.length > 0 && (
+      {local.showPreviewExcel && local.data.length > 0 && (
         <div>
           <button
             onClick={executeImport}
@@ -321,7 +327,9 @@ export const ImportExcel: FC<ImportExcelProps> = ({
                       <input
                         className="c-pointer-events-none"
                         type="checkbox"
-                        checked={isRowChecked(row[pk] === undefined ? index : row[pk])}
+                        checked={isRowChecked(
+                          row[pk] === undefined ? index : row[pk]
+                        )}
                       />
                     </div>
                   </td>
@@ -338,25 +346,25 @@ export const ImportExcel: FC<ImportExcelProps> = ({
             </tbody>
           </table>
         </div>
-      ))}
+      )}
       {local.isLoading && (
-        <div style={{ width: '100%', padding: '10px' }}>
+        <div style={{ width: "100%", padding: "10px" }}>
           <div
             style={{
-              width: '100%',
-              backgroundColor: '#f3f3f3',
-              borderRadius: '4px',
-              overflow: 'hidden'
+              width: "100%",
+              backgroundColor: "#f3f3f3",
+              borderRadius: "4px",
+              overflow: "hidden",
             }}
           >
             <div
               style={{
                 width: `${local.progress}%`,
-                height: '24px',
-                backgroundColor: '#4caf50',
-                textAlign: 'center',
-                lineHeight: '24px',
-                color: 'white'
+                height: "24px",
+                backgroundColor: "#4caf50",
+                textAlign: "center",
+                lineHeight: "24px",
+                color: "white",
               }}
             >
               {local.progress}%
@@ -368,24 +376,26 @@ export const ImportExcel: FC<ImportExcelProps> = ({
         <div>
           {local.insertedData.length !== local.selectedRows.length && (
             <div>
-              {!local.isStopped && (<button
-                onClick={handleStopProgress}
-                style={{
-                  backgroundColor: "red",
-                  border: "none",
-                  color: "white",
-                  padding: "15px 32px",
-                  textAlign: "center",
-                  textDecoration: "none",
-                  display: "inline-block",
-                  fontSize: "16px",
-                  margin: "4px 2px",
-                  cursor: "pointer",
-                  borderRadius: "10px",
-                }}
-              >
-                Pause Progress
-              </button>)}
+              {!local.isStopped && (
+                <button
+                  onClick={handleStopProgress}
+                  style={{
+                    backgroundColor: "red",
+                    border: "none",
+                    color: "white",
+                    padding: "15px 32px",
+                    textAlign: "center",
+                    textDecoration: "none",
+                    display: "inline-block",
+                    fontSize: "16px",
+                    margin: "4px 2px",
+                    cursor: "pointer",
+                    borderRadius: "10px",
+                  }}
+                >
+                  Pause Progress
+                </button>
+              )}
               {local.isStopped && (
                 <button
                   onClick={continueProgress}
@@ -413,7 +423,10 @@ export const ImportExcel: FC<ImportExcelProps> = ({
             <thead>
               <tr>
                 {local.columnMappings.map((col) => (
-                  <th key={col.selectedColumn} style={{ border: "1px solid black", padding: "8px" }}>
+                  <th
+                    key={col.selectedColumn}
+                    style={{ border: "1px solid black", padding: "8px" }}
+                  >
                     {col.selectedColumn}
                   </th>
                 ))}
@@ -422,8 +435,15 @@ export const ImportExcel: FC<ImportExcelProps> = ({
             <tbody>
               <tr>
                 {local.columnMappings.map((col) => (
-                  <td key={col.selectedColumn} style={{ border: "1px solid black", padding: "8px" }}>
-                    {local.insertedData[local.insertedData.length - 1].rows[col.selectedColumn]}
+                  <td
+                    key={col.selectedColumn}
+                    style={{ border: "1px solid black", padding: "8px" }}
+                  >
+                    {
+                      local.insertedData[local.insertedData.length - 1].rows[
+                        col.selectedColumn
+                      ]
+                    }
                   </td>
                 ))}
               </tr>
