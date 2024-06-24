@@ -16,17 +16,15 @@ export type LGProps = {
 export const Login: FC<LGProps> = (props) => {
   const local = useLocal({ loading: true }, () => {
     loadSession();
-    setTimeout(() => {
-      if (w.user) {
-        const home = props.url_home[w.user.role];
-        if (home) {
-          navigate(home);
-          return;
-        }
+    if (w.user) {
+      const home = props.url_home[w.user.role];
+      if (home) {
+        navigate(home);
+        return;
       }
-      local.loading = false;
-      local.render();
-    }, 500);
+    }
+    local.loading = false;
+    local.render();
   });
 
   if (local.loading)

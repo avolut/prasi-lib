@@ -67,50 +67,59 @@ async ({ form, error, fm }: IForm) => {
       fm.status = "saving";
       md.render();
     }
-    
-    const data = { ...form }; // data form
-    const data_rel = ${JSON.stringify(rel_many)}  // list relasi has many
-    const data_master = {} as Record<string, any> | any; // variabel untuk data master
-    const data_array = [] as Array<{
+
+    const data = { ...form };
+    const record = {} as Record<string, any>;
+
+    const relation_ref = ${JSON.stringify(rel_many)};
+    const has_many = [] as Array<{
       table: string;
       data: Array<any>;
       fk: string;
-    }>; // variabel untuk data array atau has many
+    }>;
 
-    // proses untuk membagi antara data master dengan data array
-    // data array / has many dilihat dari value yang berupa array
+    // pisahkan antara has_many dengan field biasa
     for (const [k, v] of Object.entries(data) as any) {
       if (Array.isArray(v)) {
-        const rel = Array.isArray(data_rel) && data_rel.length ? data_rel.find((e) => e.table === k) : null
+        const rel =
+          Array.isArray(relation_ref) && relation_ref.length
+            ? relation_ref.find((e) => e.table === k)
+            : null;
         if (rel) {
-          data_array.push({
+          has_many.push({
             table: k,
             data: v,
             fk: rel.fk,
           });
         }
       } else {
-        data_master[k] = v;
+        record[k] = v;
       }
     }
-    // hapus id dari data_master jika ada
-    try {
-      delete data_master.${pk};
-    } catch (ex) {}
+
+    // prisma create / update ga boleh ada record.${pk}
+    if (record) delete record.${pk};
+
     if (form.${pk}) {
       await db.${table}.update({
         where: {
           ${pk}: form.${pk},
         },
-        data: data_master,
+        data: {
+          ...record,
+        },
       });
     } else {
       const res = await db.${table}.create({
-        data: data_master,
+        //@ts-ignore
+        data: {
+          ...record,
+        },
       });
-      if (res) form.${pk} = res.${pk};
+      if (res) form.id = res.id;
     }
-    if (data_array.length) {
+
+    if (has_many.length) {
       const exec_query_bulk = async (
         current: { table: string; data: Array<any>; fk: string },
         list: Array<{ table: string; data: Array<any>; fk: string }>,
@@ -120,7 +129,7 @@ async ({ form, error, fm }: IForm) => {
           const data = current.data.map((e) => {
             return {
               ...e,
-              ${table}: {
+              m_role: {
                 connect: {
                   ${pk}: form.${pk},
                 },
@@ -146,7 +155,7 @@ async ({ form, error, fm }: IForm) => {
           }
         }
       };
-      await exec_query_bulk(data_array[0], data_array, 0);
+      await exec_query_bulk(has_many[0], has_many, 0);
     }
     result = true;
   } catch (e) {

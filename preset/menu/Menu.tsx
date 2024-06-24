@@ -13,6 +13,7 @@ const local_default = {
   nav_timeout: null as any,
   pathname: "",
   loading: false,
+  init: false,
 };
 type MLocal = typeof local_default & { render: () => void };
 
@@ -22,10 +23,14 @@ export const Menu: FC<MenuProp> = (props) => {
   role = props.on_init();
   let menu = get(imenu, role) || [];
 
-  const local = useLocal(local_default);
+  const local = useLocal({ ...local_default });
 
   if (local.pathname !== getPathname()) {
     local.pathname = getPathname();
+  }
+  if (!local.init) {
+    local.active = "";
+    local.init = true;
   }
 
   useEffect(() => {
@@ -142,7 +147,6 @@ export const SideBar: FC<{
                 local.loading = true;
                 if (typeof menu.value === "string") {
                   local.active = menu.hash;
-
                   clearTimeout(local.nav_timeout);
                   local.nav_timeout = setTimeout(() => {
                     if (

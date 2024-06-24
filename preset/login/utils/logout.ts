@@ -11,8 +11,14 @@ export const logout = (url_login?: string) => {
   if (typeof get(w, "user") === "object") {
     w.user = null;
   }
-  if (localStorage.getItem("user")) {
-    localStorage.removeItem("user");
+
+  let id_site = "";
+  if (location.hostname === "prasi.avolut.com") {
+    const parts = location.pathname.split("/");
+    id_site = parts[2];
+  }
+  if (localStorage.getItem("user" + id_site)) {
+    localStorage.removeItem("user" + id_site);
   }
   if (url_login) navigate(url_login);
 };
