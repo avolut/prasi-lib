@@ -77,6 +77,7 @@ export const Layout: FC<LYTChild> = (props) => {
     }
   }
 
+  if (path === props.login_url) return props.blank_layout;
   if (!w.user && !isEditor) return props.blank_layout;
 
   return <>{props.default_layout}</>;

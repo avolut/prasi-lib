@@ -3,8 +3,10 @@ import day from "dayjs";
 const w = window as any;
 export type RG = {
   data: any;
+  role: string;
   expired: number; // second
 };
+
 export type UserSession = {
   data: any;
   expired: Date; // second
