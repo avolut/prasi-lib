@@ -12,6 +12,9 @@ export type UserSession = {
   expired: Date; // second
 };
 export const registerSession = (session: RG) => {
+  if (session.role) {
+    session.data.role = session.role;
+  }
   const data = {
     data: session.data,
     expired: session.expired ? day().add(session.expired, "seconds") : null,
@@ -25,4 +28,5 @@ export const registerSession = (session: RG) => {
 
   localStorage.setItem("user" + id_site, JSON.stringify(data));
   w.user = session.data;
+  w.user.role = session.role;
 };

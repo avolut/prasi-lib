@@ -1,5 +1,7 @@
 import { FC, useEffect } from "react";
 import { loadSession } from "./utils/load";
+import { useLocal } from "lib/utils/use-local";
+import { FieldLoading } from "../../..";
 
 const w = window as unknown as {
   user: any;
@@ -7,21 +9,35 @@ const w = window as unknown as {
 };
 
 export type LGProps = {
-  salt: string;
-  url_home: Array<Record<string, string>>;
+  url_home: Record<string, string>;
   body: any;
 };
 
 export const Login: FC<LGProps> = (props) => {
-  w.prasi_home = props.url_home[0];
-  useEffect(() => {
-    try {
-      loadSession();
+  const local = useLocal({ loading: true }, () => {
+    loadSession();
+    setTimeout(() => {
       if (w.user) {
-        const home = w.prasi_home[w.user.m_role.name];
-        navigate(home);
+        const home = props.url_home[w.user.role];
+        if (home) {
+          navigate(home);
+          return;
+        }
       }
-    } catch (e: any) {}
-  }, []);
+      local.loading = false;
+      local.render();
+    }, 500);
+  });
+
+  if (local.loading)
+    return (
+      <div
+        className={css`
+          padding: 10px;
+        `}
+      >
+        <FieldLoading />
+      </div>
+    );
   return <>{props.body}</>;
 };
