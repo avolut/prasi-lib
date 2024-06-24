@@ -37,15 +37,11 @@ export const Popup: FC<PopupProp> = ({ on_close, open, child }) => {
             ref={(e) => (local.ref = e)}
             className="c-w-screen c-h-screen c-bg-transparent  c-flex c-flex-row c-items-center c-justify-center"
             onClick={(e) => {
-              console.log({ e });
-              console.log(local.ref, e.target);
               if (local.ref) {
                 if (e.target === local.ref) {
                   on_close(false);
                   local.open = false;
                   local.render();
-                } else {
-                  console.log("click inside popup");
                 }
               }
             }}

@@ -14,7 +14,7 @@ const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 export { FMLocal } from "./typings";
 
 export const Form: FC<FMProps> = (props) => {
-  const { PassProp, body, feature, sfd_field } = props;
+  const { PassProp, body, feature, sfd_field, style } = props;
   const fm = useLocal<FMInternal>({
     data: editorFormData[props.item.id]
       ? editorFormData[props.item.id].data
@@ -167,7 +167,8 @@ export const Form: FC<FMProps> = (props) => {
       {toaster_el && createPortal(<Toaster cn={cx} />, toaster_el)}
       <div
         className={cx(
-          "form-inner c-flex c-flex-1 c-flex-wrap c-items-start c-content-start c-absolute c-inset-0",
+          "form-inner c-flex c-flex-1 c-flex-wrap c-items-start c-content-start",
+          style  === "flex" ? "" : "c-absolute c-inset-0" ,
           css`
             padding-right: 10px;
           `

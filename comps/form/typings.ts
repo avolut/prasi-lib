@@ -20,6 +20,7 @@ export type FMProps = {
   on_load_deps?: any[];
   feature?: any[];
   sfd_field?: any;
+  style: "default" | "flex"
 };
 
 export type GenField =
