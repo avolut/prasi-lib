@@ -1,4 +1,5 @@
 import { useLocal } from "@/utils/use-local";
+import { parseGenField } from "lib/gen/utils";
 import { FC, useRef } from "react";
 import { ModeFull } from "./mode/full";
 import { ModeHSplit } from "./mode/h-split";
@@ -9,15 +10,8 @@ import {
   masterDetailApplyParams,
   masterDetailParseHash as masterDetailParseParams,
 } from "./utils/md-hash";
-import { MDLocalInternal, MDProps } from "./utils/typings";
 import { mdRenderLoop } from "./utils/md-render-loop";
-import { parseGenField } from "lib/gen/utils";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import get from "lodash.get";
-const w = window as unknown as {
-  generating_prasi_md: Record<string, true>;
-};
+import { MDLocalInternal, MDProps } from "./utils/typings";
 
 export const MasterDetail: FC<MDProps> = (arg) => {
   const {
@@ -102,13 +96,6 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     }
   }
 
-  if (get(w, "generating_prasi_md.master_detail"))
-    return (
-      <div className="c-relative c-p-4 c-w-full c-bg-white c-rounded-lg c-overflow-hidden c-h-full c-shadow c-flex c-justify-center c-items-center">
-        <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
-        Loading Master Detail...
-      </div>
-    );
   return (
     <div
       className={cx(
