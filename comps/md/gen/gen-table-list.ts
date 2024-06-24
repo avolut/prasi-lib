@@ -110,6 +110,8 @@ render(React.createElement("div", Object.assign({}, props, { className: cx(props
         })
         .filter((e) => e) as any,
     });
+    result["gen__table"] = { mode: "string", value: table };
+
     if (commit) {
       Object.keys(result).map((e) => {
         item.edit.setProp(e, result[e]);

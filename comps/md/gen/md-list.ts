@@ -123,7 +123,7 @@ idx: any;
     }
     `,
   });
-  
+
   tab_master?.edit.setChilds([
     {
       type: "item",
