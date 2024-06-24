@@ -40,11 +40,11 @@ export const FieldMoney: FC<{
         type={"number"}
         onClick={() => {}}
         onChange={(ev) => {
-          fm.data[field.name] = ev.currentTarget.value;
+          fm.data[field.name] = Number(ev.currentTarget.value);
           fm.render();
           if (field.on_change) {
             field.on_change({
-              value: fm.data[field.name],
+              value: Number(fm.data[field.name]),
               name: field.name,
               fm,
             });

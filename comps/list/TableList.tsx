@@ -380,38 +380,82 @@ export const TableList: FC<TableListProp> = ({
   for (const child of childs) {
     let key = getProp(child, "name", {});
     const name = getProp(child, "title", "");
+    const type = getProp(child, "type", "");
     const width = parseInt(getProp(child, "width", {}));
+    if (type === "checkbox") {
+      const on_click = getProp(child, "opt__on_click", "");
+      console.log({ on_click });
+      columns.push({
+        key,
+        name,
+        width: 35,
+        minWidth: 45,
+        resizable: true,
+        sortable: true,
+        frozen: true,
+        renderHeaderCell(props) {
+          return (
+            <div>
+              <CheckboxList value={false} on_click={on_click} />
+            </div>
+          );
+        },
+        renderCell(props) {
+          if (typeof render_col === "function")
+            return render_col({
+              props,
+              tbl: local,
+              child,
+            });
 
-    columns.push({
-      key,
-      name,
-      width: width > 0 ? width : undefined,
-      resizable: true,
-      sortable: true,
-      renderCell(props) {
-        if (typeof render_col === "function")
-          return render_col({
-            props,
-            tbl: local,
-            child,
-          });
+          return (
+            <PassProp
+              idx={props.rowIdx}
+              row={props.row}
+              col={{
+                name: props.column.key,
+                value: props.row[props.column.key],
+                depth: props.row.__depth || 0,
+              }}
+              rows={local.data}
+            >
+              {child}
+            </PassProp>
+          );
+        },
+      });
+    } else {
+      columns.push({
+        key,
+        name,
+        width: width > 0 ? width : undefined,
+        resizable: true,
+        sortable: true,
+        renderCell(props) {
+          if (typeof render_col === "function")
+            return render_col({
+              props,
+              tbl: local,
+              child,
+            });
 
-        return (
-          <PassProp
-            idx={props.rowIdx}
-            row={props.row}
-            col={{
-              name: props.column.key,
-              value: props.row[props.column.key],
-              depth: props.row.__depth || 0,
-            }}
-            rows={local.data}
-          >
-            {child}
-          </PassProp>
-        );
-      },
-    });
+          return (
+            <PassProp
+              idx={props.rowIdx}
+              row={props.row}
+              col={{
+                name: props.column.key,
+                value: props.row[props.column.key],
+                depth: props.row.__depth || 0,
+              }}
+              rows={local.data}
+            >
+              {child}
+            </PassProp>
+          );
+        },
+      });
+    }
   }
 
   if (mode === "list") {
@@ -690,7 +734,55 @@ export const TableList: FC<TableListProp> = ({
   } else {
   }
 };
-
+const CheckboxList: FC<{
+  on_click: (e: any) => void;
+  value?: boolean;
+}> = ({ value, on_click }) => {
+  const local = useLocal({
+    value: false as boolean,
+  });
+  return (
+    <div className={cx("c-flex c-items-center c-w-full c-flex-row")}>
+      <div className={cx(`c-flex c-flex-col c-space-y-1 c-p-0.5`)}>
+        <div
+          onClick={() => {
+            local.value = !local.value;
+            on_click(local.value);
+            local.render();
+          }}
+          className="c-flex c-flex-row c-space-x-1 cursor-pointer c-items-center rounded-full p-0.5"
+        >
+          {local.value ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              className="c-fill-sky-500"
+            >
+              <path
+                fill="currentColor"
+                d="m10.6 14.092l-2.496-2.496q-.14-.14-.344-.15q-.204-.01-.364.15t-.16.354q0 .194.16.354l2.639 2.638q.242.243.565.243q.323 0 .565-.243l5.477-5.477q.14-.14.15-.344q.01-.204-.15-.363q-.16-.16-.354-.16q-.194 0-.353.16L10.6 14.092ZM5.615 20q-.69 0-1.152-.462Q4 19.075 4 18.385V5.615q0-.69.463-1.152Q4.925 4 5.615 4h12.77q.69 0 1.152.463q.463.462.463 1.152v12.77q0 .69-.462 1.152q-.463.463-1.153.463H5.615Z"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M5.615 20q-.69 0-1.152-.462Q4 19.075 4 18.385V5.615q0-.69.463-1.152Q4.925 4 5.615 4h12.77q.69 0 1.152.463q.463.462.463 1.152v12.77q0 .69-.462 1.152q-.463.463-1.153.463H5.615Zm0-1h12.77q.23 0 .423-.192q.192-.193.192-.423V5.615q0-.23-.192-.423Q18.615 5 18.385 5H5.615q-.23 0-.423.192Q5 5.385 5 5.615v12.77q0 .23.192.423q.193.192.423.192Z"
+              />
+            </svg>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 const genRows = (total: number) => {
   const result = [] as any[];
   for (let i = 0; i < total; i++) {

@@ -26,20 +26,22 @@ export const TypeDropdown: FC<{
   useEffect(() => {
     if (typeof arg.on_load === "function") {
       const options = arg.on_load({});
+      // console.log(field.name, {options})
       if (options instanceof Promise) {
         options.then((res) => {
+          // console.log(field.name, {res})
           if (Array.isArray(res)) {
             const list: any = res.map((e: any) => {
               return {
                 label: arg.opt_get_label(e),
                 value: e.value,
+                data: e.data
               };
             });
             local.options = list;
           } else {
             local.options = res;
           }
-
           if (
             field.type === "single-option" &&
             !value &&
@@ -53,6 +55,14 @@ export const TypeDropdown: FC<{
               options: local.options,
               selected: [local.options[0]?.value],
             });
+          } else if (field.type === "single-option" && value) {
+            arg.opt_set_value({
+              fm,
+              name: field.name,
+              type: field.type,
+              options: local.options,
+              selected: [value],
+            });
           }
 
           local.loaded = true;
@@ -60,7 +70,7 @@ export const TypeDropdown: FC<{
         });
       } else {
         local.loaded = true;
-        local.options = [];
+        local.options = Array.isArray(options) ? options : [] as any;
         local.render();
       }
     }

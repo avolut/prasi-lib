@@ -7,7 +7,8 @@ export const ShowHidePanel: FC<{
   body: ReactNode;
   open: string;
   PassProp: any;
-}> = ({ head, body, open, PassProp }) => {
+  on_init: (e?: any) => void
+}> = ({ head, body, open, PassProp, on_init}) => {
   const local = useLocal(
     {
       open: true,
@@ -22,6 +23,7 @@ export const ShowHidePanel: FC<{
   useEffect(() => {
     local.open = open === "true" ? true : false;
     local.render();
+    // on_init(local);
   }, [open]);
 
   return (

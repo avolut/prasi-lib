@@ -38,7 +38,7 @@ export const Field: FC<FieldProp> = (arg) => {
       className={cx(
         "field",
         "c-flex",
-        css`
+        type === "single-option" && sub_type === "checkbox" ? css`padding: 5px 0px 0px 7.5px;` : css`
           padding: 5px 0px 0px 10px;
         `,
         w === "auto" && fm.size.field === "full" && "c-w-full",

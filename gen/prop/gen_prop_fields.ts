@@ -50,13 +50,8 @@ export const gen_prop_fields = async (gen_table: string, depth?: number) => {
     id_site = window.location.hostname;
   }
   const schema = getSchemaOnStorage(id_site, gen_table);
-  if (!schema) {
-    // const result: {
-    //   label: string;
-    //   value: string;
-    //   options?: any[];
-    //   checked?: boolean;
-    // }[] = [];
+if (!schema) {
+    console.log({depth})
     const result = await load_layer_schema(
       typeof depth === "undefined" ? 3 : depth,
       {},
@@ -153,8 +148,10 @@ export const gen_prop_fields = async (gen_table: string, depth?: number) => {
     } catch (e: any) {
       console.error(e.message);
     }
+    console.log({result})
     return result;
   } else {
+    console.log({schema})
     return schema;
   }
 };
@@ -172,6 +169,7 @@ const get_layer = async (
   table: string
 ) => {
   const { cols, rels } = await load_single(table);
+  console.log({cols, rels , table})
   const options = [];
   if (cols) {
     for (const [k, v] of Object.entries(cols)) {

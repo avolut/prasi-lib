@@ -4,6 +4,7 @@ import { FieldButton } from "./TypeButton";
 import { TypeDropdown } from "./TypeDropdown";
 import { FieldRadio } from "./TypeRadio";
 import { FieldToggle } from "./TypeToggle";
+import { FieldSingleCheckbox } from "./TypeSingleCheckbox";
 
 export const SingleOption: FC<{
   field: FieldLocal;
@@ -20,7 +21,9 @@ export const SingleOption: FC<{
         <FieldButton arg={arg} field={field} fm={fm} />
       ) : arg.sub_type === "radio" ? (
         <FieldRadio arg={arg} field={field} fm={fm} />
-      ) : (
+      ) : arg.sub_type === "checkbox" ? (
+        <FieldSingleCheckbox arg={arg} field={field} fm={fm} />
+      ) :(
         <></>
       )}
     </>

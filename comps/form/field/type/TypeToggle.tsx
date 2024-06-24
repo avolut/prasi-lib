@@ -11,7 +11,9 @@ export const FieldToggle: FC<{
   const local = useLocal({
     list: [] as any[],
     value: [] as any[],
+    ref: null as any,
   });
+
   useEffect(() => {
     const callback = (res: any[]) => {
       local.list = res;
@@ -30,12 +32,21 @@ export const FieldToggle: FC<{
     options: local.list,
     type: field.type,
   });
-  let checked = local.value.indexOf(value) > 0 ? true : false;
+  let checked =
+    typeof value === "boolean"
+      ? value
+      : local.value.indexOf(value) > 0
+      ? true
+      : false;
 
   return (
     <>
       <div className={cx("c-flex c-items-center c-justify-start c-w-full")}>
-        <label className="c-flex c-items-center c-cursor-pointer">
+        <label className="c-flex c-items-center c-cursor-pointer" onClick={(e) => {
+          if(local.ref){
+            local.ref.click();
+          }
+        }}>
           <div className="c-mr-3 c-text-gray-700 c-font-medium">
             {get(local, "list[0].label")}
           </div>
@@ -53,18 +64,18 @@ export const FieldToggle: FC<{
             )}
           >
             <input
+              ref={(ref) => (local.ref = ref)}
               type="checkbox"
               id="toggleB"
               checked={checked}
               className="c-sr-only"
               onChange={(e) => {
                 const check = e.target.checked;
-
                 if (check) {
                   arg.opt_set_value({
                     fm,
                     name: field.name,
-                    selected: [local.list[1]?.value],
+                    selected: [local.list[0]?.value],
                     options: local.list,
                     type: field.type,
                   });
@@ -72,7 +83,7 @@ export const FieldToggle: FC<{
                   arg.opt_set_value({
                     fm,
                     name: field.name,
-                    selected: [local.list[0]?.value],
+                    selected: [local.list[1]?.value],
                     options: local.list,
                     type: field.type,
                   });
