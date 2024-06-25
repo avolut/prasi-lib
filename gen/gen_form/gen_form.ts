@@ -1,7 +1,7 @@
+import { on_load } from "lib/comps/form/gen/on_load";
 import { codeBuild } from "../master_detail/utils";
 import { GFCol, parseGenField } from "../utils";
 import { newField } from "./new_field";
-import { on_load } from "./on_load";
 import { on_submit } from "./on_submit";
 
 export const gen_form = async (modify: (data: any) => void, data: any) => {
@@ -43,7 +43,7 @@ export const gen_form = async (modify: (data: any) => void, data: any) => {
     const code = {} as any;
     if (data["on_load"]) {
       result["on_load"] = data["on_load"];
-      result["on_load"].value = on_load({ pk, pks, select, table });
+      result["on_load"].value = on_load({ pk: pk.name, pks, select, table });
       code.on_load = result["on_load"].value;
     }
 

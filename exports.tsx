@@ -61,6 +61,8 @@ export { parseGenField } from "@/gen/utils";
 export { filterModifier } from "@/comps/filter/utils/filter-modifier";
 export { generateField } from "@/comps/form/gen/gen-field";
 export { generateForm } from "@/comps/form/gen/gen-form";
+export { validate as validateField } from "./comps/form/utils/validate";
+
 export {
   FMLocal,
   FieldTypeCustom,

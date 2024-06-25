@@ -4,8 +4,6 @@ export const formError = (fm: FMLocal) => {
   const error = {
     _internal: {},
     get list() {
-      if (fm.status !== "ready") return [];
-
       const res = Object.entries(this._internal).map(([name, error]) => {
         return { name, error };
       });
@@ -28,7 +26,7 @@ export const formError = (fm: FMLocal) => {
       return this._internal[name] || [];
     },
     set(name, error) {
-      this._internal[name] = error;
+      this._internal[name] = error as any;
     },
   } as FMLocal["error"] & {
     _internal: Record<string, string[]>;

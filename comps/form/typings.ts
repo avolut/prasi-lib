@@ -1,5 +1,5 @@
 import { GFCol } from "@/gen/utils";
-import { MutableRefObject, ReactNode } from "react";
+import { MutableRefObject, ReactElement, ReactNode } from "react";
 import { editorFormData } from "./utils/ed-data";
 
 export type FMProps = {
@@ -20,7 +20,7 @@ export type FMProps = {
   on_load_deps?: any[];
   feature?: any[];
   sfd_field?: any;
-  style: "default" | "flex"
+  style: "default" | "flex";
 };
 
 export type GenField =
@@ -51,7 +51,7 @@ export type FieldProp = {
   type: FieldType | (() => FieldType);
   required: ("y" | "n") | (() => "y" | "n");
   field_ref?: (ref: any) => void;
-  required_msg: (name: string) => string;
+  required_msg: (name: string) => string | ReactElement;
   on_change: (arg: { value: any }) => void | Promise<void>;
   PassProp: any;
   disabled: "y" | "n";
@@ -109,7 +109,7 @@ export type FMInternal = {
   error: {
     readonly object: Record<string, string>;
     readonly list: { name: string; error: string[] }[];
-    set: (name: string, error: string[]) => void;
+    set: (name: string, error: (string | ReactElement)[]) => void;
     get: (name: string) => string[];
     clear: (name?: string) => void;
   };
@@ -256,4 +256,3 @@ export const FieldTypeCustom = `type CustomField =
   { field: "text", type: "text" | "password" | "number" | "date" | "datetime" }
 | { field: "relation", type: "has-many" | "has-one" }
 `;
-

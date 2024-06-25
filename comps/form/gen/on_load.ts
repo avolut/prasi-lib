@@ -48,8 +48,15 @@ async (opt) => {
     ${pk}: id,
   };
   if (id){
+    //@ts-ignore
     const table = db[gen__table] as any;
+    //@ts-ignore
     const fields = parseGenField(gen__fields);
+
+    if (Array.isArray(fields)) {
+      const pk = fields.find((e) => e.is_pk);
+      if (pk && pk.type === "int") id = parseInt(id);
+    }
 
     const gen = generateSelect(fields);
     item = await table?.findFirst({

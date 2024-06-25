@@ -5,8 +5,8 @@ const w = window as any;
 const parse = parser.exportAsFunctionAny("en-US");
 export const loadSession = (url_login?: string) => {
   if (!isEditor) {
-    let id_site = ""
-    if (location.hostname === "prasi.avolut.com" ) {
+    let id_site = "";
+    if (location.hostname === "prasi.avolut.com") {
       const parts = location.pathname.split("/");
       id_site = parts[2];
     }
@@ -25,6 +25,7 @@ export const loadSession = (url_login?: string) => {
             }
           }
         }
+        return w.user;
       } else {
         if (url_login) logout(url_login);
       }

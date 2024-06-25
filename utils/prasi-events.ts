@@ -1,13 +1,11 @@
 import { FMLocal } from "../..";
 import { Prisma } from "../../typings/prisma";
+import { set } from "./set";
 
 const events = {
   form: {
     where: async (fm: FMLocal, where: any) => {},
-    before_update: async (fm: FMLocal) => {},
-    after_update: async (fm: FMLocal) => {},
-    before_insert: async (fm: FMLocal) => {},
-    after_insert: async (fm: FMLocal) => {},
+    before_save: async (fm: FMLocal, record: any) => {},
     before_load: async (fm: FMLocal) => {},
     after_load: async (fm: FMLocal) => {},
   },
@@ -16,16 +14,24 @@ const events = {
   },
 };
 
-let w = null as any;
-if (typeof window !== "undefined") {
-  w = window;
-  if (!w.prasi_events) {
-    w.prasi_events = events;
-  }
-}
-
 type PRASI_EVENT = typeof events;
-export const prasi_events: PRASI_EVENT = w.prasi_events;
+export const prasi_events = <
+  K extends keyof PRASI_EVENT,
+  L extends keyof PRASI_EVENT[K]
+>(
+  k: K,
+  l: L,
+  fn?: PRASI_EVENT[K][L]
+) => {
+  const w = window as any;
+  if (!w.__prasi_custom_events) {
+    w.__prasi_custom_events = events;
+  }
+  if (fn) {
+    set(w.__prasi_custom_events, `${k}.${l as string}`, fn);
+  }
+  return w.__prasi_custom_events?.[k]?.[l];
+};
 export const call_prasi_events = async <
   K extends keyof PRASI_EVENT,
   L extends keyof PRASI_EVENT[K]
@@ -34,7 +40,7 @@ export const call_prasi_events = async <
   l: L,
   args: any[]
 ) => {
-  const fn = prasi_events?.[k]?.[l] as any;
+  const fn = prasi_events(k, l);
 
   if (fn) {
     await fn(...args);

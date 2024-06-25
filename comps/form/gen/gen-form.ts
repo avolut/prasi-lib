@@ -78,6 +78,20 @@ async ({ form, error, fm }: IForm) => {
       fk: string;
     }>;
 
+
+    // validasi
+    fm.error.clear();
+    for (const [k, field] of Object.entries(fm.fields)) {
+      validateField(field, fm);
+    }
+    if (fm.error.list.length > 0) {
+      if (typeof md !== "undefined") {
+        fm.status = "ready";
+        md.render();
+      }
+      return false;
+    }
+
     // pisahkan antara has_many dengan field biasa
     for (const [k, v] of Object.entries(data) as any) {
       if (Array.isArray(v)) {
@@ -99,6 +113,8 @@ async ({ form, error, fm }: IForm) => {
 
     // prisma create / update ga boleh ada record.${pk}
     if (record) delete record.${pk};
+
+    call_prasi_events("form", "before_save", [fm, record]);
 
     if (form.${pk}) {
       await db.${table}.update({
@@ -165,7 +181,14 @@ async ({ form, error, fm }: IForm) => {
 
   if (typeof md !== "undefined") {
     fm.status = "ready";
-    md.render();
+    // kembali ke tabel
+    setTimeout(() => {
+      md.selected = null;
+      md.tab.active = "master";
+      md.internal.action_should_refresh = true;
+      md.params.apply();
+      md.render();
+    }, 500);
   }
 
   return result;
