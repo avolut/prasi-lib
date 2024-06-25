@@ -62,6 +62,7 @@ export { filterModifier } from "@/comps/filter/utils/filter-modifier";
 export { generateField } from "@/comps/form/gen/gen-field";
 export { generateForm } from "@/comps/form/gen/gen-form";
 export { validate as validateField } from "./comps/form/utils/validate";
+export { sortTree } from "./comps/list/utils/sort-tree";
 
 export {
   FMLocal,
@@ -79,6 +80,7 @@ export { FormatValue } from "@/utils/format-value";
 export { GetValue } from "@/utils/get-value";
 export { password } from "@/utils/password";
 export { prasi_events, call_prasi_events } from "lib/utils/prasi-events";
+
 
 /** Session */
 export { Login } from "@/preset/login/Login";

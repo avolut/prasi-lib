@@ -40,7 +40,16 @@ async (arg: {
   return new Promise(async (done) => {
     ${!isEmptyString(type) && ["checkbox", "typeahead", "button"].includes(type as any) ? `` : `const fields = parseGenField(rel__gen_fields);
     const res = generateSelect(fields);`}
-    
+
+
+    const is_tree =
+      typeof rel__feature !== "undefined" &&
+      Array.isArray(rel__feature) &&
+      rel__feature.includes("tree");
+      
+    if (is_tree && typeof rel__id_parent === "string" && rel__id_parent) {
+      res.select[rel__id_parent] = true;
+    }
 
     const items = await db.${table}.findMany({
       ${!isEmptyString(type) && ["checkbox", "typeahead", "button"].includes(type as any) ? `` : `select: {
@@ -52,6 +61,11 @@ async (arg: {
       },
       ...arg.paging,
     });
+
+    if (is_tree && typeof rel__id_parent === "string" && rel__id_parent) {
+      items = sortTree(items, rel__id_parent, "${pk}");
+    }
+
     if(items.length){
       const cols = ${JSON.stringify(cols)};
       const getLabel = (data: any)  => {

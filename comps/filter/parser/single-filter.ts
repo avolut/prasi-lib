@@ -13,14 +13,40 @@ export const parseSingleFilter = (filter: FilterLocal, fields: GFCol[]) => {
       switch (type) {
         case "search-all":
           fields
-            .filter((e) => e.type === "varchar" || e.type === "text")
+            .filter(
+              (e) =>
+                e.type === "varchar" ||
+                e.type === "text" ||
+                e.type === "string" ||
+                e.type === "has-one"
+            )
             .map((e) => {
-              OR.push({
-                [e.name]: {
-                  contains: "%" + value + "%",
-                  mode: "insensitive",
-                },
-              });
+              if (e.type === "has-one") {
+                for (const f of e.relation?.fields || []) {
+                  if (
+                    !f.is_pk &&
+                    (f.type === "varchar" ||
+                      f.type === "text" ||
+                      f.type === "string")
+                  ) {
+                    OR.push({
+                      [e.name]: {
+                        [f.name]: {
+                          contains: "%" + value + "%",
+                          mode: "insensitive",
+                        },
+                      },
+                    });
+                  }
+                }
+              } else {
+                OR.push({
+                  [e.name]: {
+                    contains: "%" + value + "%",
+                    mode: "insensitive",
+                  },
+                });
+              }
             });
           break;
         case "text":

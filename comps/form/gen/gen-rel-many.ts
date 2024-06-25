@@ -118,33 +118,49 @@ export const genRelMany = (prop: {
     `;
     const cols = getColumn(select) || [];
     const get_label = `\
-    (row: { value: string; label: string; data?: any }) => {
-      const cols = ${JSON.stringify(cols)};
-      
-      if (isEditor) {
-        return row.label;
-      }
-      const result = [];
-      if (!!row.data && !row.label && !Array.isArray(row.data)) {
-        if(cols.length > 0){
-          cols.map((e) => {
-            if (row.data[e]) {
-              result.push(row.data[e]);
-            }
-          });
-          return result.join(" - ");
-        } else {
-          const fields = parseGenField(rel__gen_fields);
-          return fields
-            .filter((e) => !e.is_pk)
-            .map((e) => row.data[e.name])
-            .filter((e) => e)
-            .join(" - ");
-        }
-      }
-      return row.label;
+(row: { value: string; label: string; data?: any }) => {
+  const cols = ${JSON.stringify(cols)};
+  
+  if (isEditor) {
+    return row.label;
+  }
+
+  const is_tree =
+  typeof rel__feature !== "undefined" &&
+  Array.isArray(rel__feature) &&
+  rel__feature.includes("tree") &&
+  typeof rel__id_parent === "string" &&
+  rel__id_parent;
+
+  let prefix = "";
+  if (is_tree) {
+    for (let i = 0; i < row.data.__depth; i++) {
+      prefix += "···";
     }
-    `;
+    prefix += " ";
+  }
+
+  const result = [];
+  if (!!row.data && !row.label && !Array.isArray(row.data)) {
+    if(cols.length > 0){
+      cols.map((e) => {
+        if (row.data[e]) {
+          result.push(row.data[e]);
+        }
+      });
+      return prefix + result.join(" - ");
+    } else {
+      const fields = parseGenField(rel__gen_fields);
+      return prefix + fields
+        .filter((e) => !e.is_pk)
+        .map((e) => row.data[e.name])
+        .filter((e) => e)
+        .join(" - ");
+    }
+  }
+  return prefix + row.label;
+}
+`;
 
     result.get_label = get_label;
     result.get_value = get_value;
