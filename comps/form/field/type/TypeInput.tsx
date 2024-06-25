@@ -153,6 +153,10 @@ export const FieldTypeInput: FC<{
           } else {
             fm.data[field.name] = ev.currentTarget.value;
           }
+
+          if (type_field === "number") {
+            fm.data[field.name] = parseInt(fm.data[field.name]);
+          }
           renderOnChange();
 
           if (prop.onChange) {
