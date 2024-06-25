@@ -1,11 +1,10 @@
+import { createId } from "@paralleldrive/cuid2";
 import { generateSelect } from "lib/comps/md/gen/md-select";
 import { parseGenField } from "lib/gen/utils";
-import { on_load_rel } from "./on_load_rel";
-import { gen_rel_many, getColumn } from "./gen-rel-many";
 import get from "lodash.get";
-import { getValueProp } from "./gen-rel";
+import { getColumn } from "./gen-rel-many";
 import { genTableEdit } from "./gen-table-edit";
-import { createId } from "@paralleldrive/cuid2";
+import { on_load_rel } from "./on_load_rel";
 
 export const generateField = async (
   data: any,
@@ -26,7 +25,6 @@ export const generateField = async (
     ) as any;
     const pk = fields.find((e: any) => get(e, "is_pk")) as any;
     const pk_master = master.relation.fields.find((e: any) => get(e, "is_pk"));
-    console.log(getColumn(res));
     const load = on_load_rel({
       pk: generateSelect(parseGenField(master.value.checked)).pk,
       table: master?.name,
@@ -54,9 +52,9 @@ export const generateField = async (
               try {
                 const data = fm.data[name];
                 if (typeof data === "object") {
-                  if (typeof data?.connect?.id === "string") {
+                  if (typeof data?.connect?.id !== "undefined") {
                     result = data.connect.id;
-                  }else if (typeof data?.id === "string") {
+                  }else if (typeof data?.id !== "undefined") {
                     result = data.id;
                   }
                 }
@@ -209,9 +207,9 @@ export const generateField = async (
                 try {
                   const data = fm.data[name];
                   if (typeof data === "object") {
-                    if (typeof data?.connect?.id === "string") {
+                    if (typeof data?.connect?.id !== "undefined") {
                       result = data.connect.id;
-                    }else if (typeof data?.id === "string") {
+                    }else if (typeof data?.id !== "undefined") {
                       result = data.id;
                     }
                   }
@@ -253,7 +251,7 @@ export const generateField = async (
       },
       false
     )) as any;
-    
+
     item.edit.setProp("child", {
       mode: "jsx",
       value: {

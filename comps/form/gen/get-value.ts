@@ -30,10 +30,10 @@ export const get_value = ({
   try{
     const data = fm.data["${table}"];
     if(typeof data === "object"){
-      if(typeof data?.connect?.${pk} === "string"){
+      if(typeof data?.connect?.${pk} !== "undefined") {
         result = data.connect.${pk};
-      } else if (typeof data?.id === "string") {
-        result = data.id;
+      } else if (typeof data?.${pk} !== "undefined") {
+        result = data.${pk};
       } else if (data?.disconnect === true) {
         result = undefined;
       }

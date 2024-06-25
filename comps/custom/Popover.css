@@ -1,0 +1,3 @@
+[data-floating-ui-portal] > div {
+  z-index: 100;
+}

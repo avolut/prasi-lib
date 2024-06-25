@@ -2,7 +2,7 @@ import { generateSelect } from "lib/comps/md/gen/md-select";
 import get from "lodash.get";
 import { on_load_rel } from "./on_load_rel";
 
-export const gen_rel_many = (prop: {
+export const genRelMany = (prop: {
   table_parent: string;
   arg: any;
   rel: any;
@@ -41,9 +41,9 @@ export const gen_rel_many = (prop: {
           try {
             const data = fm.data[name];
             if (typeof data === "object") {
-              if (typeof data?.connect?.id === "string") {
+              if (typeof data?.connect?.id !== "undefined") {
                 result = data.connect.id;
-              }else if (typeof data?.id === "string") {
+              }else if (typeof data?.id !== "undefined") {
                 result = data.id;
               }
             }
@@ -174,9 +174,9 @@ export const gen_rel_many = (prop: {
         try {
           const data = fm.data[name];
           if (typeof data === "object") {
-            if (typeof data?.connect?.id === "string") {
+            if (typeof data?.connect?.id !== "undefined") {
               result = data.connect.id;
-            }else if (typeof data?.id === "string") {
+            }else if (typeof data?.id !== "undefined") {
               result = data.id;
             }
           }

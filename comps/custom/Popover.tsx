@@ -17,6 +17,7 @@ import {
   useRole,
 } from "@floating-ui/react";
 import * as React from "react";
+import "./Popover.css";
 
 interface PopoverOptions {
   initialOpen?: boolean;

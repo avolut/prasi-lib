@@ -3,7 +3,7 @@ import { createItem, parseGenField } from "lib/gen/utils";
 import capitalize from "lodash.capitalize";
 import { gen_label } from "./gen-label";
 import { generateRelation } from "./gen-rel";
-import { gen_rel_many } from "./gen-rel-many";
+import { genRelMany } from "./gen-rel-many";
 import { get_value } from "./get-value";
 import { on_load_rel } from "./on_load_rel";
 import { set_value } from "./set-value";
@@ -161,7 +161,7 @@ export const newField = async (
         },
       });
     } else {
-      const result = gen_rel_many({
+      const result = genRelMany({
         table_parent: opt.parent_table,
         arg,
         rel: fields,
