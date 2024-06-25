@@ -40,7 +40,7 @@ export const Menu: FC<MenuProp> = (props) => {
 
   return (
     <div className={cx("c-overflow-y-auto c-relative c-h-full c-w-full ")}>
-      <div className="c-absolute c-inset-0 c-flex c-flex-col c-flex-grow c-px-3 c-py-4 ">
+      <div className="sidebar-menu c-absolute c-inset-0 c-flex c-flex-col c-flex-grow c-px-3 c-py-4 ">
         <SideBar
           data={menu}
           local={local}
@@ -155,7 +155,7 @@ export const SideBar: FC<{
                     ) {
                       navigate(menu.value);
                     }
-                  }, 1000);
+                  }, 500);
                 }
                 local.render();
 

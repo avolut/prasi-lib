@@ -27,6 +27,7 @@ import { getFilter } from "../filter/utils/get-filter";
 import { Skeleton } from "../ui/skeleton";
 import "./TableList.css";
 import { sortTree } from "./utils/sort-tree";
+import { call_prasi_events } from "../../..";
 
 type OnRowClick = (arg: {
   row: any;
@@ -209,6 +210,9 @@ export const TableList: FC<TableListProp> = ({
 
       const orderBy = local.sort.orderBy || undefined;
       const where = filterWhere(filter_name, __props);
+
+      call_prasi_events("tablelist", "where", [where]);
+
       const load_args: any = {
         async reload() {},
         orderBy,
@@ -384,7 +388,6 @@ export const TableList: FC<TableListProp> = ({
     const width = parseInt(getProp(child, "width", {}));
     if (type === "checkbox") {
       const on_click = getProp(child, "opt__on_click", "");
-      console.log({ on_click });
       columns.push({
         key,
         name,

@@ -83,7 +83,7 @@ export const Form: FC<FMProps> = (props) => {
         fm.size.height = e.contentRect.height;
         fm.size.width = e.contentRect.width;
 
-        if (fm.status === "ready" && !isEditor) fm.status = "resizing";
+        // if (fm.status === "ready" && !isEditor) fm.status = "resizing";
 
         if (fm.props.layout === "auto") {
           if (fm.size.width > 650) {

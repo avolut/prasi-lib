@@ -56,6 +56,7 @@ export { generateRelation } from "@/comps/form/gen/gen-rel";
 export { genTableEdit } from "@/comps/form/gen/gen-table-edit";
 export { generateMasterDetail } from "@/comps/md/gen/md-gen";
 export { parseGenField } from "@/gen/utils";
+
 /** ETC */
 export { filterModifier } from "@/comps/filter/utils/filter-modifier";
 export { generateField } from "@/comps/form/gen/gen-field";
@@ -75,6 +76,8 @@ export { prasi_gen } from "@/gen/prasi_gen";
 export { FormatValue } from "@/utils/format-value";
 export { GetValue } from "@/utils/get-value";
 export { password } from "@/utils/password";
+export { prasi_events, call_prasi_events } from "lib/utils/prasi-events";
+
 /** Session */
 export { Login } from "@/preset/login/Login";
 export { generateLogin } from "@/preset/login/utils/generate";
@@ -102,7 +105,6 @@ export { PanelHeader } from "@/comps/tab/parts/PanelHead";
 /*Popup*/
 export { Popup } from "@/comps/popup/PopUp";
 
-// Detail
 export { Detail } from "@/comps/custom/Detail";
 export { ButtonUpload } from "@/preset/profile/ButtonUpload";
 export { Profile } from "@/preset/profile/Profile";
