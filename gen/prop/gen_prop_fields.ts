@@ -77,7 +77,7 @@ const get_layer = async (
           type: v.db_type || v.type,
           optional: v.optional,
         }),
-        label: k,
+        label: k + (v.optional ? "" : " *"),
         checked: v.is_pk,
       });
     }
