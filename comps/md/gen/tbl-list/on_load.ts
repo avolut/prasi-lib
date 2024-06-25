@@ -51,7 +51,7 @@ async (arg: TableOnLoad) => {
     const items = await db.${table}.findMany({
       select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
       orderBy: arg.orderBy || {
-        id: "desc",
+        ${pk}: "desc",
       },
       where: {
         ...where,

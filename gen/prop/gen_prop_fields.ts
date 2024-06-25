@@ -86,27 +86,29 @@ const get_layer = async (
   if (current < depth) {
     if (rels) {
       for (const [k, v] of Object.entries(rels)) {
-        const to = v.to;
-        const from = v.from;
-        const r_rels = (await get_layer(
-          id_site,
-          depth,
-          current + 1,
-          arg,
-          v.to.table
-        )) as any;
-        options.push({
-          value: JSON.stringify({
-            name: k,
-            is_pk: false,
-            type: v.type,
-            optional: true,
-            relation: { from, to },
-          }),
-          label: k,
-          options: r_rels,
-          checked: false,
-        });
+        if (v?.to && v?.from) {
+          const to = v.to;
+          const from = v.from;
+          const r_rels = (await get_layer(
+            id_site,
+            depth,
+            current + 1,
+            arg,
+            v.to.table
+          )) as any;
+          options.push({
+            value: JSON.stringify({
+              name: k,
+              is_pk: false,
+              type: v.type,
+              optional: true,
+              relation: { from, to },
+            }),
+            label: k,
+            options: r_rels,
+            checked: false,
+          });
+        }
       }
     }
   }
