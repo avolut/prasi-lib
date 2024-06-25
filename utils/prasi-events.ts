@@ -1,4 +1,5 @@
 import { FMLocal } from "../..";
+import { Prisma } from "../../typings/prisma";
 
 const events = {
   form: {
@@ -10,7 +11,9 @@ const events = {
     before_load: async (fm: FMLocal) => {},
     after_load: async (fm: FMLocal) => {},
   },
-  tablelist: { where: async (where: any) => {} },
+  tablelist: {
+    where: async <T extends Prisma.ModelName>(table: T, where: any) => {},
+  },
 };
 
 let w = null as any;

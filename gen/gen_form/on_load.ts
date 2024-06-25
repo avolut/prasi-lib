@@ -40,6 +40,7 @@ async (opt) => {
       raw_id = md.selected[pk]; 
     }
   }
+  if (parseInt(raw_id)) raw_id = parseInt(raw_id);
 
   ${
     opt?.before_load

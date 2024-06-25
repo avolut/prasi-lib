@@ -211,7 +211,7 @@ export const TableList: FC<TableListProp> = ({
       const orderBy = local.sort.orderBy || undefined;
       const where = filterWhere(filter_name, __props);
 
-      call_prasi_events("tablelist", "where", [where]);
+      call_prasi_events("tablelist", "where", [__props?.gen__table, where]);
 
       const load_args: any = {
         async reload() {},
@@ -327,7 +327,7 @@ export const TableList: FC<TableListProp> = ({
   );
   if (mode_child) {
     const tbl = _item.edit.childs[0].edit.childs.find(
-      (e) => get(e, "id") === mode_child.id
+      (e: any) => get(e, "id") === mode_child.id
     );
     const meta = tbl;
     if (meta && meta.childs) {
@@ -830,7 +830,7 @@ function isAtBottom({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean {
   );
 }
 
-function getProp(child: IItem, name: string, defaultValue?: any) {
+function getProp(child: any, name: string, defaultValue?: any) {
   const fn = new Function(
     `return ${get(child, `component.props.${name}.valueBuilt`) || `null`}`
   );

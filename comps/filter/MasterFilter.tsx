@@ -1,11 +1,10 @@
 import { useLocal } from "@/utils/use-local";
-import { FC, ReactNode, useEffect } from "react";
+import { FC, ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { GenField } from "../form/typings";
-import { default_filter_local, filter_window } from "./utils/types";
 import { FilterContent } from "./FilterContent";
-import { getPathname } from "lib/utils/pathname";
 import { getFilter } from "./utils/get-filter";
+import { default_filter_local } from "./utils/types";
 
 type FilterMode = "regular" | "inline" | "popup";
 
