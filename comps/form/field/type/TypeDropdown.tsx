@@ -85,16 +85,14 @@ export const TypeDropdown: FC<{
         <Typeahead
           value={Array.isArray(value) ? value : [value]}
           onSelect={({ search, item }) => {
-            console.log(search, item);
             if (item) {
-              const result = arg.opt_set_value({
+              arg.opt_set_value({
                 fm,
                 name: field.name,
                 type: field.type,
                 options: local.options,
                 selected: [item.value],
               });
-              console.log(item, result);
             }
 
             return item?.value || search;

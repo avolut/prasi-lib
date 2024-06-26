@@ -107,7 +107,7 @@ export const newField = async (
     const res = generateSelect(fields);
     const load = on_load_rel({
       pk: res.pk,
-      table: arg.name,
+      table: arg.relation.to.table,
       select: res.select,
       pks: {},
     });

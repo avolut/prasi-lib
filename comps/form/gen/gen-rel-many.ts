@@ -16,6 +16,7 @@ export const genRelMany = (prop: {
   // select master
   if (master) {
     const select = generateSelect(master.relation.fields);
+
     result.on_load = on_load_rel({
       pk: select.pk,
       table: master.name,

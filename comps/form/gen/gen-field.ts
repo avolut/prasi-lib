@@ -25,6 +25,7 @@ export const generateField = async (
     ) as any;
     const pk = fields.find((e: any) => get(e, "is_pk")) as any;
     const pk_master = master.relation.fields.find((e: any) => get(e, "is_pk"));
+
     const load = on_load_rel({
       pk: generateSelect(parseGenField(master.value.checked)).pk,
       table: master?.name,
