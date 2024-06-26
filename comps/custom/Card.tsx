@@ -10,7 +10,8 @@ export const Card: FC<{
     | ((arg: { setOnClick: (fn: any) => void }) => Promise<ReactNode>)
     | ReactNode;
   value: (() => Promise<ReactNode>) | ReactNode;
-}> = ({ title, desc, value }) => {
+  bg: "default" | "transparent";
+}> = ({ title, desc, value, bg }) => {
   const local = useLocal({
     value: "" as any,
     desc: "" as any,
@@ -80,7 +81,13 @@ export const Card: FC<{
 
   return (
     <card.Card
-      className="c-flex c-flex-1 c-items-center"
+      className={cx(
+        "c-flex c-flex-1 c-items-center",
+        bg === "transparent" &&
+          css`
+            background: none !important;
+          `
+      )}
       onClick={() => {
         if (local.onClick) {
           local.onClick();
