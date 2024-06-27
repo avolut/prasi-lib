@@ -143,14 +143,18 @@ async ({ form, error, fm }: IForm) => {
       ) => {
         if (list.length) {
           const data = current.data.map((e) => {
-            return {
+            const record =  {
               ...e,
-              m_role: {
+              ${table}: {
                 connect: {
                   ${pk}: form.${pk},
                 },
               },
             };
+
+            call_prasi_events("form", "before_save", [fm, record]);
+
+            return record;
           });
           await db._batch.upsert({
             table: current.table,
