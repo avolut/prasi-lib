@@ -168,7 +168,7 @@ async ({ form, error, fm }: IForm) => {
           if (list.length > 1) {
             try {
               index++;
-              if (index < list.length - 1) {
+              if (index <= list.length - 1) {
                 await exec_query_bulk(list[index], list, index);
               }
             } catch (ex) {}
