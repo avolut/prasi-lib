@@ -110,6 +110,7 @@ export const newField = async (
       table: arg.relation.to.table,
       select: res.select,
       pks: {},
+      type: arg.type === "has-many" ? "typeahead" : "dropdown",
     });
     if (["has-one"].includes(arg.type)) {
       const rel__gen_fields = JSON.stringify(
@@ -171,7 +172,10 @@ export const newField = async (
         result.on_load = `() => { return []; }`;
       }
       let child: any = { childs: [] };
-      const relation = arg.relation?.fields.filter((e) => get(e, "name") !== opt.parent_table) || [];
+      const relation =
+        arg.relation?.fields.filter(
+          (e) => get(e, "name") !== opt.parent_table
+        ) || [];
       let rel__gen_fields: any = JSON.stringify(
         relation.map((e) => {
           const v = (e as any).value;

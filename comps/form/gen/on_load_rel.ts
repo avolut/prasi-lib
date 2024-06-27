@@ -5,7 +5,7 @@ export const on_load_rel = ({
   table,
   select,
   pks,
-  type
+  type,
 }: {
   pk: string;
   table: string;
@@ -25,6 +25,11 @@ export const on_load_rel = ({
     }
   }
 
+  const skip_select =
+    !isEmptyString(type) &&
+    ["checkbox", "typeahead", "button"].includes(type as any);
+
+  console.log(skip_select, type);
   return `\
 async (arg: {
   reload: () => Promise<void>;
@@ -38,10 +43,13 @@ async (arg: {
   }
 
   return new Promise(async (done) => {
-    ${!isEmptyString(type) && ["checkbox", "typeahead", "button"].includes(type as any) ? `` : `const fields = parseGenField(rel__gen_fields);
-    const res = generateSelect(fields);`}
-
-
+    ${
+      skip_select
+        ? ``
+        : `
+    const fields = parseGenField(rel__gen_fields);
+    const res = generateSelect(fields);
+    
     const is_tree =
       typeof rel__feature !== "undefined" &&
       Array.isArray(rel__feature) &&
@@ -49,21 +57,28 @@ async (arg: {
       
     if (is_tree && typeof rel__id_parent === "string" && rel__id_parent) {
       res.select[rel__id_parent] = true;
+    }`
     }
 
-    const items = await db.${table}.findMany({
-      ${!isEmptyString(type) && ["checkbox", "typeahead", "button"].includes(type as any) ? `` : `select: {
-        ...${JSON.stringify(select)}, 
-        ...(res?.select || {}) 
-      },`}
+
+    let items = await db.${table}.findMany({
+      select: {
+        ...${JSON.stringify(select)}
+        ${skip_select ? `` : `,...(res?.select || {})`}
+      },
       orderBy: arg.orderBy || {
         ${pk}: "desc"
       },
       ...arg.paging,
     });
 
+    ${
+      skip_select
+        ? ""
+        : `\
     if (is_tree && typeof rel__id_parent === "string" && rel__id_parent) {
       items = sortTree(items, rel__id_parent, "${pk}");
+    }`
     }
 
     if(items.length){
@@ -79,9 +94,10 @@ async (arg: {
       }
       
       let blank: any = undefined;
-      if (ext__required !== "y") {
+      if ((ext__required as any) !== "y" && (sub_type as any) === 'dropdown') {
         blank = { value: undefined, label: "", data: {} };
       }
+        
       done(
         [
           blank,

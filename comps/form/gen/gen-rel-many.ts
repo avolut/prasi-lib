@@ -17,11 +17,13 @@ export const genRelMany = (prop: {
   if (master) {
     const select = generateSelect(master.relation.fields);
 
+    console.log(master);
     result.on_load = on_load_rel({
       pk: select.pk,
       table: master.name,
       select: select.select,
       pks: {},
+      type: "typeahead",
     });
     const pk_master = master.relation.fields.find((e: any) => get(e, "is_pk"));
     const get_value = `\
