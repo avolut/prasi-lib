@@ -1,8 +1,10 @@
 export const treePrefix = (props: any) => {
   if (!props) return "";
-  const { rel__feature, rel__id_parent, row, mode } = props;
+  const { rel__feature, rel__id_parent, row, opt } = props;
 
   if (props.mode !== "list") return "";
+  const next = opt?.next?.data?.__depth;
+  const prev = opt?.prev?.data?.__depth;
 
   if (!rel__feature || !rel__id_parent || !row) return "";
 
@@ -15,10 +17,16 @@ export const treePrefix = (props: any) => {
 
   let prefix = ``;
   if (is_tree && row.data && row.data.__depth) {
+    const cur = row.data.__depth;
+    let is_last = false;
+    if (cur !== next) {
+      is_last = true;
+    }
+
     for (let i = 0; i < row.data.__depth; i++) {
       if (i === 0) {
         if (row.data.__depth === 1) {
-          prefix += "└";
+          prefix += is_last ? "└" : "├";
         } else {
           prefix += "  ";
         }
@@ -26,7 +34,7 @@ export const treePrefix = (props: any) => {
         if (row.data.__depth - 1 !== i) {
           prefix += "  ";
         } else {
-          prefix += "└";
+          prefix += is_last ? "└" : "├";
         }
       }
     }
@@ -98,9 +106,6 @@ export const sortTree = (list: any, parent_key: string, pk: string) => {
         }
 
         if (parent) {
-          if (parent.item.id === "f43ac927-9c0d-4241-a837-c0bf1c6a5245") {
-            console.log(parent, item);
-          }
           item.__depth = parent.depth + 1;
 
           meta[item[pk]] = {

@@ -123,7 +123,7 @@ export const genRelMany = (prop: {
     const get_label = `\
 (
   row: { value: string; label: string; data?: any },
-  mode: "list" | "label",
+  mode: "list" | "label", opt: any
 ) => {
   const cols = ${JSON.stringify(cols)};
   
@@ -133,7 +133,7 @@ export const genRelMany = (prop: {
 
   const prefix = treePrefix({
     //@ts-ignore
-    rel__feature, rel__id_parent, row, mode
+    rel__feature, rel__id_parent, row, mode, opt
   });
 
   const result = [];

@@ -133,7 +133,7 @@ export const generateField = async (
       opt__label: `\
 (
   row: { value: string; label: string; data?: any },
-  mode: "list" | "label",
+  mode: "list" | "label", opt: any
 ) => {
   const cols = ${JSON.stringify(
     getColumn(generateSelect(parseGenField(master.value.checked)))
@@ -141,7 +141,7 @@ export const generateField = async (
   
   const prefix = treePrefix({
     //@ts-ignore
-    rel__feature, rel__id_parent, row, mode
+    rel__feature, rel__id_parent, row, mode, opt
   });
 
   if (isEditor) {

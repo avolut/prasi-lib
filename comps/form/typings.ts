@@ -68,7 +68,11 @@ export type FieldProp = {
   ) =>
     | { value: string; label: string }[]
     | Promise<{ value: string; label: string }[]>;
-  opt_get_label: (row: any, mode: "list" | "label") => string;
+  opt_get_label: (
+    row: any,
+    mode: "list" | "label",
+    opt?: { next?: any; prev?: any }
+  ) => string;
   opt_get_value: (arg: {
     options: { label: string; value: string; item?: string }[];
     fm: FMLocal;

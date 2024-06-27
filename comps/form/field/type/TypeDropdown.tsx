@@ -29,9 +29,12 @@ export const TypeDropdown: FC<{
       if (options instanceof Promise) {
         options.then((res) => {
           if (Array.isArray(res)) {
-            const list: any = res.map((e: any) => {
+            const list: any = res.map((e: any, idx: number) => {
               return {
-                label: arg.opt_get_label(e, "list"),
+                label: arg.opt_get_label(e, "list", {
+                  prev: res[idx - 1],
+                  next: res[idx + 1],
+                }),
                 tag: arg.opt_get_label(e, "label"),
                 value: e.value,
                 data: e.data,
