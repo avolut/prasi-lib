@@ -4,22 +4,21 @@ import { FC, KeyboardEvent, useCallback, useEffect, useRef } from "react";
 import { Badge } from "./badge";
 import { TypeaheadOptions } from "./typeahead-opt";
 
+type OptItem = { value: string; label: string; tag?: string };
+
 export const Typeahead: FC<{
   value?: string[] | null;
   placeholder?: string;
   options?: (arg: {
     search: string;
-    existing: { value: string; label: string }[];
-  }) =>
-    | (string | { value: string; label: string })[]
-    | Promise<(string | { value: string; label: string })[]>;
-  onSelect?: (arg: {
-    search: string;
-    item?: null | { value: string; label: string };
-  }) => string | false;
+    existing: OptItem[];
+  }) => (string | OptItem)[] | Promise<(string | OptItem)[]>;
+  onSelect?: (arg: { search: string; item?: null | OptItem }) => string | false;
   onChange?: (selected: string[]) => void;
   unique?: boolean;
   allowNew?: boolean;
+  className?: string;
+  popupClassName?: string;
   localSearch?: boolean;
   autoPopupWidth?: boolean;
   focusOpen?: boolean;
@@ -40,11 +39,13 @@ export const Typeahead: FC<{
   mode,
   disabled,
   onChange,
+  className,
+  popupClassName,
 }) => {
   const local = useLocal({
     value: [] as string[],
     open: false,
-    options: [] as { value: string; label: string }[],
+    options: [] as OptItem[],
     loaded: false,
     loading: false,
     search: {
@@ -52,7 +53,7 @@ export const Typeahead: FC<{
       timeout: null as any,
       searching: false,
       promise: null as any,
-      result: null as null | { value: string; label: string }[],
+      result: null as null | OptItem[],
     },
     unique: typeof unique === "undefined" ? true : unique,
     allow_new: typeof allow_new === "undefined" ? false : allow_new,
@@ -61,7 +62,7 @@ export const Typeahead: FC<{
     mode: typeof mode === "undefined" ? "multi" : mode,
     auto_popup_width:
       typeof auto_popup_width === "undefined" ? false : auto_popup_width,
-    select: null as null | { value: string; label: string },
+    select: null as null | OptItem,
   });
   const input = useRef<HTMLInputElement>(null);
 
@@ -115,10 +116,7 @@ export const Typeahead: FC<{
   }, [value]);
 
   const select = useCallback(
-    (arg: {
-      search: string;
-      item?: null | { value: string; label: string };
-    }) => {
+    (arg: { search: string; item?: null | OptItem }) => {
       if (!local.allow_new) {
         let found = null;
         if (!arg.item) {
@@ -268,9 +266,7 @@ export const Typeahead: FC<{
       });
 
       if (res) {
-        const applyOptions = (
-          result: (string | { value: string; label: string })[]
-        ) => {
+        const applyOptions = (result: (string | OptItem)[]) => {
           local.options = result.map((item) => {
             if (typeof item === "string") return { value: item, label: item };
             return item;
@@ -319,7 +315,7 @@ export const Typeahead: FC<{
     if (local.mode === "single") {
       if (!local.open) {
         local.select = item || null;
-        local.search.input = item?.label || "";
+        local.search.input = item?.tag || item?.label || "";
       }
     }
     return item;
@@ -329,7 +325,8 @@ export const Typeahead: FC<{
     <div
       className={cx(
         local.mode === "single" ? "c-cursor-pointer" : "c-cursor-text",
-        "c-flex c-relative c-space-x-2 c-flex-wrap c-pt-2 c-px-2 c-pb-0 c-items-center c-w-full c-h-full c-flex-1"
+        "c-flex c-relative c-space-x-2 c-flex-wrap c-pt-2 c-px-2 c-pb-0 c-items-center c-w-full c-h-full c-flex-1",
+        className
       )}
       onClick={() => {
         input.current?.focus();
@@ -355,7 +352,7 @@ export const Typeahead: FC<{
                   }
                 }}
               >
-                <div>{e?.label || <>&nbsp;</>}</div>
+                <div>{e?.tag || e?.label || <>&nbsp;</>}</div>
                 <X size={12} />
               </Badge>
             );
@@ -374,6 +371,7 @@ export const Typeahead: FC<{
           local.open = open;
           local.render();
         }}
+        className={popupClassName}
         open={local.open}
         options={options}
         searching={local.search.searching}
@@ -385,7 +383,7 @@ export const Typeahead: FC<{
           if (item) {
             let search = local.search.input;
             if (local.mode === "single") {
-              local.search.input = item.label;
+              local.search.input = item.tag || item.label;
             } else {
               local.search.input = "";
             }

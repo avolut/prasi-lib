@@ -9,6 +9,7 @@ export const TypeaheadOptions: FC<{
   children: any;
   onOpenChange?: (open: boolean) => void;
   options: OptionItem[];
+  className?: string;
   selected?: (arg: {
     item: OptionItem;
     options: OptionItem[];
@@ -22,6 +23,7 @@ export const TypeaheadOptions: FC<{
   children,
   open,
   onOpenChange,
+  className,
   options,
   selected,
   onSelect,
@@ -44,6 +46,7 @@ export const TypeaheadOptions: FC<{
       content={
         <div
           className={cx(
+            className,
             width
               ? css`
                   min-width: ${width}px;
@@ -69,7 +72,7 @@ export const TypeaheadOptions: FC<{
                 tabIndex={0}
                 key={item.value + "_" + idx}
                 className={cx(
-                  "c-px-3 c-py-1 cursor-pointer option-item text-sm",
+                  "opt-item c-px-3 c-py-1 cursor-pointer option-item text-sm",
                   is_selected
                     ? "c-bg-blue-600 c-text-white"
                     : "hover:c-bg-blue-50",

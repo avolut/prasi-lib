@@ -2,9 +2,9 @@ import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
 import { FieldProp } from "../typings";
 import { useField } from "../utils/use-field";
-import { validate } from "../utils/validate";
 import { FieldInput } from "./FieldInput";
 import { Label } from "./Label";
+import { validate } from "../utils/validate";
 
 export const Field: FC<FieldProp> = (arg) => {
   const showlabel = arg.show_label || "y";
@@ -19,19 +19,18 @@ export const Field: FC<FieldProp> = (arg) => {
 
   const mode = fm.props.label_mode;
   const w = field.width;
-
+ 
   useEffect(() => {
     if (local.prev_val !== fm.data[name]) {
       validate(field, fm);
       fm.events.on_change(name, fm.data[name]);
       fm.render();
-    }
+    } 
   }, [fm.data[name]]);
   if (field.status === "init" && !isEditor) return null;
   const errors = fm.error.get(name);
   const props = { ...arg.props };
   delete props.className;
-
 
   return (
     <label

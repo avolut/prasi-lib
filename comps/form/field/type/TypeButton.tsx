@@ -77,7 +77,7 @@ export const FieldButton: FC<{
                   )}
                 >
                   <span className="block text-sm font-medium">
-                    {arg.opt_get_label(item)}
+                    {arg.opt_get_label(item, "label")}
                   </span>
                 </div>
               );
@@ -122,7 +122,7 @@ export const FieldButton: FC<{
                     "c-text-sm c-block c-cursor-pointer c-select-none c-rounded-md c-p-1 c-text-center peer-checked: peer-checked:c-font-bold"
                   )}
                 >
-                  {arg.opt_get_label(e)}
+                  {arg.opt_get_label(e, "label")}
                 </label>
               </div>
             );

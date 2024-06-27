@@ -31,7 +31,8 @@ export const TypeDropdown: FC<{
           if (Array.isArray(res)) {
             const list: any = res.map((e: any) => {
               return {
-                label: arg.opt_get_label(e),
+                label: arg.opt_get_label(e, "list"),
+                tag: arg.opt_get_label(e, "label"),
                 value: e.value,
                 data: e.data,
               };
@@ -73,6 +74,33 @@ export const TypeDropdown: FC<{
       }
     }
   }, []);
+  let popupClassName = "";
+
+  if (arg.__props) {
+    const { rel__feature, rel__id_parent } = arg.__props;
+    if (
+      typeof rel__feature !== "undefined" &&
+      Array.isArray(rel__feature) &&
+      rel__feature.includes("tree") &&
+      typeof rel__id_parent === "string" &&
+      rel__id_parent
+    ) {
+      popupClassName = cx(
+        css`
+          .opt-item {
+            padding-top: 0px;
+            padding-bottom: 0px;
+            line-height: 15px;
+            font-size: 12px;
+            border: 0px;
+            white-space: pre-wrap;
+            font-family: monospace;
+          }
+        `,
+        "c-font-mono"
+      );
+    }
+  }
 
   if (!local.loaded) return <FieldLoading />;
   if (field.type === "single-option") {
@@ -84,6 +112,7 @@ export const TypeDropdown: FC<{
       <>
         <Typeahead
           value={Array.isArray(value) ? value : [value]}
+          popupClassName={popupClassName}
           onSelect={({ search, item }) => {
             if (item) {
               arg.opt_set_value({
@@ -118,6 +147,7 @@ export const TypeDropdown: FC<{
           return item?.value || search;
         }}
         note="dropdown"
+        popupClassName={popupClassName}
         onChange={(values) => {
           arg.opt_set_value({
             fm,

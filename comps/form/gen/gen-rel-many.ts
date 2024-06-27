@@ -121,27 +121,20 @@ export const genRelMany = (prop: {
     `;
     const cols = getColumn(select) || [];
     const get_label = `\
-(row: { value: string; label: string; data?: any }) => {
+(
+  row: { value: string; label: string; data?: any },
+  mode: "list" | "label",
+) => {
   const cols = ${JSON.stringify(cols)};
   
   if (isEditor) {
     return row.label;
   }
 
-  const is_tree =
-  typeof rel__feature !== "undefined" &&
-  Array.isArray(rel__feature) &&
-  rel__feature.includes("tree") &&
-  typeof rel__id_parent === "string" &&
-  rel__id_parent;
-
-  let prefix = "";
-  if (is_tree) {
-    for (let i = 0; i < row.data.__depth; i++) {
-      prefix += "···";
-    }
-    prefix += " ";
-  }
+  const prefix = treePrefix({
+    //@ts-ignore
+    rel__feature, rel__id_parent, row, mode
+  });
 
   const result = [];
   if (!!row.data && !row.label && !Array.isArray(row.data)) {

@@ -16,13 +16,13 @@ export const FieldCheckbox: FC<{
       if (Array.isArray(res)) {
         const list: any = res.map((e: any) => {
           return {
-            label: arg.opt_get_label(e),
+            label: arg.opt_get_label(e, "list"),
             value: e.value,
           };
         });
         local.list = list;
       } else {
-        local.list = []
+        local.list = [];
       }
       local.render();
     };
@@ -111,7 +111,7 @@ export const FieldCheckbox: FC<{
                 )}
                 <div className="">
                   {typeof arg.opt_get_label === "function"
-                    ? arg.opt_get_label(item)
+                    ? arg.opt_get_label(item, "list")
                     : item.label}
                 </div>
               </div>

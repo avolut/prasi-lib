@@ -16,12 +16,21 @@ export const gen_label = ({
   }
 
   return `\
-(row: { value: string; label: string; data?: any }) => {
+(
+  row: { value: string; label: string; data?: any },
+  mode: "list" | "label",
+) => {
   const cols = ${JSON.stringify(cols)};
   
   if (isEditor) {
     return row.label;
   }
+
+  const prefix = treePrefix({
+    //@ts-ignore
+    rel__feature, rel__id_parent, row, mode
+  });
+
   const result = [];
   if (!!row.data && !row.label && !Array.isArray(row.data)) {
     if(cols.length > 0){
@@ -30,17 +39,17 @@ export const gen_label = ({
           result.push(row.data[e]);
         }
       });
-      return result.join(" - ");
+      return prefix + result.join(" - ");
     } else {
       const fields = parseGenField(rel__gen_fields);
-      return fields
+      return prefix + fields
         .filter((e) => !e.is_pk)
         .map((e) => row.data[e.name])
         .filter((e) => e)
         .join(" - ");
     }
   }
-  return row.label;
+  return prefix + row.label;
 }
   `;
 };

@@ -49,20 +49,22 @@ async (arg: {
         : `
     const fields = parseGenField(rel__gen_fields);
     const res = generateSelect(fields);
-    
+    `
+    }
+
     const is_tree =
       typeof rel__feature !== "undefined" &&
       Array.isArray(rel__feature) &&
       rel__feature.includes("tree");
-      
+     
+    const ext_select: Record<string, any> = {};
     if (is_tree && typeof rel__id_parent === "string" && rel__id_parent) {
-      res.select[rel__id_parent] = true;
-    }`
+      ext_select[rel__id_parent] = true;
     }
-
 
     let items = await db.${table}.findMany({
       select: {
+        ...ext_select,
         ...${JSON.stringify(select)}
         ${skip_select ? `` : `,...(res?.select || {})`}
       },
@@ -72,13 +74,8 @@ async (arg: {
       ...arg.paging,
     });
 
-    ${
-      skip_select
-        ? ""
-        : `\
     if (is_tree && typeof rel__id_parent === "string" && rel__id_parent) {
       items = sortTree(items, rel__id_parent, "${pk}");
-    }`
     }
 
     if(items.length){

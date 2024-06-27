@@ -57,7 +57,7 @@ export const FieldRadio: FC<{
                   checked={get(e, arg.pk) === value}
                 />
                 <label className="text-sm font-medium text-gray-900 ml-2 block">
-                  {arg.opt_get_label(e)}
+                  {arg.opt_get_label(e, "list")}
                 </label>
               </div>
             );

@@ -1,3 +1,40 @@
+export const treePrefix = (props: any) => {
+  if (!props) return "";
+  const { rel__feature, rel__id_parent, row, mode } = props;
+
+  if (props.mode !== "list") return "";
+
+  if (!rel__feature || !rel__id_parent || !row) return "";
+
+  const is_tree =
+    typeof rel__feature !== "undefined" &&
+    Array.isArray(rel__feature) &&
+    rel__feature.includes("tree") &&
+    typeof rel__id_parent === "string" &&
+    rel__id_parent;
+
+  let prefix = ``;
+  if (is_tree && row.data && row.data.__depth) {
+    for (let i = 0; i < row.data.__depth; i++) {
+      if (i === 0) {
+        if (row.data.__depth === 1) {
+          prefix += "└";
+        } else {
+          prefix += "  ";
+        }
+      } else {
+        if (row.data.__depth - 1 !== i) {
+          prefix += "  ";
+        } else {
+          prefix += "└";
+        }
+      }
+    }
+    prefix += " ";
+  }
+  return prefix;
+};
+
 export const sortTree = (list: any, parent_key: string, pk: string) => {
   let meta = {} as Record<
     string,
@@ -61,6 +98,9 @@ export const sortTree = (list: any, parent_key: string, pk: string) => {
         }
 
         if (parent) {
+          if (parent.item.id === "f43ac927-9c0d-4241-a837-c0bf1c6a5245") {
+            console.log(parent, item);
+          }
           item.__depth = parent.depth + 1;
 
           meta[item[pk]] = {

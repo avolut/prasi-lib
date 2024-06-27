@@ -16,7 +16,7 @@ export const FieldSingleCheckbox: FC<{
       if (Array.isArray(res)) {
         const list: any = res.map((e: any) => {
           return {
-            label: arg.opt_get_label(e),
+            label: arg.opt_get_label(e, "list"),
             value: e.value,
           };
         });
@@ -30,7 +30,7 @@ export const FieldSingleCheckbox: FC<{
     if (res instanceof Promise) res.then(callback);
     else callback(res);
   }, []);
-  let value: boolean =fm.data[field.name];
+  let value: boolean = fm.data[field.name];
   return (
     <>
       <div className={cx("c-flex c-items-center c-w-full c-flex-row")}>
