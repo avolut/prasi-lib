@@ -25,7 +25,7 @@ import { Toaster, toast } from "sonner";
 import { filterWhere } from "../filter/parser/filter-where";
 import { getFilter } from "../filter/utils/get-filter";
 import { Skeleton } from "../ui/skeleton";
-import "./TableList.css";
+import "react-data-grid/lib/styles.css";
 import { sortTree } from "./utils/sort-tree";
 import { call_prasi_events } from "../../..";
 
@@ -562,6 +562,7 @@ export const TableList: FC<TableListProp> = ({
           {local.status === "init" ? (
             <DataGrid
               style={{ opacity: 0 }}
+              className="rdg-light"
               columns={[
                 {
                   key: "_",
@@ -590,6 +591,7 @@ export const TableList: FC<TableListProp> = ({
                 onSortColumnsChange={local.sort.on_change}
                 columns={columns}
                 rows={data}
+                className="rdg-light"
                 onScroll={local.paging.scroll}
                 selectedRows={new Set() as ReadonlySet<any>}
                 onSelectedCellChange={() => {}}
