@@ -18,7 +18,7 @@ export const validate = (field: FieldLocal, fm: FMLocal, record?: any) => {
   };
   if (field.required) {
     const data = record || fm.data;
-    const error_msg = msg(field.name);
+    const error_msg = msg(field.label);
     if (!data[field.name]) {
       fm.error.set(field.name, [error_msg]);
     }

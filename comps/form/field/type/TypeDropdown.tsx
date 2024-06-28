@@ -129,6 +129,7 @@ export const TypeDropdown: FC<{
 
             return item?.value || search;
           }}
+          disabled={field.disabled}
           allowNew={false}
           autoPopupWidth={true}
           focusOpen={true}
@@ -164,6 +165,7 @@ export const TypeDropdown: FC<{
         autoPopupWidth={true}
         focusOpen={true}
         mode={"multi"}
+        disabled={field.disabled}
         placeholder={arg.placeholder}
         options={() => {
           return local.options;

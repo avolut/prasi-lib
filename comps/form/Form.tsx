@@ -53,29 +53,28 @@ export const Form: FC<FMProps> = (props) => {
         : "full",
     },
     soft_delete: {
-      field: null
-    }
+      field: null,
+    },
   });
   useEffect(() => {
     // deteksi jika ada softdelete
-    if(Array.isArray(props.feature)){
-      if(props.feature?.find((e) => e === "soft_delete")){
-        const result = softDeleteField(props.gen_table, sfd_field)
+    if (Array.isArray(props.feature)) {
+      if (props.feature?.find((e) => e === "soft_delete")) {
+        const result = softDeleteField(props.gen_table, sfd_field);
         if (result instanceof Promise) {
           result.then((e) => {
             // simpan fields yang berisi name dan type fields soft delete
             fm.soft_delete.field = e;
-            if(!isEditor){
+            if (!isEditor) {
               fm.render();
             }
           });
         }
-      }else{
+      } else {
         fm.soft_delete.field = null;
       }
     }
-   
-  }, [])
+  }, []);
   const ref = useRef({
     el: null as null | HTMLFormElement,
     rob: new ResizeObserver(([e]) => {
@@ -156,6 +155,7 @@ export const Form: FC<FMProps> = (props) => {
           if (!ref.current.el) {
             ref.current.el = el;
             ref.current.rob.observe(el);
+            fm.status = "resizing";
           }
         }
       }}
@@ -168,7 +168,7 @@ export const Form: FC<FMProps> = (props) => {
       <div
         className={cx(
           "form-inner c-flex c-flex-1 c-flex-wrap c-items-start c-content-start",
-          style  === "flex" ? "" : "c-absolute c-inset-0" ,
+          style === "flex" ? "" : "c-absolute c-inset-0",
           css`
             padding-right: 10px;
           `

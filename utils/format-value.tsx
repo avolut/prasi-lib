@@ -1,5 +1,9 @@
 import { GFCol } from "@/gen/utils";
 import { FC } from "react";
+import { isEmptyString } from "./is-empty-string";
+import { formatDate } from "lib/comps/custom/Datepicker/helpers";
+import dayjs from "dayjs";
+import { formatMoney } from "lib/comps/form/field/type/TypeMoney";
 
 export const fields_map = new Map<string, (GFCol & { checked?: GFCol[] })[]>();
 
@@ -8,8 +12,9 @@ export const FormatValue: FC<{
   name: string;
   gen_fields: string[];
   tree_depth?: number;
+  mode?: "money" | "datetime";
 }> = (prop) => {
-  const { value, gen_fields, name, tree_depth } = prop;
+  const { value, gen_fields, name, tree_depth, mode } = prop;
   if (gen_fields) {
     const gf = JSON.stringify(gen_fields);
     if (!fields_map.has(gf)) {
@@ -38,6 +43,18 @@ export const FormatValue: FC<{
     }
 
     const fields = fields_map.get(gf);
+    const field = fields?.find((e) => e.name === name);
+    if (mode === "money") {
+      if (!value || isEmptyString(value)) return "-";
+      return formatMoney(Number(value) || 0);
+    } else if (mode === "datetime") {
+      if (!value || isEmptyString(value)) return "-";
+      try {
+        return formatDate(dayjs(value), "DD MMMM YYYY HH:mm");
+      } catch (ex: any) {
+        return "-";
+      }
+    }
     if (Array.isArray(value)) {
       return `${value.length} item${value.length > 1 ? "s" : ""}`;
     } else if (typeof value === "object" && value) {
@@ -57,7 +74,31 @@ export const FormatValue: FC<{
         }
       }
       return JSON.stringify(value);
-    } else {
+    } else if (["timestamptz"].includes(field?.type as string)) {
+      if (!value || isEmptyString(value)) return "-";
+      try {
+        return formatDate(dayjs(value), "DD MMMM YYYY HH:mm");
+      } catch (ex: any) {
+        return "-";
+      }
+      return;
+    } else if (["date"].includes(field?.type as string)) {
+      if (!value || isEmptyString(value)) return "-";
+      try {
+        return formatDate(dayjs(value), "DD MMMM YYYY");
+      } catch (ex: any) {
+        return "-";
+      }
+    } else if (["time"].includes(field?.type as string)) {
+      if (!value || isEmptyString(value)) return "-";
+      try {
+        return formatDate(dayjs(value), "HH:mm");
+      } catch (ex: any) {
+        return "-";
+      }
+    } else if (["float"].includes(field?.type as string)) {
+      if (!value || isEmptyString(value)) return "-";
+      return formatMoney(Number(value) || 0);
     }
   }
 

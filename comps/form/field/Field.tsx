@@ -19,13 +19,18 @@ export const Field: FC<FieldProp> = (arg) => {
 
   const mode = fm.props.label_mode;
   const w = field.width;
- 
+
   useEffect(() => {
     if (local.prev_val !== fm.data[name]) {
-      validate(field, fm);
+      if (
+        (!local.prev_val && fm.data[name]) ||
+        (local.prev_val && !fm.data[name])
+      ) {
+        validate(field, fm);
+      }
       fm.events.on_change(name, fm.data[name]);
       fm.render();
-    } 
+    }
   }, [fm.data[name]]);
   if (field.status === "init" && !isEditor) return null;
   const errors = fm.error.get(name);
@@ -37,9 +42,13 @@ export const Field: FC<FieldProp> = (arg) => {
       className={cx(
         "field",
         "c-flex",
-        type === "single-option" && sub_type === "checkbox" ? css`padding: 5px 0px 0px 7.5px;` : css`
-          padding: 5px 0px 0px 10px;
-        `,
+        type === "single-option" && sub_type === "checkbox"
+          ? css`
+              padding: 5px 0px 0px 7.5px;
+            `
+          : css`
+              padding: 5px 0px 0px 10px;
+            `,
         w === "auto" && fm.size.field === "full" && "c-w-full",
         w === "auto" && fm.size.field === "half" && "c-w-1/2",
         w === "full" && "c-w-full",
@@ -51,7 +60,7 @@ export const Field: FC<FieldProp> = (arg) => {
         mode === "vertical" && "c-flex-col c-space-y-1"
       )}
       {...props}
-      ref={typeof arg.field_ref === 'function' ? arg.field_ref : undefined}
+      ref={typeof arg.field_ref === "function" ? arg.field_ref : undefined}
     >
       {mode !== "hidden" && showlabel === "y" && (
         <Label field={field} fm={fm} />

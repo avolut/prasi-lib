@@ -126,6 +126,7 @@ export const FieldTypeInput: FC<{
       return (
         <Datepicker
           value={{ startDate: value, endDate: value }}
+          disabled={field.disabled}
           displayFormat="DD MMM YYYY"
           asSingle={true}
           useRange={false}

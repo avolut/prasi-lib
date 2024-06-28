@@ -329,7 +329,7 @@ export const Typeahead: FC<{
         className
       )}
       onClick={() => {
-        input.current?.focus();
+        if (!disabled) input.current?.focus();
       }}
     >
       {local.mode === "multi" ? (
@@ -377,7 +377,6 @@ export const Typeahead: FC<{
         searching={local.search.searching}
         onSelect={(value) => {
           local.open = false;
-
           resetSearch();
           const item = local.options.find((item) => item.value === value);
           if (item) {
@@ -413,17 +412,18 @@ export const Typeahead: FC<{
           value={local.search.input}
           onClick={(e) => {
             e.stopPropagation();
-
-            if (!local.open) {
-              if (local.on_focus_open) {
-                loadOptions();
-                local.open = true;
-                local.render();
+            if (!disabled) {
+              if (!local.open) {
+                if (local.on_focus_open) {
+                  loadOptions();
+                  local.open = true;
+                  local.render();
+                }
               }
-            }
 
-            if (local.mode === "single") {
-              e.currentTarget.select();
+              if (local.mode === "single") {
+                e.currentTarget.select();
+              }
             }
           }}
           onChange={async (e) => {

@@ -2,6 +2,7 @@ import { useLocal } from "@/utils/use-local";
 import { FC } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
+import { isEmptyString } from "lib/utils/is-empty-string";
 export const FieldMoney: FC<{
   field: FieldLocal;
   fm: FMLocal;
@@ -23,7 +24,7 @@ export const FieldMoney: FC<{
         className={cx(
           input.display ? "c-hidden" : "",
           "c-flex-grow c-px-2 c-flex c-flex-row c-items-center",
-          money === "0" ? "c-text-gray-400" : ""
+          isEmptyString(value) ? "c-text-gray-400" : ""
         )}
         onClick={() => {
           if (input.ref) {
@@ -33,7 +34,7 @@ export const FieldMoney: FC<{
           }
         }}
       >
-        {money === "0" ? arg.placeholder : money}
+        {isEmptyString(value) ? arg.placeholder : money}
       </div>
       <input
         ref={(el) => (input.ref = el)}
@@ -72,7 +73,7 @@ export const FieldMoney: FC<{
     </div>
   );
 };
-const formatMoney = (res: number) => {
+export const formatMoney = (res: number) => {
   const formattedAmount = new Intl.NumberFormat("id-ID", {
     minimumFractionDigits: 0,
   }).format(res);
