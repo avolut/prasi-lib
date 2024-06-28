@@ -14,10 +14,13 @@ export const FieldCheckbox: FC<{
   useEffect(() => {
     const callback = (res: any[]) => {
       if (Array.isArray(res)) {
-        const list: any = res.map((e: any) => {
+        const list: any = res.map((e: any, idx) => {
+          const prev = res[idx - 1];
+          const next = res[idx + 1];
           return {
-            label: arg.opt_get_label(e, "list"),
+            label: arg.opt_get_label(e, "list", { prev, next }),
             value: e.value,
+            data: e.data,
           };
         });
         local.list = list;
@@ -41,11 +44,58 @@ export const FieldCheckbox: FC<{
         })
       : fm.data[field.name];
 
+  let className = "";
+  let is_tree = false;
+  if (arg.__props) {
+    const { rel__feature, rel__id_parent } = arg.__props;
+    if (
+      typeof rel__feature !== "undefined" &&
+      Array.isArray(rel__feature) &&
+      rel__feature.includes("tree") &&
+      typeof rel__id_parent === "string" &&
+      rel__id_parent
+    ) {
+      is_tree = true;
+      className = cx(
+        css`
+          .opt-item {
+            padding-top: 0px;
+            padding-bottom: 0px;
+            line-height: 15px;
+            font-size: 12px;
+            border: 0px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            height: 15px;
+            border-radius: 0px;
+
+            &:hover,
+            &.active {
+              background: #d3e1ff;
+            }
+            svg {
+              width: 15px;
+              height: 15px;
+              color: #04268b;
+            }
+          }
+        `,
+        "c-font-mono"
+      );
+    }
+  }
   return (
     <>
-      <div className={cx("c-flex c-items-center c-w-full c-flex-row")}>
-        <div className={cx(`c-flex c-flex-col c-space-y-1 c-p-0.5`)}>
-          {local.list.map((item) => {
+      <div
+        className={cx(className, "c-flex c-items-center c-w-full c-flex-row")}
+      >
+        <div
+          className={cx(
+            `c-flex c-flex-col c-p-0.5 c-flex-1`,
+            !is_tree && "c-space-y-1 "
+          )}
+        >
+          {local.list.map((item, idx) => {
             let isChecked = false;
             try {
               isChecked = value.some((e: any) => e === item.value);
@@ -81,7 +131,10 @@ export const FieldCheckbox: FC<{
                     fm.render();
                   }
                 }}
-                className="c-flex c-flex-row c-space-x-1 cursor-pointer c-items-center rounded-full p-0.5"
+                className={cx(
+                  "opt-item c-flex c-flex-row c-space-x-1 cursor-pointer c-items-center rounded-full p-0.5",
+                  isChecked && "active"
+                )}
               >
                 {isChecked ? (
                   <svg
@@ -109,11 +162,7 @@ export const FieldCheckbox: FC<{
                     />
                   </svg>
                 )}
-                <div className="">
-                  {typeof arg.opt_get_label === "function"
-                    ? arg.opt_get_label(item, "list")
-                    : item.label}
-                </div>
+                <div className="">{item.label}</div>
               </div>
             );
           })}

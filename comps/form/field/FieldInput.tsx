@@ -161,6 +161,7 @@ export const FieldInput: FC<{
                         {
                           type: type_field as any,
                           sub_type: arg.sub_type,
+                          model_upload: arg.model_upload
                         } as PropTypeInput
                       }
                     />

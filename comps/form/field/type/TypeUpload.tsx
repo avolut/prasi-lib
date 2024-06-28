@@ -3,13 +3,17 @@ import get from "lodash.get";
 import { FC } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
+import * as XLSX from "xlsx";
+
 export const FieldUpload: FC<{
   field: FieldLocal;
   fm: FMLocal;
   prop: PropTypeInput;
-}> = ({ field, fm, prop }) => {
+  on_change: (e: any) => void | Promise<void>
+}> = ({ field, fm, prop, on_change }) => {
   let type_field = prop.sub_type;
   let value: any = fm.data[field.name];
+  // let type_upload =
   const input = useLocal({
     value: 0 as any,
     display: false as any,
@@ -69,33 +73,49 @@ export const FieldUpload: FC<{
             try {
               file = event.target.files[0];
             } catch (ex) {}
-            const formData = new FormData();
-            formData.append("file", file);
-            const response = await fetch(
-              "https://prasi.avolut.com/_proxy/https%3A%2F%2Feam.avolut.com%2F_upload",
-              {
-                method: "POST",
-                body: formData,
-              }
-            );
+            if (prop.model_upload === "import") {
+              const reader = new FileReader();
 
-            if (response.ok) {
-              const contentType: any = response.headers.get("content-type");
-              let result;
-              if (contentType.includes("application/json")) {
-                result = await response.json();
-              } else if (contentType.includes("text/plain")) {
-                result = await response.text();
-              } else {
-                result = await response.blob();
+              reader.onload = (e: any) => {
+                  const binaryStr = e.target.result;
+                  const workbook = XLSX.read(binaryStr, { type: 'binary' });
+      
+                  const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                  const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                  if (typeof on_change === "function") {
+                    const res =  on_change({value: jsonData});
+                  }
               }
-              if (Array.isArray(result)) {
-                fm.data[field.name] = get(result, "[0]");
-                fm.render();
-              } else {
-                alert("Error upload");
-              }
+              reader.readAsBinaryString(file);
             } else {
+              const formData = new FormData();
+              formData.append("file", file);
+              const response = await fetch(
+                "https://prasi.avolut.com/_proxy/https%3A%2F%2Feam.avolut.com%2F_upload",
+                {
+                  method: "POST",
+                  body: formData,
+                }
+              );
+
+              if (response.ok) {
+                const contentType: any = response.headers.get("content-type");
+                let result;
+                if (contentType.includes("application/json")) {
+                  result = await response.json();
+                } else if (contentType.includes("text/plain")) {
+                  result = await response.text();
+                } else {
+                  result = await response.blob();
+                }
+                if (Array.isArray(result)) {
+                  fm.data[field.name] = get(result, "[0]");
+                  fm.render();
+                } else {
+                  alert("Error upload");
+                }
+              } else {
+              }
             }
           }}
           className={

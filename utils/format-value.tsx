@@ -55,6 +55,11 @@ export const FormatValue: FC<{
         return "-";
       }
     }
+    // await db._batch.update({
+    //   table: "goal",
+    //   data: [],
+    //   where: {}
+    // })
     if (Array.isArray(value)) {
       return `${value.length} item${value.length > 1 ? "s" : ""}`;
     } else if (typeof value === "object" && value) {

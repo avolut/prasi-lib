@@ -15,7 +15,7 @@ const Months: React.FC<Props> = ({ currentMonth, clickMonth }) => {
   const { i18n } = useContext(DatepickerContext);
   loadLanguageModule(i18n);
   return (
-    <div className="c-w-full c-grid c-grid-cols-2 c-gap-2 c-mt-2">
+    <div className={"c-w-full c-grid c-grid-cols-2 c-gap-2 c-mt-2"}>
       {MONTHS.map((item) => (
         <RoundedButton
           key={item}

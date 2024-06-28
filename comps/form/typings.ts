@@ -71,7 +71,7 @@ export type FieldProp = {
   opt_get_label: (
     row: any,
     mode: "list" | "label",
-    opt?: { next?: any; prev?: any }
+    opt?: { next?: any; prev?: any, }
   ) => string;
   opt_get_value: (arg: {
     options: { label: string; value: string; item?: string }[];
@@ -99,6 +99,7 @@ export type FieldProp = {
   msg_error: string;
   gen_table?: string;
   gen_fields?: string;
+  model_upload?: "upload" | "import"
 };
 
 export type FMInternal = {

@@ -249,7 +249,14 @@ const Calendar: React.FC<Props> = ({
 
   return (
     <div className="c-w-full md:c-w-[296px] md:c-min-w-[296px]">
-      <div className=" c-flex c-items-stretch c-space-x-1.5 c-border c-border-gray-300 dark:c-border-gray-700 c-rounded-md c-px-2 c-py-1.5">
+      <div
+        className={cx(
+          "c-flex c-items-stretch c-space-x-1.5 c-px-2 c-py-1.5",
+          css`
+            border-bottom: 1px solid #d1d5db;
+          `
+        )}
+      >
         {!showMonths && !showYears && (
           <div className="c-flex-none">
             <RoundedButton roundedFull={true} onClick={onClickPrevious}>
@@ -317,7 +324,7 @@ const Calendar: React.FC<Props> = ({
         )}
       </div>
 
-      <div className="c-px-0.5 sm:c-px-2 c-mt-0.5 c-min-h-[285px]">
+      <div className={cx("c-mt-0.5 c-min-h-[285px]")}>
         {showMonths && (
           <Months
             currentMonth={calendarData.date.month() + 1}

@@ -331,7 +331,7 @@ const Datepicker: React.FC<DatepickerType> = ({
     <DatepickerContext.Provider value={contextValues}>
       <Popover
         arrow={false}
-        className=""
+        className="c-rounded-md"
         onOpenChange={(open) => {
           local.open = open;
           local.render();
@@ -342,7 +342,7 @@ const Datepicker: React.FC<DatepickerType> = ({
             className={cx("c-text-sm 2xl:c-text-sm")}
             ref={calendarContainerRef}
           >
-            <div className="c-flex c-flex-col lg:c-flex-row c-py-2">
+            <div className="c-flex c-flex-col lg:c-flex-row c-py-1">
               {showShortcuts && <Shortcuts />}
 
               <div

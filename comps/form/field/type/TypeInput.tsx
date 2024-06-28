@@ -29,7 +29,8 @@ export type PropTypeInput = {
   placeholder?: string;
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
-  onChange?: (val: string) => void;
+  onChange?: (val: any) => void;
+  model_upload?: "upload" | "import"
 };
 
 const parse = parser.exportAsFunctionAny("en-US");
@@ -117,7 +118,7 @@ export const FieldTypeInput: FC<{
         />
       );
     case "upload":
-      return <FieldUpload field={field} fm={fm} prop={prop} />;
+      return <FieldUpload field={field} fm={fm} prop={prop} on_change={arg.on_change}/>;
     case "money":
       return <FieldMoney field={field} fm={fm} prop={prop} arg={arg} />;
     case "rich-text":
