@@ -43,9 +43,6 @@ async (opt) => {
     
   ${opt?.before_load ? opt.before_load : `let id = raw_id`}
   let item = {};
-  let where = {
-    ${pk}: id,
-  };
   if (id){
     //@ts-ignore
     const table = db[gen__table] as any;
@@ -57,6 +54,10 @@ async (opt) => {
       if (pk && pk.type === "int") id = parseInt(id);
     }
 
+    let where = {
+      ${pk}: id,
+    };
+    
     const gen = generateSelect(fields);
     item = await table?.findFirst({
       where,
