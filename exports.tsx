@@ -49,7 +49,7 @@ export const MasterFilter = lazify(
 export const FilterField = lazify(
   async () => (await import("@/comps/filter/FilterField")).FilterField
 );
- 
+
 /** Generator */
 export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";
 export { generateRelation } from "@/comps/form/gen/gen-rel";
@@ -98,13 +98,12 @@ export { Layout } from "@/preset/menu/Layout";
 
 /* MENU */
 export { Menu, MenuIcon } from "@/preset/menu/Menu";
-
+ 
 /*Panel Tab*/
 export { ShowHidePanel } from "@/comps/custom/ShowHidePanel";
-export { PanelTab } from "@/comps/tab/Tab";
 export { PanelBody } from "@/comps/tab/parts/PanelBody";
 export { PanelHeader } from "@/comps/tab/parts/PanelHead";
-
+  
 /*Popup*/
 export { Popup } from "@/comps/popup/PopUp";
 
