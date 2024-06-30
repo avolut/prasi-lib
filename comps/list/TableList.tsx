@@ -20,14 +20,14 @@ import DataGrid, {
   SELECT_COLUMN_KEY,
   SortColumn,
 } from "react-data-grid";
+import "react-data-grid/lib/styles.css";
 import { createPortal } from "react-dom";
 import { Toaster, toast } from "sonner";
+import { call_prasi_events } from "../../..";
 import { filterWhere } from "../filter/parser/filter-where";
 import { getFilter } from "../filter/utils/get-filter";
 import { Skeleton } from "../ui/skeleton";
-import "react-data-grid/lib/styles.css";
 import { sortTree } from "./utils/sort-tree";
-import { call_prasi_events } from "../../..";
 
 type OnRowClick = (arg: {
   row: any;
@@ -519,12 +519,12 @@ export const TableList: FC<TableListProp> = ({
         if (id_parent) load_args.paging = {};
         if (typeof on_load === "function") {
           let res = on_load({ ...load_args, mode: "query" }) as any;
-          if(typeof res === "object" && res instanceof Promise){
+          if (typeof res === "object" && res instanceof Promise) {
             res.then((e) => {
-              local.data = e
-            })
-          }else{
-            local.data = e
+              local.data = e;
+            });
+          } else {
+            local.data = res;
           }
         }
       }
@@ -715,27 +715,31 @@ export const TableList: FC<TableListProp> = ({
                 className="w-full h-full overflow-y-auto"
                 onScroll={local.paging.scroll}
               >
-                {Array.isArray(data) ? data.map((e, idx) => {
-                  return (
-                    <div
-                      className="flex-grow"
-                      onClick={(ev) => {
-                        if (!isEditor && typeof row_click === "function") {
-                          row_click({
-                            event: ev,
-                            idx: idx,
-                            row: e,
-                            rows: local.data,
-                          });
-                        }
-                      }}
-                    >
-                      <PassProp idx={idx} row={e} col={{}} rows={local.data}>
-                        {child}
-                      </PassProp>
-                    </div>
-                  );
-                }) : <>No Data</>}
+                {Array.isArray(data) ? (
+                  data.map((e, idx) => {
+                    return (
+                      <div
+                        className="flex-grow"
+                        onClick={(ev) => {
+                          if (!isEditor && typeof row_click === "function") {
+                            row_click({
+                              event: ev,
+                              idx: idx,
+                              row: e,
+                              rows: local.data,
+                            });
+                          }
+                        }}
+                      >
+                        <PassProp idx={idx} row={e} col={{}} rows={local.data}>
+                          {child}
+                        </PassProp>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <>No Data</>
+                )}
               </div>
             </>
           )}

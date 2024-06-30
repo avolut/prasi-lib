@@ -15,7 +15,6 @@ export const BaseField = (prop: {
 }) => {
   const { field, fm, arg } = prop;
   const w = field.width;
-  const mode = fm.props.label_mode;
   const prefix =
     typeof field.prefix === "function"
       ? field.prefix()
@@ -30,8 +29,8 @@ export const BaseField = (prop: {
       : null;
   const name = field.name;
   const errors = fm.error.get(name);
-  let type_field = typeof arg.type === "function" ? arg.type() : arg.type; // tipe field
 
+  const showlabel = arg.show_label || "y";
   return (
     <label
       className={cx(
@@ -48,8 +47,9 @@ export const BaseField = (prop: {
         w === "½" && "c-w-1/2",
         w === "⅓" && "c-w-1/3",
         w === "¼" && "c-w-1/4",
-        mode === "horizontal" && "c-flex-row c-items-center",
-        mode === "vertical" && "c-flex-col c-space-y-1",
+        field.type === "link"
+          ? "c-flex-row c-items-stretch c-min-h-[78px]"
+          : "c-flex-col c-space-y-1",
         field.focused && "focused",
         field.disabled && "disabled",
         typeof fm.data[name] !== "undefined" &&
@@ -58,12 +58,17 @@ export const BaseField = (prop: {
           "filled"
       )}
     >
-      {mode !== "hidden" && <Label field={field} fm={fm} />}
+      {arg.show_label !== "n" && <Label field={field} fm={fm} />}
       <div className="field-input c-flex c-flex-1 c-flex-col">
         <div
           className={cx(
             !["toogle", "button", "radio", "checkbox"].includes(arg.sub_type)
-              ? "field-outer c-overflow-hidden c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm"
+              ? cx(
+                  "field-outer c-overflow-hidden c-flex-1 c-flex c-flex-row c-text-sm c-bg-white",
+                  field.type === "link"
+                    ? " c-items-center"
+                    : "c-border c-rounded "
+                )
               : "",
             fm.status === "loading"
               ? css`
@@ -100,6 +105,8 @@ export const BaseField = (prop: {
             <div
               className={cx(
                 "field-inner c-flex-1 c-flex c-items-center",
+                field.type === "link" && "c-justify-end",
+                field.focused && "focused",
                 field.disabled && "c-pointer-events-none"
               )}
             >

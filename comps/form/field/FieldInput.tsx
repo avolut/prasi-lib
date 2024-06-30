@@ -104,7 +104,10 @@ export const FieldInput: FC<{
     <div
       className={cx(
         !["toogle", "button", "radio", "checkbox"].includes(arg.sub_type)
-          ? "field-outer c-overflow-hidden c-flex c-flex-1 c-flex-row c-rounded c-border c-text-sm c-bg-white"
+          ? cx(
+              "field-outer c-overflow-hidden c-flex-1 c-flex c-flex-row c-text-sm c-bg-white",
+              field.type === "link" ? " c-items-center" : "c-border c-rounded "
+            )
           : "",
         fm.status === "loading"
           ? css`
@@ -140,6 +143,7 @@ export const FieldInput: FC<{
         <div
           className={cx(
             "field-inner c-flex-1 c-flex c-items-center",
+            field.type === "link" && "c-justify-end",
             field.focused && "focused",
             field.disabled && "c-pointer-events-none"
           )}
@@ -152,6 +156,7 @@ export const FieldInput: FC<{
                 <>{custom}</>
               ) : (
                 <>
+                  {type_field === "link" && <>ini link</>}
                   {["date", "input"].includes(type_field) ? (
                     <FieldTypeInput
                       field={field}
@@ -161,7 +166,7 @@ export const FieldInput: FC<{
                         {
                           type: type_field as any,
                           sub_type: arg.sub_type,
-                          model_upload: arg.model_upload
+                          model_upload: arg.model_upload,
                         } as PropTypeInput
                       }
                     />

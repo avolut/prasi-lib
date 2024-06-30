@@ -13,14 +13,12 @@ export type FMProps = {
   layout: "auto" | "1-col" | "2-col";
   meta: any;
   item: any;
-  label_mode: "vertical" | "horizontal" | "hidden";
   label_width: number;
   gen_fields: any;
   gen_table: string;
   on_load_deps?: any[];
   feature?: any[];
   sfd_field?: any;
-  style: "default" | "flex";
 };
 
 export type GenField =
@@ -37,8 +35,8 @@ export type GenField =
 
 type FieldType =
   | "-"
-  | "relation"
-  | "switch"
+  | "date"
+  | "link"
   | "input"
   | "single-option"
   | "multi-option";
@@ -71,7 +69,7 @@ export type FieldProp = {
   opt_get_label: (
     row: any,
     mode: "list" | "label",
-    opt?: { next?: any; prev?: any, }
+    opt?: { next?: any; prev?: any }
   ) => string;
   opt_get_value: (arg: {
     options: { label: string; value: string; item?: string }[];
@@ -95,11 +93,11 @@ export type FieldProp = {
   pk: string;
   sub_type: string;
   placeholder: string;
-  show_label: boolean;
+  show_label: boolean | "y" | "n";
   msg_error: string;
   gen_table?: string;
   gen_fields?: string;
-  model_upload?: "upload" | "import"
+  model_upload?: "upload" | "import";
 };
 
 export type FMInternal = {

@@ -49,7 +49,7 @@ export const MasterFilter = lazify(
 export const FilterField = lazify(
   async () => (await import("@/comps/filter/FilterField")).FilterField
 );
-
+ 
 /** Generator */
 export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";
 export { generateRelation } from "@/comps/form/gen/gen-rel";

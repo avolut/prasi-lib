@@ -11,11 +11,7 @@ export const Label: FC<{ field: FieldLocal; fm: FMLocal }> = ({
     <div
       className={cx(
         "label c-text-sm c-flex c-items-center",
-        fm.props.label_mode === "horizontal" &&
-          css`
-            width: ${fm.props.label_width}px;
-          `,
-        fm.props.label_mode === "vertical" && "c-mt-3"
+        field.type === "link" ? "" : "c-mt-3"
       )}
     >
       <span className={cx(errors.length > 0 && `c-text-red-600`)}>

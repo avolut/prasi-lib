@@ -9,7 +9,6 @@ import { validate } from "../utils/validate";
 export const Field: FC<FieldProp> = (arg) => {
   const showlabel = arg.show_label || "y";
 
-  let type: any = typeof arg.type === "function" ? arg.type() : arg.type; // tipe field
   let sub_type: any = arg.sub_type; // tipe field
 
   const { fm } = arg;
@@ -17,7 +16,6 @@ export const Field: FC<FieldProp> = (arg) => {
   const name = field.name;
   const local = useLocal({ prev_val: fm.data[name] });
 
-  const mode = fm.props.label_mode;
   const w = field.width;
 
   useEffect(() => {
@@ -42,7 +40,7 @@ export const Field: FC<FieldProp> = (arg) => {
       className={cx(
         "field",
         "c-flex",
-        type === "single-option" && sub_type === "checkbox"
+        field.type === "single-option" && sub_type === "checkbox"
           ? css`
               padding: 5px 0px 0px 7.5px;
             `
@@ -56,16 +54,15 @@ export const Field: FC<FieldProp> = (arg) => {
         w === "½" && "c-w-1/2",
         w === "⅓" && "c-w-1/3",
         w === "¼" && "c-w-1/4",
-        mode === "horizontal" && "c-flex-row c-items-center",
-        mode === "vertical" && "c-flex-col c-space-y-1"
+        field.type === "link"
+          ? "c-flex-row c-items-stretch c-min-h-[78px]"
+          : "c-flex-col c-space-y-1"
       )}
       {...props}
       ref={typeof arg.field_ref === "function" ? arg.field_ref : undefined}
     >
-      {mode !== "hidden" && showlabel === "y" && (
-        <Label field={field} fm={fm} />
-      )}
-      <div className="field-inner c-flex c-flex-1 c-flex-col">
+      {showlabel !== "n" && <Label field={field} fm={fm} />}
+      <div className="field-input c-flex c-flex-1 c-flex-col">
         <FieldInput
           field={field}
           fm={fm}

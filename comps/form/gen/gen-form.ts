@@ -37,6 +37,9 @@ export const generateForm = async (
     return;
   }
   if (pk) {
+    const is_md =
+      item.edit?.parent?.item?.component?.id ===
+      "cb52075a-14ab-455a-9847-6f1d929a2a73";
     if (data["on_load"]) {
       result.on_load = {
         mode: "raw",
@@ -45,14 +48,16 @@ export const generateForm = async (
           table,
           select,
           pks,
-          opt: {
-            after_load: `
-if (typeof md === "object") {
-  opt.fm.status = "ready";
-  md.render();
-}
+          opt: is_md
+            ? {
+                after_load: `
+      if (typeof md === "object") {
+        opt.fm.status = "ready";
+        md.render();
+      }
 `,
-          },
+              }
+            : {},
         }),
       };
     }
@@ -63,10 +68,15 @@ if (typeof md === "object") {
 async ({ form, error, fm }: IForm) => {
   let result = false;
   try {
+
+${
+  is_md &&
+  `\
     if (typeof md !== "undefined") {
       fm.status = "saving";
       md.render();
-    }
+    }`
+}
 
     const data = { ...form };
     const record = {} as Record<string, any>;
@@ -84,13 +94,17 @@ async ({ form, error, fm }: IForm) => {
     for (const [k, field] of Object.entries(fm.fields)) {
       validateField(field, fm);
     }
+${
+  is_md &&
+  `\
     if (fm.error.list.length > 0) {
       if (typeof md !== "undefined") {
         fm.status = "ready";
         md.render();
       }
       return false;
-    }
+    }`
+}
 
     // pisahkan antara has_many dengan field biasa
     for (const [k, v] of Object.entries(data) as any) {
@@ -183,6 +197,9 @@ async ({ form, error, fm }: IForm) => {
     result = false;
   }
 
+${
+  is_md &&
+  `\
   if (typeof md !== "undefined") {
     fm.status = "ready";
     // kembali ke tabel
@@ -193,7 +210,8 @@ async ({ form, error, fm }: IForm) => {
       md.params.apply();
       md.render();
     }, 500);
-  }
+  }`
+}
 
   return result;
 };
