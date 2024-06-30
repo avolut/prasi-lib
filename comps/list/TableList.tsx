@@ -460,7 +460,6 @@ export const TableList: FC<TableListProp> = ({
       });
     }
   }
-
   if (mode === "list") {
     if (columns.length > 1) columns = columns.slice(0, 0 + 1);
   }
@@ -519,7 +518,14 @@ export const TableList: FC<TableListProp> = ({
         };
         if (id_parent) load_args.paging = {};
         if (typeof on_load === "function") {
-          local.data = on_load({ ...load_args, mode: "query" }) as any;
+          let res = on_load({ ...load_args, mode: "query" }) as any;
+          if(typeof res === "object" && res instanceof Promise){
+            res.then((e) => {
+              local.data = e
+            })
+          }else{
+            local.data = e
+          }
         }
       }
       local.status = "ready";
@@ -709,7 +715,7 @@ export const TableList: FC<TableListProp> = ({
                 className="w-full h-full overflow-y-auto"
                 onScroll={local.paging.scroll}
               >
-                {data.map((e, idx) => {
+                {Array.isArray(data) ? data.map((e, idx) => {
                   return (
                     <div
                       className="flex-grow"
@@ -729,7 +735,7 @@ export const TableList: FC<TableListProp> = ({
                       </PassProp>
                     </div>
                   );
-                })}
+                }) : <>No Data</>}
               </div>
             </>
           )}

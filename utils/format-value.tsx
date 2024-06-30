@@ -12,7 +12,7 @@ export const FormatValue: FC<{
   name: string;
   gen_fields: string[];
   tree_depth?: number;
-  mode?: "money" | "datetime";
+  mode?: "money" | "datetime" | "timeago";
 }> = (prop) => {
   const { value, gen_fields, name, tree_depth, mode } = prop;
   if (gen_fields) {
@@ -51,6 +51,13 @@ export const FormatValue: FC<{
       if (!value || isEmptyString(value)) return "-";
       try {
         return formatDate(dayjs(value), "DD MMMM YYYY HH:mm");
+      } catch (ex: any) {
+        return "-";
+      }
+    } else if (mode === "timeago") {
+      if (!value || isEmptyString(value)) return "-";
+      try {
+        return timeAgo(dayjs(value));
       } catch (ex: any) {
         return "-";
       }
@@ -133,4 +140,31 @@ export const FormatValue: FC<{
       <div>{value}</div>
     </div>
   );
+};
+const timeAgo = (date: any) => {
+  try {
+    const now: any = new Date();
+    const secondsPast = Math.floor((now - date) / 1000);
+
+    if (secondsPast < 60) {
+      return `${secondsPast} seconds ago`;
+    } else if (secondsPast < 3600) {
+      const minutesPast = Math.floor(secondsPast / 60);
+      return `${minutesPast} minutes ago`;
+    } else if (secondsPast < 86400) {
+      const hoursPast = Math.floor(secondsPast / 3600);
+      return `${hoursPast} hours ago`;
+    } else if (secondsPast < 604800) {
+      // 7 hari
+      const daysPast = Math.floor(secondsPast / 86400);
+      return `${daysPast} days ago`;
+    } else {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      return `${day}-${month}-${year}`;
+    }
+  } catch (e) {
+    return null;
+  }
 };
