@@ -66,7 +66,6 @@ export const FieldToggle: FC<{
             <input
               ref={(ref) => (local.ref = ref)}
               type="checkbox"
-              id="toggleB"
               checked={checked}
               className="c-sr-only"
               onChange={(e) => {

@@ -8,6 +8,7 @@ import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldMoney } from "./TypeMoney";
 import { FieldRichText } from "./TypeRichText";
 import { FieldUpload } from "./TypeUpload";
+import { FieldToggle } from "./TypeToggle";
 
 export type PropTypeInput = {
   type: "input";
@@ -21,6 +22,7 @@ export type PropTypeInput = {
     | "datetime-local"
     | "time"
     | "money"
+    | "toggle"
     | "rich-text"
     | "upload"
     | "file"
@@ -30,7 +32,7 @@ export type PropTypeInput = {
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
   onChange?: (val: any) => void;
-  model_upload?: "upload" | "import"
+  model_upload?: "upload" | "import";
 };
 
 const parse = parser.exportAsFunctionAny("en-US");
@@ -95,6 +97,45 @@ export const FieldTypeInput: FC<{
   };
 
   switch (type_field) {
+    case "toggle":
+      return (
+        <div className="c-px-2">
+          <div
+            className={cx(
+              "c-relative",
+              css`
+                input:checked ~ .dot {
+                  transform: translateX(100%);
+                }
+                input:checked ~ .dot-wrap {
+                  background-color: #125ad6;
+                }
+              `
+            )}
+          >
+            <input
+              type="checkbox"
+              checked={!!fm.data[field.name]}
+              className="c-sr-only"
+              onChange={(e) => {
+                const check = e.target.checked;
+                if (check) {
+                  fm.data[field.name] = true;
+                } else {
+                  fm.data[field.name] = false;
+                }
+                renderOnChange();
+              }}
+            />
+            <div className="dot-wrap c-block c-bg-gray-600 c-w-8 c-h-5 c-rounded-full"></div>
+            <div
+              className={cx(
+                "dot c-absolute c-left-1 c-top-1 c-bg-white c-w-3 c-h-3 c-rounded-full c-transition"
+              )}
+            ></div>
+          </div>{" "}
+        </div>
+      );
     case "textarea":
       return (
         <AutoHeightTextarea
@@ -118,7 +159,14 @@ export const FieldTypeInput: FC<{
         />
       );
     case "upload":
-      return <FieldUpload field={field} fm={fm} prop={prop} on_change={arg.on_change}/>;
+      return (
+        <FieldUpload
+          field={field}
+          fm={fm}
+          prop={prop}
+          on_change={arg.on_change}
+        />
+      );
     case "money":
       return <FieldMoney field={field} fm={fm} prop={prop} arg={arg} />;
     case "rich-text":
