@@ -37,9 +37,11 @@ export const generateForm = async (
     return;
   }
   if (pk) {
-    const is_md =
+    let is_md: boolean | string =
       item.edit?.parent?.item?.component?.id ===
       "cb52075a-14ab-455a-9847-6f1d929a2a73";
+    if (!is_md) is_md = "";
+
     if (data["on_load"]) {
       result.on_load = {
         mode: "raw",
@@ -56,8 +58,9 @@ export const generateForm = async (
         md.render();
       }
 `,
+                is_md: true,
               }
-            : {},
+            : { is_md },
         }),
       };
     }
@@ -67,17 +70,14 @@ export const generateForm = async (
         value: `\
 async ({ form, error, fm }: IForm) => {
   let result = false;
-  try {
-
-${
-  is_md &&
-  `\
+  try {${
+    is_md &&
+    `\
     if (typeof md !== "undefined") {
       fm.status = "saving";
       md.render();
     }`
-}
-
+  }
     const data = { ...form };
     const record = {} as Record<string, any>;
 

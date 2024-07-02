@@ -399,7 +399,7 @@ export const TableList: FC<TableListProp> = ({
         renderHeaderCell(props) {
           return (
             <div>
-              <CheckboxList value={false} on_click={on_click} />
+              {/* <CheckboxList value={false} on_click={on_click} /> */}
             </div>
           );
         },

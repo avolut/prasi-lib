@@ -96,6 +96,7 @@ export const FieldTypeInput: FC<{
     input.change_timeout = setTimeout(fm.render, 300);
   };
 
+  const disabled = typeof field.disabled === "function" ? field.disabled() : field.disabled;
   switch (type_field) {
     case "toggle":
       return (
@@ -144,7 +145,7 @@ export const FieldTypeInput: FC<{
             renderOnChange();
           }}
           value={value || ""}
-          disabled={field.disabled}
+          disabled={disabled}
           className="c-flex-1 c-bg-transparent c-outline-none c-p-2 c-text-sm c-w-full"
           spellCheck={false}
           onFocus={() => {
@@ -175,7 +176,7 @@ export const FieldTypeInput: FC<{
       return (
         <Datepicker
           value={{ startDate: value, endDate: value }}
-          disabled={field.disabled}
+          disabled={disabled}
           displayFormat="DD MMM YYYY"
           asSingle={true}
           useRange={false}
@@ -215,7 +216,7 @@ export const FieldTypeInput: FC<{
         }}
         placeholder={prop.placeholder || arg.placeholder || ""}
         value={value}
-        disabled={field.disabled}
+        disabled={disabled}
         className="c-flex-1 c-transition-all c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
         spellCheck={false}
         onFocus={(e) => {

@@ -14,6 +14,7 @@ export const on_load = ({
   opt?: {
     before_load?: string;
     after_load?: string;
+    is_md?: boolean | string;
   };
 }) => {
   const sample: any = {};
@@ -29,18 +30,26 @@ export const on_load = ({
     }
   }
 
+  let is_md: string | boolean =
+    typeof opt?.is_md === "undefined" ? true : !!opt?.is_md;
+  if (!is_md) is_md = "";
+
   return `\
 async (opt) => {
-  if (isEditor) return ${JSON.stringify(sample)};
+  if (isEditor) return ${JSON.stringify(sample, null, 2)};
 
   let raw_id = params.id;
+${
+  is_md &&
+  `\
   if (typeof md === 'object' && md.selected && md.pk) {
     const pk = md.pk?.name;
     if (md.selected[pk]) {
       raw_id = md.selected[pk]; 
     }
   }
-    
+`
+}
   ${opt?.before_load ? opt.before_load : `let id = raw_id`}
   let item = {};
   if (id){
@@ -63,9 +72,7 @@ async (opt) => {
       where,
       select: gen.select,
     });
-
     ${opt?.after_load ? opt?.after_load : ""}
-
     return item;
   } else {
     ${opt?.after_load ? opt?.after_load : ""}

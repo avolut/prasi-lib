@@ -46,7 +46,6 @@ export const TypeDropdown: FC<{
           }
           if (
             field.type === "single-option" &&
-            !value &&
             field.required &&
             local.options.length > 0
           ) {
@@ -104,6 +103,7 @@ export const TypeDropdown: FC<{
       );
     }
   }
+  const disabled = typeof field.disabled === "function" ? field.disabled() : field.disabled;
 
   if (!local.loaded) return <FieldLoading />;
   if (field.type === "single-option") {
@@ -129,7 +129,7 @@ export const TypeDropdown: FC<{
 
             return item?.value || search;
           }}
-          disabled={field.disabled}
+          disabled={disabled}
           allowNew={false}
           autoPopupWidth={true}
           focusOpen={true}
@@ -165,7 +165,7 @@ export const TypeDropdown: FC<{
         autoPopupWidth={true}
         focusOpen={true}
         mode={"multi"}
-        disabled={field.disabled}
+        disabled={disabled}
         placeholder={arg.placeholder}
         options={() => {
           return local.options;

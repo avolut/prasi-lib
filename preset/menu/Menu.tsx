@@ -1,7 +1,7 @@
 import { getPathname } from "lib/utils/pathname";
 import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef } from "react";
 import { IMenu, MenuProp } from "./utils/type-menu";
 // import { icon } from "../../..";
 
@@ -22,7 +22,7 @@ export const Menu: FC<MenuProp> = (props) => {
   let role = props.role;
   role = props.on_init();
   let menu = get(imenu, role) || [];
-
+  const ref = useRef<HTMLDivElement>(null);
   const local = useLocal({ ...local_default });
 
   if (local.pathname !== getPathname()) {
@@ -39,7 +39,10 @@ export const Menu: FC<MenuProp> = (props) => {
   }, [props.mode]);
 
   return (
-    <div className={cx("c-overflow-y-auto c-relative c-h-full c-w-full ")}>
+    <div
+      className={cx("c-overflow-y-auto c-relative c-h-full c-w-full ")}
+      ref={ref}
+    >
       <div className="sidebar-menu c-absolute c-inset-0 c-flex c-flex-col c-flex-grow c-px-3 c-py-4 ">
         <SideBar
           data={menu}

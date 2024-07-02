@@ -21,6 +21,7 @@ export const FieldUpload: FC<{
     drop: false as boolean,
   });
   let display: any = null;
+  const disabled = typeof field.disabled === "function" ? field.disabled() : field.disabled;
   return (
     <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full">
       <div
@@ -152,7 +153,7 @@ export const FieldUpload: FC<{
           fm.render();
         }}
         value={value}
-        disabled={field.disabled}
+        disabled={disabled}
         className={cx(
           !input.display ? "c-hidden" : "",
           "c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"

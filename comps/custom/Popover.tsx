@@ -187,6 +187,8 @@ export function Popover({
   content?: React.ReactNode;
   arrow?: boolean;
 } & PopoverOptions) {
+  if (isEditor) return children;
+
   const popover = usePopover({ modal, ...restOptions });
 
   let _content = content;

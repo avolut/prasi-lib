@@ -23,7 +23,6 @@ export const useField = (
   const label = typeof arg.label === "string" ? arg.label : arg.label();
   const required =
     typeof arg.required === "string" ? arg.required : arg.required();
-
   const update_field = {
     name: name.replace(/\s*/gi, ""),
     label: label,
@@ -35,7 +34,7 @@ export const useField = (
     custom: arg.custom,
     required: required === "y",
     required_msg: arg.required_msg,
-    disabled: arg.disabled === "y",
+    disabled: typeof arg.disabled === "function" ? arg.disabled : arg.disabled === "y",
     on_change: arg.on_change,
   };
 

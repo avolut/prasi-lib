@@ -12,7 +12,7 @@ export const FormatValue: FC<{
   name: string;
   gen_fields: string[];
   tree_depth?: number;
-  mode?: "money" | "datetime" | "timeago";
+  mode?: "money" | "datetime" | "timeago" | "date";
 }> = (prop) => {
   const { value, gen_fields, name, tree_depth, mode } = prop;
   if (gen_fields) {
@@ -54,7 +54,14 @@ export const FormatValue: FC<{
       } catch (ex: any) {
         return "-";
       }
-    } else if (mode === "timeago") {
+    }  else if (mode === "date") {
+      if (!value || isEmptyString(value)) return "-";
+      try {
+        return formatDate(dayjs(value), "DD MMMM YYYY");
+      } catch (ex: any) {
+        return "-";
+      }
+    }else if (mode === "timeago") {
       if (!value || isEmptyString(value)) return "-";
       try {
         return timeAgo(dayjs(value));

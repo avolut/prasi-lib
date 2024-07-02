@@ -1,5 +1,6 @@
 export { FieldLoading } from "@/comps/ui/field-loading";
 import { lazify, lazifyMany } from "@/utils/lazify";
+export { Popover } from "./comps/custom/Popover";
 
 /** Master - Detail - List - Form */
 export const MasterDetail = lazify(
@@ -80,7 +81,7 @@ export { FormatValue } from "@/utils/format-value";
 export { GetValue } from "@/utils/get-value";
 export { password } from "@/utils/password";
 export { prasi_events, call_prasi_events } from "lib/utils/prasi-events";
-
+export { getFilter } from "@/comps/filter/utils/get-filter";
 /** Session */
 export { Login } from "@/preset/login/Login";
 export { generateLogin } from "@/preset/login/utils/generate";

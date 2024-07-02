@@ -52,7 +52,7 @@ export type FieldProp = {
   required_msg: (name: string) => string | ReactElement;
   on_change: (arg: { value: any }) => void | Promise<void>;
   PassProp: any;
-  disabled: "y" | "n";
+  disabled:  ("y" | "n") | (() => true | false);
   child: any;
   selection: "single" | "multi";
   prefix: any;
@@ -152,7 +152,7 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   width: FieldProp["width"];
   required: boolean;
   focused: boolean;
-  disabled: boolean;
+  disabled: boolean | (() => boolean);
   required_msg: FieldProp["required_msg"];
   col?: GFCol;
   ref?: any;

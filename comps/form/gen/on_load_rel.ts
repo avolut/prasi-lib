@@ -29,7 +29,6 @@ export const on_load_rel = ({
     !isEmptyString(type) &&
     ["checkbox", "typeahead", "button"].includes(type as any);
 
-  console.log(skip_select, type);
   return `\
 async (arg: {
   reload: () => Promise<void>;

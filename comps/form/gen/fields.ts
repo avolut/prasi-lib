@@ -105,6 +105,37 @@ export const newField = async (
   } else if (["has-many", "has-one"].includes(arg.type) && arg.relation) {
     const fields = parseGenField(opt.value);
     const res = generateSelect(fields);
+
+    if (res && res.select && Object.keys(res.select).length === 1) {
+      return createItem({
+        component: {
+          id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
+          props: {
+            name: arg.name,
+            label: formatName(arg.name),
+            type: "link",
+            link_opt: [
+              `({
+  url: () => {
+    return "";
+  },
+  where: () => {
+    return {} as ${
+      opt.parent_table
+        ? `Prisma.${opt.parent_table}WhereInput`
+        : `Record<string, any>`
+    };
+  },
+  breadcrumbs: (existing: any[]) => {
+    return [...existing];
+  },
+})`,
+            ],
+          },
+        },
+      });
+    }
+
     const load = on_load_rel({
       pk: res.pk,
       table: arg.relation.to.table,

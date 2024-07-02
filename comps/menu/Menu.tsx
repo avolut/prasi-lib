@@ -1,14 +1,13 @@
 import { getPathname } from "lib/utils/pathname";
 import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
-import { FC } from "react";
+import { FC, useRef } from "react";
 import { IMenu, MenuProp } from "../../preset/menu/utils/type-menu";
 
 export const Menu: FC<MenuProp> = (props) => {
   const imenu = props.menu[0];
   let role = props.role;
   role = props.on_init() as string;
-
   const PassProp = props.PassProp;
   let menu = imenu[role] || [];
   const pathname = getPathname();
@@ -26,8 +25,10 @@ export const Menu: FC<MenuProp> = (props) => {
       local.render();
     }
   }
+  const ref = useRef<HTMLDivElement>(null);
   return (
     <div
+    ref={ref}
       className={cx(
         props.mode === "mini" ? "c-max-w-[35px]" : "",
         "c-h-full c-w-full c-flex c-flex-row c-flex-grow c-px-3 c-py-4 c-overflow-y-auto c-rounded "

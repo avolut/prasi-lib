@@ -36,6 +36,7 @@ export const FieldInput: FC<{
   const errors = fm.error.get(name);
   let type_field: any = typeof arg.type === "function" ? arg.type() : arg.type; // tipe field
 
+  const disabled = typeof field.disabled === "function" ? field.disabled() : field.disabled;
   let custom = <></>;
   if (field.type === "custom") {
     let res = arg.custom?.() || <></>;
@@ -113,7 +114,7 @@ export const FieldInput: FC<{
           ? css`
               border-color: transparent;
             `
-          : field.disabled
+          : disabled
           ? "c-border-gray-100"
           : errors.length > 0
           ? field.focused
@@ -145,7 +146,7 @@ export const FieldInput: FC<{
             "field-inner c-flex-1 c-flex c-items-center",
             field.type === "link" && "c-justify-end",
             field.focused && "focused",
-            field.disabled && "c-pointer-events-none"
+            disabled && "c-pointer-events-none"
           )}
         >
           {not_ready ? (
