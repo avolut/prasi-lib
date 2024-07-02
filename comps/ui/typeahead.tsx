@@ -325,7 +325,10 @@ export const Typeahead: FC<{
     <div
       className={cx(
         local.mode === "single" ? "c-cursor-pointer" : "c-cursor-text",
-        "c-flex c-relative c-space-x-2 c-flex-wrap c-pt-2 c-px-2 c-pb-0 c-items-center c-w-full c-h-full c-flex-1",
+        "c-flex c-relative c-space-x-2 c-flex-wrap c-px-2 c-pb-0 c-items-center c-w-full c-h-full c-flex-1",
+        css`
+          padding-top: 0.35rem;
+        `,
         className
       )}
       onClick={() => {

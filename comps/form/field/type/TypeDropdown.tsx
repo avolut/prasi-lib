@@ -44,6 +44,7 @@ export const TypeDropdown: FC<{
           } else {
             local.options = res;
           }
+          console.log(field.name)
           if (
             field.type === "single-option" &&
             field.required &&
@@ -63,6 +64,14 @@ export const TypeDropdown: FC<{
               type: field.type,
               options: local.options,
               selected: [value],
+            });
+          } else if (field.type === "single-option" && !value) {
+            arg.opt_set_value({
+              fm,
+              name: field.name,
+              type: field.type,
+              options: local.options,
+              selected: [],
             });
           }
 
