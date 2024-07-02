@@ -472,6 +472,7 @@ export const TableList: FC<TableListProp> = ({
 
   if (!isEditor) {
     if (local.status === "loading") {
+      toast.dismiss();
       toast.loading(
         <>
           <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
