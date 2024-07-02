@@ -106,6 +106,8 @@ ${
     }`
 }
 
+    call_prasi_events("form", "before_save", [fm, data]);
+
     // pisahkan antara has_many dengan field biasa
     for (const [k, v] of Object.entries(data) as any) {
       if (Array.isArray(v)) {
@@ -128,7 +130,6 @@ ${
     // prisma create / update ga boleh ada record.${pk}
     if (record) delete record.${pk};
 
-    call_prasi_events("form", "before_save", [fm, record]);
 
     if (form.${pk}) {
       await db.${table}.update({
@@ -192,6 +193,9 @@ ${
       await exec_query_bulk(has_many[0], has_many, 0);
     }
     result = true;
+  
+    call_prasi_events("form", "after_save", [fm, data]);
+
   } catch (e) {
     console.error(e);
     result = false;
@@ -212,6 +216,7 @@ ${
     }, 500);
   }`
 }
+
 
   return result;
 };

@@ -31,15 +31,9 @@ export const on_load_rel = ({
 
   return `\
 async (arg: {
-  reload: () => Promise<void>;
-  orderBy?: Record<string, "asc" | "desc">;
-  paging: { take: number; skip: number };
-  mode: 'count' | 'query'
+  field: any;
 }) => {
   if (isEditor) return [${JSON.stringify(sample)}];
-  if (arg.mode === 'count') {
-    return await db.${table}.count();
-  }
 
   return new Promise(async (done) => {
     ${
@@ -61,16 +55,18 @@ async (arg: {
       ext_select[rel__id_parent] = true;
     }
 
+    const where = await call_prasi_events("field", "relation_load", [fm, arg.field]) || {};
+
     let items = await db.${table}.findMany({
       select: {
         ...ext_select,
         ...${JSON.stringify(select)}
         ${skip_select ? `` : `,...(res?.select || {})`}
       },
-      orderBy: arg.orderBy || {
+      where,
+      orderBy: {
         ${pk}: "desc"
       },
-      ...arg.paging,
     });
 
     if (is_tree && typeof rel__id_parent === "string" && rel__id_parent) {

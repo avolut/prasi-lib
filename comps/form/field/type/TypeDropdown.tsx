@@ -25,7 +25,7 @@ export const TypeDropdown: FC<{
 
   useEffect(() => {
     if (typeof arg.on_load === "function") {
-      const options = arg.on_load({});
+      const options = arg.on_load({ field });
       if (options instanceof Promise) {
         options.then((res) => {
           if (Array.isArray(res)) {
@@ -44,7 +44,6 @@ export const TypeDropdown: FC<{
           } else {
             local.options = res;
           }
-          console.log(field.name)
           if (
             field.type === "single-option" &&
             field.required &&
@@ -112,7 +111,8 @@ export const TypeDropdown: FC<{
       );
     }
   }
-  const disabled = typeof field.disabled === "function" ? field.disabled() : field.disabled;
+  const disabled =
+    typeof field.disabled === "function" ? field.disabled() : field.disabled;
 
   if (!local.loaded) return <FieldLoading />;
   if (field.type === "single-option") {

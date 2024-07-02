@@ -1,3 +1,4 @@
+import { FieldLocal } from "lib/comps/form/typings";
 import { FMLocal } from "../..";
 import { Prisma } from "../../typings/prisma";
 import { set } from "./set";
@@ -6,8 +7,14 @@ const events = {
   form: {
     where: async (fm: FMLocal, where: any) => {},
     before_save: async (fm: FMLocal, record: any) => {},
+    after_save: async (fm: FMLocal, record: any) => {},
     before_load: async (fm: FMLocal) => {},
     after_load: async (fm: FMLocal) => {},
+  },
+  field: {
+    relation_load: async (fm: FMLocal, field: FieldLocal) => {
+      return {} as Record<string, any>;
+    },
   },
   tablelist: {
     where: async <T extends Prisma.ModelName>(table: T, where: any) => {},
@@ -43,6 +50,7 @@ export const call_prasi_events = async <
   const fn = prasi_events(k, l);
 
   if (fn) {
-    await fn(...args);
+    return await fn(...args);
   }
+  return null;
 };

@@ -54,7 +54,7 @@ const HasMany: FC<{
         field.status = "ready";
         input.render();
       };
-      const res = prop.on_load({ value });
+      const res = prop.on_load({ field });
       if (res instanceof Promise) res.then(callback);
       else callback(res);
 

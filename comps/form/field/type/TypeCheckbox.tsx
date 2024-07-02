@@ -30,7 +30,7 @@ export const FieldCheckbox: FC<{
       }
       local.render();
     };
-    const res = arg.on_load({});
+    const res = arg.on_load({ field });
     if (res instanceof Promise) res.then(callback);
     else callback(res);
   }, []);
