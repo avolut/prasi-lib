@@ -51,7 +51,6 @@ export const FieldMoney: FC<{
             .replace(/[^0-9,-]/g, "")
             .toString();
           const now = Number(value) || 0;
-
           if (
             !rawValue.endsWith(",") &&
             !rawValue.endsWith("-") &&
@@ -77,6 +76,7 @@ export const FieldMoney: FC<{
             input.value = rawValue;
             input.render();
           }
+          console.log(fm.data[field.name]);
         }}
         value={formatCurrency(input.value)}
         disabled={disabled}
@@ -154,7 +154,7 @@ export const formatMoney = (res: number) => {
 };
 const isNumberOrCurrency = (input: any) => {
   // Pengecekan apakah input adalah angka biasa
-  
+
   if (typeof input === "string") {
     let rs = input;
     if (input.startsWith("-")) {
@@ -166,9 +166,8 @@ const isNumberOrCurrency = (input: any) => {
     } else if (dots && dots.length === 1) {
       if (!hasNonZeroDigitAfterDecimal(rs)) {
         return "Currency";
-      } else {
-        return "Number";
       }
+      return "Currency";
     }
   }
   if (!isNaN(input)) {

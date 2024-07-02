@@ -20,7 +20,7 @@ export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
       {md.props.show_head === "only-child" && <MDHeader md={md} mdr={mdr} />}
       <div
         className={cx(
-          "c-w-full c-h-full c-flex c-flex-1",
+          "c-w-full c-h-full c-flex c-flex-1 c-overflow-auto c-relative",
           md.props.tab_mode === "v-tab" && "c-flex-col"
         )}
       >
@@ -29,7 +29,7 @@ export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
         )}
         <div
           className={cx(
-            "md-tab " + md.tab.active,
+            "md-tab c-absolute c-inset-0 " + md.tab.active,
             css`
               > div {
                 flex: 1;

@@ -29,6 +29,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
       fm.internal.reload.timeout = setTimeout(async () => {
         if (sonar === "on" && !isEditor) {
           setTimeout(() => {
+            toast.dismiss();
             toast.loading(
               <>
                 <Loader2 className="c-h-4 c-w-4 c-animate-spin" />

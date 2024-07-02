@@ -99,7 +99,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
   return (
     <div
       className={cx(
-        "c-flex-1 c-flex-col c-flex c-w-full c-h-full c-overflow-hidden"
+        "c-flex-1 c-flex-col c-flex c-w-full c-h-full"
       )}
     >
       {md.props.show_head === "always" && <MDHeader md={md} mdr={mdr} />}
