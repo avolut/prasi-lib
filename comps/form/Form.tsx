@@ -56,6 +56,11 @@ export const Form: FC<FMProps> = (props) => {
       field: null,
     },
   });
+
+  if (props.render_parent) {
+    fm.render = props.render_parent;
+  }
+
   useEffect(() => {
     // deteksi jika ada softdelete
     if (Array.isArray(props.feature)) {

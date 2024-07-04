@@ -19,6 +19,7 @@ export type FMProps = {
   on_load_deps?: any[];
   feature?: any[];
   sfd_field?: any;
+  render_parent?: () => void;
 };
 
 export type GenField =
