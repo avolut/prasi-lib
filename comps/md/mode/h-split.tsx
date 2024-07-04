@@ -9,7 +9,7 @@ export const ModeHSplit: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
     <div className={cx("c-flex-1")}>
       <PanelGroup direction="horizontal">
         <Panel
-          className="c-border-r"
+          className="c-border-r c-flex"
           defaultSize={md.panel.size}
           minSize={md.panel.min_size}
         >
