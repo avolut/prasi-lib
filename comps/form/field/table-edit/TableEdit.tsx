@@ -22,7 +22,7 @@ export const TableEdit: FC<{
     () => {}
   );
   const ref = useRef<HTMLDivElement>(null);
-
+  const parent = fm;
   if (!Array.isArray(fm.data[name])) {
     if (typeof fm.data[name] === "object") {
       fm.data[name] = [JSON.parse(JSON.stringify(fm.data[name]))];
@@ -140,6 +140,7 @@ export const TableEdit: FC<{
                       }
                     }
                   }}
+                  fm_parent={parent}
                   ext_fm={{
                     change: () => {},
                     remove: () => {
@@ -177,6 +178,7 @@ export const TableEdit: FC<{
               }, 100);
             },
           }}
+          fm_parent={parent}
         >
           {bottom}
         </PassProp>

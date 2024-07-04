@@ -153,6 +153,7 @@ export const Form: FC<FMProps> = (props) => {
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        console.log("HALOO")
         fm.submit();
       }}
       ref={(el) => {

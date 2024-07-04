@@ -22,7 +22,6 @@ export const TypeDropdown: FC<{
           type: field.type,
         })
       : fm.data[field.name];
-
   useEffect(() => {
     if (typeof arg.on_load === "function") {
       const options = arg.on_load({ field });
@@ -47,6 +46,7 @@ export const TypeDropdown: FC<{
           if (
             field.type === "single-option" &&
             field.required &&
+            !value &&
             local.options.length > 0
           ) {
             arg.opt_set_value({
@@ -63,14 +63,6 @@ export const TypeDropdown: FC<{
               type: field.type,
               options: local.options,
               selected: [value],
-            });
-          } else if (field.type === "single-option" && !value) {
-            arg.opt_set_value({
-              fm,
-              name: field.name,
-              type: field.type,
-              options: local.options,
-              selected: [],
             });
           }
 
@@ -119,7 +111,6 @@ export const TypeDropdown: FC<{
     if (value === null) {
       fm.data[field.name] = undefined;
     }
-
     return (
       <>
         <Typeahead

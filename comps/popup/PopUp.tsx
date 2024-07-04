@@ -6,8 +6,18 @@ type PopupProp = {
   on_close: (value: boolean) => void;
   open: boolean | (() => boolean);
   child: ReactNode;
+  timer_close: number;
+  feature: string[];
+  auto_open: () => Promise<boolean>;
 };
-export const Popup: FC<PopupProp> = ({ on_close, open, child }) => {
+export const Popup: FC<PopupProp> = ({
+  on_close,
+  open,
+  child,
+  timer_close,
+  feature,
+  auto_open,
+}) => {
   const local = useLocal({
     ref: null as any,
     open: false,
@@ -15,6 +25,18 @@ export const Popup: FC<PopupProp> = ({ on_close, open, child }) => {
   useEffect(() => {
     const open_props = typeof open === "function" ? open() : open;
     local.open = open_props;
+    if (feature.find((e) => "auto-open") && typeof auto_open === "function") {
+      const res = auto_open();
+      if (typeof res === "object" && res instanceof Promise) {
+        res.then((item) => {
+          local.open = item;
+          local.render();
+        });
+      } else {
+        local.open = res;
+        local.render();
+      }
+    }
     local.render();
   }, [open]);
 
@@ -26,6 +48,23 @@ export const Popup: FC<PopupProp> = ({ on_close, open, child }) => {
     document.body.appendChild(elemDiv);
   }
   const prasi_popup = document.getElementsByClassName("prasi-popup")[0];
+
+  useEffect(() => {
+    if (local.open) {
+      const timer = Number(timer_close);
+      if (feature.find((e) => "timer") && typeof timer === "number") {
+        if (typeof timer === "number" && timer >= 1000) {
+          setTimeout(() => {
+            if (local.open) {
+              on_close(false);
+              local.open = false;
+              local.render();
+            }
+          }, timer_close);
+        }
+      }
+    }
+  }, [local.open]);
   //   return <></>
   //   prasi_popup.className = cx("prasi-popup", " c-w-full c-bg-gray-800 c-w-screen c-h-screen");
   return (
@@ -35,7 +74,7 @@ export const Popup: FC<PopupProp> = ({ on_close, open, child }) => {
         createPortal(
           <div
             ref={(e) => (local.ref = e)}
-            className="c-w-screen c-h-screen relative c-bg-transparent  c-flex c-flex-row c-items-center c-justify-center"
+            className="c-w-screen c-h-screen relative c-bg-[#00000017]  c-flex c-flex-row c-items-center c-justify-center"
             onClick={(e) => {
               if (local.ref) {
                 if (e.target === local.ref) {

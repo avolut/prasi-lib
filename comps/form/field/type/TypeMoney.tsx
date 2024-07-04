@@ -76,7 +76,6 @@ export const FieldMoney: FC<{
             input.value = rawValue;
             input.render();
           }
-          console.log(fm.data[field.name]);
         }}
         value={formatCurrency(input.value)}
         disabled={disabled}

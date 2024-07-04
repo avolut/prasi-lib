@@ -22,10 +22,11 @@ export const BaseForm = <T extends Record<string, any>>(
   }
 
   form.submit = useCallback(async () => {
+    console.log("CEK");
     if (form.status === "ready") {
       form.status = "submitting";
       form.render();
-
+      console.log("CEK");
       const result = await on_submit?.(form);
 
       setTimeout(() => {
