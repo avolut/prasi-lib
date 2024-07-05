@@ -36,6 +36,8 @@ export const useField = (
     required_msg: arg.required_msg,
     disabled: typeof arg.disabled === "function" ? arg.disabled : arg.disabled === "y",
     on_change: arg.on_change,
+    max_date: arg.max_date,
+    min_date: arg.min_date,
   };
 
   if (field.status === "init" || isEditor) {

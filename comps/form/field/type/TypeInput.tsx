@@ -173,11 +173,14 @@ export const FieldTypeInput: FC<{
     case "rich-text":
       return <FieldRichText field={field} fm={fm} prop={prop} />;
     case "date":
+      console.log(field.min_date instanceof Date)
       return (
         <Datepicker
           value={{ startDate: value, endDate: value }}
           disabled={disabled}
           displayFormat="DD MMM YYYY"
+          maxDate={field.max_date instanceof Date  ? field.max_date : null}
+          minDate={field.min_date instanceof Date? field.min_date : null}
           asSingle={true}
           useRange={false}
           onChange={(value) => {

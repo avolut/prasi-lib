@@ -43,6 +43,16 @@ export const TypeDropdown: FC<{
           } else {
             local.options = res;
           }
+          local.render();
+          value =
+            typeof arg.opt_get_value === "function"
+              ? arg.opt_get_value({
+                  fm,
+                  name: field.name,
+                  options: local.options,
+                  type: field.type,
+                })
+              : fm.data[field.name];
           if (
             field.type === "single-option" &&
             field.required &&

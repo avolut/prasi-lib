@@ -53,7 +53,7 @@ export type FieldProp = {
   required_msg: (name: string) => string | ReactElement;
   on_change: (arg: { value: any }) => void | Promise<void>;
   PassProp: any;
-  disabled:  ("y" | "n") | (() => true | false);
+  disabled: ("y" | "n") | (() => true | false);
   child: any;
   selection: "single" | "multi";
   prefix: any;
@@ -99,6 +99,8 @@ export type FieldProp = {
   gen_table?: string;
   gen_fields?: string;
   model_upload?: "upload" | "import";
+  max_date?: any;
+  min_date?: any;
 };
 
 export type FMInternal = {
@@ -129,6 +131,7 @@ export type FMInternal = {
       timeout: ReturnType<typeof setTimeout>;
       done: any[];
     };
+    original_render?: () => void;
   };
   props: Exclude<FMProps, "body" | "PassProp">;
   size: {
@@ -171,6 +174,8 @@ export type FieldInternal<T extends FieldProp["type"]> = {
     fm: FMLocal;
   }) => void | Promise<void>;
   prop?: any;
+  max_date?: FieldProp["max_date"];
+  min_date?: FieldProp["min_date"];
 };
 export type FieldLocal = FieldInternal<any> & {
   render: () => void;

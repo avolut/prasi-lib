@@ -58,7 +58,10 @@ export const Form: FC<FMProps> = (props) => {
   });
 
   if (props.render_parent) {
-    fm.render = props.render_parent;
+    if (!fm.internal.original_render) fm.internal.original_render = fm.render;
+    fm.render = () => {
+      if (props.render_parent) props.render_parent();
+    };
   }
 
   useEffect(() => {
@@ -141,11 +144,7 @@ export const Form: FC<FMProps> = (props) => {
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
 
   if (fm.status === "resizing") {
-    setTimeout(() => {
-      fm.status = "ready";
-      fm.render();
-    }, 100);
-    return null;
+    fm.status = "ready";
   }
 
   return (
@@ -153,7 +152,7 @@ export const Form: FC<FMProps> = (props) => {
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("HALOO")
+        console.log("HALOO");
         fm.submit();
       }}
       ref={(el) => {
