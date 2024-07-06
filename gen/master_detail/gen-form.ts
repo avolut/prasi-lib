@@ -150,7 +150,7 @@ type Init = { submit: () => Promise<boolean>; reload: () => void; fm:any }
 
       const data = childs[0].component.props;
       const modify = async (props: any) => {};
-      await gen_form(modify, data);
+      await gen_form(modify, data, true);
       }
     }
   }

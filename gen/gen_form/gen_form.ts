@@ -4,7 +4,7 @@ import { GFCol, parseGenField } from "../utils";
 import { newField } from "./new_field";
 import { on_submit } from "./on_submit";
 
-export const gen_form = async (modify: (data: any) => void, data: any) => {
+export const gen_form = async (modify: (data: any) => void, data: any, is_md?: boolean) => {
   const table = JSON.parse(data.gen_table.value);
   const raw_fields = JSON.parse(data.gen_fields.value) as (
     | string
@@ -43,7 +43,13 @@ export const gen_form = async (modify: (data: any) => void, data: any) => {
     const code = {} as any;
     if (data["on_load"]) {
       result["on_load"] = data["on_load"];
-      result["on_load"].value = on_load({ pk: pk.name, pks, select, table });
+      result["on_load"].value = on_load({
+        pk: pk.name,
+        pks,
+        select,
+        table,
+        opt: is_md ? { is_md: true } : undefined,
+      });
       code.on_load = result["on_load"].value;
     }
 

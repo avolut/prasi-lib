@@ -13,6 +13,7 @@ export const TypeDropdown: FC<{
     loaded: false,
     options: [] as { value: string; label: string; data: any }[],
   });
+
   let value =
     typeof arg.opt_get_value === "function"
       ? arg.opt_get_value({
@@ -22,6 +23,7 @@ export const TypeDropdown: FC<{
           type: field.type,
         })
       : fm.data[field.name];
+
   useEffect(() => {
     if (typeof arg.on_load === "function") {
       const options = arg.on_load({ field });
@@ -44,6 +46,7 @@ export const TypeDropdown: FC<{
             local.options = res;
           }
           local.render();
+
           value =
             typeof arg.opt_get_value === "function"
               ? arg.opt_get_value({
@@ -53,9 +56,9 @@ export const TypeDropdown: FC<{
                   type: field.type,
                 })
               : fm.data[field.name];
+
           if (
             field.type === "single-option" &&
-            field.required &&
             !value &&
             local.options.length > 0
           ) {
@@ -86,6 +89,7 @@ export const TypeDropdown: FC<{
       }
     }
   }, []);
+
   let popupClassName = "";
 
   if (arg.__props) {

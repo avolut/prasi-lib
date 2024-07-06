@@ -44,6 +44,9 @@ export const FormatValue: FC<{
 
     const fields = fields_map.get(gf);
     const field = fields?.find((e) => e.name === name);
+
+    if (typeof value === "boolean") return <>{value ? "Yes" : "No"}</>;
+
     if (mode === "money") {
       if (!value || isEmptyString(value)) return "-";
       return formatMoney(Number(value) || 0);
@@ -54,14 +57,14 @@ export const FormatValue: FC<{
       } catch (ex: any) {
         return "-";
       }
-    }  else if (mode === "date") {
+    } else if (mode === "date") {
       if (!value || isEmptyString(value)) return "-";
       try {
         return formatDate(dayjs(value), "DD MMMM YYYY");
       } catch (ex: any) {
         return "-";
       }
-    }else if (mode === "timeago") {
+    } else if (mode === "timeago") {
       if (!value || isEmptyString(value)) return "-";
       try {
         return timeAgo(dayjs(value));

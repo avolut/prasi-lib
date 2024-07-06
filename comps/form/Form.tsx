@@ -160,7 +160,10 @@ export const Form: FC<FMProps> = (props) => {
           if (!ref.current.el) {
             ref.current.el = el;
             ref.current.rob.observe(el);
-            fm.status = "resizing";
+            if (fm.status === "ready") {
+              fm.status = "resizing";
+              fm.render();
+            }
           }
         }
       }}
