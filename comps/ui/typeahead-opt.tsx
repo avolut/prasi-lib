@@ -10,6 +10,7 @@ export const TypeaheadOptions: FC<{
   onOpenChange?: (open: boolean) => void;
   options: OptionItem[];
   className?: string;
+  showEmpty: boolean;
   selected?: (arg: {
     item: OptionItem;
     options: OptionItem[];
@@ -28,12 +29,73 @@ export const TypeaheadOptions: FC<{
   selected,
   onSelect,
   searching,
+  showEmpty,
   width,
 }) => {
   if (!popup) return children;
   const local = useLocal({
     selectedIdx: 0,
   });
+
+  let content = (
+    <div
+      className={cx(
+        className,
+        width
+          ? css`
+              min-width: ${width}px;
+            `
+          : css`
+              min-width: 150px;
+            `,
+        css`
+          max-height: 400px;
+          overflow: auto;
+        `
+      )}
+    >
+      {options.map((item, idx) => {
+        const is_selected = selected?.({ item, options, idx });
+
+        if (is_selected) {
+          local.selectedIdx = idx;
+        }
+
+        return (
+          <div
+            tabIndex={0}
+            key={item.value + "_" + idx}
+            className={cx(
+              "opt-item c-px-3 c-py-1 cursor-pointer option-item text-sm",
+              is_selected ? "c-bg-blue-600 c-text-white" : "hover:c-bg-blue-50",
+              idx > 0 && "c-border-t"
+            )}
+            onClick={() => {
+              onSelect?.(item.value);
+            }}
+          >
+            {item.label || <>&nbsp;</>}
+          </div>
+        );
+      })}
+
+      {searching ? (
+        <div className="c-px-4 c-w-full c-text-xs c-text-slate-400">
+          Loading...
+        </div>
+      ) : (
+        <>
+          {options.length === 0 && (
+            <div className="c-p-4 c-w-full c-text-center c-text-sm c-text-slate-400">
+              &mdash; Empty &mdash;
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+
+  if (!showEmpty && options.length === 0) content = <></>;
 
   return (
     <Popover
@@ -43,65 +105,7 @@ export const TypeaheadOptions: FC<{
       backdrop={false}
       placement="bottom-start"
       className="c-flex-1"
-      content={
-        <div
-          className={cx(
-            className,
-            width
-              ? css`
-                  min-width: ${width}px;
-                `
-              : css`
-                  min-width: 150px;
-                `,
-            css`
-              max-height: 400px;
-              overflow: auto;
-            `
-          )}
-        >
-          {options.map((item, idx) => {
-            const is_selected = selected?.({ item, options, idx });
-
-            if (is_selected) {
-              local.selectedIdx = idx;
-            }
-
-            return (
-              <div
-                tabIndex={0}
-                key={item.value + "_" + idx}
-                className={cx(
-                  "opt-item c-px-3 c-py-1 cursor-pointer option-item text-sm",
-                  is_selected
-                    ? "c-bg-blue-600 c-text-white"
-                    : "hover:c-bg-blue-50",
-                  idx > 0 && "c-border-t"
-                )}
-                onClick={() => {
-                  onSelect?.(item.value);
-                }}
-              >
-                {item.label || <>&nbsp;</>}
-              </div>
-            );
-          })}
-
-          {searching ? (
-            <div className="c-px-4 c-w-full c-text-xs c-text-slate-400">
-              Loading...
-            </div>
-          ) : (
-            <>
-              {options.length === 0 && (
-                <div className="c-p-4 c-w-full c-text-center c-text-sm c-text-slate-400">
-                  &mdash; Empty &mdash;
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      }
+      content={content}
     >
       {children}
     </Popover>

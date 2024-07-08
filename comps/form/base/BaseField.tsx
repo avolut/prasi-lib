@@ -19,14 +19,14 @@ export const BaseField = (prop: {
     typeof field.prefix === "function"
       ? field.prefix()
       : typeof field.prefix === "string"
-      ? field.prefix
-      : null;
+        ? field.prefix
+        : null;
   const suffix =
     typeof field.suffix === "function"
       ? field.suffix()
       : typeof field.suffix === "string"
-      ? field.prefix
-      : null;
+        ? field.prefix
+        : null;
   const name = field.name;
   const errors = fm.error.get(name);
 
@@ -75,13 +75,13 @@ export const BaseField = (prop: {
                   border-color: transparent;
                 `
               : field.disabled
-              ? "c-border-gray-100"
-              : errors.length > 0
-              ? field.focused
-                ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
-                : "c-border-red-600 c-bg-red-50"
-              : field.focused &&
-                "c-border-blue-700 c-outline c-outline-blue-700",
+                ? "c-border-gray-100"
+                : errors.length > 0
+                  ? field.focused
+                    ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
+                    : "c-border-red-600 c-bg-red-50"
+                  : field.focused &&
+                    "c-border-blue-700 c-outline c-outline-blue-700",
             css`
               & > .field-inner {
                 min-height: 35px;
@@ -124,6 +124,20 @@ export const BaseField = (prop: {
             <></>
           )}
         </div>
+
+        {/* {JSON.stringify(errors)} */}
+        {errors.length > 0 && (
+          <div
+            className={cx(
+              "field-error c-p-2 c-text-xs c-text-red-600",
+              field.desc && "c-pt-0"
+            )}
+          >
+            {errors.map((err) => {
+              return <div>{err}</div>;
+            })}
+          </div>
+        )}
       </div>
     </label>
   );

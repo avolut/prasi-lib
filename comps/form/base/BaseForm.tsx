@@ -51,6 +51,7 @@ export const BaseForm = <T extends Record<string, any>>(
   form.createField = (arg) => {
     if (form.fields[arg.name]) return form.fields[arg.name];
 
+    if (form.fm) form.fm.fields = form.fields;
     const prop: FieldLocal = {
       name: arg.name,
       label: typeof arg.label !== "undefined" ? arg.label : arg.name,

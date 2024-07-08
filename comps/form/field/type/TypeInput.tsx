@@ -60,7 +60,7 @@ export const FieldTypeInput: FC<{
   }
 
   let display: any = null;
-  let value: any = fm.data[field.name];
+  let value: any = fm.data[field.name] || "";
 
   // let value: any = "2024-05-14T05:58:01.376Z" // case untuk date time
   field.input = input;
@@ -96,7 +96,8 @@ export const FieldTypeInput: FC<{
     input.change_timeout = setTimeout(fm.render, 300);
   };
 
-  const disabled = typeof field.disabled === "function" ? field.disabled() : field.disabled;
+  const disabled =
+    typeof field.disabled === "function" ? field.disabled() : field.disabled;
   switch (type_field) {
     case "toggle":
       return (
@@ -178,8 +179,8 @@ export const FieldTypeInput: FC<{
           value={{ startDate: value, endDate: value }}
           disabled={disabled}
           displayFormat="DD MMM YYYY"
-          maxDate={field.max_date instanceof Date  ? field.max_date : null}
-          minDate={field.min_date instanceof Date? field.min_date : null}
+          maxDate={field.max_date instanceof Date ? field.max_date : null}
+          minDate={field.min_date instanceof Date ? field.min_date : null}
           asSingle={true}
           useRange={false}
           onChange={(value) => {

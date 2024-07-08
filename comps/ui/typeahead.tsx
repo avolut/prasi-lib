@@ -68,9 +68,7 @@ export const Typeahead: FC<{
 
   let select_found = false;
   let options = [...(local.search.result || local.options)];
-  if (local.allow_new && local.search.input) {
-    options.push({ value: local.search.input, label: local.search.input });
-  }
+
   const added = new Set<string>();
   if (local.mode === "multi") {
     options = options.filter((e) => {
@@ -93,7 +91,7 @@ export const Typeahead: FC<{
   useEffect(() => {
     if (!value) return;
     if (!isEditor) {
-      if (local.options.length === 0) {
+      if (options.length === 0) {
         loadOptions().then(() => {
           if (typeof value === "object" && value) {
             local.value = value;
@@ -138,6 +136,10 @@ export const Typeahead: FC<{
         }
       }
 
+      if (local.mode === "single") {
+        local.value = [];
+      }
+
       if (typeof onSelect === "function") {
         const result = onSelect(arg);
 
@@ -176,14 +178,6 @@ export const Typeahead: FC<{
 
   const keydown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
-      if (!local.open) {
-        e.preventDefault();
-        e.stopPropagation();
-        local.open = true;
-        local.render();
-        return;
-      }
-
       if (e.key === "Backspace") {
         if (local.value.length > 0 && e.currentTarget.selectionStart === 0) {
           local.value.pop();
@@ -203,16 +197,16 @@ export const Typeahead: FC<{
           local.open = false;
         }
         if (typeof selected === "string") {
-          resetSearch();
+          if (!allow_new) resetSearch();
           if (local.mode === "single") {
-            const item = local.options.find((item) => item.value === selected);
+            const item = options.find((item) => item.value === selected);
             if (item) {
               local.search.input = item.label;
             }
           }
         }
-        local.render();
 
+        local.render();
         return;
       }
       if (options.length > 0) {
@@ -223,7 +217,7 @@ export const Typeahead: FC<{
             if (item.value === local.select?.value) return true;
           });
           if (idx >= 0) {
-            if (idx + 1 <= options.length) {
+            if (idx + 1 <= options.length - 1) {
               local.select = options[idx + 1];
             } else {
               local.select = options[0];
@@ -262,7 +256,7 @@ export const Typeahead: FC<{
       local.render();
       const res = options_fn({
         search: local.search.input,
-        existing: local.options,
+        existing: options,
       });
 
       if (res) {
@@ -302,24 +296,32 @@ export const Typeahead: FC<{
 
   if (local.value.length === 0) {
     if (local.mode === "single") {
-      if (!local.open) {
+      if (!local.open && !allow_new) {
         local.select = null;
+
         local.search.input = "";
       }
     }
   }
 
   const valueLabel = local.value?.map((value) => {
-    const item = local.options.find((item) => item.value === value);
+    const item = options.find((item) => item.value === value);
 
     if (local.mode === "single") {
-      if (!local.open) {
+      if (!local.open && !allow_new) {
         local.select = item || null;
+
         local.search.input = item?.tag || item?.label || "";
       }
     }
     return item;
   });
+
+  let inputval = local.search.input;
+
+  if (!local.open && local.mode === "single" && local.value?.length > 0) {
+    inputval = local.value[0];
+  }
 
   return (
     <div
@@ -374,6 +376,7 @@ export const Typeahead: FC<{
           local.open = open;
           local.render();
         }}
+        showEmpty={!allow_new}
         className={popupClassName}
         open={local.open}
         options={options}
@@ -381,7 +384,7 @@ export const Typeahead: FC<{
         onSelect={(value) => {
           local.open = false;
           resetSearch();
-          const item = local.options.find((item) => item.value === value);
+          const item = options.find((item) => item.value === value);
           if (item) {
             let search = local.search.input;
             if (local.mode === "single") {
@@ -412,7 +415,7 @@ export const Typeahead: FC<{
           }
           type="text"
           ref={input}
-          value={local.search.input}
+          value={inputval}
           onClick={(e) => {
             e.stopPropagation();
             if (!disabled) {
@@ -434,6 +437,7 @@ export const Typeahead: FC<{
             if (!local.open) {
               local.open = true;
             }
+
             local.search.input = val;
             local.render();
 
@@ -451,7 +455,7 @@ export const Typeahead: FC<{
                 }
                 const search = local.search.input.toLowerCase();
                 if (search) {
-                  local.search.result = local.options.filter((e) =>
+                  local.search.result = options.filter((e) =>
                     e.label.toLowerCase().includes(search)
                   );
 
@@ -473,7 +477,7 @@ export const Typeahead: FC<{
                 local.search.timeout = setTimeout(async () => {
                   const result = options_fn?.({
                     search: local.search.input,
-                    existing: local.options,
+                    existing: options,
                   });
                   if (result) {
                     if (result instanceof Promise) {

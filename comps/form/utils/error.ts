@@ -22,7 +22,7 @@ export const formError = (fm: FMLocal) => {
       else this._internal = {};
     },
     get(name) {
-      if (fm.status !== "ready") return [];
+      if (fm.status && fm.status !== "ready") return [];
       return this._internal[name] || [];
     },
     set(name, error) {
