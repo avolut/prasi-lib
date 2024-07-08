@@ -74,6 +74,11 @@ export const FieldTypeInput: FC<{
       } else {
         value = null;
       }
+
+      if (type_field === "datetime-local" && date instanceof Date) {
+        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+        value = date.toISOString().slice(0, 16);
+      }
     } else {
       try {
         let date = parse(value);
@@ -98,6 +103,7 @@ export const FieldTypeInput: FC<{
 
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
+
   switch (type_field) {
     case "toggle":
       return (

@@ -320,7 +320,12 @@ export const Typeahead: FC<{
   let inputval = local.search.input;
 
   if (!local.open && local.mode === "single" && local.value?.length > 0) {
-    inputval = local.value[0];
+    const found = options.find((e) => e.value === local.value[0]);
+    if (found) {
+      inputval = found.label;
+    } else {
+      inputval = local.value[0];
+    }
   }
 
   return (

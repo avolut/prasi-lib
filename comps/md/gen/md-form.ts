@@ -50,6 +50,7 @@ export const generateMDForm = async (
     },
   };
   generateForm(async (props: any) => {}, props, tablelist, false, true);
+  
   tab_detail?.edit.setProp("breadcrumb", {
     mode: "raw",
     value: `\

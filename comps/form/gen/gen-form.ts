@@ -37,10 +37,6 @@ export const generateForm = async (
     return;
   }
   if (pk) {
-    let is_md: boolean | string =
-      item.edit?.parent?.item?.component?.id ===
-      "cb52075a-14ab-455a-9847-6f1d929a2a73";
-    if (!is_md) is_md = "";
 
     if (data["on_load"]) {
       result.on_load = {
