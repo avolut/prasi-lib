@@ -39,7 +39,7 @@ export const editorMDInit = (md: MDLocal, mdr: MDRef, arg: MDProps) => {
     ];
     md.status = "unready";
   } else {
-    md.header.breadcrumb = [];
+    // md.header.breadcrumb = [];
     md.status = "ready";
   }
 };
