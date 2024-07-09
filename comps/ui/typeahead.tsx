@@ -518,6 +518,7 @@ export const Typeahead: FC<{
               }
             }
           }}
+          disabled={disabled}
           spellCheck={false}
           className={cx(
             "c-flex-1 c-mb-2 c-text-sm c-outline-none c-bg-transparent",

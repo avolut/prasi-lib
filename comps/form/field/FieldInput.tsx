@@ -147,7 +147,7 @@ export const FieldInput: FC<{
             "field-inner c-flex-1 c-flex c-items-center",
             field.type === "link" && "c-justify-end",
             field.focused && "focused",
-            disabled && "c-pointer-events-none"
+            disabled && "c-pointer-events-none c-bg-gray-50"
           )}
         >
           {not_ready ? (

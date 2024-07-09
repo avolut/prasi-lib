@@ -121,3 +121,5 @@ export { getPathname } from "@/utils/pathname";
 
 export * from "@/comps/ui/input";
 export * from "@/comps/ui/typeahead";
+
+export {Flow} from "@/comps/ui/flow"
