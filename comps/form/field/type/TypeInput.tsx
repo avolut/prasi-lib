@@ -59,7 +59,6 @@ export const FieldTypeInput: FC<{
     type_field = "text";
   }
 
-  let display: any = null;
   let value: any = fm.data[field.name] || "";
 
   // let value: any = "2024-05-14T05:58:01.376Z" // case untuk date time
@@ -176,7 +175,11 @@ export const FieldTypeInput: FC<{
         />
       );
     case "money":
-      return <FieldMoney field={field} fm={fm} prop={prop} arg={arg} />;
+      return (
+        <>
+          <FieldMoney field={field} fm={fm} prop={prop} arg={arg} />
+        </>
+      );
     case "rich-text":
       return <FieldRichText field={field} fm={fm} prop={prop} />;
     case "date":
@@ -230,7 +233,6 @@ export const FieldTypeInput: FC<{
         spellCheck={false}
         onFocus={(e) => {
           field.focused = true;
-          display = "";
           field.render();
           prop.onFocus?.(e);
         }}

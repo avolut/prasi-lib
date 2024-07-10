@@ -36,7 +36,8 @@ export const Field: FC<FieldProp> = (arg) => {
   delete props.className;
 
   return (
-    <label
+    <LabelDiv
+      mode={sub_type === "table-edit" ? "div" : "label"}
       className={cx(
         "field",
         "c-flex",
@@ -89,6 +90,17 @@ export const Field: FC<FieldProp> = (arg) => {
           </div>
         )}
       </div>
-    </label>
+    </LabelDiv>
   );
+};
+
+const LabelDiv = (arg: any) => {
+  const props = { ...arg };
+  const mode = arg.mode;
+  delete props.mode;
+
+  if (mode === "label") {
+    return <label {...props} />;
+  }
+  return <div {...props} />;
 };

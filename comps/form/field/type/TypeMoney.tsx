@@ -13,39 +13,21 @@ export const FieldMoney: FC<{
   let value: any = fm.data[field.name];
   const input = useLocal({
     value: 0 as any,
-    display: false as any,
     ref: null as any,
   });
   useEffect(() => {
     input.value = value;
     input.render();
   }, [fm.data[field.name]]);
-  let display: any = null;
+
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
   const money = formatMoney(Number(value) || 0);
   return (
     <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full">
-      {/* <div
-        className={cx(
-          input.display ? "c-hidden" : "",
-          "c-flex-grow c-px-2 c-flex c-flex-row c-items-center",
-          isEmptyString(value) ? "c-text-gray-400" : ""
-        )}
-        onClick={() => {
-          if (input.ref) {
-            input.display = !input.display;
-            input.ref.focus();
-            input.render();
-          }
-        }}
-      >
-        {isEmptyString(value) ? arg.placeholder : money}
-      </div> */}
       <input
         ref={(el) => (input.ref = el)}
         type={"text"}
-        onClick={() => {}}
         onChange={(ev) => {
           const rawValue = ev.currentTarget.value
             .replace(/[^0-9,-]/g, "")
@@ -80,20 +62,23 @@ export const FieldMoney: FC<{
         value={formatCurrency(input.value)}
         disabled={disabled}
         className={cx(
-          // !input.display ? "c-hidden" : "",
           "c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
         )}
         spellCheck={false}
-        onFocus={() => {
+        onFocus={(e) => {
           field.focused = true;
           field.render();
+          prop.onFocus?.(e);
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
         }}
         placeholder={arg.placeholder || ""}
-        onBlur={() => {
+        onBlur={(e) => {
           field.focused = false;
-          input.display = !input.display;
           input.render();
           field.render();
+          prop.onBlur?.(e);
         }}
       />
     </div>
