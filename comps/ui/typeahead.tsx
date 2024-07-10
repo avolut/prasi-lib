@@ -305,15 +305,18 @@ export const Typeahead: FC<{
   }
 
   const valueLabel = local.value?.map((value) => {
-    const item = options.find((item) => item.value === value);
-
     if (local.mode === "single") {
+      const item = options.find((item) => item.value === value);
+
       if (!local.open && !allow_new) {
         local.select = item || null;
 
         local.search.input = item?.tag || item?.label || "";
       }
+      return item;
     }
+
+    const item = local.options.find((item) => item.value === value);
     return item;
   });
 

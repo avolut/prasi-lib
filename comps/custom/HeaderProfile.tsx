@@ -20,7 +20,6 @@ export const HeaderProfile: FC<{
       const res = load();
       if (typeof res === "object" && res instanceof Promise) {
         res.then((e) => {
-          console.log({e})
           local.data = e;
           local.loading = false;
           local.render();

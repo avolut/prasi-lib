@@ -5,7 +5,8 @@ export const Flow: FC<{
   PassProp: any;
   flow: { text: string; popover: any; icon: any }[];
   props?: any;
-}> = ({ PassProp, children, flow, props }) => {
+  active?: string | (() => string);
+}> = ({ PassProp, children, flow, props, active }) => {
   return (
     <div {...props} className={cx(props.className, "c-flex-row")}>
       {flow.map((item, idx) => {
@@ -15,6 +16,7 @@ export const Flow: FC<{
             item={item}
             idx={idx}
             key={idx}
+            active={active}
             is_last={idx === flow.length - 1}
           >
             {children}

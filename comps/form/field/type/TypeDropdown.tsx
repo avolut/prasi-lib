@@ -56,7 +56,6 @@ export const TypeDropdown: FC<{
                   type: field.type,
                 })
               : fm.data[field.name];
-
           if (
             field.type === "single-option" &&
             !value &&
