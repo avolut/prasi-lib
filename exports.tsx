@@ -1,6 +1,13 @@
 export { FieldLoading } from "@/comps/ui/field-loading";
 import { lazify, lazifyMany } from "@/utils/lazify";
-export { Popover } from "./comps/custom/Popover";
+
+export const Popover = lazify(
+  async () => (await import("@/comps/custom/Popover")).Popover
+);
+
+export const Typeahead = lazify(
+  async () => (await import("@/comps/ui/typeahead")).Typeahead
+);
 
 /** Master - Detail - List - Form */
 export const MasterDetail = lazify(
@@ -86,6 +93,7 @@ export { GetValue } from "@/utils/get-value";
 export { password } from "@/utils/password";
 export { prasi_events, call_prasi_events } from "lib/utils/prasi-events";
 export { getFilter } from "@/comps/filter/utils/get-filter";
+
 /** Session */
 export { Login } from "@/preset/login/Login";
 export { generateLogin } from "@/preset/login/utils/generate";
@@ -103,12 +111,12 @@ export { Layout } from "@/preset/menu/Layout";
 
 /* MENU */
 export { Menu, MenuIcon } from "@/preset/menu/Menu";
- 
+
 /*Panel Tab*/
 export { ShowHidePanel } from "@/comps/custom/ShowHidePanel";
 export { PanelBody } from "@/comps/tab/parts/PanelBody";
 export { PanelHeader } from "@/comps/tab/parts/PanelHead";
-  
+
 /*Popup*/
 export { Popup } from "@/comps/popup/PopUp";
 
@@ -120,6 +128,5 @@ export { formatTime, longDate, shortDate, timeAgo } from "@/utils/date";
 export { getPathname } from "@/utils/pathname";
 
 export * from "@/comps/ui/input";
-export * from "@/comps/ui/typeahead";
 
-export {Flow} from "@/comps/ui/flow"
+export { Flow } from "@/comps/ui/flow";

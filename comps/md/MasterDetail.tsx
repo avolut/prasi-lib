@@ -92,7 +92,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
         } else {
           md.tab.active = "detail";
         }
-      }
+      } 
     }
   }
 
@@ -102,14 +102,15 @@ export const MasterDetail: FC<MDProps> = (arg) => {
         "c-flex-1 c-flex-col c-flex c-w-full c-h-full"
       )}
     >
-      {md.props.show_head === "always" && <MDHeader md={md} mdr={mdr} />}
+      asidnoas makaro rakundo
+      {/* {md.props.show_head === "always" && <MDHeader md={md} mdr={mdr} />}
       {md.status === "ready" && (
         <>
           {md.props.mode === "full" && <ModeFull md={md} mdr={mdr} />}
           {md.props.mode === "v-split" && <ModeVSplit md={md} mdr={mdr} />}
           {md.props.mode === "h-split" && <ModeHSplit md={md} mdr={mdr} />}
         </>
-      )}
+      )} */}
     </div>
   );
 };
