@@ -18,6 +18,29 @@ type BreadcrumbProps = {
 };
 
 export const Breadcrumb: FC<BreadcrumbProps> = ({ value, className }) => {
+  const local = useLocal({ value: value, loading: false, loaded: false });
+
+  useEffect(() => {
+    if (local.loaded) {
+      local.loaded = false;
+      local.render();
+    }
+  }, [location.pathname, location.hash]);
+
+  if (value instanceof Promise) {
+    if (!local.loaded) {
+      local.loading = true;
+      value.then((v) => {
+        local.value = v;
+        local.loading = false;
+        local.loaded = true;
+        local.render();
+      });
+    }
+  } else {
+    local.value = value;
+  }
+
   return (
     <div
       className={cx(
@@ -25,49 +48,57 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ value, className }) => {
         className
       )}
     >
-      {(value || []).map((cur, index): ReactNode => {
-        const lastIndex = (value || []).length - 1;
+      {local.loading ? (
+        <FieldLoading />
+      ) : (
+        <>
+          {(Array.isArray(local.value) ? local.value : []).map(
+            (cur, index): ReactNode => {
+              const lastIndex = (local.value || []).length - 1;
 
-        return (
-          <>
-            {index === lastIndex ? (
-              <h1 className="c-font-semibold c-text-xs md:c-text-base">
-                {cur?.label}
-              </h1>
-            ) : (
-              <h1
-                className="c-font-normal c-text-xs md:c-text-base hover:c-cursor-pointer hover:c-underline"
-                onClick={(ev) => {
-                  if (isEditor) return;
-                  if (cur.url) navigate(cur.url || "");
-                  if (cur.onClick) cur.onClick(ev);
-                }}
-              >
-                {cur?.label}
-              </h1>
-            )}
+              return (
+                <>
+                  {index === lastIndex ? (
+                    <h1 className="c-font-semibold c-text-xs md:c-text-base">
+                      {cur?.label}
+                    </h1>
+                  ) : (
+                    <h1
+                      className="c-font-normal c-text-xs md:c-text-base hover:c-cursor-pointer hover:c-underline"
+                      onClick={(ev) => {
+                        if (isEditor) return;
+                        if (cur.url) navigate(cur.url || "");
+                        if (cur.onClick) cur.onClick(ev);
+                      }}
+                    >
+                      {cur?.label}
+                    </h1>
+                  )}
 
-            {index !== lastIndex && (
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-chevron-right"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </div>
-            )}
-          </>
-        );
-      })}
+                  {index !== lastIndex && (
+                    <div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-chevron-right"
+                      >
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
+                    </div>
+                  )}
+                </>
+              );
+            }
+          )}
+        </>
+      )}
     </div>
   );
 };

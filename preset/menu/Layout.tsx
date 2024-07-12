@@ -1,6 +1,7 @@
 import { getPathname } from "lib/utils/pathname";
 import { FC, ReactNode, useEffect, useLayoutEffect, useState } from "react";
 import { loadSession } from "../login/utils/load";
+import { useLocal } from "lib/utils/use-local";
 
 const w = window as any;
 const fn = function () {
@@ -39,8 +40,8 @@ type LYTChild = {
 };
 
 export const Layout: FC<LYTChild> = (props) => {
-  const [_, set] = useState({});
-  const render = () => set({});
+  const local = useLocal({loading: true})
+  const render = local.render;
   useLayoutEffect(() => {
     if (!isEditor) {
       window.addEventListener("resize", render);
@@ -64,10 +65,7 @@ export const Layout: FC<LYTChild> = (props) => {
   const path = getPathname();
   const no_layout = props.exception;
 
-  useEffect(() => {
-    loadSession(props.login_url || "/auth/login");
-    render();
-  }, []);
+  if (!w.user) loadSession(props.login_url || "/auth/login");
 
   if (!isEditor && Array.isArray(no_layout)) {
     if (no_layout.length) {
