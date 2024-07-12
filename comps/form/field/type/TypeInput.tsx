@@ -27,7 +27,8 @@ export type PropTypeInput = {
     | "upload"
     | "file"
     | "search"
-    | "password";
+    | "password"
+    | "import";
   placeholder?: string;
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
@@ -102,7 +103,6 @@ export const FieldTypeInput: FC<{
 
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
-
   switch (type_field) {
     case "toggle":
       return (
@@ -174,6 +174,15 @@ export const FieldTypeInput: FC<{
           on_change={arg.on_change}
         />
       );
+    case "import":
+      return (
+        <FieldUpload
+          field={field}
+          fm={fm}
+          prop={prop}
+          on_change={arg.on_change}
+        />
+      );
     case "money":
       return (
         <>
@@ -182,7 +191,7 @@ export const FieldTypeInput: FC<{
       );
     case "rich-text":
       return <FieldRichText field={field} fm={fm} prop={prop} />;
-    case "date":
+    case "date": {
       return (
         <Datepicker
           value={{ startDate: value, endDate: value }}
@@ -200,6 +209,7 @@ export const FieldTypeInput: FC<{
           }}
         />
       );
+    }
   }
   return (
     <div className="c-flex c-relative c-flex-1">

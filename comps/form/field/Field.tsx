@@ -8,7 +8,6 @@ import { validate } from "../utils/validate";
 
 export const Field: FC<FieldProp> = (arg) => {
   const showlabel = arg.show_label || "y";
-
   let sub_type: any = arg.sub_type; // tipe field
 
   const { fm } = arg;

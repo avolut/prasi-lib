@@ -325,17 +325,16 @@ export const Typeahead: FC<{
   if (!local.open && local.mode === "single" && local.value?.length > 0) {
     const found = options.find((e) => e.value === local.value[0]);
     if (found) {
-      inputval = found.label;
+      inputval = found.tag || found.label;
     } else {
       inputval = local.value[0];
     }
   }
-
   return (
     <div
       className={cx(
         local.mode === "single" ? "c-cursor-pointer" : "c-cursor-text",
-        "c-flex c-relative c-space-x-2 c-flex-wrap c-px-2 c-pb-0 c-items-center c-w-full c-h-full c-flex-1",
+        "c-flex c-relative c-flex-wrap c-px-2 c-pb-0 c-items-center c-w-full c-h-full c-flex-1",
         css`
           padding-top: 0.35rem;
         `,
@@ -352,21 +351,26 @@ export const Typeahead: FC<{
               <Badge
                 key={idx}
                 variant={"outline"}
-                className="c-space-x-1 c-mb-2 c-cursor-pointer hover:c-bg-red-100"
+                className={cx(
+                  "c-space-x-1 c-mr-2 c-mb-2 c-bg-white",
+                  !disabled && " c-cursor-pointer hover:c-bg-red-100"
+                )}
                 onClick={(ev) => {
-                  ev.stopPropagation();
-                  ev.preventDefault();
-                  local.value = local.value.filter((val) => e?.value !== val);
-                  local.render();
-                  input.current?.focus();
+                  if (!disabled) {
+                    ev.stopPropagation();
+                    ev.preventDefault();
+                    local.value = local.value.filter((val) => e?.value !== val);
+                    local.render();
+                    input.current?.focus();
 
-                  if (typeof onChange === "function") {
-                    onChange(local.value);
+                    if (typeof onChange === "function") {
+                      onChange(local.value);
+                    }
                   }
                 }}
               >
                 <div>{e?.tag || e?.label || <>&nbsp;</>}</div>
-                <X size={12} />
+                {!disabled && <X size={12} />}
               </Badge>
             );
           })}

@@ -116,6 +116,7 @@ export { Menu, MenuIcon } from "@/preset/menu/Menu";
 export { ShowHidePanel } from "@/comps/custom/ShowHidePanel";
 export { PanelBody } from "@/comps/tab/parts/PanelBody";
 export { PanelHeader } from "@/comps/tab/parts/PanelHead";
+export { PanelTab } from "@/comps/tab/Tab";
 
 /*Popup*/
 export { Popup } from "@/comps/popup/PopUp";

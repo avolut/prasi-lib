@@ -147,6 +147,7 @@ export const SideBar: FC<{
                     });
                   }
                 }
+
                 local.loading = true;
                 if (typeof menu.value === "string") {
                   local.active = menu.hash;
@@ -156,7 +157,9 @@ export const SideBar: FC<{
                       typeof menu.value === "string" &&
                       getPathname() !== menu.value
                     ) {
-                      navigate(menu.value);
+                      if (!pm.on_load) {
+                        navigate(menu.value);
+                      }
                     }
                   }, 500);
                 }
@@ -166,6 +169,28 @@ export const SideBar: FC<{
                   !Array.isArray(menu.value) &&
                   typeof menu.value === "string"
                 ) {
+                  if (pm.on_load) {
+                    let done = { exec: () => {} };
+                    console.log(preloaded(menu.value));
+                    if (preloaded(menu.value)) {
+                      pm.on_load((exec) => {
+                        if (typeof menu.value === "string")
+                          navigate(menu.value);
+                        exec();
+                      });
+                    } else {
+                      pm.on_load((exec) => {
+                        done.exec = exec;
+                      });
+                      await preload(menu.value);
+                      setTimeout(() => {
+                        done.exec();
+                        if (typeof menu.value === "string")
+                          navigate(menu.value);
+                      }, 500);
+                    }
+                    return;
+                  }
                   await preload(menu.value);
                   navigate(menu.value);
                 }

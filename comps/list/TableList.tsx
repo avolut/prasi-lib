@@ -713,14 +713,14 @@ export const TableList: FC<TableListProp> = ({
           ) : (
             <>
               <div
-                className="w-full h-full overflow-y-auto"
+                className="w-full h-full overflow-y-auto c-flex-col"
                 onScroll={local.paging.scroll}
               >
                 {Array.isArray(data) ? (
                   data.map((e, idx) => {
                     return (
                       <div
-                        className="flex-grow"
+                        className="c-flex-grow"
                         onClick={(ev) => {
                           if (!isEditor && typeof row_click === "function") {
                             row_click({

@@ -9,7 +9,7 @@ export type PTProp = {
   tab: "string";
   PassProp: any;
   item: PrasiItem;
-  pt: PTLocalInternal
+  pt: PTLocalInternal;
 };
 
 export type PTLocalInternal = {

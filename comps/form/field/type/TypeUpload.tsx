@@ -74,7 +74,7 @@ export const FieldUpload: FC<{
             try {
               file = event.target.files[0];
             } catch (ex) {}
-            if (prop.model_upload === "import") {
+            if (type_field === "import") {
               const reader = new FileReader();
 
               reader.onload = (e: any) => {

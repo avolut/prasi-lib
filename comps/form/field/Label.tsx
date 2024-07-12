@@ -17,7 +17,7 @@ export const Label: FC<{ field: FieldLocal; fm: FMLocal }> = ({
       <span className={cx(errors.length > 0 && `c-text-red-600`)}>
         {field.label}
       </span>
-      {field.required && (
+      {field.required && !field.disabled && (
         <span className="c-text-red-600 c-mb-2 c-ml-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"

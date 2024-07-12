@@ -74,7 +74,7 @@ export const Popup: FC<PopupProp> = ({
         createPortal(
           <div
             ref={(e) => (local.ref = e)}
-            className="c-w-screen c-h-screen relative c-bg-[#00000017]  c-flex c-flex-row c-items-center c-justify-center"
+            className="c-w-screen c-h-screen relative c-flex c-flex-row c-items-center c-justify-center"
             onClick={(e) => {
               if (local.ref) {
                 if (e.target === local.ref) {

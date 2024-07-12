@@ -146,13 +146,11 @@ export const Form: FC<FMProps> = (props) => {
   if (fm.status === "resizing") {
     fm.status = "ready";
   }
-
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("HALOO");
         fm.submit();
       }}
       ref={(el) => {

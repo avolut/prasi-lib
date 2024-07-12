@@ -9,7 +9,8 @@ export type MenuProp = {
   child: ReactNode;
   mode: "full" | "mini";
   item: PrasiItem;
-  style: "navbar" | "sidebar"
+  style: "navbar" | "sidebar";
+  on_load?: (on_done: (exec: () => void) => void) => void;
 };
 export type MenuActive = {
   data: any;
@@ -21,5 +22,5 @@ export type MenuActive = {
 
 export type IMenuItem = {
   data: IMenu[];
-  child: ReactNode
-}
+  child: ReactNode;
+};

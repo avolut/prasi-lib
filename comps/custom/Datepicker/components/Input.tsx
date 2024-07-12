@@ -285,36 +285,41 @@ const Input: React.FC<Props> = (e: Props) => {
 
   return (
     <>
-      <input
-        ref={inputRef}
-        type="text"
-        className={getClassName()}
-        disabled={disabled}
-        readOnly={readOnly}
-        placeholder={
-          placeholder
-            ? placeholder
-            : `${displayFormat}${
-                asSingle ? "" : ` ${separator} ${displayFormat}`
-              }`
-        }
-        value={inputText}
-        id={inputId}
-        name={inputName}
-        autoComplete="off"
-        role="presentation"
-        onChange={handleInputChange}
-        onKeyDown={handleInputKeyDown}
-      />
+      {disabled ? (
+        <div className={getClassName()}>{inputText}</div>
+      ) : (
+        <input
+          ref={inputRef}
+          type="text"
+          className={getClassName()}
+          readOnly={readOnly}
+          placeholder={
+            placeholder
+              ? placeholder
+              : `${displayFormat}${
+                  asSingle ? "" : ` ${separator} ${displayFormat}`
+                }`
+          }
+          value={inputText}
+          id={inputId}
+          name={inputName}
+          autoComplete="off"
+          role="presentation"
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
+        />
+      )}
 
-      <button
-        type="button"
-        ref={buttonRef}
-        disabled={disabled}
-        className={getToggleClassName()}
-      >
-        {renderToggleIcon(inputText == null || !inputText?.length)}
-      </button>
+      {!disabled && (
+        <button
+          type="button"
+          ref={buttonRef}
+          disabled={disabled}
+          className={getToggleClassName()}
+        >
+          {renderToggleIcon(inputText == null || !inputText?.length)}
+        </button>
+      )}
     </>
   );
 };

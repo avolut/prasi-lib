@@ -10,7 +10,17 @@ export const FieldSingleCheckbox: FC<{
 }> = ({ field, fm, arg }) => {
   const local = useLocal({
     list: [] as any[],
+    change_timeout: null as any,
   });
+  const renderOnChange = () => {
+    local.render();
+    if (field.on_change) {
+      field.on_change({ value: fm.data[field.name], name: field.name, fm });
+    }
+
+    clearTimeout(local.change_timeout);
+    local.change_timeout = setTimeout(fm.render, 300);
+  };
   useEffect(() => {
     const callback = (res: any[]) => {
       if (Array.isArray(res)) {
@@ -39,6 +49,13 @@ export const FieldSingleCheckbox: FC<{
             onClick={() => {
               fm.data[field.name] = !value;
               fm.render();
+              if (field.on_change) {
+                field.on_change({
+                  value: !value,
+                  name: field.name,
+                  fm,
+                });
+              }
             }}
             className="c-flex c-flex-row c-space-x-1 cursor-pointer c-items-center rounded-full p-0.5"
           >
