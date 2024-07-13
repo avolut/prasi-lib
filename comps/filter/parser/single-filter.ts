@@ -12,42 +12,7 @@ export const parseSingleFilter = (filter: FilterLocal, fields: GFCol[]) => {
 
       switch (type) {
         case "search-all":
-          fields
-            .filter(
-              (e) =>
-                e.type === "varchar" ||
-                e.type === "text" ||
-                e.type === "string" ||
-                e.type === "has-one"
-            )
-            .map((e) => {
-              if (e.type === "has-one") {
-                for (const f of e.relation?.fields || []) {
-                  if (
-                    !f.is_pk &&
-                    (f.type === "varchar" ||
-                      f.type === "text" ||
-                      f.type === "string")
-                  ) {
-                    OR.push({
-                      [e.name]: {
-                        [f.name]: {
-                          contains: "%" + value + "%",
-                          mode: "insensitive",
-                        },
-                      },
-                    });
-                  }
-                }
-              } else {
-                OR.push({
-                  [e.name]: {
-                    contains: "%" + value + "%",
-                    mode: "insensitive",
-                  },
-                });
-              }
-            });
+          searchAll(fields, OR, value);
           break;
         case "text":
           {
@@ -137,4 +102,48 @@ export const parseSingleFilter = (filter: FilterLocal, fields: GFCol[]) => {
   if (AND.length > 0) where.AND = AND;
   if (OR.length > 0) where.OR = OR;
   return where;
+};
+
+const searchAll = (fields: GFCol[], OR: any[], value: any) => {
+  fields
+    .filter(
+      (e) =>
+        e.type === "varchar" ||
+        e.type === "text" ||
+        e.type === "string" ||
+        e.type === "has-one" ||
+        e.type === "has-many"
+    )
+    .map((e) => {
+      if (e.type === "has-one") {
+        for (const f of e.relation?.fields || []) {
+          if (
+            !f.is_pk &&
+            (f.type === "varchar" || f.type === "text" || f.type === "string")
+          ) {
+            OR.push({
+              [e.name]: {
+                [f.name]: {
+                  contains: "%" + value + "%",
+                  mode: "insensitive",
+                },
+              },
+            });
+          }
+        }
+      } else if (e.type === "has-many") {
+        const MANY_OR: any[] = [];
+        if (e.relation) {
+          searchAll(e.relation.fields, MANY_OR, value);
+          OR.push({ [e.name]: { some: { OR: MANY_OR } } });
+        }
+      } else {
+        OR.push({
+          [e.name]: {
+            contains: "%" + value + "%",
+            mode: "insensitive",
+          },
+        });
+      }
+    });
 };
