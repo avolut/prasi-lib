@@ -55,6 +55,14 @@ export const Menu: FC<MenuProp> = (props) => {
     </div>
   );
 };
+
+const w = window as unknown as {
+  prasi_menu: {
+    nav_override: boolean;
+    nav: any;
+  };
+  navigate: any;
+};
 export const SideBar: FC<{
   data: IMenu[];
   local: MLocal;
@@ -69,6 +77,34 @@ export const SideBar: FC<{
   const data: IMenu[] = (typeof _data[0] === "string" ? [_data] : _data) as any;
 
   useEffect(() => {
+    if (!w.prasi_menu && !isEditor) {
+      w.prasi_menu = { nav_override: true, nav: w.navigate };
+      w.navigate = async (_href: any) => {
+        if (_href.startsWith("/")) {
+          const url = new URL(location.href);
+          const newurl = new URL(`${url.protocol}//${url.host}${_href}`);
+          const pathname = newurl.pathname;
+
+          if (preloaded(pathname)) {
+            w.prasi_menu.nav(_href);
+          } else if (pm.on_load) {
+            let done = { exec: () => {} };
+            pm.on_load((exec) => {
+              done.exec = exec;
+            });
+            await preload(pathname);
+            setTimeout(() => {
+              w.prasi_menu.nav(_href);
+              done.exec();
+            }, 500);
+          } else {
+            await preload(pathname);
+            w.prasi_menu.nav(_href);
+          }
+        }
+      };
+    }
+
     data.map((item) => {
       const menu = {
         label: item[0],
@@ -182,11 +218,8 @@ export const SideBar: FC<{
                         done.exec = exec;
                       });
                       await preload(menu.value);
-                      setTimeout(() => {
-                        done.exec();
-                        if (typeof menu.value === "string")
-                          navigate(menu.value);
-                      }, 500);
+                      done.exec();
+                      if (typeof menu.value === "string") navigate(menu.value);
                     }
                     return;
                   }

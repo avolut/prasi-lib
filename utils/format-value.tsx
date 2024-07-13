@@ -48,7 +48,7 @@ export const FormatValue: FC<{
     if (typeof value === "boolean") return <>{value ? "Yes" : "No"}</>;
 
     if (mode === "money") {
-      if (!value || isEmptyString(value)) return "-";
+      if (isEmptyString(value)) return "-";
       return formatMoney(Number(value) || 0);
     } else if (mode === "datetime") {
       if (!value || isEmptyString(value)) return "-";
