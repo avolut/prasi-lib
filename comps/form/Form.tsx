@@ -151,7 +151,13 @@ export const Form: FC<FMProps> = (props) => {
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        fm.status = "saving";
+        fm.render();
+
         fm.submit();
+
+        fm.status = "ready";
+        fm.render();
       }}
       ref={(el) => {
         if (el) {
@@ -168,7 +174,6 @@ export const Form: FC<FMProps> = (props) => {
       className={cx(
         "form c-flex-1 c-w-full c-h-full c-relative c-overflow-auto"
       )}
-      action="#"
     >
       {toaster_el && createPortal(<Toaster cn={cx} />, toaster_el)}
       <div

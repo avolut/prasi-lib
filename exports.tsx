@@ -117,7 +117,7 @@ export { ShowHidePanel } from "@/comps/custom/ShowHidePanel";
 export { PanelBody } from "@/comps/tab/parts/PanelBody";
 export { PanelHeader } from "@/comps/tab/parts/PanelHead";
 export { PanelTab } from "@/comps/tab/Tab";
-  
+
 /*Popup*/
 export { Popup } from "@/comps/popup/PopUp";
 
@@ -126,7 +126,7 @@ export { ButtonUpload } from "@/preset/profile/ButtonUpload";
 export { Profile } from "@/preset/profile/Profile";
 export { generateProfile } from "@/preset/profile/utils/generate";
 export { formatTime, longDate, shortDate, timeAgo } from "@/utils/date";
-export { getPathname } from "@/utils/pathname";
+export { getPathname, getBasename } from "@/utils/pathname";
 
 export * from "@/comps/ui/input";
 
