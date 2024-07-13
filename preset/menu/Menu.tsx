@@ -170,8 +170,6 @@ export const SideBar: FC<{
                   typeof menu.value === "string"
                 ) {
                   if (pm.on_load) {
-                    let done = { exec: () => {} };
-                    console.log(preloaded(menu.value));
                     if (preloaded(menu.value)) {
                       pm.on_load((exec) => {
                         if (typeof menu.value === "string")
@@ -179,6 +177,7 @@ export const SideBar: FC<{
                         exec();
                       });
                     } else {
+                      let done = { exec: () => {} };
                       pm.on_load((exec) => {
                         done.exec = exec;
                       });

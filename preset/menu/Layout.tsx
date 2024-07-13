@@ -37,10 +37,11 @@ type LYTChild = {
   exception?: Array<string>;
   blank_layout: ReactNode;
   login_url: string;
+  PassProp: any;
 };
 
 export const Layout: FC<LYTChild> = (props) => {
-  const local = useLocal({loading: true})
+  const local = useLocal({ loading: false });
   const render = local.render;
   useLayoutEffect(() => {
     if (!isEditor) {
@@ -78,5 +79,19 @@ export const Layout: FC<LYTChild> = (props) => {
   if (path === props.login_url) return props.blank_layout;
   if (!w.user && !isEditor) return props.blank_layout;
 
-  return <>{props.default_layout}</>;
+  return (
+    <props.PassProp
+      is_loading={local.loading}
+      page_load={(on_load: (done: () => void) => void) => {
+        local.loading = true;
+        local.render();
+        on_load(() => {
+          local.loading = false;
+          local.render();
+        });
+      }}
+    >
+      {props.default_layout}
+    </props.PassProp>
+  );
 };

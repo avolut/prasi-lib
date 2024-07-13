@@ -149,8 +149,8 @@ export const TableEdit: FC<{
                       );
                       fm.render();
                     },
-                    add: () => {
-                      tbl.data.push({});
+                    add: (e: any) => {
+                      tbl.data.push(e ? e : {});
                       fm.render();
                     },
                   }}
@@ -163,8 +163,8 @@ export const TableEdit: FC<{
         </div>
         <PassProp
           ext_fm={{
-            add: () => {
-              local.tbl.data.push({});
+            add: (e: any) => {
+              local.tbl.data.push(e ? e : {});
               fm.render();
 
               setTimeout(() => {
