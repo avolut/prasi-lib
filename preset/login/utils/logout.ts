@@ -8,6 +8,7 @@ export type RGSession = {
 };
 
 export const logout = (url_login?: string) => {
+  if (isEditor) return;
   if (typeof get(w, "user") === "object") {
     w.user = null;
   }
