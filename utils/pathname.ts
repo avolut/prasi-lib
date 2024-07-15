@@ -1,5 +1,8 @@
 export const getPathname = (url?: string) => {
-  if (["prasi.avolut.com"].includes(location.hostname)) {
+  if (
+    ["prasi.avolut.com"].includes(location.hostname) ||
+    location.host === "localhost:4550"
+  ) {
     if (
       location.pathname.startsWith("/vi") ||
       location.pathname.startsWith("/prod") ||

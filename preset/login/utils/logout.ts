@@ -14,13 +14,18 @@ export const logout = (url_login?: string) => {
   }
 
   let id_site = "";
-  if (location.hostname === "prasi.avolut.com") {
+  if (
+    location.hostname === "prasi.avolut.com" ||
+    location.host === "localhost:4550"
+  ) {
     const parts = location.pathname.split("/");
     id_site = parts[2];
   }
   if (localStorage.getItem("user" + id_site)) {
     localStorage.removeItem("user" + id_site);
   }
-  if (url_login !== getPathname())
-    location.href = `${getBasename()}${url_login}`;
+  if (url_login !== getPathname()) {
+    console.log(url_login, getPathname());
+    // location.href = `${getBasename()}${url_login}`;
+  }
 };

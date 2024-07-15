@@ -5,11 +5,12 @@ import { FMLocal, FieldLocal } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
 import * as XLSX from "xlsx";
 
+
 export const FieldUpload: FC<{
   field: FieldLocal;
   fm: FMLocal;
   prop: PropTypeInput;
-  on_change: (e: any) => void | Promise<void>
+  on_change: (e: any) => void | Promise<void>;
 }> = ({ field, fm, prop, on_change }) => {
   let type_field = prop.sub_type;
   let value: any = fm.data[field.name];
@@ -21,7 +22,8 @@ export const FieldUpload: FC<{
     drop: false as boolean,
   });
   let display: any = null;
-  const disabled = typeof field.disabled === "function" ? field.disabled() : field.disabled;
+  const disabled =
+    typeof field.disabled === "function" ? field.disabled() : field.disabled;
   return (
     <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full">
       <div
@@ -78,26 +80,31 @@ export const FieldUpload: FC<{
               const reader = new FileReader();
 
               reader.onload = (e: any) => {
-                  const binaryStr = e.target.result;
-                  const workbook = XLSX.read(binaryStr, { type: 'binary' });
-      
-                  const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                  const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                  if (typeof on_change === "function") {
-                    const res =  on_change({value: jsonData});
-                  }
-              }
+                const binaryStr = e.target.result;
+                const workbook = XLSX.read(binaryStr, { type: "binary" });
+
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                if (typeof on_change === "function") {
+                  const res = on_change({ value: jsonData });
+                }
+              };
               reader.readAsBinaryString(file);
             } else {
               const formData = new FormData();
               formData.append("file", file);
-              const response = await fetch(
-                "https://prasi.avolut.com/_proxy/https%3A%2F%2Feam.avolut.com%2F_upload",
-                {
-                  method: "POST",
-                  body: formData,
-                }
-              );
+
+              let url = siteurl("/_upload");
+              if (location.hostname === 'prasi.avolut.com' || location.host === 'localhost:4550') {
+                const newurl = new URL(location.href);
+                newurl.pathname = `/_proxy/https://julong-dev.avolut.com/_upload`;
+                url = newurl.toString();
+              }
+
+              const response = await fetch(url, {
+                method: "POST",
+                body: formData,
+              });
 
               if (response.ok) {
                 const contentType: any = response.headers.get("content-type");

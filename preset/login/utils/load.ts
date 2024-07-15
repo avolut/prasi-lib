@@ -6,7 +6,7 @@ const parse = parser.exportAsFunctionAny("en-US");
 export const loadSession = (url_login?: string) => {
   if (!isEditor) {
     let id_site = "";
-    if (location.hostname === "prasi.avolut.com") {
+    if (location.hostname === "prasi.avolut.com" || location.host === "localhost:4550") {
       const parts = location.pathname.split("/");
       id_site = parts[2];
     }
