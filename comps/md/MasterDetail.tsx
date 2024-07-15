@@ -1,6 +1,6 @@
 import { useLocal } from "@/utils/use-local";
 import { parseGenField } from "lib/gen/utils";
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import { ModeFull } from "./mode/full";
 import { ModeHSplit } from "./mode/h-split";
 import { ModeVSplit } from "./mode/v-split";
@@ -73,6 +73,8 @@ export const MasterDetail: FC<MDProps> = (arg) => {
   mdr.PassProp = PassProp;
   mdr.item = _item;
   mdRenderLoop(md, mdr, arg);
+  md.deps = arg.deps || {};
+
   if (isEditor) {
     md.tab.active = editor_tab;
     editorMDInit(md, mdr, arg);
@@ -92,16 +94,12 @@ export const MasterDetail: FC<MDProps> = (arg) => {
         } else {
           md.tab.active = "detail";
         }
-      } 
+      }
     }
   }
 
   return (
-    <div
-      className={cx(
-        "c-flex-1 c-flex-col c-flex c-w-full c-h-full"
-      )}
-    >
+    <div className={cx("c-flex-1 c-flex-col c-flex c-w-full c-h-full")}>
       {md.props.show_head === "always" && <MDHeader md={md} mdr={mdr} />}
       {md.status === "ready" && (
         <>

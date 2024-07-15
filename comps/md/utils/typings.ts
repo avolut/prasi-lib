@@ -23,6 +23,7 @@ export type MDProps = {
   gen_table: string;
   on_init: (md: MDLocal) => void;
   _item: PrasiItem;
+  deps?: any[]
 };
 
 export type MDActions = {
@@ -60,6 +61,7 @@ export type MDLocalInternal = {
     on_init: (md: any) => void;
     item: PrasiItem;
   };
+  deps?: object;
   childs: Record<
     string,
     {
@@ -154,4 +156,5 @@ export const MasterDetailType = `const md = {
     size: number;
     min_size: number;
   };
+  deps: any
 };`;

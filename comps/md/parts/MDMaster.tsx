@@ -1,6 +1,7 @@
 import { FC, useEffect } from "react";
 import { MDLocal, MDRef } from "../utils/typings";
 import { MDHeader } from "./MDHeader";
+import { useLocal } from "lib/utils/use-local";
 
 const w = window as unknown as {
   md_panel_master: any;
@@ -12,8 +13,13 @@ export const MDRenderMaster: FC<{
   on_init: () => MDLocal;
   breadcrumb: () => Array<any>;
 }> = ({ child, on_init, min_size, size, breadcrumb }) => {
+  const local = useLocal({ md: null as null | MDLocal });
+  if (!local.md) {
+    local.md = on_init();
+  }
+  const md = local.md;
+
   useEffect(() => {
-    let md = on_init();
     md.header.breadcrumb = breadcrumb();
     md.header.render();
     if (md) {
@@ -32,7 +38,7 @@ export const MDRenderMaster: FC<{
         md.panel.size = width;
       }
     }
-  }, []);
+  }, Object.values(md.deps || {}) || []);
 
   return <>{child}</>;
 };

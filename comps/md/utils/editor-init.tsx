@@ -17,6 +17,7 @@ export const editorMDInit = (md: MDLocal, mdr: MDRef, arg: MDProps) => {
   md.props.editor_tab = editor_tab;
   md.props.gen_fields = gen_fields;
   md.props.gen_table = gen_table;
+  md.deps = arg.deps;
   md.props.on_init = on_init;
   if (!mdr.master || (mdr.master && !get(mdr, "master.edit.childs.0.childs.length"))) {
     md.header.breadcrumb = [
