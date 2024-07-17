@@ -62,6 +62,11 @@ export const HeaderProfile = lazify(
   async () => (await import("@/comps/custom/HeaderProfile")).HeaderProfile
 );
 
+/** charts */
+export { PieChart } from "@/comps/charts/pie";
+// export { BarChart } from "@/comps/charts/bar";
+// export { LineChart } from "@/comps/charts/line";
+
 /** Generator */
 export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";
 export { generateRelation } from "@/comps/form/gen/gen-rel";
