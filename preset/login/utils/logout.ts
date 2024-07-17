@@ -25,7 +25,6 @@ export const logout = (url_login?: string) => {
     localStorage.removeItem("user" + id_site);
   }
   if (url_login !== getPathname()) {
-    console.log(url_login, getPathname());
-    // location.href = `${getBasename()}${url_login}`;
+    location.href = `${getBasename()}${url_login}`;
   }
 };

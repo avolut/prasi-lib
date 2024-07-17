@@ -28,6 +28,7 @@ import { filterWhere } from "../filter/parser/filter-where";
 import { getFilter } from "../filter/utils/get-filter";
 import { Skeleton } from "../ui/skeleton";
 import { sortTree } from "./utils/sort-tree";
+import { set } from "lib/utils/set";
 
 type OnRowClick = (arg: {
   row: any;
@@ -151,40 +152,46 @@ export const TableList: FC<TableListProp> = ({
           local.sort.columns = cols;
           local.paging.skip = 0;
           if (cols.length > 0) {
-            const { columnKey, direction } = cols[0];
+            let { columnKey, direction } = cols[0];
 
-            let should_set = true;
-            const gf = JSON.stringify(gen_fields);
-            const fields = fields_map.get(gf);
+            if (columnKey.includes(".")) {
+              let root: any = {};
+              set(root, columnKey, direction === "ASC" ? "asc" : "desc");
+              local.sort.orderBy = root;
+            } else {
+              let should_set = true;
+              const gf = JSON.stringify(gen_fields);
+              const fields = fields_map.get(gf);
 
-            if (fields) {
-              const rel = fields?.find((e) => e.name === columnKey);
-              if (rel && rel.checked) {
-                should_set = false;
+              if (fields) {
+                const rel = fields?.find((e) => e.name === columnKey);
+                if (rel && rel.checked) {
+                  should_set = false;
 
-                if (rel.type === "has-many") {
-                  local.sort.orderBy = {
-                    [columnKey]: {
-                      _count: direction === "ASC" ? "asc" : "desc",
-                    },
-                  };
-                } else {
-                  const field = rel.checked.find((e) => !e.is_pk);
-                  if (field) {
+                  if (rel.type === "has-many") {
                     local.sort.orderBy = {
                       [columnKey]: {
-                        [field.name]: direction === "ASC" ? "asc" : "desc",
+                        _count: direction === "ASC" ? "asc" : "desc",
                       },
                     };
+                  } else {
+                    const field = rel.checked.find((e) => !e.is_pk);
+                    if (field) {
+                      local.sort.orderBy = {
+                        [columnKey]: {
+                          [field.name]: direction === "ASC" ? "asc" : "desc",
+                        },
+                      };
+                    }
                   }
                 }
               }
-            }
 
-            if (should_set) {
-              local.sort.orderBy = {
-                [columnKey]: direction === "ASC" ? "asc" : "desc",
-              };
+              if (should_set) {
+                local.sort.orderBy = {
+                  [columnKey]: direction === "ASC" ? "asc" : "desc",
+                };
+              }
             }
           } else {
             local.sort.orderBy = null;
@@ -417,7 +424,7 @@ export const TableList: FC<TableListProp> = ({
               row={props.row}
               col={{
                 name: props.column.key,
-                value: props.row[props.column.key],
+                value: get(props.row, props.column.key),
                 depth: props.row.__depth || 0,
               }}
               rows={local.data}
@@ -448,7 +455,7 @@ export const TableList: FC<TableListProp> = ({
               row={props.row}
               col={{
                 name: props.column.key,
-                value: props.row[props.column.key],
+                value: get(props.row, props.column.key),
                 depth: props.row.__depth || 0,
               }}
               rows={local.data}
