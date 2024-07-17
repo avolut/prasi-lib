@@ -1,5 +1,6 @@
 export { FieldLoading } from "@/comps/ui/field-loading";
 import { lazify, lazifyMany } from "@/utils/lazify";
+export { prasi_gen } from "./gen/prasi_gen";
 
 export const Popover = lazify(
   async () => (await import("@/comps/custom/Popover")).Popover
@@ -107,6 +108,7 @@ export {
   UserSession,
   registerSession,
 } from "@/preset/login/utils/register";
+
 
 export { Card } from "@/comps/custom/Card";
 

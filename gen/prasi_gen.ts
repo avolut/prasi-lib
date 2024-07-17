@@ -9,10 +9,10 @@ import { gen_object_rel } from "./prop/gen_object_rel";
 
 export const prasi_gen = {
   actions_tab: gen_action,
-  master_detail: gen_master_detail,
-  table_list: gen_table_list,
-  form: gen_form,
-  relation: gen_relation,
+  // master_detail: gen_master_detail,
+  // table_list: gen_table_list,
+  // form: gen_form,
+  // relation: gen_relation,
   prop: {
     fields: gen_prop_fields,
     table: gen_props_table,
