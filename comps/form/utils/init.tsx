@@ -126,16 +126,26 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
 
           toast.dismiss();
           done_all(success);
+
+          if (!success) {
+            fm.status = "ready";
+            fm.render();
+          }
+
           if (fm.props.sonar === "on" && !isEditor) {
             setTimeout(() => {
               toast.dismiss();
 
               if (!success) {
+                const count = Object.keys(fm.error.list).length;
                 toast.error(
                   <div className="c-flex c-text-red-600 c-items-center">
                     <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
-                    Save Failed, please correct{" "}
-                    {Object.keys(fm.error.list).length} errors.
+                    Save Failed
+                    {count > 0 &&
+                      `, please correct
+                    ${count} errors`}
+                    .
                   </div>,
                   {
                     dismissible: true,

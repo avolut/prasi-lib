@@ -192,27 +192,25 @@ ${
   
     call_prasi_events("form", "after_save", [fm, data]);
 
+    ${
+      is_md &&
+      `\
+      if (typeof md !== "undefined") {
+        fm.status = "ready";
+        // kembali ke tabel
+        setTimeout(() => {
+          md.selected = null;
+          md.tab.active = "master";
+          md.internal.action_should_refresh = true;
+          md.params.apply();
+          md.render();
+        }, 500);
+      }`
+    }
   } catch (e) {
     console.error(e);
     result = false;
   }
-
-${
-  is_md &&
-  `\
-  if (typeof md !== "undefined") {
-    fm.status = "ready";
-    // kembali ke tabel
-    setTimeout(() => {
-      md.selected = null;
-      md.tab.active = "master";
-      md.internal.action_should_refresh = true;
-      md.params.apply();
-      md.render();
-    }, 500);
-  }`
-}
-
 
   return result;
 };
