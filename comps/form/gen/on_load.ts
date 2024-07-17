@@ -77,9 +77,11 @@ ${
 
     setTimeout(() => {
       call_prasi_events("form", "after_load", [opt?.fm]);
+
+      ${opt?.after_load ? opt?.after_load : ""}
+      
     });
 
-    ${opt?.after_load ? opt?.after_load : ""}
     return item;
   } else {
     ${opt?.after_load ? opt?.after_load : ""}

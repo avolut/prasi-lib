@@ -19,8 +19,12 @@ export const MDRenderMaster: FC<{
   }
   const md = local.md;
 
-  useEffect(() => {
+  md.header.render = () => {
     md.header.breadcrumb = breadcrumb();
+    md.header.internalRender();
+  };
+
+  useEffect(() => {
     md.header.render();
     if (md) {
       let width = 0;

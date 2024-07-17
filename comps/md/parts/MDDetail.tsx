@@ -120,10 +120,13 @@ export const MDRenderTab: FC<{
   }
   const md = local.md;
 
-  useEffect(() => {
+  md.header.render = () => {
     md.header.breadcrumb = breadcrumb();
+    md.header.internalRender();
+  };
+  useEffect(() => {
     md.header.render();
-  }, Object.values(md.deps || {})  || []);
+  }, Object.values(md.deps || {}) || []);
 
   return <>{child}</>;
 };

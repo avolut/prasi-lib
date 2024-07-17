@@ -23,7 +23,7 @@ export type MDProps = {
   gen_table: string;
   on_init: (md: MDLocal) => void;
   _item: PrasiItem;
-  deps?: any[]
+  deps?: any[];
 };
 
 export type MDActions = {
@@ -35,7 +35,11 @@ export type MDActions = {
 export type MDLocalInternal = {
   name: string;
   status: "init" | "unready" | "ready";
-  header: { breadcrumb: BreadItem[]; render: () => void };
+  header: {
+    breadcrumb: BreadItem[];
+    internalRender: () => void;
+    render: () => void;
+  };
   actions: MDActions;
   selected: any;
   tab: {
@@ -92,6 +96,7 @@ export const MasterDetailType = `const md = {
   name: string;
   status: string;
   header: {
+    render: () => void;
     breadcrumb: {
       label: React.ReactNode;
       url?: string;
