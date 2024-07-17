@@ -144,13 +144,13 @@ export const TableEdit: FC<{
                   }}
                   fm_parent={parent}
                   ext_fm={{
+                    idx: props.rowIdx,
                     change: () => {},
                     remove: () => {
-                      console.log(props);
-                      // fm.data[name] = tbl.data.filter(
-                      //   (e: any) => e !== props.row
-                      // );
-                      // fm.render();
+                      fm.data[name] = tbl.data.filter(
+                        (e: any) => e !== props.row
+                      );
+                      fm.render();
                     },
                     add: (e: any) => {
                       tbl.data.push(e ? e : {});
