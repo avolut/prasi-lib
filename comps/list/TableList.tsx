@@ -110,6 +110,12 @@ export const TableList: FC<TableListProp> = ({
       mode = "table";
     }
   }
+  let ls_sort = localStorage.getItem(
+    `sort-${location.pathname}-${location.hash}-${name}`
+  ) as unknown as { columns: any; orderBy: any };
+  if (ls_sort) {
+    ls_sort = JSON.parse(ls_sort as any);
+  }
   const local = useLocal({
     selectedRows: [] as {
       pk: string | number;
@@ -146,7 +152,7 @@ export const TableList: FC<TableListProp> = ({
     },
     cached_row: new WeakMap<any, ReactElement>(),
     sort: {
-      columns: [] as SortColumn[],
+      columns: (ls_sort?.columns || []) as SortColumn[],
       on_change: (cols: SortColumn[]) => {
         if (feature?.find((e) => e === "sorting")) {
           local.sort.columns = cols;
@@ -196,11 +202,19 @@ export const TableList: FC<TableListProp> = ({
           } else {
             local.sort.orderBy = null;
           }
+          localStorage.setItem(
+            `sort-${location.pathname}-${location.hash}-${name}`,
+            JSON.stringify({
+              columns: local.sort.columns,
+              orderBy: local.sort.orderBy,
+            })
+          );
+
           local.status = "reload";
           local.render();
         }
       },
-      orderBy: null as null | Record<
+      orderBy: (ls_sort?.orderBy || null) as null | Record<
         string,
         "asc" | "desc" | Record<string, "asc" | "desc">
       >,

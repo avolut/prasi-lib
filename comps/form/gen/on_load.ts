@@ -50,6 +50,8 @@ ${
   }
 `
 }
+  call_prasi_events("form", "before_load", [opt?.fm]);
+
   ${opt?.before_load ? opt.before_load : `let id = raw_id`}
   let item = {};
   if (id){
@@ -72,6 +74,11 @@ ${
       where,
       select: gen.select,
     });
+
+    setTimeout(() => {
+      call_prasi_events("form", "after_load", [opt?.fm]);
+    });
+
     ${opt?.after_load ? opt?.after_load : ""}
     return item;
   } else {

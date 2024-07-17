@@ -9,16 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "c-bg-primary c-text-primary-foreground hover:c-bg-primary/90",
+        default:
+          "button-primary c-bg-primary c-text-primary-foreground hover:c-bg-primary/90",
         // default: "#FDB813",
         destructive:
-          "c-bg-destructive c-text-destructive-foreground hover:c-bg-destructive/90",
+          "button-destructive  c-bg-destructive c-text-destructive-foreground hover:c-bg-destructive/90",
         outline:
-          "c-border c-border-input c-bg-background hover:c-bg-accent hover:c-text-accent-foreground",
+          "button-outline c-border c-border-input c-bg-background hover:c-bg-accent hover:c-text-accent-foreground",
         secondary:
-          "c-bg-secondary c-text-secondary-foreground hover:c-bg-secondary/80",
-        ghost: "hover:c-bg-accent hover:c-text-accent-foreground",
-        link: "c-text-primary c-underline-offset-4 hover:c-underline",
+          "button-secondary c-bg-secondary c-text-secondary-foreground hover:c-bg-secondary/80",
+        ghost: "button-ghost hover:c-bg-accent hover:c-text-accent-foreground",
+        link: "button-link c-text-primary c-underline-offset-4 hover:c-underline",
         "no-style": "",
       },
       size: {

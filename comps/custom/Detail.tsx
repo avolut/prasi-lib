@@ -5,7 +5,9 @@ import { FC, useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
 
 export const Detail: FC<{
-  detail: (item: any) => Record<string, [string, string, string]>;
+  detail: (
+    item: any
+  ) => Record<string, [string, string, string | (() => void)]>;
   on_load: (arg: {
     params: any;
     bind: (fn: (on_load: any) => void) => void;
@@ -133,7 +135,7 @@ export const Detail: FC<{
           return null;
         const [label, sample, link] = data;
 
-        if (link) {
+        if (typeof link === 'string') {
           preload(link);
         }
 
@@ -215,7 +217,7 @@ export const Detail: FC<{
 
 const Linkable: FC<{
   sample?: string;
-  link?: string;
+  link?: string | (() => void);
   mode: "standard" | "compact" | "inline";
   status: "init" | "loading" | "ready";
 }> = ({ sample, link, status, mode }) => {
@@ -245,11 +247,15 @@ const Linkable: FC<{
         mode !== "standard" && "text-sm"
       )}
       onClick={() => {
-        if (link.startsWith("http://") || link.startsWith("https://")) {
-          window.open(link, "_blank");
-        }
-        if (!isEditor) {
-          navigate(link);
+        if (typeof link === "function") {
+          link();
+        } else {
+          if (link.startsWith("http://") || link.startsWith("https://")) {
+            window.open(link, "_blank");
+          }
+          if (!isEditor) {
+            navigate(link);
+          }
         }
       }}
     >

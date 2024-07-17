@@ -48,7 +48,8 @@ async (arg: TableOnLoad) => {
   }
 
   return new Promise(async (done) => {
-    const items = await db.${table}.findMany({
+    const result = {items: []}
+    result.items = await db.${table}.findMany({
       select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
       orderBy: arg.orderBy || {
         ${pk}: "desc",
@@ -59,7 +60,11 @@ async (arg: TableOnLoad) => {
       ...arg.paging,
     });
 
-    done(items);
+    await call_prasi_events("tablelist", "after_load", ["${table}", result.items, (input) => {
+      result.items = input;
+    }]);
+
+    done(result.items);
   });
 };
 

@@ -178,9 +178,10 @@ export const Form: FC<FMProps> = (props) => {
       {toaster_el && createPortal(<Toaster cn={cx} />, toaster_el)}
       <div
         className={cx(
-          "form-inner c-flex c-flex-1 c-flex-wrap c-items-start c-content-start",
+          "form-inner c-flex c-flex-col c-flex-1 c-flex-wrap c-items-start c-content-start",
           css`
             padding-right: 10px;
+            min-height: 100%;
           `
         )}
       >

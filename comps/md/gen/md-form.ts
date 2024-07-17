@@ -50,50 +50,50 @@ export const generateMDForm = async (
     },
   };
   generateForm(async (props: any) => {}, props, tablelist, false, true);
-  
+
   tab_detail?.edit.setProp("breadcrumb", {
     mode: "raw",
     value: `\
-    () => {
-      const breads: BreadItem[] = [
-        {
-          label: "List ${formatName(arg.table)}",
-          onClick: () => {
-            md.selected = null;
-            md.tab.active = "master";
-            md.internal.action_should_refresh = true;
-            md.params.apply();
-            md.render();
-          },
-        },
-      ];
-    
-      if (isEditor) {
+() => {
+  const breads: BreadItem[] = [
+    {
+      label: "List ${formatName(arg.table)}",
+      onClick: () => {
+        md.selected = null;
+        md.tab.active = "master";
+        md.internal.action_should_refresh = true;
+        md.params.apply();
+        md.render();
+      },
+    },
+  ];
+
+  if (isEditor) {
+    breads.push({ label: "Add New" });
+  } else {
+    if (
+      md.selected &&
+      typeof md.selected === "object"
+    ) {
+      if (Object.keys(md.selected).length === 0){
         breads.push({ label: "Add New" });
       } else {
-        if (
-          md.selected &&
-          typeof md.selected === "object"
-        ) {
-          if (Object.keys(md.selected).length === 0){
-            breads.push({ label: "Add New" });
-          } else {
-            breads.push({ label: "Edit" });
-          }
-        }
+        breads.push({ label: "Edit" });
       }
-    
-      return breads;
-    };
-    
-    type BreadItem = {
-      label: React.ReactNode;
-      url?: string;
-      onClick?: () => void;
     }
-    `
-  })
-  
+  }
+
+  return breads;
+};
+
+type BreadItem = {
+  label: any;
+  url?: string;
+  onClick?: () => void;
+}
+`,
+  });
+
   tab_detail?.edit.setChilds([
     {
       type: "item",

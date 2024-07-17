@@ -87,7 +87,6 @@ export { generateTableList } from "@/comps/md/gen/gen-table-list";
 export { generateSelect } from "@/comps/md/gen/md-select";
 export { MasterDetailType } from "@/comps/md/utils/typings";
 export { Button, FloatButton } from "@/comps/ui/button";
-export { prasi_gen } from "@/gen/prasi_gen";
 export { FormatValue } from "@/utils/format-value";
 export { GetValue } from "@/utils/get-value";
 export { password } from "@/utils/password";

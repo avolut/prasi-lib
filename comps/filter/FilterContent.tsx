@@ -17,10 +17,6 @@ export const FilterContent: FC<{
       className={cx(
         `c-flex c-flex-1 filter-content filter-${mode}`,
         css`
-          &.filter-content {
-            border-radius: 4px;
-            background: #fff;
-          }
           &.filter-regular {
             width: 100%;
             /* Styles specific to sidebar */
@@ -30,9 +26,14 @@ export const FilterContent: FC<{
             display: flex;
             align-items: center;
 
+            .form-inner {
+              padding-right: 1px;
+            }
+
             .field {
               padding-top: 0px;
               align-items: center;
+              padding-left: 0;
             }
             .field > .label {
               display: none;

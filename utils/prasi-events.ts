@@ -17,6 +17,11 @@ const events = {
     },
   },
   tablelist: {
+    after_load: async <T extends Prisma.ModelName>(
+      table: T,
+      items: any[],
+      modify: (items: any[]) => any[]
+    ) => {},
     where: async <T extends Prisma.ModelName>(table: T, where: any) => {},
   },
 };
