@@ -109,7 +109,6 @@ export {
   registerSession,
 } from "@/preset/login/utils/register";
 
-
 export { Card } from "@/comps/custom/Card";
 
 /** Layout */
@@ -122,7 +121,7 @@ export { Menu, MenuIcon } from "@/preset/menu/Menu";
 export { ShowHidePanel } from "@/comps/custom/ShowHidePanel";
 export { PanelBody } from "@/comps/tab/parts/PanelBody";
 export { PanelHeader } from "@/comps/tab/parts/PanelHead";
-export { PanelTab } from "@/comps/tab/Tab";
+export { PanelTab } from "@/comps/tab/parts/PanelTab";
 
 /*Popup*/
 export { Popup } from "@/comps/popup/PopUp";

@@ -120,6 +120,7 @@ export const TableEdit: FC<{
               const key = props.column.key;
               return (
                 <PassProp
+                  internal_key={props.rowIdx}
                   key={props.rowIdx}
                   idx={props.rowIdx}
                   row={props.row}

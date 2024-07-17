@@ -1,7 +1,7 @@
 import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
 import { FC, ReactNode, useEffect } from "react";
-import { PTLocalInternal, PTProp } from "./utils/typings";
+import { PTLocalInternal, PTProp } from "../utils/typings";
 export const PanelTab: FC<PTProp> = ({ header, body, tab, PassProp, item }) => {
   const local = useLocal<PTLocalInternal>({
     mode: "" as any,
