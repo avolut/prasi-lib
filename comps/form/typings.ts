@@ -142,6 +142,7 @@ export type FMInternal = {
   soft_delete: {
     field: any;
   };
+  has_fields_container: boolean,
 };
 export type FMLocal = FMInternal & { render: () => void };
 

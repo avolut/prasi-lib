@@ -55,7 +55,9 @@ export const Form: FC<FMProps> = (props) => {
     soft_delete: {
       field: null,
     },
+    has_fields_container: null as any,
   });
+  const form_inner_ref = useRef<HTMLDivElement>(null);
 
   if (props.render_parent) {
     if (!fm.internal.original_render) fm.internal.original_render = fm.render;
@@ -134,6 +136,25 @@ export const Form: FC<FMProps> = (props) => {
         fm.status = "init";
         fm.render();
       }
+
+      let i = 0;
+      const ival = setInterval(() => {
+        const old_has_fields_container = fm.has_fields_container;
+        if (form_inner_ref.current?.querySelector(".form-fields")) {
+          fm.has_fields_container = true;
+        } else {
+          fm.has_fields_container = false;
+        }
+
+        if (old_has_fields_container !== fm.has_fields_container) {
+          fm.render();
+          clearInterval(ival);
+        }
+        if (i > 20) {
+          clearInterval(ival);
+        }
+        i++;
+      }, 10);
     },
     Array.isArray(props.on_load_deps) ? props.on_load_deps : []
   );
@@ -183,12 +204,23 @@ export const Form: FC<FMProps> = (props) => {
     >
       {toaster_el && createPortal(<Toaster cn={cx} />, toaster_el)}
       <div
+        ref={form_inner_ref}
         className={cx(
           "form-inner c-flex c-flex-col c-flex-1 c-flex-wrap c-items-start c-content-start",
           css`
-            padding-right: 10px;
             min-height: 100%;
-          `
+          `,
+          !fm.has_fields_container
+            ? css`
+                padding-right: 10px;
+              `
+            : css`
+                > div {
+                  > .form-fields {
+                    padding-right: 10px;
+                  }
+                }
+              `
         )}
       >
         {fm.status !== "init" && fm.size.width > 0 && (
