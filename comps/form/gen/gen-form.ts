@@ -38,7 +38,10 @@ export const generateForm = async (
   }
   let is_md = !!_is_md;
   if (typeof _is_md === "undefined") {
-    if (item.edit.parent?.item.edit.parent?.item.component?.id === "cb52075a-14ab-455a-9847-6f1d929a2a73") {
+    if (
+      item.edit.parent?.item.edit.parent?.item.component?.id ===
+      "cb52075a-14ab-455a-9847-6f1d929a2a73"
+    ) {
       is_md = true;
     }
   }
@@ -137,7 +140,6 @@ ${
 
     // prisma create / update ga boleh ada record.${pk}
     if (record) delete record.${pk};
-
 
     if (form.${pk}) {
       await db.${table}.update({
@@ -250,14 +252,14 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
         `,
       };
     }
-    const childs = [];
+    const child_fields = [];
     for (const item of fields.filter((e) => !e.is_pk)) {
       let value = [] as Array<string>;
       if (["has-one", "has-many"].includes(item.type)) {
         value = get(item, "value.checked") as any;
       }
       const field = await newField(item, { parent_table: table, value }, true);
-      childs.push(field);
+      child_fields.push(field);
     }
     let submit = null;
     if (typeof is_md === "boolean" && !is_md)
@@ -470,7 +472,7 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
                 gap: 0,
                 wrap: "flex-nowrap",
               },
-              childs,
+              childs: child_fields,
             }),
             submit,
           ].filter((e) => e),
@@ -479,7 +481,7 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
       await item.edit.commit();
     } else {
       set(data, "body.value", { ...data.body?.value, ...body_prop });
-      set(data, "body.value.childs", childs);
+      set(data, "body.value.childs", child_fields);
       Object.keys(result).map((e) => {
         set(data, e, result[e]);
       });

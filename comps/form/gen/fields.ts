@@ -21,22 +21,23 @@ export type GFCol = {
   };
 };
 export const newField = async (
-  arg: GFCol,
+  field: GFCol,
   opt: { parent_table: string; value: Array<string>; on_change?: string },
   show_label: boolean
 ) => {
   let show = typeof show_label === "boolean" ? show_label : true;
   let type = "input";
-  if (["int", "string", "text"].includes(arg.type)) {
-    if (["int"].includes(arg.type)) {
+  if (["int", "string", "text"].includes(field.type)) {
+    if (["int"].includes(field.type)) {
       return createItem({
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
           props: {
             ext__show_label: show ? "y" : "n",
-            name: arg.name,
-            label: formatName(arg.name),
+            name: field.name,
+            label: formatName(field.name),
             type,
+            ext__required: field.optional ? "n" : "y",
             sub_type: "number",
             child: {
               childs: [],
@@ -52,9 +53,10 @@ export const newField = async (
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
           props: {
-            name: arg.name,
-            label: formatName(arg.name),
+            name: field.name,
+            label: formatName(field.name),
             type,
+            ext__required: field.optional ? "n" : "y",
             sub_type: "text",
             ext__show_label: show ? "y" : "n",
             child: {
@@ -67,14 +69,15 @@ export const newField = async (
         },
       });
     }
-  } else if (["boolean"].includes(arg.type)) {
+  } else if (["boolean"].includes(field.type)) {
     return createItem({
       component: {
         id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
         props: {
-          name: arg.name,
-          label: formatName(arg.name),
+          name: field.name,
+          label: formatName(field.name),
           ext__show_label: show ? "y" : "n",
+          ext__required: field.optional ? "n" : "y",
           type: "single-option",
           sub_type: "toogle",
           ext__on_change: opt.on_change
@@ -83,15 +86,16 @@ export const newField = async (
         },
       },
     });
-  } else if (["timestamptz", "date"].includes(arg.type)) {
+  } else if (["timestamptz", "date"].includes(field.type)) {
     return createItem({
       component: {
         id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
         props: {
-          name: arg.name,
-          label: formatName(arg.name),
+          name: field.name,
+          label: formatName(field.name),
           type: "date",
           ext__show_label: show ? "y" : "n",
+          ext__required: field.optional ? "n" : "y",
           sub_type: "datetime",
           child: {
             childs: [],
@@ -102,7 +106,7 @@ export const newField = async (
         },
       },
     });
-  } else if (["has-many", "has-one"].includes(arg.type) && arg.relation) {
+  } else if (["has-many", "has-one"].includes(field.type) && field.relation) {
     const fields = parseGenField(opt.value);
     const res = generateSelect(fields);
 
@@ -111,8 +115,8 @@ export const newField = async (
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
           props: {
-            name: arg.name,
-            label: formatName(arg.name),
+            name: field.name,
+            label: formatName(field.name),
             type: "link",
             link_opt: [
               `({
@@ -138,14 +142,14 @@ export const newField = async (
 
     const load = on_load_rel({
       pk: res.pk,
-      table: arg.relation.to.table,
+      table: field.relation.to.table,
       select: res.select,
       pks: {},
-      type: arg.type === "has-many" ? "typeahead" : "dropdown",
+      type: field.type === "has-many" ? "typeahead" : "dropdown",
     });
-    if (["has-one"].includes(arg.type)) {
+    if (["has-one"].includes(field.type)) {
       const rel__gen_fields = JSON.stringify(
-        arg.relation?.fields.map((e) => {
+        field.relation?.fields.map((e) => {
           const v = (e as any).value;
           return v;
         })
@@ -154,32 +158,33 @@ export const newField = async (
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
           props: {
-            name: arg.name,
-            label: formatName(arg.name),
+            name: field.name,
+            label: formatName(field.name),
             type: "single-option",
             ext__show_label: show ? "y" : "n",
             sub_type: "dropdown",
-            rel__gen_table: arg.name,
+            rel__gen_table: field.name,
+            ext__required: field.optional ? "n" : "y",
             rel__gen_fields: [rel__gen_fields, rel__gen_fields],
             opt__on_load: [load],
             opt__label: [
               gen_label({
                 pk: res.pk,
-                table: arg.name,
+                table: field.name,
                 select: res.select,
               }),
             ],
             opt__get_value: [
               get_value({
                 pk: res.pk,
-                table: arg.name,
+                table: field.name,
                 select: res.select,
               }),
             ],
             opt__set_value: [
               set_value({
                 pk: res.pk,
-                table: arg.name,
+                table: field.name,
                 select: res.select,
               }),
             ],
@@ -195,7 +200,7 @@ export const newField = async (
     } else {
       const result = genRelMany({
         table_parent: opt.parent_table,
-        arg,
+        arg: field,
         rel: fields,
       });
 
@@ -204,7 +209,7 @@ export const newField = async (
       }
       let child: any = { childs: [] };
       const relation =
-        arg.relation?.fields.filter(
+        field.relation?.fields.filter(
           (e) => get(e, "name") !== opt.parent_table
         ) || [];
       let rel__gen_fields: any = JSON.stringify(
@@ -215,13 +220,13 @@ export const newField = async (
       );
       let sub_type = "typeahead";
 
-      if (arg.relation?.fields?.length > 2) {
+      if (field.relation?.fields?.length > 2) {
         sub_type = "table-edit";
         child = createItem({
           childs: await generateRelation(
             {
               rel__gen_fields: { value: rel__gen_fields },
-              rel__gen_table: { value: JSON.stringify(arg.name) },
+              rel__gen_table: { value: JSON.stringify(field.name) },
               sub_type: { value: "'table-edit'" },
             },
             createItem({}),
@@ -233,11 +238,11 @@ export const newField = async (
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
           props: {
-            name: arg.name,
-            label: formatName(arg.name),
+            name: field.name,
+            label: formatName(field.name),
             type: "multi-option",
             sub_type,
-            rel__gen_table: arg.name,
+            rel__gen_table: field.name,
             opt__on_load: [result.on_load],
             ext__show_label: show ? "y" : "n",
             opt__label: [result.get_label],
@@ -260,9 +265,10 @@ export const newField = async (
       component: {
         id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
         props: {
-          name: arg.name,
+          name: field.name,
           ext__show_label: show ? "y" : "n",
-          label: formatName(arg.name),
+          label: formatName(field.name),
+          ext__required: field.optional ? "n" : "y",
           type,
           sub_type: "text",
           child: {
