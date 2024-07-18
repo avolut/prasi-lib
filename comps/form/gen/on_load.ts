@@ -32,6 +32,7 @@ export const on_load = ({
 
   let is_md: string | boolean =
     typeof opt?.is_md === "undefined" ? true : !!opt?.is_md;
+    
   if (!is_md) is_md = "";
 
   return `\

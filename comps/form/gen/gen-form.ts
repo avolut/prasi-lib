@@ -1,18 +1,18 @@
-import { createItem, parseGenField } from "lib/gen/utils";
-import get from "lodash.get";
-import { newField } from "./fields";
-import { generateSelect } from "../../md/gen/md-select";
 import { createId } from "@paralleldrive/cuid2";
+import { createItem, parseGenField } from "lib/gen/utils";
+import { set } from "lib/utils/set";
+import get from "lodash.get";
+import { generateSelect } from "../../md/gen/md-select";
+import { newField } from "./fields";
 import { get_rel_many } from "./get_rel_many";
 import { on_load } from "./on_load";
-import { set } from "lib/utils/set";
 
 export const generateForm = async (
-  modify: (data: any) => void,
+  _: any,
   data: any,
   item: PrasiItem,
   commit: boolean,
-  is_md?: boolean
+  _is_md?: boolean
 ) => {
   let table = "" as string;
   try {
@@ -36,6 +36,15 @@ export const generateForm = async (
     alert("Failed to generate! Primary Key not found. ");
     return;
   }
+  let is_md = !!_is_md;
+  if (typeof _is_md === "undefined") {
+    if (item.edit.parent?.item.name === "child") {
+      is_md = true;
+    }
+  }
+  console.log(item.edit.parent);
+
+  console.log(is_md);
   if (pk) {
     if (data["on_load"]) {
       result.on_load = {
@@ -252,8 +261,9 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
       const field = await newField(item, { parent_table: table, value }, true);
       childs.push(field);
     }
+    let submit = null;
     if (typeof is_md === "boolean" && !is_md)
-      childs.push({
+      submit = {
         id: createId(),
         dim: { h: "fit", w: "full", hUnit: "px", wUnit: "px" },
         name: "submit",
@@ -415,7 +425,7 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
           },
         ],
         padding: { b: 10, l: 10, r: 10, t: 10 },
-      });
+      };
     const body_prop = {
       adv: {
         js: "<div\n  {...props}\n  className={cx(\n    props.className,\n    css`\n    align-content: start;`,\n  )}\n>\n  {children}\n</div>",
@@ -442,7 +452,30 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
         value: createItem({
           name: "item",
           ...body_prop,
-          childs: childs,
+          childs: [
+            createItem({
+              adv: {
+                js: '<div {...props} className={cx(props.className, "form-fields")}>\n  {children}\n</div>',
+                jsBuilt:
+                  'render(/* @__PURE__ */ React.createElement("div", { ...props, className: cx(props.className, "form-fields") }, children));\n',
+              },
+              dim: {
+                w: "full",
+                h: "full",
+                wUnit: "px",
+                hUnit: "px",
+              },
+              name: "fields",
+              layout: {
+                dir: "row",
+                align: "top-left",
+                gap: 0,
+                wrap: "flex-nowrap",
+              },
+              childs,
+            }),
+            submit,
+          ].filter((e) => e),
         }),
       });
       await item.edit.commit();
