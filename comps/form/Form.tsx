@@ -60,7 +60,13 @@ export const Form: FC<FMProps> = (props) => {
   if (props.render_parent) {
     if (!fm.internal.original_render) fm.internal.original_render = fm.render;
     fm.render = () => {
-      if (props.render_parent) props.render_parent();
+      if (isEditor) {
+        setTimeout(() => {
+          if (props.render_parent) props.render_parent();
+        });
+      } else {
+        if (props.render_parent) props.render_parent();
+      }
     };
   }
 

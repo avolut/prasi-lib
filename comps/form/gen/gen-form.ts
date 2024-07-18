@@ -38,13 +38,11 @@ export const generateForm = async (
   }
   let is_md = !!_is_md;
   if (typeof _is_md === "undefined") {
-    if (item.edit.parent?.item.name === "child") {
+    if (item.edit.parent?.item.edit.parent?.item.component?.id === "cb52075a-14ab-455a-9847-6f1d929a2a73") {
       is_md = true;
     }
   }
-  console.log(item.edit.parent);
 
-  console.log(is_md);
   if (pk) {
     if (data["on_load"]) {
       result.on_load = {
