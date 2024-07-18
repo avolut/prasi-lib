@@ -269,7 +269,7 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
         childs: [
           {
             id: createId(),
-            dim: { h: "fit", w: "full", hUnit: "px", wUnit: "px" },
+            dim: { h: "fit", w: "fit", hUnit: "px", wUnit: "px" },
             name: "bottom",
             type: "item",
             childs: [

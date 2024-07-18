@@ -159,7 +159,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
                 toast.success(
                   <div className="c-flex c-text-green-700 c-items-center">
                     <Check className="c-h-4 c-w-4 c-mr-1 " />
-                    Done
+                    Saved
                   </div>,
                   {
                     className: css`
