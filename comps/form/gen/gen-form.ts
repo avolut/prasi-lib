@@ -37,7 +37,6 @@ export const generateForm = async (
     return;
   }
   if (pk) {
-
     if (data["on_load"]) {
       result.on_load = {
         mode: "raw",
