@@ -1,6 +1,6 @@
 import { GenFn } from "lib/gen/utils";
 import { generateMDForm } from "./md-form";
-import { generateList } from "./md-list";
+import { generateMDList } from "./md-list";
 
 const w = window as any;
 export const generateMasterDetail: GenFn<{
@@ -20,7 +20,7 @@ export const generateMasterDetail: GenFn<{
     }
   } catch (e) {}
 
-  await generateList(arg, data, false);
+  await generateMDList(arg, data, false);
   await generateMDForm(arg, data, false);
   await item.edit.commit();
 };

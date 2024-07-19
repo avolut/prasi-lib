@@ -443,45 +443,46 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
         align: "top-left",
       },
     };
+    const child_body = createItem({
+      name: "item",
+      ...body_prop,
+      childs: [
+        createItem({
+          adv: {
+            js: '<div {...props} className={cx(props.className, "form-fields")}>\n  {children}\n</div>',
+            jsBuilt:
+              'render(/* @__PURE__ */ React.createElement("div", { ...props, className: cx(props.className, "form-fields") }, children));\n',
+          },
+          dim: {
+            w: "full",
+            h: "full",
+            wUnit: "px",
+            hUnit: "px",
+          },
+          name: "fields",
+          layout: {
+            dir: "row",
+            align: "top-left",
+            gap: 0,
+            wrap: "flex-nowrap",
+          },
+          childs: child_fields,
+        }),
+        submit,
+      ].filter((e) => e),
+    });
     if (commit) {
       Object.keys(result).map((e) => {
         item.edit.setProp(e, result[e]);
       });
       item.edit.setProp("body", {
         mode: "jsx",
-        value: createItem({
-          name: "item",
-          ...body_prop,
-          childs: [
-            createItem({
-              adv: {
-                js: '<div {...props} className={cx(props.className, "form-fields")}>\n  {children}\n</div>',
-                jsBuilt:
-                  'render(/* @__PURE__ */ React.createElement("div", { ...props, className: cx(props.className, "form-fields") }, children));\n',
-              },
-              dim: {
-                w: "full",
-                h: "full",
-                wUnit: "px",
-                hUnit: "px",
-              },
-              name: "fields",
-              layout: {
-                dir: "row",
-                align: "top-left",
-                gap: 0,
-                wrap: "flex-nowrap",
-              },
-              childs: child_fields,
-            }),
-            submit,
-          ].filter((e) => e),
-        }),
+        value: child_body,
       });
       await item.edit.commit();
     } else {
       set(data, "body.value", { ...data.body?.value, ...body_prop });
-      set(data, "body.value.childs", child_fields);
+      set(data, "body.value.childs", child_body.childs);
       Object.keys(result).map((e) => {
         set(data, e, result[e]);
       });
