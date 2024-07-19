@@ -41,6 +41,8 @@ export type MDLocalInternal = {
     breadcrumb: BreadItem[];
     internalRender: () => void;
     render: () => void;
+    master: { prefix: any; suffix: any };
+    child: { prefix: any; suffix: any };
   };
   actions: MDActions;
   selected: any;
@@ -105,6 +107,8 @@ export const MasterDetailType = `const md = {
       url?: string;
       onClick?: () => void;
     }[]
+    master: { prefix: any; suffix: any };
+    child: { prefix: any; suffix: any };
   };
   actions: (
     { 

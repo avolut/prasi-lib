@@ -12,6 +12,7 @@ import {
 } from "./utils/md-hash";
 import { mdRenderLoop } from "./utils/md-render-loop";
 import { MDLocalInternal, MDProps } from "./utils/typings";
+import { any } from "zod";
 
 export const MasterDetail: FC<MDProps> = (arg) => {
   const {
@@ -38,6 +39,8 @@ export const MasterDetail: FC<MDProps> = (arg) => {
       breadcrumb: [],
       internalRender() {},
       render: () => {},
+      master: { prefix: null, suffix: null },
+      child: { prefix: null, suffix: null },
     },
     selected: null,
     tab: {
