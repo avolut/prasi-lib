@@ -25,15 +25,18 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     gen_table,
     on_init,
     _item,
+    title,
   } = arg;
   const _ref = useRef({ PassProp, item: _item, childs: {} });
   const mdr = _ref.current;
   const md = useLocal<MDLocalInternal>({
     name,
+    title,
     status: isEditor ? "init" : "ready",
     actions: [],
     header: {
       breadcrumb: [],
+      internalRender() {},
       render: () => {},
     },
     selected: null,
@@ -98,8 +101,18 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     }
   }
 
+  if (isEditor) {
+    useEffect(() => {
+      md.title = title;
+      md.header.render();
+    }, [title]);
+  }
   return (
-    <div className={cx("master-detail c-flex-1 c-flex-col c-flex c-w-full c-h-full")}>
+    <div
+      className={cx(
+        "master-detail c-flex-1 c-flex-col c-flex c-w-full c-h-full"
+      )}
+    >
       {md.props.show_head === "always" && <MDHeader md={md} mdr={mdr} />}
       {md.status === "ready" && (
         <>

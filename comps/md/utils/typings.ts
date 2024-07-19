@@ -24,6 +24,7 @@ export type MDProps = {
   on_init: (md: MDLocal) => void;
   _item: PrasiItem;
   deps?: any[];
+  title: string;
 };
 
 export type MDActions = {
@@ -34,6 +35,7 @@ export type MDActions = {
 
 export type MDLocalInternal = {
   name: string;
+  title: string;
   status: "init" | "unready" | "ready";
   header: {
     breadcrumb: BreadItem[];
@@ -94,6 +96,7 @@ export type MDLocal = MDLocalInternal & { render: (force?: boolean) => void };
 
 export const MasterDetailType = `const md = {
   name: string;
+  title: string;
   status: string;
   header: {
     render: () => void;

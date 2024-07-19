@@ -57,7 +57,7 @@ export const generateMDForm = async (
 () => {
   const breads: BreadItem[] = [
     {
-      label: "List ${formatName(arg.table)}",
+      label: md.title || "List ${formatName(arg.table)}",
       onClick: () => {
         md.selected = null;
         md.tab.active = "master";

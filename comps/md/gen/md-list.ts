@@ -113,7 +113,7 @@ idx: any;
     value: `\
     () => {
       return [
-        { label: "List ${formatName(arg.table)}" },
+        { label: md.title || "List ${formatName(arg.table)}" },
       ] as BreadItem[];
     };
     type BreadItem = {
