@@ -48,9 +48,13 @@ async (arg: TableOnLoad) => {
   }
 
   return new Promise(async (done) => {
+    //@ts-ignore
+    const fields = parseGenField(gen__fields);
+    const gen = generateSelect(fields);
+
     const result = {items: []}
     result.items = await db.${table}.findMany({
-      select: ${JSON.stringify(select, null, 2).split("\n").join("\n    ")},
+      select: gen.select,
       orderBy: arg.orderBy || {
         ${pk}: "desc",
       },
