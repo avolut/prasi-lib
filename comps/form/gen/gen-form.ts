@@ -464,7 +464,7 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
             dir: "row",
             align: "top-left",
             gap: 0,
-            wrap: "flex-nowrap",
+            wrap: "flex-wrap",
           },
           childs: child_fields,
         }),
