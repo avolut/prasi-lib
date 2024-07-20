@@ -79,7 +79,8 @@ const get_layer = async (
           default: v.default,
         }),
         label: k + (!v.optional && !v.default ? " *" : ""),
-        checked: v.is_pk,
+        alt: v.type,
+        checked: v.is_pk && depth === 0,
       });
     }
   }
@@ -105,6 +106,7 @@ const get_layer = async (
               optional: true,
               relation: { from, to },
             }),
+            alt: v.type === "has-many" ? `1-N` : `1-1`,
             label: k,
             options: r_rels,
             checked: false,
