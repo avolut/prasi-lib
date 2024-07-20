@@ -1,7 +1,8 @@
+import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect } from "react";
+import { breadcrumbPrefix } from "../utils/md-hash";
 import { MDLocal, MDRef } from "../utils/typings";
 import { MDHeader } from "./MDHeader";
-import { useLocal } from "lib/utils/use-local";
 
 export const should_show_tab = (md: MDLocal) => {
   if (isEditor) {
@@ -114,19 +115,8 @@ export const MDRenderTab: FC<{
   on_init: () => MDLocal;
   breadcrumb: () => Array<any>;
 }> = ({ child, on_init, breadcrumb }) => {
-  const local = useLocal({ md: null as null | MDLocal });
-  if (!local.md) {
-    local.md = on_init();
-  }
-  const md = local.md;
-
-  md.header.render = () => {
-    md.header.breadcrumb = breadcrumb();
-    md.header.internalRender();
-  };
-  useEffect(() => {
-    md.header.render();
-  }, Object.values(md.deps || {}) || []);
+  const md = on_init();
+  md.header.child.breadcrumb = breadcrumb;
 
   return <>{child}</>;
 };

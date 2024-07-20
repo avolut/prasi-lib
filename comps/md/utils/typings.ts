@@ -1,6 +1,7 @@
 import { BreadItem } from "@/comps/custom/Breadcrumb";
 import { FMLocal } from "@/comps/form/typings";
 import { GFCol } from "@/gen/utils";
+import { LinkParam } from "lib/comps/form/field/type/TypeLink";
 import { ReactNode } from "react";
 
 type ID_MASTER_DETAIL = string;
@@ -38,11 +39,11 @@ export type MDLocalInternal = {
   title: string;
   status: "init" | "unready" | "ready";
   header: {
+    loading: boolean;
     breadcrumb: BreadItem[];
-    internalRender: () => void;
     render: () => void;
-    master: { prefix: any; suffix: any };
-    child: { prefix: any; suffix: any };
+    master: { prefix: any; suffix: any; breadcrumb?: () => BreadItem[] };
+    child: { prefix: any; suffix: any; breadcrumb?: () => BreadItem[] };
   };
   actions: MDActions;
   selected: any;
@@ -53,7 +54,8 @@ export type MDLocalInternal = {
   internal: { action_should_refresh: boolean };
   master: { render: () => void };
   params: {
-    hash: any;
+    links: LinkParam[];
+    hash: Record<string, any>;
     tabs: any;
     parse: () => void;
     apply: () => void;

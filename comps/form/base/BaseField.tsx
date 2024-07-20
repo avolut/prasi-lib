@@ -19,14 +19,14 @@ export const BaseField = (prop: {
     typeof field.prefix === "function"
       ? field.prefix()
       : typeof field.prefix === "string"
-        ? field.prefix
-        : null;
+      ? field.prefix
+      : null;
   const suffix =
     typeof field.suffix === "function"
       ? field.suffix()
       : typeof field.suffix === "string"
-        ? field.prefix
-        : null;
+      ? field.prefix
+      : null;
   const name = field.name;
   const errors = fm.error.get(name);
 
@@ -47,9 +47,7 @@ export const BaseField = (prop: {
         w === "½" && "c-w-1/2",
         w === "⅓" && "c-w-1/3",
         w === "¼" && "c-w-1/4",
-        field.type === "link"
-          ? "c-flex-row c-items-stretch c-min-h-[78px]"
-          : "c-flex-col c-space-y-1",
+        "c-flex-col c-space-y-1",
         field.focused && "focused",
         field.disabled && "disabled",
         typeof fm.data[name] !== "undefined" &&
@@ -65,9 +63,7 @@ export const BaseField = (prop: {
             !["toogle", "button", "radio", "checkbox"].includes(arg.sub_type)
               ? cx(
                   "field-outer c-overflow-hidden c-flex-1 c-flex c-flex-row c-text-sm c-bg-white",
-                  field.type === "link"
-                    ? " c-items-center"
-                    : "c-border c-rounded "
+                  "c-border c-rounded "
                 )
               : "",
             fm.status === "loading"
@@ -75,13 +71,13 @@ export const BaseField = (prop: {
                   border-color: transparent;
                 `
               : field.disabled
-                ? "c-border-gray-100"
-                : errors.length > 0
-                  ? field.focused
-                    ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
-                    : "c-border-red-600 c-bg-red-50"
-                  : field.focused &&
-                    "c-border-blue-700 c-outline c-outline-blue-700",
+              ? "c-border-gray-100"
+              : errors.length > 0
+              ? field.focused
+                ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
+                : "c-border-red-600 c-bg-red-50"
+              : field.focused &&
+                "c-border-blue-700 c-outline c-outline-blue-700",
             css`
               & > .field-inner {
                 min-height: 35px;
@@ -105,7 +101,6 @@ export const BaseField = (prop: {
             <div
               className={cx(
                 "field-inner c-flex-1 c-flex c-items-center",
-                field.type === "link" && "c-justify-end",
                 field.focused && "focused",
                 field.disabled && "c-pointer-events-none"
               )}

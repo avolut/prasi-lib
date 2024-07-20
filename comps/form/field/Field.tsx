@@ -54,9 +54,7 @@ export const Field: FC<FieldProp> = (arg) => {
         w === "½" && "c-w-1/2",
         w === "⅓" && "c-w-1/3",
         w === "¼" && "c-w-1/4",
-        field.type === "link"
-          ? "c-flex-row c-items-stretch c-min-h-[78px]"
-          : "c-flex-col c-space-y-1"
+        "c-flex-col c-space-y-1"
       )}
       {...props}
       ref={typeof arg.field_ref === "function" ? arg.field_ref : undefined}

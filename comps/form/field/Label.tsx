@@ -8,12 +8,7 @@ export const Label: FC<{ field: FieldLocal; fm: FMLocal }> = ({
   const errors = fm.error.get(field.name);
 
   return (
-    <div
-      className={cx(
-        "label c-text-sm c-flex c-items-center",
-        field.type === "link" ? "" : "c-mt-3"
-      )}
-    >
+    <div className={cx("label c-text-sm c-flex c-items-center", "c-mt-3")}>
       <span className={cx(errors.length > 0 && `c-text-red-600`)}>
         {field.label}
       </span>

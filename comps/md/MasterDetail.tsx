@@ -12,7 +12,6 @@ import {
 } from "./utils/md-hash";
 import { mdRenderLoop } from "./utils/md-render-loop";
 import { MDLocalInternal, MDProps } from "./utils/typings";
-import { any } from "zod";
 
 export const MasterDetail: FC<MDProps> = (arg) => {
   const {
@@ -36,8 +35,8 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     status: isEditor ? "init" : "ready",
     actions: [],
     header: {
+      loading: false,
       breadcrumb: [],
-      internalRender() {},
       render: () => {},
       master: { prefix: null, suffix: null },
       child: { prefix: null, suffix: null },
@@ -60,6 +59,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
       item: _item,
     },
     params: {
+      links: [],
       hash: {},
       tabs: {},
       parse: () => {
@@ -93,7 +93,9 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     if (pk) {
       const value = md.params.hash[md.name];
       if (value) {
-        md.selected = { [pk.name]: value };
+        if (!md.selected) {
+          md.selected = { [pk.name]: value };
+        }
         const tab = md.params.tabs[md.name];
         if (tab && md.tab.list.includes(tab)) {
           md.tab.active = tab;

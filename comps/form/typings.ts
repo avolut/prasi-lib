@@ -1,6 +1,7 @@
 import { GFCol } from "@/gen/utils";
-import { MutableRefObject, ReactElement, ReactNode } from "react";
+import { FC, MutableRefObject, ReactElement, ReactNode } from "react";
 import { editorFormData } from "./utils/ed-data";
+import { MDLocal } from "../md/utils/typings";
 
 export type FMProps = {
   on_init: (arg: { fm: FMLocal; submit: any; reload: any }) => any;
@@ -46,6 +47,18 @@ export type FieldProp = {
   label: string;
   desc?: string;
   props?: any;
+  link: {
+    text:
+      | string
+      | ((arg: {
+          field: FieldLocal;
+          Link: FC<{ children: any;  }>;
+        }) => Promise<string> | string);
+    url: string;
+    params: (
+      field: FieldLocal
+    ) => { md: MDLocal; where: any } | Promise<{ md: MDLocal; where: any }>;
+  };
   fm: FMLocal;
   type: FieldType | (() => FieldType);
   required: ("y" | "n") | (() => "y" | "n");
@@ -142,7 +155,7 @@ export type FMInternal = {
   soft_delete: {
     field: any;
   };
-  has_fields_container: boolean,
+  has_fields_container: boolean;
 };
 export type FMLocal = FMInternal & { render: () => void };
 

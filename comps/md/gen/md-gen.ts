@@ -1,7 +1,7 @@
 import { GenFn } from "lib/gen/utils";
 import { generateMDForm } from "./md-form";
 import { generateMDList } from "./md-list";
-
+import capitalize from "lodash.capitalize";
 const w = window as any;
 export const generateMasterDetail: GenFn<{
   item: PrasiItem;
@@ -16,7 +16,9 @@ export const generateMasterDetail: GenFn<{
     );
     const title = fn_title();
     if (!title && item.edit.props?.gen_table) {
-      item.edit.setProp('title', item.edit.props?.gen_table)
+      const table = { ...item.edit.props?.gen_table };
+      table.value = `${capitalize(table.value as string)}`;
+      item.edit.setProp("title", table);
     }
   } catch (e) {}
 

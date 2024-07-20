@@ -60,11 +60,7 @@ export const generateForm = async (
                 after_load: `
       if (typeof md === "object") {
         opt.fm.status = "ready";
-        if (item) {
-          for (const [k,v] of Object.entries(item)) {
-            md.selected[k] = v;
-          }
-        }
+        md.selected = opt.fm.data;
         md.header.render();
         md.render();
       }

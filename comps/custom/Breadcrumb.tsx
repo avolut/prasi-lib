@@ -1,7 +1,5 @@
 import { useLocal } from "@/utils/use-local";
 import { FC, ReactNode, useEffect } from "react";
-import { Skeleton } from "../ui/skeleton";
-import get from "lodash.get";
 import { FieldLoading } from "../ui/field-loading";
 
 export type BreadItem = {

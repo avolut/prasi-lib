@@ -78,7 +78,7 @@ export const generateMDForm = async (
       if (Object.keys(md.selected).length === 0){
         breads.push({ label: "Add New" });
       } else {
-        breads.push({ label: "Edit" });
+        breads.push({ label: guessLabel(md.selected) || "Detail" });
       }
     }
   }

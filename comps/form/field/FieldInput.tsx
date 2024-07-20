@@ -6,6 +6,7 @@ import { TableEdit } from "./table-edit/TableEdit";
 import { FieldTypeInput, PropTypeInput } from "./type/TypeInput";
 import { MultiOption } from "./type/TypeMultiOption";
 import { SingleOption } from "./type/TypeSingleOption";
+import { FieldLink } from "./type/TypeLink";
 
 const modify = {
   timeout: null as any,
@@ -108,7 +109,7 @@ export const FieldInput: FC<{
         !["toogle", "button", "radio", "checkbox"].includes(arg.sub_type)
           ? cx(
               "field-outer c-overflow-hidden c-flex-1 c-flex c-flex-row c-text-sm c-bg-white",
-              field.type === "link" ? " c-items-center" : "c-border c-rounded "
+              "c-border c-rounded "
             )
           : "",
         fm.status === "loading"
@@ -145,7 +146,6 @@ export const FieldInput: FC<{
         <div
           className={cx(
             "field-inner c-flex-1 c-flex c-items-center",
-            field.type === "link" && "c-justify-end",
             field.focused && "focused",
             disabled && "c-pointer-events-none c-bg-gray-50"
           )}
@@ -158,7 +158,9 @@ export const FieldInput: FC<{
                 <>{custom}</>
               ) : (
                 <>
-                  {type_field === "link" && <>ini link</>}
+                  {type_field === "link" && (
+                    <FieldLink field={field} fm={fm} arg={arg} />
+                  )}
                   {["date", "input"].includes(type_field) ? (
                     <FieldTypeInput
                       field={field}

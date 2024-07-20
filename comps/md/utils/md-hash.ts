@@ -1,4 +1,6 @@
+import { fetchLinkParams, parseLink } from "lib/comps/form/field/type/TypeLink";
 import { MDLocal } from "./typings";
+import { BreadItem } from "lib/comps/custom/Breadcrumb";
 
 export const masterDetailParseHash = (md: MDLocal) => {
   let raw_hash = decodeURIComponent(location.hash);
@@ -20,6 +22,27 @@ export const masterDetailParseHash = (md: MDLocal) => {
         }
       }
     }
+  }
+
+  const parsed_link = parseLink();
+  let changed = parsed_link.length !== md.params.links.length;
+
+  if (!changed) {
+    for (let i = 0; i < parsed_link.length; i++) {
+      if (parsed_link[i] !== md.params.links[i].hash) {
+        changed = true;
+      }
+    }
+  }
+
+  if (changed) {
+    md.params.links = [];
+    md.header.loading = true;
+    fetchLinkParams(parsed_link).then((links) => {
+      md.params.links = links;
+      md.header.loading = false;
+      md.header.render();
+    });
   }
 };
 
@@ -55,4 +78,41 @@ export const masterDetailApplyParams = (md: MDLocal) => {
   if (!isEditor) {
     location.hash = hash;
   }
+};
+
+export const breadcrumbPrefix = (md: MDLocal) => {
+  const prefix: BreadItem[] = [];
+  if (md.params.links && md.params.links.length > 0) {
+    const hashes: string[] = [];
+    for (const link of md.params.links) {
+      if (!hashes.includes(link.hash)) {
+        hashes.push(link.hash);
+      }
+    }
+    for (const link of md.params.links) {
+      for (const p of link.prefix) {
+        prefix.push({
+          label: p.label,
+          onClick(ev) {
+            let url = "";
+
+            const hashIndex = hashes.indexOf(link.hash);
+            const link_hashes = hashes.slice(0, hashIndex).join("+");
+            const lnk = link_hashes ? `#lnk=${link_hashes}` : ``;
+
+            if (p.md) {
+              url = `${link.url}#${p.md.name}=${p.md.value}${lnk}`;
+            } else {
+              url = `${link.url}${lnk}`;
+            }
+
+            if (url) {
+              navigate(url);
+            }
+          },
+        });
+      }
+    }
+  }
+  return prefix;
 };
