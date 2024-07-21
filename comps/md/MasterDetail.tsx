@@ -93,7 +93,8 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     if (pk) {
       const value = md.params.hash[md.name];
       if (value) {
-        if (!md.selected) {
+        if (md.selected && md.selected[pk.name] === value) {
+        } else {
           md.selected = { [pk.name]: value };
         }
         const tab = md.params.tabs[md.name];

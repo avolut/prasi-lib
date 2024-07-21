@@ -118,9 +118,32 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
               </>
             );
           }
+
+          const form = JSON.parse(JSON.stringify(fm.data));
+
+          if (fm.deps.md) {
+            const md = fm.deps.md;
+            const last = md.params.links[md.params.links.length - 1];
+            if (last) {
+              const pk = Object.values(fm.field_def).find((e) => e.is_pk);
+              if (pk) {
+                let obj = last.update;
+                if (!fm.data[pk.name]) {
+                  obj = last.create;
+                }
+
+                if (typeof obj === "object" && obj) {
+                  for (const [k, v] of Object.entries(obj)) {
+                    form[k] = v;
+                  }
+                }
+              }
+            }
+          }
+
           const success = await fm.props.on_submit({
             fm,
-            form: fm.data,
+            form,
             error: fm.error.object,
           });
 

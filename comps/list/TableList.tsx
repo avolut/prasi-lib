@@ -29,6 +29,7 @@ import { getFilter } from "../filter/utils/get-filter";
 import { Skeleton } from "../ui/skeleton";
 import { sortTree } from "./utils/sort-tree";
 import { set } from "lib/utils/set";
+import { MDLocal } from "../md/utils/typings";
 
 type OnRowClick = (arg: {
   row: any;
@@ -70,6 +71,7 @@ type TableListProp = {
   gen_table?: string;
   softdel_type?: string;
   cache_row?: boolean;
+  md?: MDLocal;
 };
 const w = window as any;
 const selectCellClassname = css`
@@ -102,6 +104,7 @@ export const TableList: FC<TableListProp> = ({
   value,
   cache_row,
   __props,
+  md,
 }) => {
   if (mode === "auto") {
     if (w.isMobile) {
@@ -232,6 +235,15 @@ export const TableList: FC<TableListProp> = ({
       const orderBy = local.sort.orderBy || undefined;
       const where = filterWhere(filter_name, __props);
 
+      if (md) {
+        const last = md.params.links[md.params.links.length - 1];
+        if (last && last.where) {
+          for (const [k, v] of Object.entries(last.where)) {
+            where[k] = v;
+          }
+        }
+      }
+
       call_prasi_events("tablelist", "where", [__props?.gen__table, where]);
 
       const load_args: any = {
@@ -290,14 +302,14 @@ export const TableList: FC<TableListProp> = ({
   );
   let childs: any[] = [];
 
-  let sub_name = "fields";
+  let sub_name = ["fields"];
 
   switch (mode) {
     case "table":
-      sub_name = "tbl-col";
+      sub_name = ["tbl-col", "table: columns"];
       break;
     case "list":
-      sub_name = "list-row";
+      sub_name = ["list-row", "list: rows"];
       break;
   }
 
@@ -344,7 +356,7 @@ export const TableList: FC<TableListProp> = ({
     }
   };
   const mode_child = raw_childs.find(
-    (e: any) => e.name === sub_name || e.name === mode
+    (e: any) => sub_name.includes(e.name) || e.name === mode
   );
   if (mode_child) {
     const tbl = _item.edit.childs[0].edit.childs.find(

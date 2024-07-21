@@ -17,7 +17,7 @@ export type FMProps = {
   label_width: number;
   gen_fields: any;
   gen_table: string;
-  on_load_deps?: any[];
+  deps?: any;
   feature?: any[];
   sfd_field?: any;
   render_parent?: () => void;
@@ -52,12 +52,10 @@ export type FieldProp = {
       | string
       | ((arg: {
           field: FieldLocal;
-          Link: FC<{ children: any;  }>;
+          Link: FC<{ children: any }>;
         }) => Promise<string> | string);
     url: string;
-    params: (
-      field: FieldLocal
-    ) => { md: MDLocal; where: any } | Promise<{ md: MDLocal; where: any }>;
+    params: (field: FieldLocal) => { where: any } | Promise<{ where: any }>;
   };
   fm: FMLocal;
   type: FieldType | (() => FieldType);
@@ -119,6 +117,7 @@ export type FieldProp = {
 export type FMInternal = {
   status: "init" | "resizing" | "loading" | "saving" | "ready";
   data: any;
+  deps: any;
   reload: () => Promise<void>;
   submit: () => Promise<boolean>;
   events: {

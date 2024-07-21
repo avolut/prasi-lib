@@ -25,6 +25,10 @@ export const generateMDForm = async (
       mode: "raw",
       value: `${JSON.stringify(arg.fields)}`,
     },
+    deps: {
+      mode: "raw",
+      value: `({ md: typeof md !== "undefined" ? md : undefined })`,
+    },
     on_load: {
       mode: "string",
       value: "",

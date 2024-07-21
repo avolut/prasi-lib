@@ -1,11 +1,11 @@
 export const modeTableList = (mode: string) => {
-  let sub_name = "tbl-col";
+  let sub_name = "table: columns";
   switch (mode) {
     case "table":
-      sub_name = "tbl-col";
+      sub_name = "table: columns";
       break;
     case "list":
-      sub_name = "list-row";
+      sub_name = "list: rows";
       break;
   }
   return sub_name;

@@ -306,7 +306,7 @@ export const genTableEdit = async (
     },
   });
   const child_sub_name = createItem({
-    name: "tbl-col",
+    name: "table: columns",
     childs: childs,
   });
   if (commit) {

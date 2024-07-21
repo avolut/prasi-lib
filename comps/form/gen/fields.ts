@@ -218,9 +218,10 @@ export const newField = async (
           return v;
         })
       );
+      let type = "multi-option";
       let sub_type = "typeahead";
 
-      if (field.relation?.fields?.length > 2) {
+      if (field.relation?.fields.filter((e) => !e.is_pk)?.length >= 2) {
         sub_type = "table-edit";
         child = createItem({
           childs: await generateRelation(
@@ -233,15 +234,115 @@ export const newField = async (
             false
           ),
         });
+      } else {
+        type = "link";
       }
+
+      let label = formatName(field.name);
+      let link_params = { where: "", create: "", update: "" };
+      let rel = field.relation;
+      if (type === "link" && field.relation) {
+        const rels = field.relation.fields.filter((e) => e.relation);
+        if (rels.length === 1) {
+          rel = rels[0].relation as any;
+          label = formatName(rel.to.table);
+
+          link_params = {
+            where: `{
+      "${rel.from.table}": {
+        some: {
+          "${field.relation.to.fields[0]}": fm.data["${field.relation.from.fields[0]}"],
+        }
+      }
+    } as Prisma.${rel.to.table}WhereInput`,
+            create: `{
+      "${rel.from.table}": {
+        create: {
+          "${field.relation.to.fields[0]}": fm.data["${field.relation.from.fields[0]}"]
+        }
+      },
+    } as Prisma.${rel.to.table}CreateInput`,
+            update: `{}`,
+          };
+        } else {
+          link_params = {
+            where: `{
+      "${rel.to.fields[0]}": fm.data["${field.relation.from.fields[0]}"],
+    } as Prisma.${rel.to.table}WhereInput`,
+            create: `{
+      "${rel.from.table}": {
+        connect: {
+          "${rel.from.fields[0]}": fm.data["${field.relation.from.fields[0]}"]
+        }
+      },
+    } as Prisma.${rel.to.table}CreateInput`,
+            update: `{}`,
+          };
+        }
+      }
+
       return createItem({
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
           props: {
-            name: field.name,
-            label: formatName(field.name),
-            type: "multi-option",
+            type,
             sub_type,
+            name: field.name,
+            label,
+            link__text: [
+              `
+({ Link }) => {
+  const rel = fm.data["${field.name}"];
+  return (
+    <>
+      {Array.isArray(rel) && (
+        <div
+          className={cx(
+            "flex items-center border-r",
+            css\`padding:0px 10px 0px 5px;margin-right:10px;\`,
+          )}
+        >
+          {rel.length === 0 ? "No" : rel.length}{" "}
+          {rel.length > 1 ? "items" : "item"}
+        </div>
+      )}
+      <Link>
+        {({ icon }) => {
+          return (
+            <>
+              <div>Detail</div> {icon}
+            </>
+          );
+        }}
+      </Link>
+    </>
+  );
+}`,
+              `({ Link }) => {
+    const rel = fm.data["${field.name}"];
+    return (React.createElement(React.Fragment, null,
+        Array.isArray(rel) && (React.createElement("div", { className: cx("flex items-center border-r", css\`padding:0px 10px 0px 5px;margin-right:10px;\`) },
+            rel.length === 0 ? "No" : rel.length,
+            " ",
+            rel.length > 1 ? "items" : "item")),
+        React.createElement(Link, null, ({ icon }) => {
+            return (React.createElement(React.Fragment, null,
+                React.createElement("div", null, "Detail"),
+                " ",
+                icon));
+        })));
+};
+`,
+            ],
+            link__params: [
+              `async (field: any) => {
+  return {
+    where: ${link_params.where},
+    create: ${link_params.create},
+    update: ${link_params.update}
+  };
+}`,
+            ],
             rel__gen_table: field.name,
             opt__on_load: [result.on_load],
             ext__show_label: show ? "y" : "n",

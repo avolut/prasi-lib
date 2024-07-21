@@ -19,6 +19,7 @@ export const Form: FC<FMProps> = (props) => {
     data: editorFormData[props.item.id]
       ? editorFormData[props.item.id].data
       : {},
+    deps: {},
     status: "init",
     reload: async () => {
       formReload(fm);
@@ -130,34 +131,33 @@ export const Form: FC<FMProps> = (props) => {
     }
   }, [getPathname()]);
 
-  useEffect(
-    () => {
-      if (fm.status === "ready") {
-        fm.status = "init";
-        fm.render();
+  useEffect(() => {
+    if (fm.status === "ready") {
+      fm.status = "init";
+      fm.render();
+    }
+
+    let i = 0;
+    const ival = setInterval(() => {
+      const old_has_fields_container = fm.has_fields_container;
+      if (form_inner_ref.current?.querySelector(".form-fields")) {
+        fm.has_fields_container = true;
+      } else {
+        fm.has_fields_container = false;
       }
 
-      let i = 0;
-      const ival = setInterval(() => {
-        const old_has_fields_container = fm.has_fields_container;
-        if (form_inner_ref.current?.querySelector(".form-fields")) {
-          fm.has_fields_container = true;
-        } else {
-          fm.has_fields_container = false;
-        }
+      if (old_has_fields_container !== fm.has_fields_container) {
+        fm.render();
+        clearInterval(ival);
+      }
+      if (i > 20) {
+        clearInterval(ival);
+      }
+      i++;
+    }, 10);
+  }, Object.values(props.deps) || []);
 
-        if (old_has_fields_container !== fm.has_fields_container) {
-          fm.render();
-          clearInterval(ival);
-        }
-        if (i > 20) {
-          clearInterval(ival);
-        }
-        i++;
-      }, 10);
-    },
-    Array.isArray(props.on_load_deps) ? props.on_load_deps : []
-  );
+  fm.deps = props.deps;
 
   if (fm.status === "init") {
     formInit(fm, props);

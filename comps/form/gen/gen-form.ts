@@ -207,14 +207,8 @@ ${
       `\
       if (typeof md !== "undefined") {
         fm.status = "ready";
-        // kembali ke tabel
-        setTimeout(() => {
-          md.selected = null;
-          md.tab.active = "master";
-          md.internal.action_should_refresh = true;
-          md.params.apply();
-          md.render();
-        }, 500);
+        md.render();
+        fm.render();
       }`
     }
   } catch (e) {

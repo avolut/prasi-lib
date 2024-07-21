@@ -210,6 +210,7 @@ export const genRelMany = (prop: {
   }
   `;
   }
+
   return result;
 };
 export const getColumn = (data: any) => {

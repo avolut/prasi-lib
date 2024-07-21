@@ -21,6 +21,7 @@ export const MDRenderMaster: FC<{
   md.header.master.breadcrumb = breadcrumb;
 
   useEffect(() => {
+    md.header.render();
     if (md) {
       let width = 0;
       let min_width = 0;

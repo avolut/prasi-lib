@@ -1,3 +1,5 @@
+import { BreadItem } from "lib/comps/custom/Breadcrumb";
+import { MDLocal } from "lib/comps/md/utils/typings";
 import { FieldLoading, Spinner } from "lib/comps/ui/field-loading";
 import { hashSum } from "lib/utils/hash-sum";
 import { getPathname } from "lib/utils/pathname";
@@ -5,6 +7,8 @@ import { useLocal } from "lib/utils/use-local";
 import { ArrowUpRight } from "lucide-react";
 import { FC, ReactNode, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
+
+const link_cache = {} as Record<string, any>;
 
 export const FieldLink: FC<{
   field: FieldLocal;
@@ -14,8 +18,8 @@ export const FieldLink: FC<{
   const local = useLocal({
     text: "",
     init: false,
-    navigating: false,
     custom: false,
+    md: null as null | MDLocal,
   });
 
   const Link = ({
@@ -23,10 +27,13 @@ export const FieldLink: FC<{
   }: {
     children: (arg: { icon: any }) => ReactNode;
   }) => {
+    const link_local = useLocal({
+      navigating: false,
+    });
     return (
       <div
         className={cx(
-          "c-flex-1 c-my-1 c-px-2 c-rounded-md c-flex c-items-center cursor-pointer c-space-x-1 c-transition-all",
+          "c-my-1 c-px-2 c-rounded-md c-flex c-items-center cursor-pointer c-space-x-1 c-transition-all",
           css`
             border: 1px solid #aaa;
             &:hover {
@@ -36,17 +43,17 @@ export const FieldLink: FC<{
         )}
         onClick={async () => {
           if (!isEditor) {
-            local.navigating = true;
-            local.render();
-            if (!(await navigateLink(arg.link, field))) {
-              local.navigating = false;
-              local.render();
+            link_local.navigating = true;
+            link_local.render();
+            if (!(await navigateLink(arg.link, field, fm.deps.md))) {
+              link_local.navigating = false;
+              link_local.render();
             }
           }
         }}
       >
         {children({
-          icon: local.navigating ? (
+          icon: link_local.navigating ? (
             <Spinner
               className={cx(
                 css`
@@ -68,6 +75,7 @@ export const FieldLink: FC<{
         local.text = arg.link.text;
         local.init = true;
       } else if (typeof arg.link.text === "function") {
+        local.custom = true;
         const res = arg.link.text({
           field,
           Link,
@@ -84,24 +92,31 @@ export const FieldLink: FC<{
         }
       }
     }
+
     local.render();
-  }, []);
+  }, [arg.link.params]);
 
   return (
-    <div className={cx("c-px-2")}>
+    <div className={cx("c-px-2 c-flex-1 c-flex")}>
       {!local.init ? (
         <FieldLoading height="short" />
       ) : (
-        <Link>
-          {({ icon }) => {
-            return (
-              <>
-                <div>{local.text}</div>
-                {icon}
-              </>
-            );
-          }}
-        </Link>
+        <>
+          {local.custom ? (
+            local.text
+          ) : (
+            <Link>
+              {({ icon }) => {
+                return (
+                  <>
+                    <div>{local.text}</div>
+                    {icon}
+                  </>
+                );
+              }}
+            </Link>
+          )}
+        </>
       )}
     </div>
   );
@@ -110,6 +125,8 @@ export const FieldLink: FC<{
 export type LinkParam = {
   url: string;
   where: any;
+  create: any;
+  update: any;
   hash: any;
   prefix: {
     label: any;
@@ -118,8 +135,12 @@ export type LinkParam = {
   }[];
 };
 
-const navigateLink = async (link: FieldProp["link"], field: FieldLocal) => {
-  let params = link.params(field);
+const navigateLink = async (
+  link: FieldProp["link"],
+  field: FieldLocal,
+  md?: MDLocal
+) => {
+  let params = link.params(field) as { where: any; create: any; update: any };
 
   if (typeof params === "object") {
     if (params instanceof Promise) {
@@ -127,17 +148,19 @@ const navigateLink = async (link: FieldProp["link"], field: FieldLocal) => {
     }
   }
 
-  const md = params.md;
-  const where = params.where;
-
   const prefix: LinkParam["prefix"] = [];
 
   if (md) {
-    md.header.render();
-    if (md.header.breadcrumb.length > 0) {
+    let bread: BreadItem[] = [];
+    if (md.selected && md.header.child.breadcrumb) {
+      bread = md.header.child.breadcrumb();
+    } else if (!md.selected && md.header.master.breadcrumb) {
+      bread = md.header.master.breadcrumb();
+    }
+    if (bread.length > 0) {
       const path = getPathname({ hash: false });
       let i = 0;
-      for (const b of md.header.breadcrumb) {
+      for (const b of bread) {
         prefix.push({
           label: b.label,
           url: `${path}`,
@@ -152,13 +175,15 @@ const navigateLink = async (link: FieldProp["link"], field: FieldLocal) => {
   }
 
   const values: LinkParam = {
+    ...params,
     url: getPathname({ hash: false }),
-    where,
     prefix,
     hash: "",
   };
   const vhash = hashSum(values);
   values.hash = vhash;
+
+  link_cache[vhash] = values;
 
   if (!link.url) {
     alert("No URL defined!");
@@ -187,10 +212,21 @@ export const parseLink = () => {
   }
   return [];
 };
+
 export const fetchLinkParams = async (
   parsed_link?: ReturnType<typeof parseLink>
 ) => {
   const parsed = parsed_link || parseLink();
 
-  return await Promise.all(parsed.map((e) => api._kv("get", e)));
+  return await Promise.all(
+    parsed.map(async (e) => {
+      if (link_cache[e]) {
+        return link_cache[e];
+      }
+
+      const result = await api._kv("get", e);
+      link_cache[e] = result;
+      return result;
+    })
+  );
 };

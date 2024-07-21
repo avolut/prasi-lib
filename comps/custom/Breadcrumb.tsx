@@ -50,6 +50,9 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ value, className }) => {
         <FieldLoading />
       ) : (
         <>
+          {(!local.value || local.value.length === 0) &&
+            isEditor &&
+            "Breadcrumb"}
           {(Array.isArray(local.value) ? local.value : []).map(
             (cur, index): ReactNode => {
               const lastIndex = (local.value || []).length - 1;

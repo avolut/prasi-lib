@@ -79,8 +79,8 @@ const get_layer = async (
           default: v.default,
         }),
         label: k + (!v.optional && !v.default ? " *" : ""),
-        alt: v.type,
-        checked: v.is_pk && depth === 0,
+        alt: `${v.is_pk ? "🔑" : ""} ${v.type}`,
+        checked: v.is_pk,
       });
     }
   }
