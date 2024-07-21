@@ -57,14 +57,18 @@ export const generateForm = async (
           pks,
           opt: is_md
             ? {
-                after_load: `
+                after_load: `\
       if (typeof md === "object") {
         opt.fm.status = "ready";
         md.selected = opt.fm.data;
+        if (!md.selected) {
+          md.tab.active = "master";
+          alert("Data Not Found");
+          md.params.apply();
+        }
         md.header.render();
         md.render();
-      }
-`,
+      }`,
                 is_md: true,
               }
             : { is_md },
@@ -204,12 +208,13 @@ ${
 
     ${
       is_md &&
-      `\
-      if (typeof md !== "undefined") {
-        fm.status = "ready";
-        md.render();
-        fm.render();
-      }`
+      `if (typeof md !== "undefined") {
+      fm.status = "ready";
+      fm.data = form;
+      md.selected = form;
+      md.render();
+      fm.render();
+    }`
     }
   } catch (e) {
     console.error(e);

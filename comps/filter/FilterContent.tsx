@@ -48,8 +48,7 @@ export const FilterContent: FC<{
               margin-top: 0 !important;
             }
             .field-outer {
-              margin-top: 3px;
-              margin-bottom: 3px;
+              margin: 3px;
             }
 
             .search-all {

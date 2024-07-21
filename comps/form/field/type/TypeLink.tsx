@@ -4,7 +4,7 @@ import { FieldLoading, Spinner } from "lib/comps/ui/field-loading";
 import { hashSum } from "lib/utils/hash-sum";
 import { getPathname } from "lib/utils/pathname";
 import { useLocal } from "lib/utils/use-local";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Construction, Cuboid, Loader } from "lucide-react";
 import { FC, ReactNode, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 
@@ -30,14 +30,47 @@ export const FieldLink: FC<{
     const link_local = useLocal({
       navigating: false,
     });
+
+    const pk = Object.values(fm.field_def).find((e) => e.is_pk);
+    if (!pk) {
+      return <>No Primary Key</>;
+    }
+
+    if (!fm.data[pk.name]) {
+      return (
+        <div
+          className={cx(
+            css`
+              color: #999;
+            `,
+            "c-flex c-space-x-2 items-center"
+          )}
+        >
+          <div
+            className={cx(
+              css`
+                border: 1px solid #ececeb;
+              `,
+              "c-rounded c-flex c-space-x-1 items-center c-px-2"
+            )}
+          >
+            <Construction size={12} /> <div>Unsaved</div>
+          </div>
+          <div>No Item</div>
+        </div>
+      );
+    }
+
     return (
       <div
         className={cx(
           "c-my-1 c-px-2 c-rounded-md c-flex c-items-center cursor-pointer c-space-x-1 c-transition-all",
           css`
-            border: 1px solid #aaa;
+            border: 1px solid #bbb;
             &:hover {
-              background-color: #dcedfc;
+              border: 1px solid rgb(126, 167, 203);
+              background: rgb(220, 237, 252);
+              color: #001080;
             }
           `
         )}

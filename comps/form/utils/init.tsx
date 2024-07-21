@@ -64,13 +64,10 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           } else {
             result = on_load_result;
           }
-          if (!!result) {
-            fm.data = result;
-          }
 
-          if (!fm.data) {
-            fm.data = {};
-          }
+          fm.data = result;
+
+          if (result === undefined) fm.data = {};
 
           if (isEditor) {
             const item_id = props.item.id;

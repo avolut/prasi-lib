@@ -92,16 +92,31 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     md.params.parse();
     if (pk) {
       const value = md.params.hash[md.name];
+      if (!value && md.selected && Object.keys(md.selected).length === 0) {
+        md.params.hash[md.name] = "+";
+        md.params.apply();
+      }
+
       if (value) {
-        if (md.selected && md.selected[pk.name] === value) {
-        } else {
-          md.selected = { [pk.name]: value };
-        }
-        const tab = md.params.tabs[md.name];
-        if (tab && md.tab.list.includes(tab)) {
-          md.tab.active = tab;
-        } else {
+        if (value === "+") {
           md.tab.active = "detail";
+          if (!md.selected) {
+            md.selected = {};
+          } else if (md.selected && md.selected[pk.name]) {
+            md.params.hash[md.name] = md.selected[pk.name];
+            md.params.apply();
+          }
+        } else {
+          if (md.selected && md.selected[pk.name] === value) {
+          } else {
+            md.selected = { [pk.name]: value };
+          }
+          const tab = md.params.tabs[md.name];
+          if (tab && md.tab.list.includes(tab)) {
+            md.tab.active = tab;
+          } else {
+            md.tab.active = "detail";
+          }
         }
       }
     }

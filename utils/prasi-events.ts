@@ -2,6 +2,7 @@ import { FieldLocal } from "lib/comps/form/typings";
 import { FMLocal } from "../..";
 import { Prisma } from "../../typings/prisma";
 import { set } from "./set";
+import { MDLocal } from "lib/comps/md/utils/typings";
 
 const events = {
   form: {
@@ -10,6 +11,12 @@ const events = {
     after_save: async (fm: FMLocal, record: any) => {},
     before_load: async (fm: FMLocal) => {},
     after_load: async (fm: FMLocal) => {},
+    before_delete: async (md: MDLocal, fm: FMLocal) => {
+      return {
+        preventDelete: false as boolean,
+        navigateBack: true as boolean,
+      };
+    },
   },
   field: {
     relation_load: async (fm: FMLocal, field: FieldLocal) => {

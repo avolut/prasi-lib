@@ -70,11 +70,16 @@ ${
       ${pk}: id,
     };
     
-    const gen = generateSelect(fields);
-    item = await table?.findFirst({
-      where,
-      select: gen.select,
-    });
+    try {
+      const gen = generateSelect(fields);
+      item = await table?.findFirst({
+        where,
+        select: gen.select,
+      });
+    } catch (e) {
+      item = null;
+      console.error(e);
+    }
 
     setTimeout(() => {
       call_prasi_events("form", "after_load", [opt?.fm]);
