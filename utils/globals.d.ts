@@ -6,5 +6,13 @@ declare var params: any;
 declare var cx: any;
 declare var preload: (urls: string[] | string) => any;
 declare var preloaded: (url: string) => boolean;
-declare var navigate: (link: string) => void;
+declare var navigate: (
+  url: string,
+  params?: {
+    where?: any;
+    create?: any;
+    update?: any;
+    breads?: { label: string; url?: string }[];
+  }
+) => void;
 declare var siteurl: (path: string) => string;

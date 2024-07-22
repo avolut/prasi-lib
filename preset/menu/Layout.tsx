@@ -3,6 +3,8 @@ import { FC, ReactNode, useEffect, useLayoutEffect, useState } from "react";
 import { loadSession } from "../login/utils/load";
 import { useLocal } from "lib/utils/use-local";
 import { FieldLoading } from "lib/exports";
+import { LinkParam } from "lib/comps/form/field/type/TypeLink";
+import { hashSum } from "lib/utils/hash-sum";
 
 const w = window as any;
 const initResponsive = function () {
@@ -67,23 +69,87 @@ export const Layout: FC<LYTChild> = (props) => {
   const path = getPathname();
   const no_layout = props.exception;
 
-  if (!w.user) {
-    local.loading = true;
-    loadSession(props.login_url || "/auth/login");
+  if (!w.prasi_menu && !isEditor) {
+    w.prasi_menu = { nav_override: true, nav: w.navigate, pm: null };
+    w.navigate = (async (_href, params) => {
+      if (_href.startsWith("/")) {
+        const url = new URL(location.href);
+        const newurl = new URL(`${url.protocol}//${url.host}${_href}`);
+        const pathname = newurl.pathname;
+
+        let link_params = "";
+        if (params) {
+          const prefix: LinkParam["prefix"] =
+            params.breads?.map((e) => {
+              return { label: e.label, url: e.url || getPathname() };
+            }) || [];
+
+          const values: LinkParam = {
+            url: getPathname({ hash: false }),
+            prefix,
+            hash: "",
+            create: params.create,
+            update: params.update,
+            where: params.where,
+          };
+
+          const vhash = hashSum(values);
+          values.hash = vhash;
+
+          await api._kv("set", vhash, values);
+
+          const lnk = location.hash
+            .split("#")
+            .find((e) => e.startsWith("lnk="));
+          let prev_link = "";
+          if (lnk) {
+            prev_link = lnk.split("=").pop() || "";
+            if (prev_link) prev_link = prev_link + "+";
+          }
+          _href = `${_href}#lnk=${prev_link + vhash}`;
+        }
+
+        if (preloaded(pathname)) {
+          w.prasi_menu.nav(_href);
+        } else if (w.prasi_menu.pm?.on_load) {
+          let done = { exec: () => {} };
+          w.prasi_menu.pm?.on_load((exec: any) => {
+            done.exec = exec;
+          });
+          await preload(pathname);
+          setTimeout(() => {
+            w.prasi_menu.nav(_href);
+            done.exec();
+          }, 500);
+        } else {
+          await preload(pathname);
+          w.prasi_menu.nav(_href);
+        }
+      }
+    }) as typeof navigate;
   }
 
-  if (!isEditor && Array.isArray(no_layout)) {
-    if (no_layout.length) {
-      if (no_layout.includes(path)) {
-        return <>{props.blank_layout}</>;
-      }
+  if (
+    !isEditor &&
+    Array.isArray(no_layout) &&
+    no_layout.find((rule) => wildcardMatch(path, rule))
+  ) {
+    return <>{props.blank_layout}</>;
+  } else {
+    if (!w.user) {
+      local.loading = true;
+      loadSession(props.login_url || "/auth/login");
     }
   }
 
   if (path === props.login_url) return props.blank_layout;
   if (!w.user && !isEditor)
     return (
-      <div className={cx("c-w-full c-h-full c-flex c-items-center c-justify-center c-flex-1")}>
+      <div
+        className={cx(
+          "c-w-full c-h-full c-flex c-items-center c-justify-center c-flex-1"
+        )}
+      >
         <FieldLoading />
       </div>
     );
@@ -104,3 +170,11 @@ export const Layout: FC<LYTChild> = (props) => {
     </props.PassProp>
   );
 };
+
+function wildcardMatch(str: string, rule: string): boolean {
+  const escapeRegex = (str: string): string =>
+    str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+  return new RegExp(
+    "^" + rule.split("*").map(escapeRegex).join(".*") + "$"
+  ).test(str);
+}

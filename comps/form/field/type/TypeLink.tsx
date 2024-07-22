@@ -222,6 +222,7 @@ const navigateLink = async (
     alert("No URL defined!");
     return false;
   }
+  
   await api._kv("set", vhash, values);
   const lnk = location.hash.split("#").find((e) => e.startsWith("lnk="));
   let prev_link = "";
