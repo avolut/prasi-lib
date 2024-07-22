@@ -2,9 +2,10 @@ import { getPathname } from "lib/utils/pathname";
 import { FC, ReactNode, useEffect, useLayoutEffect, useState } from "react";
 import { loadSession } from "../login/utils/load";
 import { useLocal } from "lib/utils/use-local";
+import { FieldLoading } from "lib/exports";
 
 const w = window as any;
-const fn = function () {
+const initResponsive = function () {
   const mode = localStorage.getItem("prasi-editor-mode");
   if (isEditor) {
     setTimeout(() => {
@@ -62,11 +63,14 @@ export const Layout: FC<LYTChild> = (props) => {
     }
   }, []);
 
-  fn();
+  initResponsive();
   const path = getPathname();
   const no_layout = props.exception;
 
-  if (!w.user) loadSession(props.login_url || "/auth/login");
+  if (!w.user) {
+    local.loading = true;
+    loadSession(props.login_url || "/auth/login");
+  }
 
   if (!isEditor && Array.isArray(no_layout)) {
     if (no_layout.length) {
@@ -77,7 +81,12 @@ export const Layout: FC<LYTChild> = (props) => {
   }
 
   if (path === props.login_url) return props.blank_layout;
-  if (!w.user && !isEditor) return props.blank_layout;
+  if (!w.user && !isEditor)
+    return (
+      <div className={cx("c-w-full c-h-full c-flex c-items-center c-justify-center c-flex-1")}>
+        <FieldLoading />
+      </div>
+    );
 
   return (
     <props.PassProp
