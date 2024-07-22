@@ -1,13 +1,13 @@
+import { GFCol } from "lib/comps/form/gen/fields";
 import { set } from "lib/utils/set";
 import capitalize from "lodash.capitalize";
 import get from "lodash.get";
 import { createItem, parseGenField } from "../../../gen/utils";
 import { generateSelect } from "./md-select";
-import { modeTableList } from "./mode-table-list";
 import { on_load } from "./tbl-list/on_load";
 
 export const generateTableList = async (
-  modify: (data: any) => void,
+  _: any,
   data: any,
   item: PrasiItem,
   arg: { mode: "table" | "list" | "grid" | "auto"; id_parent?: string },
@@ -17,7 +17,7 @@ export const generateTableList = async (
   try {
     table = eval(data.gen__table.value);
   } catch (e) {
-    table = data.gen__table.value;
+    table = data.gen__table?.value;
   }
   const raw_fields = JSON.parse(data.gen__fields.value) as (
     | string
@@ -30,97 +30,195 @@ export const generateTableList = async (
   const res = generateSelect(fields);
   pk = res.pk;
   const select = res.select as any;
-  const result: Record<string, PropVal> = {};
-  if (arg.id_parent) {
-    select[arg.id_parent] = true;
-  }
   if (!pk) {
     alert("Failed to generate! Primary Key not found. ");
     return;
   }
-  let childs = [] as any;
   if (pk) {
-    let sub_name = modeTableList(arg.mode);
-    let rows = Array.isArray(get(data, "child.content.childs"))
-      ? get(data, "child.content.childs")
-      : Array.isArray(get(data, "child.childs"))
-      ? get(data, "child.childs")
-      : [];
-
-    rows = rows.filter((e: PrasiItem) => e.name !== sub_name);
-    childs = childs.concat(rows);
-
-    if (data["opt__on_load"]) {
-      result.opt__on_load = {
-        mode: "raw",
-        value: on_load({ pk, table, select, pks, fields }),
-      };
-    }
-    let first = true;
-    const child_sub_name = createItem({
-      name: sub_name,
-      childs: fields
-        .map((e, idx) => {
-          if (idx >= 1 && arg.mode === "list") {
-            return;
-          }
-          if (e.is_pk && (arg.mode === "table" || arg.mode === "auto")) return;
-          let tree_depth = "";
-          let tree_depth_built = "";
-          if (first) {
-            tree_depth = `tree_depth={col.depth}`;
-            tree_depth_built = `tree_depth:col.depth`;
-            first = false;
-          }
-          return {
-            component: {
-              id: "297023a4-d552-464a-971d-f40dcd940b77",
-              props: {
-                name: e.name,
-                title: formatName(e.name),
-                child: createItem({
-                  name: "cell",
-                  padding: {
-                    l: 8,
-                    b: 0,
-                    t: 0,
-                    r: 8,
-                  },
-                  adv: {
-                    js: `\
-<div {...props} className={cx(props.className, "")}>
-${
-  arg.mode === "list"
-    ? "{JSON.stringify(row)}"
-    : `<FormatValue value={col.value} name={col.name} gen_fields={gen__fields} ${tree_depth} />`
-}
-</div>`,
-                    jsBuilt: `\
-render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields, ${tree_depth_built} })));
-                `,
-                  },
-                }),
-              },
-            },
-          };
-        })
-        .filter((e) => e) as any,
-    });
-    result["gen__table"] = { mode: "string", value: table };
+    const opt = {
+      data,
+      arg,
+      pk,
+      pks,
+      select,
+      table,
+      fields,
+    };
+    const { list_child } = await genList(opt);
+    const { table_child, table_prop } = await genTable(opt);
 
     if (commit) {
-      Object.keys(result).map((e) => {
-        item.edit.setProp(e, result[e]);
+      Object.keys(table_prop).map((key) => {
+        item.edit.setProp(key, table_prop[key]);
       });
-      item.edit.setChilds([child_sub_name]);
+      item.edit.setChilds([table_child, list_child]);
       await item.edit.commit();
     } else {
-      set(data, "child.value.childs", [child_sub_name]);
-      Object.keys(result).map((e) => {
-        set(data, e, result[e]);
+      set(data, "child.value.childs", [table_child, list_child]);
+      Object.keys(table_prop).map((e) => {
+        set(data, e, table_prop[e]);
       });
+      console.log(data, table_prop);
     }
   }
+};
+
+type GenOpt = {
+  data: any;
+  arg: { mode: "table" | "list" | "grid" | "auto"; id_parent?: string };
+  pk: string;
+  pks: Record<string, string>;
+  select: any;
+  table: string;
+  fields: GFCol[];
+};
+
+const genList = async (opt: GenOpt) => {
+  const { data, arg, pk, pks, select, fields, table } = opt;
+
+  const list_child = createItem({
+    name: "list: fields",
+    padding: {
+      l: 10,
+      b: 3,
+      t: 3,
+      r: 10,
+    },
+    border: {
+      style: "solid",
+      stroke: {
+        b: 1,
+      },
+      color: "#e6e6e6",
+    },
+  });
+
+  let i = 0;
+  const lines = [];
+  for (const field of fields) {
+    if (field.is_pk) continue;
+    if (
+      i == 0 ||
+      (lines.length > 0 && lines[lines.length - 1].childs.length === 2)
+    ) {
+      lines.push(
+        createItem({
+          name: "line",
+          layout: {
+            dir: "row",
+            align: "center",
+            gap: "auto",
+            wrap: "flex-nowrap",
+          },
+        })
+      );
+    }
+    lines[lines.length - 1].childs.push(
+      createItem({
+        component: {
+          id: "7ce18cbd-02d5-4aff-9acb-150d3a75e34e",
+          props: {
+            name: field.name,
+            child: createItem({
+              name: "cell",
+              dim: {
+                h: "full",
+                w: "fit",
+              },
+              adv: {
+                js: `\
+<div {...props} className={cx(props.className, "list-field")}>
+  <FormatValue value={row[name]} name={name} gen_fields={gen__fields} />
+</div>`,
+                jsBuilt: `\
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: row[name], name: name, gen_fields: gen__fields })));
+            `,
+              },
+            }),
+          },
+        },
+      })
+    );
+    i++;
+  }
+
+  list_child.childs = lines;
+  return { list_child };
+};
+
+const genTable = async (opt: GenOpt) => {
+  const { data, arg, pk, pks, select, fields, table } = opt;
+  const table_prop: Record<string, PropVal> = {};
+  if (arg.id_parent) {
+    select[arg.id_parent] = true;
+  }
+  let sub_name = "table: columns";
+  let rows = Array.isArray(get(data, "child.content.childs"))
+    ? get(data, "child.content.childs")
+    : Array.isArray(get(data, "child.childs"))
+    ? get(data, "child.childs")
+    : [];
+
+  let childs = [] as any;
+
+  rows = rows.filter((e: PrasiItem) => e.name !== sub_name);
+  childs = childs.concat(rows);
+
+  if (data["opt__on_load"]) {
+    table_prop.opt__on_load = {
+      mode: "raw",
+      value: on_load({ pk, table, select, pks, fields }),
+    };
+  }
+  let first = true;
+  const table_child = createItem({
+    name: sub_name,
+    childs: fields
+      .map((e, idx) => {
+        if (idx >= 1 && arg.mode === "list") {
+          return;
+        }
+        if (e.is_pk && (arg.mode === "table" || arg.mode === "auto")) return;
+        let tree_depth = "";
+        let tree_depth_built = "";
+        if (first) {
+          tree_depth = `tree_depth={col.depth}`;
+          tree_depth_built = `tree_depth:col.depth`;
+          first = false;
+        }
+        return {
+          component: {
+            id: "297023a4-d552-464a-971d-f40dcd940b77",
+            props: {
+              name: e.name,
+              title: formatName(e.name),
+              child: createItem({
+                name: "cell",
+                padding: {
+                  l: 8,
+                  b: 0,
+                  t: 0,
+                  r: 8,
+                },
+                adv: {
+                  js: `\
+<div {...props} className={cx(props.className, "table-col")}>
+  <FormatValue value={col.value} name={col.name} gen_fields={gen__fields} ${tree_depth} />
+</div>`,
+                  jsBuilt: `\
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields, ${tree_depth_built} })));
+              `,
+                },
+              }),
+            },
+          },
+        };
+      })
+      .filter((e) => e) as any,
+  });
+  table_prop["gen__table"] = { mode: "string", value: table };
+
+  return { table_prop, table_child };
 };
 
 const formatName = (name: string) => {

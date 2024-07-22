@@ -101,13 +101,7 @@ idx: any;
       props,
     },
   };
-  generateTableList(
-    async (props: any) => {},
-    props,
-    tablelist,
-    { mode: "auto" },
-    false
-  );
+  await generateTableList(null, props, tablelist, { mode: "auto" }, false);
   tab_master?.edit.setProp("breadcrumb", {
     mode: "raw",
     value: `\

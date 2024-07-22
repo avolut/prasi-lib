@@ -10,13 +10,13 @@ export const parseGenField = (fields: PropOptRaw) => {
     if (typeof f === "string") {
       try {
         const field = JSON.parse(f);
-        field["value"] = f
+        field["value"] = f;
         result.push(field);
       } catch (e) {}
     } else {
       const field = JSON.parse(f.value);
       field.relation.fields = parseGenField(f.checked);
-      field["value"] = f
+      field["value"] = f;
       result.push(field);
     }
   }
@@ -76,11 +76,12 @@ type SimplifiedItem = {
   padding?: any;
   dim?: any;
   layout?: any;
+  border?: any;
 };
 
 export const createItem = (arg: SimplifiedItem): any => {
   let component = undefined;
- 
+
   if (arg.component && arg.component.id) {
     component = { id: arg.component.id, props: {} as any };
 
@@ -91,7 +92,7 @@ export const createItem = (arg: SimplifiedItem): any => {
           if (Array.isArray(v) && v.length === 1) {
             component.props[k] = {
               meta: { type: "text" },
-              type: "string", 
+              type: "string",
               value: v[0],
             };
           } else if (Array.isArray(v) && v.length === 2) {
@@ -138,6 +139,7 @@ export const createItem = (arg: SimplifiedItem): any => {
         },
     padding: arg.padding,
     layout: arg.layout,
+    border: arg.border,
     name: arg.name || "item",
     type: "item",
     component,

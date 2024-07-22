@@ -91,7 +91,7 @@ export {
   formType,
 } from "@/comps/form/typings";
 export { TableListType } from "@/comps/list/utils/typings";
-export { generateTableList } from "@/comps/md/gen/gen-table-list";
+export { generateTableList as generateTableList } from "@/comps/md/gen/gen-table-list";
 export { generateSelect } from "@/comps/md/gen/md-select";
 export { MasterDetailType } from "@/comps/md/utils/typings";
 export { Button, FloatButton } from "@/comps/ui/button";
