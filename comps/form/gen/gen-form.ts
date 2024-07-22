@@ -263,6 +263,12 @@ type IForm = { form: any; error: Record<string, string>; fm: FMLocal }
         dim: { h: "fit", w: "full", hUnit: "px", wUnit: "px" },
         name: "submit",
         type: "item",
+        adv: {
+          css: "",
+          js: '<>\n  {\n    /** if */\n    fm.status === "ready" ? (\n      /** then  */\n      <div {...props} className={cx(props.className, "")}>\n        {children}\n      </div>\n    ) : (\n      /** else  */\n      <div {...props} className={cx(props.className, "")}>\n        <FieldLoading />\n      </div>\n    )\n  }\n</>',
+          jsBuilt:
+            'render(/* @__PURE__ */ React.createElement(\n  React.Fragment,\n  null,\n  /** if */\n  fm.status === "ready" ? (\n    /** then  */\n    /* @__PURE__ */ React.createElement("div", { ...props, className: cx(props.className, "") }, children)\n  ) : (\n    /** else  */\n    /* @__PURE__ */ React.createElement("div", { ...props, className: cx(props.className, "") }, /* @__PURE__ */ React.createElement(FieldLoading, null))\n  )\n));\n',
+        },
         childs: [
           {
             id: createId(),

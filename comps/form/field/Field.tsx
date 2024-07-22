@@ -54,7 +54,17 @@ export const Field: FC<FieldProp> = (arg) => {
         w === "½" && "c-w-1/2",
         w === "⅓" && "c-w-1/3",
         w === "¼" && "c-w-1/4",
-        "c-flex-col c-space-y-1"
+        "c-flex-col c-space-y-1",
+        css`
+          .field-outer {
+            border: 1px solid ${field.disabled ? "#ececeb" : "#cecece"};
+
+            &.focused {
+              border: 1px solid #1c4ed8;
+              outline: 1px solid #1c4ed8;
+            }
+          }
+        `
       )}
       {...props}
       ref={typeof arg.field_ref === "function" ? arg.field_ref : undefined}

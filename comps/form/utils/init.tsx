@@ -107,6 +107,9 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         };
 
         if (typeof fm.props.on_submit === "function") {
+          fm.status = "saving";
+          fm.render();
+          
           if (fm.props.sonar === "on" && !isEditor) {
             toast.loading(
               <>

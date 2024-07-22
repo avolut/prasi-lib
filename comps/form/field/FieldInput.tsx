@@ -109,7 +109,7 @@ export const FieldInput: FC<{
         !["toogle", "button", "radio", "checkbox"].includes(arg.sub_type)
           ? cx(
               "field-outer c-overflow-hidden c-flex-1 c-flex c-flex-row c-text-sm c-bg-white",
-              "c-border c-rounded "
+              "c-rounded "
             )
           : "",
         fm.status === "loading"
@@ -122,7 +122,7 @@ export const FieldInput: FC<{
           ? field.focused
             ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
             : "c-border-red-600 c-bg-red-50"
-          : field.focused && "c-border-blue-700 c-outline c-outline-blue-700",
+          : field.focused && "focused",
         css`
           & > .field-inner {
             min-height: 35px;
