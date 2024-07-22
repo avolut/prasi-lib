@@ -79,17 +79,15 @@ export const generateTableList = async (
                 name: e.name,
                 title: formatName(e.name),
                 child: createItem({
-                  childs: [
-                    createItem({
-                      name: "cell",
-                      padding: {
-                        l: 8,
-                        b: 0,
-                        t: 0,
-                        r: 8,
-                      },
-                      adv: {
-                        js: `\
+                  name: "cell",
+                  padding: {
+                    l: 8,
+                    b: 0,
+                    t: 0,
+                    r: 8,
+                  },
+                  adv: {
+                    js: `\
 <div {...props} className={cx(props.className, "")}>
 ${
   arg.mode === "list"
@@ -97,12 +95,10 @@ ${
     : `<FormatValue value={col.value} name={col.name} gen_fields={gen__fields} ${tree_depth} />`
 }
 </div>`,
-                        jsBuilt: `\
+                    jsBuilt: `\
 render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields, ${tree_depth_built} })));
                 `,
-                      },
-                    }),
-                  ],
+                  },
                 }),
               },
             },

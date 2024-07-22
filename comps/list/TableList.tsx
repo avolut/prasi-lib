@@ -89,7 +89,7 @@ export const TableList: FC<TableListProp> = ({
   on_load,
   child,
   PassProp,
-  mode,
+  mode: _mode,
   on_init,
   _item,
   gen_fields,
@@ -106,6 +106,7 @@ export const TableList: FC<TableListProp> = ({
   __props,
   md,
 }) => {
+  let mode = _mode;
   if (mode === "auto") {
     if (w.isMobile) {
       mode = "list";
@@ -113,6 +114,7 @@ export const TableList: FC<TableListProp> = ({
       mode = "table";
     }
   }
+
   let ls_sort = localStorage.getItem(
     `sort-${location.pathname}-${location.hash}-${name}`
   ) as unknown as { columns: any; orderBy: any };
@@ -302,14 +304,14 @@ export const TableList: FC<TableListProp> = ({
   );
   let childs: any[] = [];
 
-  let sub_name = ["fields"];
+  let sub_name: string[] = [];
 
   switch (mode) {
     case "table":
       sub_name = ["tbl-col", "table: columns"];
       break;
     case "list":
-      sub_name = ["list-row", "list: rows"];
+      sub_name = ["list-row", "list: fields"];
       break;
   }
 
@@ -567,6 +569,18 @@ export const TableList: FC<TableListProp> = ({
   }
 
   let data = local.data || [];
+
+  if (isEditor) {
+    if (data.length > 0) {
+      w.prasi_table_list_temp_data = data;
+    } else if (
+      w.prasi_table_list_temp_data &&
+      w.prasi_table_list_temp_data.length > 0
+    ) {
+      data = w.prasi_table_list_temp_data;
+    }
+  }
+
   if (id_parent && local.pk && local.sort.columns.length === 0) {
     data = sortTree(local.data, id_parent, local.pk.name);
   }
@@ -753,7 +767,7 @@ export const TableList: FC<TableListProp> = ({
                   data.map((e, idx) => {
                     return (
                       <div
-                        className="c-flex-grow"
+                        className="c-flex-grow c-flex"
                         onClick={(ev) => {
                           if (!isEditor && typeof row_click === "function") {
                             row_click({
@@ -766,7 +780,7 @@ export const TableList: FC<TableListProp> = ({
                         }}
                       >
                         <PassProp idx={idx} row={e} col={{}} rows={local.data}>
-                          {child}
+                          {mode_child}
                         </PassProp>
                       </div>
                     );
