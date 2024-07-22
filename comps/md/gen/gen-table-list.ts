@@ -78,6 +78,9 @@ const genList = async (opt: GenOpt) => {
 
   const list_child = createItem({
     name: "list: fields",
+    adv: {
+      css: "& {\n  display: flex;\n\n  &:hover {\n    background: #ecf4ff;\n  }\n}",
+    },
     padding: {
       l: 10,
       b: 3,

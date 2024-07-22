@@ -70,8 +70,9 @@ type SimplifiedItem = {
   };
   childs?: SimplifiedItem[];
   adv?: {
-    js: string;
-    jsBuilt: string;
+    css?: string;
+    js?: string;
+    jsBuilt?: string;
   };
   padding?: any;
   dim?: any;
