@@ -67,7 +67,7 @@ export const HeaderProfile = lazify(
 
 /** charts */
 export { PieChart } from "@/comps/charts/pie";
-// export { BarChart } from "@/comps/charts/bar";
+export { BarChart } from "@/comps/charts/bar";
 // export { LineChart } from "@/comps/charts/line";
 
 /** Generator */

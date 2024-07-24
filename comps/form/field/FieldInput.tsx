@@ -147,7 +147,10 @@ export const FieldInput: FC<{
           className={cx(
             "field-inner c-flex-1 c-flex c-items-center",
             field.focused && "focused",
-            disabled && "c-pointer-events-none c-bg-gray-50"
+            disabled && "c-pointer-events-none",
+            disabled &&
+              !["checkbox"].includes(arg.sub_type) &&
+              " c-bg-gray-50"
           )}
         >
           {not_ready ? (

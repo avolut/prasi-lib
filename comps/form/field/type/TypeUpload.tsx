@@ -4,7 +4,9 @@ import { FC } from "react";
 import { FMLocal, FieldLocal } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
 import * as XLSX from "xlsx";
-
+const w = window as unknown as {
+  serverurl: string
+}
 
 export const FieldUpload: FC<{
   field: FieldLocal;
@@ -97,7 +99,7 @@ export const FieldUpload: FC<{
               let url = siteurl("/_upload");
               if (location.hostname === 'prasi.avolut.com' || location.host === 'localhost:4550') {
                 const newurl = new URL(location.href);
-                newurl.pathname = `/_proxy/https://julong-dev.avolut.com/_upload`;
+                newurl.pathname = `/_proxy/${w.serverurl}/_upload`;
                 url = newurl.toString();
               }
 

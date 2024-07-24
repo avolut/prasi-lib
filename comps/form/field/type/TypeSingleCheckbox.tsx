@@ -12,6 +12,8 @@ export const FieldSingleCheckbox: FC<{
     list: [] as any[],
     change_timeout: null as any,
   });
+  const disabled =
+    typeof field.disabled === "function" ? field.disabled() : field.disabled;
   const renderOnChange = () => {
     local.render();
     if (field.on_change) {
@@ -47,14 +49,16 @@ export const FieldSingleCheckbox: FC<{
         <div className={cx(`c-flex c-flex-col c-space-y-1 c-p-0.5`)}>
           <div
             onClick={() => {
-              fm.data[field.name] = !value;
-              fm.render();
-              if (field.on_change) {
-                field.on_change({
-                  value: !value,
-                  name: field.name,
-                  fm,
-                });
+              if(!disabled){
+                fm.data[field.name] = !value;
+                fm.render();
+                if (field.on_change) {
+                  field.on_change({
+                    value: !value,
+                    name: field.name,
+                    fm,
+                  });
+                }
               }
             }}
             className="c-flex c-flex-row c-space-x-1 cursor-pointer c-items-center rounded-full p-0.5"

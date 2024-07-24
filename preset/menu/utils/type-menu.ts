@@ -11,6 +11,7 @@ export type MenuProp = {
   item: PrasiItem;
   style: "navbar" | "sidebar";
   on_load?: (on_done: (exec: () => void) => void) => void;
+  get_menu?: (mn: Array<Record<string, IMenu[]>>) => Array<Record<string, IMenu[]>>
 };
 export type MenuActive = {
   data: any;
