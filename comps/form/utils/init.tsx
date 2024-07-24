@@ -83,6 +83,22 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         fm.internal.reload.done.map((e) => e());
         setTimeout(() => {
           toast.dismiss();
+
+          if (fm.is_newly_created) {
+            fm.is_newly_created = false;
+            toast.success(
+              <div className="c-flex c-text-green-700 c-items-center">
+                <Check className="c-h-4 c-w-4 c-mr-1 " />
+                Saved
+              </div>,
+              {
+                className: css`
+                  background: #e4ffed;
+                  border: 2px solid green;
+                `,
+              }
+            );
+          }
         }, 100);
 
         fm.status = "ready";
@@ -109,7 +125,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         if (typeof fm.props.on_submit === "function") {
           fm.status = "saving";
           fm.render();
-          
+
           if (fm.props.sonar === "on" && !isEditor) {
             toast.loading(
               <>
@@ -179,18 +195,20 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
                   }
                 );
               } else {
-                toast.success(
-                  <div className="c-flex c-text-green-700 c-items-center">
-                    <Check className="c-h-4 c-w-4 c-mr-1 " />
-                    Saved
-                  </div>,
-                  {
-                    className: css`
-                      background: #e4ffed;
-                      border: 2px solid green;
-                    `,
-                  }
-                );
+                if (!fm.is_newly_created) {
+                  toast.success(
+                    <div className="c-flex c-text-green-700 c-items-center">
+                      <Check className="c-h-4 c-w-4 c-mr-1 " />
+                      Saved
+                    </div>,
+                    {
+                      className: css`
+                        background: #e4ffed;
+                        border: 2px solid green;
+                      `,
+                    }
+                  );
+                }
               }
             }, 100);
           }

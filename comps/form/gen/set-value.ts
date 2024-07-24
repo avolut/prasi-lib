@@ -30,7 +30,7 @@ export const set_value = ({
             ${pk}: selected[0],
           },
         };
-      } else {
+      } else if (fm.data["${pk}"]) {
         fm.data[name] = {
           disconnect: true,
         };

@@ -155,6 +155,7 @@ export type FMInternal = {
     field: any;
   };
   has_fields_container: boolean;
+  is_newly_created: boolean;
 };
 export type FMLocal = FMInternal & { render: () => void };
 

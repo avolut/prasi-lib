@@ -157,7 +157,11 @@ ${
           ...record,
         },
       });
-      if (res) form.id = res.id;
+      
+      if (res) {
+        form.id = res.id;
+        fm.is_newly_created = true;
+      }
     }
 
     if (has_many.length) {
