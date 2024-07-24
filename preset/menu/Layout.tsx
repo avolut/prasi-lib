@@ -139,11 +139,12 @@ export const Layout: FC<LYTChild> = (props) => {
     if (!w.user) {
       local.loading = true;
       loadSession(props.login_url || "/auth/login");
+      console.log(w.user);
     }
   }
 
   if (path === props.login_url) return props.blank_layout;
-  if (!w.user && !isEditor)
+  if (!w.user && !isEditor) {
     return (
       <div
         className={cx(
@@ -153,6 +154,9 @@ export const Layout: FC<LYTChild> = (props) => {
         <FieldLoading />
       </div>
     );
+  } else {
+    local.loading = false;
+  }
 
   return (
     <props.PassProp

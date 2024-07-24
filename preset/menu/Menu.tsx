@@ -21,7 +21,6 @@ type MLocal = typeof local_default & { render: () => void };
 
 export const Menu: FC<MenuProp> = (props) => {
   const imenu = props.menu;
-  console.log({imenu})
   let role = props.role;
   role = props.on_init();
   let menu = get(imenu, role) || [];
@@ -82,7 +81,6 @@ export const SideBar: FC<{
     pm
   }
   const data: IMenu[] = (typeof _data[0] === "string" ? [_data] : _data) as any;
-console.log({data})
   useEffect(() => {
     data.map((item) => {
       const menu = {
