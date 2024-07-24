@@ -101,9 +101,9 @@ export const breadcrumbPrefix = (md: MDLocal) => {
             const lnk = link_hashes ? `#lnk=${link_hashes}` : ``;
 
             if (p.md) {
-              url = `${link.url}#${p.md.name}=${p.md.value}${lnk}`;
+              url = `${p.url || link.url}#${p.md.name}=${p.md.value}${lnk}`;
             } else {
-              url = `${link.url}${lnk}`;
+              url = `${p.url  || link.url}${lnk}`;
             }
 
             if (url) {
