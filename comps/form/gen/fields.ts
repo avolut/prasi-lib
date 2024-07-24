@@ -109,6 +109,49 @@ export const newField = async (
   } else if (["has-many", "has-one"].includes(field.type) && field.relation) {
     const fields = parseGenField(opt.value);
     const res = generateSelect(fields);
+    let link_params = { where: "", create: "", update: "" };
+    let rel = field.relation;
+    let label = formatName(field.name);
+
+    if (field.relation) {
+      const rels = field.relation.fields.filter((e) => e.relation);
+      if (rels.length === 1) {
+        rel = rels[0].relation as any;
+        label = formatName(rel.to.table);
+
+        link_params = {
+          where: `{
+    "${rel.from.table}": {
+      some: {
+        "${field.relation.to.fields[0]}": fm.data["${field.relation.from.fields[0]}"],
+      }
+    }
+  } as Prisma.${rel.to.table}WhereInput`,
+          create: `{
+    "${rel.from.table}": {
+      create: {
+        "${field.relation.to.fields[0]}": fm.data["${field.relation.from.fields[0]}"]
+      }
+    },
+  } as Prisma.${rel.to.table}CreateInput`,
+          update: `{}`,
+        };
+      } else {
+        link_params = {
+          where: `{
+    "${rel.to.fields[0]}": fm.data["${field.relation.from.fields[0]}"],
+  } as Prisma.${rel.to.table}WhereInput`,
+          create: `{
+    "${rel.from.table}": {
+      connect: {
+        "${rel.from.fields[0]}": fm.data["${field.relation.from.fields[0]}"]
+      }
+    },
+  } as Prisma.${rel.to.table}CreateInput`,
+          update: `{}`,
+        };
+      }
+    }
 
     if (res && res.select && Object.keys(res.select).length === 1) {
       return createItem({
@@ -118,22 +161,59 @@ export const newField = async (
             name: field.name,
             label: formatName(field.name),
             type: "link",
-            link_opt: [
-              `({
-  url: () => {
-    return "";
-  },
-  where: () => {
-    return {} as ${
-      opt.parent_table
-        ? `Prisma.${opt.parent_table}WhereInput`
-        : `Record<string, any>`
-    };
-  },
-  breadcrumbs: (existing: any[]) => {
-    return [...existing];
-  },
-})`,
+            link__params: [
+              `async (field: any) => {
+  return {
+    where: ${link_params.where},
+    create: ${link_params.create},
+    update: ${link_params.update}
+  };
+}`,
+            ],
+            link__text: [
+              `
+({ Link }) => {
+  const rel = fm.data["${field.name}"];
+  return (
+    <>
+      {Array.isArray(rel) && (
+        <div
+          className={cx(
+            "flex items-center border-r",
+            css\`padding:0px 10px 0px 5px;margin-right:10px;\`,
+          )}
+        >
+          {rel.length === 0 ? "No" : rel.length}{" "}
+          {rel.length > 1 ? "items" : "item"}
+        </div>
+      )}
+      <Link>
+        {({ icon }) => {
+          return (
+            <>
+              <div>Detail</div> {icon}
+            </>
+          );
+        }}
+      </Link>
+    </>
+  );
+}`,
+              `({ Link }) => {
+const rel = fm.data["${field.name}"];
+return (React.createElement(React.Fragment, null,
+Array.isArray(rel) && (React.createElement("div", { className: cx("flex items-center border-r", css\`padding:0px 10px 0px 5px;margin-right:10px;\`) },
+rel.length === 0 ? "No" : rel.length,
+" ",
+rel.length > 1 ? "items" : "item")),
+React.createElement(Link, null, ({ icon }) => {
+return (React.createElement(React.Fragment, null,
+  React.createElement("div", null, "Detail"),
+  " ",
+  icon));
+})));
+};
+`,
             ],
           },
         },
@@ -147,6 +227,7 @@ export const newField = async (
       pks: {},
       type: field.type === "has-many" ? "typeahead" : "dropdown",
     });
+
     if (["has-one"].includes(field.type)) {
       const rel__gen_fields = JSON.stringify(
         field.relation?.fields.map((e) => {
@@ -236,49 +317,6 @@ export const newField = async (
         });
       } else {
         type = "link";
-      }
-
-      let label = formatName(field.name);
-      let link_params = { where: "", create: "", update: "" };
-      let rel = field.relation;
-      if (type === "link" && field.relation) {
-        const rels = field.relation.fields.filter((e) => e.relation);
-        if (rels.length === 1) {
-          rel = rels[0].relation as any;
-          label = formatName(rel.to.table);
-
-          link_params = {
-            where: `{
-      "${rel.from.table}": {
-        some: {
-          "${field.relation.to.fields[0]}": fm.data["${field.relation.from.fields[0]}"],
-        }
-      }
-    } as Prisma.${rel.to.table}WhereInput`,
-            create: `{
-      "${rel.from.table}": {
-        create: {
-          "${field.relation.to.fields[0]}": fm.data["${field.relation.from.fields[0]}"]
-        }
-      },
-    } as Prisma.${rel.to.table}CreateInput`,
-            update: `{}`,
-          };
-        } else {
-          link_params = {
-            where: `{
-      "${rel.to.fields[0]}": fm.data["${field.relation.from.fields[0]}"],
-    } as Prisma.${rel.to.table}WhereInput`,
-            create: `{
-      "${rel.from.table}": {
-        connect: {
-          "${rel.from.fields[0]}": fm.data["${field.relation.from.fields[0]}"]
-        }
-      },
-    } as Prisma.${rel.to.table}CreateInput`,
-            update: `{}`,
-          };
-        }
       }
 
       return createItem({

@@ -139,7 +139,6 @@ export const Layout: FC<LYTChild> = (props) => {
     if (!w.user) {
       local.loading = true;
       loadSession(props.login_url || "/auth/login");
-      console.log(w.user);
     }
   }
 

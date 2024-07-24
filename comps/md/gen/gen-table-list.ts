@@ -58,7 +58,6 @@ export const generateTableList = async (
       Object.keys(table_prop).map((e) => {
         set(data, e, table_prop[e]);
       });
-      console.log(data, table_prop);
     }
   }
 };

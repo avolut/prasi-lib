@@ -4,6 +4,10 @@ export { guessLabel } from "./utils/guess-label";
 export { fetchLinkParams } from "./comps/form/field/type/TypeLink";
 export { prasi_gen } from "./gen/prasi_gen";
 
+export const Accordion = lazify(
+  async () => (await import("@/comps/ui/accordion")).Accordion
+);
+
 export const Popover = lazify(
   async () => (await import("@/comps/custom/Popover")).Popover
 );
