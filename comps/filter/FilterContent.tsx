@@ -49,6 +49,13 @@ export const FilterContent: FC<{
             }
             .field-outer {
               margin: 3px;
+
+              border: 1px solid #cecece;
+
+              &.focused {
+                border: 1px solid #1c4ed8;
+                outline: 1px solid #1c4ed8;
+              }
             }
 
             .search-all {

@@ -43,7 +43,7 @@ export const generateMDForm = async (
         name: "item",
         childs: [],
       }),
-    },
+    }, 
   };
   const tablelist: any = {
     type: "item",

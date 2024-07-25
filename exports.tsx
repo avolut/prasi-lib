@@ -12,10 +12,6 @@ export const Popover = lazify(
   async () => (await import("@/comps/custom/Popover")).Popover
 );
 
-export const Modal = lazify(
-  async () => (await import("lib/comps/custom/Modal")).Modal
-);
-
 export const Typeahead = lazify(
   async () => (await import("@/comps/ui/typeahead")).Typeahead
 );
