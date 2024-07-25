@@ -46,6 +46,7 @@ export const genTableEdit = async (
             parent_table: table,
             value,
             on_change: `() => { ext_fm.change(); }`,
+            is_from_table_edit: true
           },
           false
         );

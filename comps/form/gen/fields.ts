@@ -22,7 +22,12 @@ export type GFCol = {
 };
 export const newField = async (
   field: GFCol,
-  opt: { parent_table: string; value: Array<string>; on_change?: string },
+  opt: {
+    parent_table: string;
+    value: Array<string>;
+    on_change?: string;
+    is_from_table_edit?: boolean;
+  },
   show_label: boolean
 ) => {
   let show = typeof show_label === "boolean" ? show_label : true;

@@ -68,7 +68,11 @@ export const generateForm = async (
       if (["has-one", "has-many"].includes(item.type)) {
         value = get(item, "value.checked") as any;
       }
-      const field = await newField(item, { parent_table: table, value }, true);
+      const field = await newField(
+        item,
+        { parent_table: table, value, is_from_table_edit: false },
+        true
+      );
       child_fields.push(field);
     }
     let submit = null;

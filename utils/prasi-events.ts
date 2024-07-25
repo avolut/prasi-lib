@@ -8,6 +8,7 @@ const events = {
   form: {
     where: async (fm: FMLocal, where: any) => {},
     before_save: async (fm: FMLocal, record: any) => {},
+    relation_before_save: async (table: string, record: any) => {},
     after_save: async (fm: FMLocal, record: any) => {},
     before_load: async (fm: FMLocal) => {},
     after_load: async (fm: FMLocal) => {},
