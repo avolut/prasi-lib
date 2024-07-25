@@ -316,7 +316,7 @@ export const Typeahead: FC<{
       return item;
     }
 
-    const item = local.options.find((item) => item.value === value);
+    const item = local.options.find((e) => e.value === value);
     return item;
   });
 
@@ -378,7 +378,6 @@ export const Typeahead: FC<{
       ) : (
         <></>
       )}
-
       <TypeaheadOptions
         popup={true}
         onOpenChange={(open) => {
@@ -534,11 +533,10 @@ export const Typeahead: FC<{
           onKeyDown={keydown}
         />
       </TypeaheadOptions>
-
       {local.mode === "single" && (
         <div
           className={cx(
-            "c-absolute c-pointer-events-none c-z-10 c-inset-0 c-left-auto c-flex c-items-center ",
+            "typeahead-arrow c-absolute c-pointer-events-none c-z-10 c-inset-0 c-left-auto c-flex c-items-center ",
             " c-justify-center c-w-6 c-mr-1 c-my-2 c-bg-white",
             disabled && "c-hidden"
           )}

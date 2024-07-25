@@ -46,7 +46,7 @@ export const genTableEdit = async (
             parent_table: table,
             value,
             on_change: `() => { ext_fm.change(); }`,
-            is_from_table_edit: true
+            is_from_table_edit: true,
           },
           false
         );
@@ -78,6 +78,7 @@ export const genTableEdit = async (
       props: {
         name: "option",
         title: "",
+        width: "`75`",
         child: {
           id: createId(),
           name: "option",
@@ -88,6 +89,7 @@ export const genTableEdit = async (
               adv: { css: "" },
               dim: { h: "fit", w: "fit" },
               name: "info",
+              hidden: "all",
               type: "item",
               childs: [
                 {

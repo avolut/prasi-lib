@@ -15,6 +15,14 @@ export const generateSelect = (data: Array<any>) => {
           }
         } else {
           select[f.name].select[r.name] = true;
+
+          if (r.relation) {
+            if (r.relation?.fields) {
+              select[f.name].select[r.name] = {
+                select: generateSelect(r.relation?.fields).select,
+              };
+            }
+          }
         }
       }
     }

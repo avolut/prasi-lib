@@ -58,11 +58,11 @@ export const genRelMany = (prop: {
             data.map((e) => {
               try {
                 if (typeof e === "object") {
-                  if (typeof e["${master.name}"].connect?.${pk_master.name} === "string") {
+                  if (typeof e["${master.name}"]?.connect?.${pk_master.name} !== "undefined") {
                     selected.push(e["${master.name}"].connect.${pk_master.name});
-                  } else if (typeof e["${master.name}"]?.${pk_master.name} === "string") {
+                  } else if (typeof e["${master.name}"]?.${pk_master.name}!== "undefined") {
                     selected.push(e["${master.name}"].${pk_master.name});
-                  }
+                  } 
                 }
               } catch (ex) { }
             })
@@ -92,15 +92,18 @@ export const genRelMany = (prop: {
           break;
         case "multi-option":
           let parent = {} as any;
-          try {
+          call_prasi_events("form", "relation_before_save", ["${arg.relation.to.table}", parent]);
+
+          if (fm.data.id){
             parent = {
+              ...parent,
               ${arg.relation.from.table}: {
                 connect: {
                   ${arg.relation.from.fields[0]}: fm.data.id || null,
                 },
               },
             };
-          } catch (e) {}
+          }
           fm.data[name] = selected.map((e) => {
             return {
               ${master.name}: {

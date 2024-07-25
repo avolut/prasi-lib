@@ -78,6 +78,7 @@ type SimplifiedItem = {
   dim?: any;
   layout?: any;
   border?: any;
+  hidden?: string;
 };
 
 export const createItem = (arg: SimplifiedItem): any => {
@@ -145,6 +146,7 @@ export const createItem = (arg: SimplifiedItem): any => {
     type: "item",
     component,
     adv: arg.adv,
+    hidden: arg.hidden,
     childs: arg.childs?.map(createItem) || [],
   };
 };

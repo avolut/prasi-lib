@@ -73,7 +73,7 @@ async (arg: {
       items = sortTree(items, rel__id_parent, "${pk}");
     }
 
-    if(items.length){
+    if(Array.isArray(items) && items.length){
       const cols = ${JSON.stringify(cols)};
       const getLabel = (data: any)  => {
         const result = [];

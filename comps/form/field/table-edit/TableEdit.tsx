@@ -62,6 +62,9 @@ export const TableEdit: FC<{
               .table-list-inner {
                 position: relative !important;
               }
+              .typeahead-arrow {
+                margin-right: 10px;
+              }
             `,
             value.length === 0 &&
               (show_header === "n"
@@ -83,12 +86,16 @@ export const TableEdit: FC<{
           <TableList
             row_height={(row) => {
               const rh = local.rowHeight.get(row);
+
+              let h = 50;
               if (rh) {
                 for (const div of Object.values(rh)) {
-                  if (div.offsetHeight > 50) return div.offsetHeight + 6;
+                  if (div) {
+                    if (div.offsetHeight > 50) h = div.offsetHeight + 6;
+                  }
                 }
               }
-              return 50;
+              return h;
             }}
             feature={[]}
             child={child}
@@ -118,6 +125,14 @@ export const TableEdit: FC<{
               local.tbl = tbl;
 
               const key = props.column.key;
+
+              if (!local.rowHeight.has(props.row)) {
+                local.rowHeight.set(props.row, {});
+              }
+              const rh = local.rowHeight.get(props.row);
+              if (rh && tbl.el) {
+                rh[props.column.key] = tbl.el.querySelector(".field");
+              }
               return (
                 <PassProp
                   idx={props.rowIdx}
@@ -129,17 +144,6 @@ export const TableEdit: FC<{
                   }}
                   rows={tbl.data}
                   fm={fm_row}
-                  field_ref={(ref: any) => {
-                    if (ref) {
-                      if (!local.rowHeight.has(props.row)) {
-                        local.rowHeight.set(props.row, {});
-                      }
-                      const rh = local.rowHeight.get(props.row);
-                      if (rh) {
-                        rh[props.column.key] = ref;
-                      }
-                    }
-                  }}
                   fm_parent={parent}
                   ext_fm={{
                     idx: props.rowIdx,
