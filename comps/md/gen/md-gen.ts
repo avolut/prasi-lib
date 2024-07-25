@@ -17,7 +17,6 @@ export const generateMasterDetail: GenFn<{
     if (!title && item.edit.props?.gen_table) {
       const table = { ...item.edit.props?.gen_table };
       table.value = `${formatName(table.value as string)}`;
-      console.log(table.value);
       item.edit.setProp("title", table.value);
     }
   } catch (e) {}

@@ -118,6 +118,8 @@ const get_layer = async (
   return options;
 };
 
+const pending = {} as Record<string, Promise<any>[]>;
+
 const loadSingle = async (id_site: string, table: string) => {
   const ls_key = `schema-md-${id_site}`;
   const idb_key = `${id_site}-${table}`;
@@ -143,10 +145,18 @@ const loadSingle = async (id_site: string, table: string) => {
     if (cached) {
       single[table] = cached;
     } else {
+      if (!pending[table]) {
+        pending[table] = [
+          db._schema.columns(table as any),
+          db._schema.rels(table as any),
+        ];
+      }
+      await Promise.all(pending[table]);
       single[table] = {
-        cols: await db._schema.columns(table as any),
-        rels: await db._schema.rels(table as any),
+        cols: await pending[table][0] as any,
+        rels: await pending[table][1] as any,
       };
+
       await kset(idb_key, single[table]);
       localStorage.setItem(ls_key, JSON.stringify([...cached_keys, table]));
     }

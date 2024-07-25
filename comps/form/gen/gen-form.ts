@@ -94,7 +94,7 @@ export const generateForm = async (
     };
     const existing_childs = (
       (item.component?.props.body as any)?.content as IItem
-    ).childs;
+    )?.childs;
 
     let child_body = createItem({
       name: "item",
