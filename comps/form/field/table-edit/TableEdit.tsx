@@ -1,6 +1,6 @@
 import { TableList } from "lib/comps/list/TableList";
 import { useLocal } from "lib/utils/use-local";
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import { FMLocal } from "../../typings";
 
 export const TableEdit: FC<{
@@ -17,7 +17,6 @@ export const TableEdit: FC<{
   const local = useLocal(
     {
       tbl: null as any,
-      rowHeight: new WeakMap<any, Record<string, HTMLDivElement>>(),
     },
     () => {}
   );
@@ -31,6 +30,10 @@ export const TableEdit: FC<{
     }
   }
   const value = fm.data[name];
+
+  useEffect(() => {
+    local.tbl.render();
+  }, [3000]);
 
   return (
     <>
@@ -85,16 +88,31 @@ export const TableEdit: FC<{
         >
           <TableList
             row_height={(row) => {
-              const rh = local.rowHeight.get(row);
-
               let h = 50;
-              if (rh) {
-                for (const div of Object.values(rh)) {
-                  if (div) {
-                    if (div.offsetHeight > 50) h = div.offsetHeight + 6;
+              if (local.tbl) {
+                const data = local.tbl.data;
+                const el = local.tbl.el as HTMLDivElement;
+                let idx = 0;
+                if (Array.isArray(data)) {
+                  for (let k = 0; k < data.length; k++) {
+                    if (data[k] === row) {
+                      idx = k;
+                      break;
+                    }
                   }
                 }
+
+                const rowdiv = el.querySelectorAll(`.rdg-row`)[
+                  idx
+                ] as HTMLDivElement;
+                if (rowdiv) {
+                  rowdiv.querySelectorAll(".field").forEach((field) => {
+                    const div = field as HTMLDivElement;
+                    h = Math.max(h, div.offsetHeight + 10);
+                  });
+                }
               }
+
               return h;
             }}
             feature={[]}
@@ -123,16 +141,8 @@ export const TableEdit: FC<{
               const fm_row = { ...fm, render: local.render };
               fm_row.data = props.row;
               local.tbl = tbl;
-
               const key = props.column.key;
 
-              if (!local.rowHeight.has(props.row)) {
-                local.rowHeight.set(props.row, {});
-              }
-              const rh = local.rowHeight.get(props.row);
-              if (rh && tbl.el) {
-                rh[props.column.key] = tbl.el.querySelector(".field");
-              }
               return (
                 <PassProp
                   idx={props.rowIdx}

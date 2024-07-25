@@ -4,9 +4,11 @@ export const walkGenForm = (
 ) => {
   const fields = {} as Record<string, PrasiItem>;
 
-  for (const item of new_childs[0].childs) {
-    const name = item.component?.props?.name;
-    console.log(name);
+  if (Array.isArray(new_childs) && new_childs[0] && new_childs[0].childs) {
+    for (const item of new_childs[0].childs) {
+      const name = item.component?.props?.name;
+      console.log(name);
+    }
   }
   //   for (const item of existing_childs) {
   //     walk(item);

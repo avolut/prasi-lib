@@ -1,15 +1,13 @@
-import { createId } from "@paralleldrive/cuid2";
 import { createItem, parseGenField } from "lib/gen/utils";
 import { set } from "lib/utils/set";
 import get from "lodash.get";
 import { generateSelect } from "../../md/gen/md-select";
 import { newField } from "./fields";
-import { get_rel_many } from "./get_rel_many";
-import { on_load } from "./on_load";
+import { genFormOnInit } from "./gen-form/on-init";
 import { genFormOnLoad } from "./gen-form/on-load";
 import { genFormOnSubmit } from "./gen-form/on-submit";
-import { genFormOnInit } from "./gen-form/on-init";
 import { genFormSubmit } from "./gen-form/submit";
+import { get_rel_many } from "./get_rel_many";
 import { walkGenForm } from "./walker";
 
 export const generateForm = async (
@@ -43,12 +41,23 @@ export const generateForm = async (
   }
   let is_md = !!_is_md;
   if (typeof _is_md === "undefined") {
-    if (
-      item.edit.parent?.item.edit.parent?.item.component?.id ===
-      "cb52075a-14ab-455a-9847-6f1d929a2a73"
-    ) {
-      is_md = true;
+    let cur = item.edit.parent as any;
+    while (cur) {
+      if (cur) {
+        if (cur.item.component?.id === "cb52075a-14ab-455a-9847-6f1d929a2a73") {
+          is_md = true;
+          break;
+        }
+        if (cur.item.edit?.parent) {
+          cur = cur.item.edit.parent;
+        } else {
+          break;
+        }
+      } else {
+        break;
+      }
     }
+    console.log(is_md);
   }
 
   if (pk) {
