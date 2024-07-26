@@ -175,7 +175,6 @@ export const Layout: FC<LYTChild> = (props) => {
         });
       }}
     >
-      {JSON.stringify(local.loading)}
       {props.default_layout}
     </props.PassProp>
   );
