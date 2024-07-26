@@ -78,8 +78,8 @@ export const SideBar: FC<{
   const PassProp = pm.PassProp;
   w.prasi_menu = {
     ...w.prasi_menu,
-    pm
-  }
+    pm,
+  };
   const data: IMenu[] = (typeof _data[0] === "string" ? [_data] : _data) as any;
   useEffect(() => {
     data.map((item) => {
@@ -159,7 +159,7 @@ export const SideBar: FC<{
                       local.open.delete(hashMenu(e));
                     });
                   }
-                }
+                } 
 
                 local.loading = true;
                 if (typeof menu.value === "string") {

@@ -117,6 +117,8 @@ export const Layout: FC<LYTChild> = (props) => {
           w.prasi_menu.nav(_href);
         } else if (w.prasi_menu.pm?.on_load) {
           let done = { exec: () => {} };
+          local.loading = true;
+          local.render();
           w.prasi_menu.pm?.on_load((exec: any) => {
             done.exec = exec;
           });
@@ -143,6 +145,8 @@ export const Layout: FC<LYTChild> = (props) => {
     if (!w.user) {
       local.loading = true;
       loadSession(props.login_url || "/auth/login");
+
+      local.loading = false;
     }
   }
 
@@ -157,8 +161,6 @@ export const Layout: FC<LYTChild> = (props) => {
         <FieldLoading />
       </div>
     );
-  } else {
-    local.loading = false;
   }
 
   return (
@@ -173,6 +175,7 @@ export const Layout: FC<LYTChild> = (props) => {
         });
       }}
     >
+      {JSON.stringify(local.loading)}
       {props.default_layout}
     </props.PassProp>
   );
