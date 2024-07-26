@@ -2,6 +2,7 @@ import { FC, useEffect } from "react";
 import { loadSession } from "./utils/load";
 import { useLocal } from "lib/utils/use-local";
 import { FieldLoading } from "../../..";
+import { getBasename } from "lib/exports";
 
 const w = window as unknown as {
   user: any;
@@ -18,8 +19,9 @@ export const Login: FC<LGProps> = (props) => {
     loadSession();
     if (w.user) {
       const home = props.url_home[w.user.role];
+      console.log(home);
       if (home) {
-        navigate(home);
+        location.href = getBasename() + home;
         return;
       }
     }
