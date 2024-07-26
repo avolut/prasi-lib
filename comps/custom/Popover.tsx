@@ -192,13 +192,12 @@ export function Popover({
   const popover = usePopover({ modal, ...restOptions });
 
   let _content = content;
-  console.log(!content)
   if (!content) _content = <div className={"w-[300px] h-[150px]"}></div>;
-console.log(typeof restOptions.open)
   return (
     <PopoverContext.Provider value={popover}>
       <PopoverTrigger
         asChild
+        className="c-w-full c-h-full"
         onClick={
           typeof restOptions.open !== "undefined"
             ? () => {

@@ -10,6 +10,7 @@ export type MenuProp = {
   mode: "full" | "mini";
   item: PrasiItem;
   style: "navbar" | "sidebar";
+  layout?: { current_menu: string; render: () => void };
   on_load?: (on_done: (exec: () => void) => void) => void;
   get_menu?: (mn: Array<Record<string, IMenu[]>>) => Array<Record<string, IMenu[]>>
 };

@@ -52,6 +52,12 @@ export const Menu: FC<MenuProp> = (props) => {
           pm={props}
           depth={0}
           mode={local.mode}
+          activate={(label) => {
+            if (typeof props.layout !== "undefined") {
+              props.layout.current_menu = label;
+              props.layout.render();
+            }
+          }}
         />
       </div>
     </div>
@@ -72,9 +78,10 @@ export const SideBar: FC<{
   depth: number;
   pm: MenuProp;
   mode: "full" | "mini";
+  activate: (label: string) => void;
   expanded?: boolean;
   parent?: string;
-}> = ({ data: _data, local, depth, pm, mode, expanded, parent }) => {
+}> = ({ data: _data, local, depth, pm, mode, expanded, parent, activate }) => {
   const PassProp = pm.PassProp;
   w.prasi_menu = {
     ...w.prasi_menu,
@@ -93,6 +100,7 @@ export const SideBar: FC<{
         let should_render = false;
         if (local.active !== menu.hash && !local.loading) {
           local.active = menu.hash;
+          activate(menu.label);
           should_render = true;
         }
         if (!local.open.has(menu.hash)) {
@@ -159,11 +167,12 @@ export const SideBar: FC<{
                       local.open.delete(hashMenu(e));
                     });
                   }
-                } 
+                }
 
                 local.loading = true;
                 if (typeof menu.value === "string") {
                   local.active = menu.hash;
+
                   clearTimeout(local.nav_timeout);
                   local.nav_timeout = setTimeout(() => {
                     if (
@@ -182,6 +191,7 @@ export const SideBar: FC<{
                   !Array.isArray(menu.value) &&
                   typeof menu.value === "string"
                 ) {
+                  activate(menu.label);
                   if (pm.on_load) {
                     if (preloaded(menu.value)) {
                       pm.on_load((exec) => {
@@ -222,6 +232,7 @@ export const SideBar: FC<{
                   <SideBar
                     data={menu.value}
                     local={local}
+                    activate={activate}
                     depth={(depth || 0) + 1}
                     pm={pm}
                     mode={mode}

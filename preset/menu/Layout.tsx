@@ -44,7 +44,7 @@ type LYTChild = {
 };
 
 export const Layout: FC<LYTChild> = (props) => {
-  const local = useLocal({ loading: false });
+  const local = useLocal({ loading: false, current_menu: "" });
   const render = local.render;
   useLayoutEffect(() => {
     if (!isEditor) {
@@ -174,6 +174,8 @@ export const Layout: FC<LYTChild> = (props) => {
           local.render();
         });
       }}
+      layout={local}
+      current_menu={local.current_menu}
     >
       {props.default_layout}
     </props.PassProp>

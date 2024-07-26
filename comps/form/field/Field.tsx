@@ -25,6 +25,11 @@ export const Field: FC<FieldProp> = (arg) => {
       ) {
         validate(field, fm);
       }
+
+      if (arg.on_change) {
+        arg.on_change({ value: fm.data[name], name, fm });
+      }
+
       fm.events.on_change(name, fm.data[name]);
       fm.render();
     }

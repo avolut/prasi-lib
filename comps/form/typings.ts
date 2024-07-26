@@ -62,7 +62,11 @@ export type FieldProp = {
   required: ("y" | "n") | (() => "y" | "n");
   field_ref?: (ref: any) => void;
   required_msg: (name: string) => string | ReactElement;
-  on_change: (arg: { value: any }) => void | Promise<void>;
+  on_change: (arg: {
+    value: any;
+    name: string;
+    fm: any;
+  }) => void | Promise<void>;
   PassProp: any;
   disabled: ("y" | "n") | (() => true | false);
   child: any;
