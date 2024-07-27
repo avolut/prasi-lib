@@ -37,14 +37,21 @@ export const Field: FC<FieldProp> = (arg) => {
   if (field.status === "init" && !isEditor) return null;
   const errors = fm.error.get(name);
   const props = { ...arg.props };
-  delete props.className;
+
+  let editorClassName = "";
+  if (isEditor) {
+    editorClassName =
+      props.className.split(" ").find((e: string) => e.startsWith("s-")) || "";
+  }
 
   return (
     <LabelDiv
       mode={sub_type === "table-edit" ? "div" : "label"}
+      {...props}
       className={cx(
         "field",
-        "c-flex",
+        "c-flex c-relative",
+        editorClassName,
         field.type === "single-option" && sub_type === "checkbox"
           ? css`
               padding: 5px 0px 0px 7.5px;
@@ -71,11 +78,10 @@ export const Field: FC<FieldProp> = (arg) => {
           }
         `
       )}
-      {...props}
       ref={typeof arg.field_ref === "function" ? arg.field_ref : undefined}
     >
       {showlabel !== "n" && <Label field={field} fm={fm} />}
-      <div className="field-input c-flex c-flex-1 c-flex-col">
+      <div className={cx("field-input c-flex c-flex-1 c-flex-col")}>
         <FieldInput
           field={field}
           fm={fm}
