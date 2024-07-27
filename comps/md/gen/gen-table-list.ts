@@ -129,11 +129,11 @@ const genList = async (opt: GenOpt) => {
               },
               adv: {
                 js: `\
-<div {...props} className={cx(props.className, "list-field")}>
+<div {...props} className={cx(props.className, \`s-\${_item.edit.parent.item.id}\` , "list-field")}>
   <FormatValue value={row[name]} name={name} gen_fields={gen__fields} />
 </div>`,
                 jsBuilt: `\
-render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: row[name], name: name, gen_fields: gen__fields })));
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, \`s-\${_item.edit.parent.item.id}\` , "") }),React.createElement(FormatValue, { value: row[name], name: name, gen_fields: gen__fields })));
             `,
               },
             }),
@@ -204,11 +204,11 @@ const genTable = async (opt: GenOpt) => {
                 },
                 adv: {
                   js: `\
-<div {...props} className={cx(props.className, "table-col")}>
+<div {...props} className={cx(props.className, \`s-\${_item.edit.parent.item.id}\` , "table-col")}>
   <FormatValue value={col.value} name={col.name} gen_fields={gen__fields} ${tree_depth} />
 </div>`,
                   jsBuilt: `\
-render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields, ${tree_depth_built} })));
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, \`s-\${_item.edit.parent.item.id}\` , "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields, ${tree_depth_built} })));
               `,
                 },
               }),
