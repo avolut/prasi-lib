@@ -78,7 +78,7 @@ export const genTableEdit = async (
       props: {
         name: "option",
         title: "",
-        width: "`75`",
+        width: "72",
         child: {
           id: createId(),
           name: "option",
