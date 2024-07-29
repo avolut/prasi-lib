@@ -57,7 +57,7 @@ export const Form: FC<FMProps> = (props) => {
       field: null,
     },
     has_fields_container: null as any,
-    is_newly_created: false
+    is_newly_created: false,
   });
   const form_inner_ref = useRef<HTMLDivElement>(null);
 
@@ -174,6 +174,11 @@ export const Form: FC<FMProps> = (props) => {
   if (fm.status === "resizing") {
     fm.status = "ready";
   }
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     fm.render();
+  //   }, 100);
+  // }, []);
   return (
     <form
       onSubmit={(e) => {

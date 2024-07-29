@@ -168,6 +168,7 @@ export const FieldTypeInput: FC<{
     case "upload":
       return (
         <FieldUpload
+        arg={arg}
           field={field}
           fm={fm}
           prop={prop}
@@ -177,6 +178,7 @@ export const FieldTypeInput: FC<{
     case "import":
       return (
         <FieldUpload
+        arg={arg}
           field={field}
           fm={fm}
           prop={prop}

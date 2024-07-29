@@ -11,7 +11,12 @@ export const Accordion = lazify(
 export const Popover = lazify(
   async () => (await import("@/comps/custom/Popover")).Popover
 );
-
+export const Progress = lazify(
+  async () => (await import("@/comps/ui/progress")).Progress
+);
+export const Dialog = lazify(
+  async () => (await import("@/comps/ui/dialog")).Dialog
+);
 export const Typeahead = lazify(
   async () => (await import("@/comps/ui/typeahead")).Typeahead
 );

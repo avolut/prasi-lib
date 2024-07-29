@@ -117,6 +117,7 @@ export type FieldProp = {
   model_upload?: "upload" | "import";
   max_date?: any;
   min_date?: any;
+  upload_style?: "inline" | "full"
 };
 
 export type FMInternal = {
