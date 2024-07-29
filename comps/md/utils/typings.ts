@@ -52,7 +52,7 @@ export type MDLocalInternal = {
     list: string[];
   };
   internal: { action_should_refresh: boolean };
-  master: { render: () => void };
+  master: { reload: () => void; render: () => void };
   params: {
     links: LinkParam[];
     hash: Record<string, any>;
@@ -141,7 +141,7 @@ export const MasterDetailType = `const md = {
   };
   internal: { action_should_refresh: boolean };
   render: () => void;
-  master: { internal: any; render: () => void; };
+  master: { reload: () => void; render: () => void };
   pk?: {
     name: string;
     type: string;

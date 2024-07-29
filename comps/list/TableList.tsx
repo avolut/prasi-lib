@@ -276,6 +276,10 @@ export const TableList: FC<TableListProp> = ({
     }
   }, [on_load, local.sort.orderBy, local.paging.take, local.paging.skip]);
 
+  if (md) {
+    md.master.reload = reload;
+  }
+
   if (filter_name) {
     const f = getFilter(filter_name);
     if (f) {
