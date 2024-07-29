@@ -42,7 +42,7 @@ export const gen_prop_fields = async (gen_table: string, depth?: number) => {
   }
   return await loadSchemaLayer(
     id_site,
-    typeof depth === "undefined" ? 4 : depth,
+    typeof depth === "undefined" ? 5 : depth,
     {},
     gen_table
   );
