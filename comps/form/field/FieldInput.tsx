@@ -130,79 +130,81 @@ export const FieldInput: FC<{
         `
       )}
     >
-      {prefix && prefix !== "" ? (
-        <div
-          className="
-      c-px-2 c-bg-gray-200 c-flex c-flex-row c-items-center"
-        >
-          {prefix}
-        </div>
-      ) : (
-        <></>
-      )}
       {fm.status === "loading" ? (
         <FieldLoading />
       ) : (
-        <div
-          className={cx(
-            "field-inner c-flex-1 c-flex c-items-center",
-            field.focused && "focused",
-            disabled && "c-pointer-events-none",
-            disabled &&
-              !["checkbox"].includes(arg.sub_type) &&
-              " c-bg-gray-50"
-          )}
-        >
-          {not_ready ? (
-            not_ready
-          ) : (
-            <>
-              {type_field === "custom" && arg.custom ? (
-                <>{custom}</>
-              ) : (
-                <>
-                  {type_field === "link" && (
-                    <FieldLink field={field} fm={fm} arg={arg} />
-                  )}
-                  {["date", "input"].includes(type_field) ? (
-                    <FieldTypeInput
-                      field={field}
-                      fm={fm}
-                      arg={arg}
-                      prop={
-                        {
-                          type: type_field as any,
-                          sub_type: arg.sub_type,
-                          model_upload: arg.model_upload,
-                        } as PropTypeInput
-                      }
-                    />
-                  ) : ["single-option"].includes(type_field) ? (
-                    <SingleOption arg={arg} field={field} fm={fm} />
-                  ) : ["multi-option"].includes(type_field) ? (
-                    arg.sub_type === "table-edit" ? (
-                      table_edit
-                    ) : (
-                      <MultiOption arg={arg} field={field} fm={fm} />
-                    )
-                  ) : (
-                    <>{isValidElement(type_field) && type_field}</>
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </div>
-      )}
-      {suffix && suffix !== "" ? (
-        <div
-          className="
+        <>
+          {prefix && prefix !== "" ? (
+            <div
+              className="
       c-px-2 c-bg-gray-200 c-flex c-flex-row c-items-center"
-        >
-          {suffix}
-        </div>
-      ) : (
-        <></>
+            >
+              {prefix}
+            </div>
+          ) : (
+            <></>
+          )}
+          <div
+            className={cx(
+              "field-inner c-flex-1 c-flex c-items-center",
+              field.focused && "focused",
+              disabled && "c-pointer-events-none",
+              disabled &&
+                !["checkbox"].includes(arg.sub_type) &&
+                " c-bg-gray-50"
+            )}
+          >
+            {not_ready ? (
+              not_ready
+            ) : (
+              <>
+                {type_field === "custom" && arg.custom ? (
+                  <>{custom}</>
+                ) : (
+                  <>
+                    {type_field === "link" && (
+                      <FieldLink field={field} fm={fm} arg={arg} />
+                    )}
+                    {["date", "input"].includes(type_field) ? (
+                      <FieldTypeInput
+                        field={field}
+                        fm={fm}
+                        arg={arg}
+                        prop={
+                          {
+                            type: type_field as any,
+                            sub_type: arg.sub_type,
+                            model_upload: arg.model_upload,
+                          } as PropTypeInput
+                        }
+                      />
+                    ) : ["single-option"].includes(type_field) ? (
+                      <SingleOption arg={arg} field={field} fm={fm} />
+                    ) : ["multi-option"].includes(type_field) ? (
+                      arg.sub_type === "table-edit" ? (
+                        table_edit
+                      ) : (
+                        <MultiOption arg={arg} field={field} fm={fm} />
+                      )
+                    ) : (
+                      <>{isValidElement(type_field) && type_field}</>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </div>
+          {suffix && suffix !== "" ? (
+            <div
+              className="
+      c-px-2 c-bg-gray-200 c-flex c-flex-row c-items-center"
+            >
+              {suffix}
+            </div>
+          ) : (
+            <></>
+          )}
+        </>
       )}
     </div>
   );
