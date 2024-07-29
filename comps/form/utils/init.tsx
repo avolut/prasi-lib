@@ -176,7 +176,9 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
               toast.dismiss();
 
               if (!success) {
-                const count = Object.keys(fm.error.list).length;
+                const errors = Object.keys(fm.error.list);
+                const count = errors.length;
+                console.log(fm.error.list);
                 toast.error(
                   <div className="c-flex c-text-red-600 c-items-center">
                     <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />

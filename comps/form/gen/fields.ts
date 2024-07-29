@@ -42,7 +42,7 @@ export const newField = async (
             name: field.name,
             label: formatName(field.name),
             type,
-            ext__required: field.optional ? "n" : "y",
+            ext__required: opt.is_from_table_edit || field.optional ? "n" : "y",
             sub_type: "number",
             child: {
               childs: [],
@@ -308,7 +308,7 @@ return (React.createElement(React.Fragment, null,
       let sub_type = "typeahead";
 
       if (field.relation?.fields.filter((e) => !e.is_pk)?.length >= 2) {
-        sub_type = "table-edit"; 
+        sub_type = "table-edit";
         child = createItem({
           childs: await generateRelation(
             {
