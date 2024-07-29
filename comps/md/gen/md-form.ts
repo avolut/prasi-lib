@@ -68,6 +68,7 @@ export const generateMDForm = async (
         md.internal.action_should_refresh = true;
         md.params.apply();
         md.render();
+
       },
     },
   ];

@@ -14,6 +14,7 @@ export type FMProps = {
   layout: "auto" | "1-col" | "2-col";
   meta: any;
   item: any;
+  back_on_save: "y" | "n";
   label_width: number;
   gen_fields: any;
   gen_table: string;
