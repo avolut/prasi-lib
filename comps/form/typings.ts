@@ -224,6 +224,7 @@ export const formType = (active: { item_id: string }, meta: any) => {
     reload: () => Promise<void>;
     submit: () => Promise<void>;
     render: () => void;
+    deps: any;
     error: {
       list: { name: string; error: string }[];
       set: (name: string, error: string) => void;
