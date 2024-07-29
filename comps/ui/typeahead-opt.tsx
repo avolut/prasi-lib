@@ -18,6 +18,7 @@ export const TypeaheadOptions: FC<{
   }) => boolean;
   onSelect?: (value: string) => void;
   searching?: boolean;
+  searchText?: string;
   width?: number;
 }> = ({
   popup,
@@ -29,6 +30,7 @@ export const TypeaheadOptions: FC<{
   selected,
   onSelect,
   searching,
+  searchText,
   showEmpty,
   width,
 }) => {
@@ -87,7 +89,22 @@ export const TypeaheadOptions: FC<{
         <>
           {options.length === 0 && (
             <div className="c-p-4 c-w-full c-text-center c-text-sm c-text-slate-400">
-              &mdash; Empty &mdash;
+              {!searchText ? (
+                <>&mdash; Empty &mdash;</>
+              ) : (
+                <>
+                  Search
+                  <span
+                    className={css`
+                      font-style: italic;
+                      padding: 0px 5px;
+                    `}
+                  >
+                    "{searchText}"
+                  </span>
+                  not found
+                </>
+              )}
             </div>
           )}
         </>

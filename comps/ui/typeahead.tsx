@@ -213,6 +213,8 @@ export const Typeahead: FC<{
         local.open = true;
         if (e.key === "ArrowDown") {
           e.preventDefault();
+          e.stopPropagation();
+
           const idx = options.findIndex((item) => {
             if (item.value === local.select?.value) return true;
           });
@@ -229,6 +231,7 @@ export const Typeahead: FC<{
         }
         if (e.key === "ArrowUp") {
           e.preventDefault();
+          e.stopPropagation();
 
           const idx = options.findIndex((item) => {
             if (item.value === local.select?.value) return true;
@@ -392,6 +395,7 @@ export const Typeahead: FC<{
         open={local.open}
         options={options}
         searching={local.search.searching}
+        searchText={local.search.input}
         onSelect={(value) => {
           local.open = false;
           resetSearch();
