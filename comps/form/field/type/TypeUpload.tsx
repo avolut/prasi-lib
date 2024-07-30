@@ -238,7 +238,7 @@ export const FieldUpload: FC<{
               <ExternalLink size="12px" />
             </div>
           </div>
-          <div className="c-flex c-flex-row c-items-center c-border c-px-2 c-cursor-pointer hover:c-bg-red-100">
+          <div className="c-flex c-flex-row c-items-center c-border c-px-2 c-rounded c-cursor-pointer hover:c-bg-red-100">
             <Trash2
               className="c-text-red-500 c-h-4 c-w-4"
               onClick={() => {
