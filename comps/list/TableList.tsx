@@ -3,7 +3,7 @@ import { cn } from "@/utils";
 import { fields_map } from "@/utils/format-value";
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
-import { Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 import {
   ChangeEvent,
   FC,
@@ -139,7 +139,13 @@ export const TableList: FC<TableListProp> = ({
     pk: null as null | GFCol,
     scrolled: false,
     data: [] as any[],
-    status: "init" as "loading" | "ready" | "resizing" | "reload" | "init",
+    status: "init" as
+      | "loading"
+      | "ready"
+      | "resizing"
+      | "reload"
+      | "init"
+      | "error",
     where: null as any,
     paging: {
       take: 0,
@@ -271,8 +277,30 @@ export const TableList: FC<TableListProp> = ({
         local.status = "ready";
         local.render();
       };
-      if (result instanceof Promise) result.then(callback);
-      else callback(result);
+
+      if (result instanceof Promise) {
+        (async () => {
+          try {
+            callback(await result);
+          } catch (e) {
+            local.status = "error";
+            toast.dismiss();
+            toast.error(
+              <div className="c-flex c-text-red-600 c-items-center">
+                <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+                Failed to load data
+              </div>,
+              {
+                dismissible: true,
+                className: css`
+                  background: #ffecec;
+                  border: 2px solid red;
+                `,
+              }
+            );
+          }
+        })();
+      } else callback(result);
     }
   }, [on_load, local.sort.orderBy, local.paging.take, local.paging.skip]);
 
@@ -522,7 +550,9 @@ export const TableList: FC<TableListProp> = ({
         }
       );
     } else {
-      toast.dismiss();
+      if (local.status !== "error") {
+        toast.dismiss();
+      }
     }
   }
 

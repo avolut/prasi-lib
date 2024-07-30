@@ -47,28 +47,32 @@ async (arg: TableOnLoad) => {
     });
   }
 
-  return new Promise(async (done) => {
-    //@ts-ignore
-    const fields = parseGenField(gen__fields);
-    const gen = generateSelect(fields);
+  return new Promise(async (done, reject) => {
+    try {
+      //@ts-ignore
+      const fields = parseGenField(gen__fields);
+      const gen = generateSelect(fields);
 
-    const result = {items: []}
-    result.items = await db.${table}.findMany({
-      select: gen.select,
-      orderBy: arg.orderBy || {
-        ${pk}: "desc",
-      },
-      where: {
-        ...where,
-      },
-      ...arg.paging,
-    });
+      const result = {items: []}
+      result.items = await db.${table}.findMany({
+        select: gen.select,
+        orderBy: arg.orderBy || {
+          ${pk}: "desc",
+        },
+        where: {
+          ...where,
+        },
+        ...arg.paging,
+      });
 
-    await call_prasi_events("tablelist", "after_load", ["${table}", result.items, (input) => {
-      result.items = input;
-    }]);
+      await call_prasi_events("tablelist", "after_load", ["${table}", result.items, (input) => {
+        result.items = input;
+      }]);
 
-    done(result.items);
+      done(result.items);
+    } catch(e) {
+      reject(e);
+    }
   });
 };
 
