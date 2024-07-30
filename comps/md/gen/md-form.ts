@@ -29,7 +29,7 @@ export const generateMDForm = async (
       mode: "raw",
       value: `({ md: typeof md !== "undefined" ? md : undefined })`,
     },
-    on_load: {
+    on_load: { 
       mode: "string",
       value: "",
     },
@@ -45,7 +45,7 @@ export const generateMDForm = async (
       }),
     }, 
   };
-  const tablelist: any = {
+  const newitem: any = {
     type: "item",
     name: "item",
     component: {
@@ -53,7 +53,7 @@ export const generateMDForm = async (
       props,
     },
   };
-  generateForm(async (props: any) => {}, props, tablelist, false, true);
+  generateForm(async (props: any) => {}, props, newitem, false, true);
 
   tab_detail?.edit.setProp("breadcrumb", {
     mode: "raw",

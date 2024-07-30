@@ -166,6 +166,7 @@ export const newField = async (
             name: field.name,
             label: formatName(field.name),
             type: "link",
+            ext__show_label: show ? "y" : "n",
             link__params: [
               `async (field: any) => {
   return {
