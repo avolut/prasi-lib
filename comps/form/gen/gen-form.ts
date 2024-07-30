@@ -177,13 +177,15 @@ export const generateForm = async (
           copyProps(old_item, new_item, [
             "placeholder",
             "label",
+            "link__url",
             "ext__width",
+            "opt__load_trigger",
             "ext__on_change",
             "ext__description",
             "ext__show_label",
             "ext__disabled",
             "ext__prefix",
-            "ext__suffxi",
+            "ext__suffix",
           ]);
         }
 

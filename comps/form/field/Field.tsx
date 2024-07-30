@@ -45,6 +45,8 @@ export const Field: FC<FieldProp> = (arg) => {
       props.className.split(" ").find((e: string) => e.startsWith("s-")) || "";
   }
 
+  if (field.hidden) return <></>;
+
   return (
     <LabelDiv
       mode={sub_type === "table-edit" ? "div" : "label"}

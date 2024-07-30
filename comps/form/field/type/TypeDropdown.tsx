@@ -14,19 +14,10 @@ export const TypeDropdown: FC<{
     options: [] as { value: string; label: string; data: any }[],
   });
 
-  let value =
-    typeof arg.opt_get_value === "function"
-      ? arg.opt_get_value({
-          fm,
-          name: field.name,
-          options: local.options,
-          type: field.type,
-        })
-      : fm.data[field.name];
-
-  useEffect(() => {
-    if (isEditor) return;
+  const reload = () => {
     if (typeof arg.on_load === "function") {
+      local.loaded = false;
+      local.render();
       const options = arg.on_load({ field });
       if (options instanceof Promise) {
         options.then((res) => {
@@ -67,7 +58,7 @@ export const TypeDropdown: FC<{
                 options: local.options,
                 selected: [local.options[0]?.value],
               });
-            } else if ( value) {
+            } else if (value) {
               arg.opt_set_value({
                 fm,
                 name: field.name,
@@ -87,7 +78,35 @@ export const TypeDropdown: FC<{
         local.render();
       }
     }
-  }, []);
+  };
+
+  if ((arg.load_trigger?.deps || []).length > 0 && !isEditor) {
+    useEffect(
+      () => {
+        reload();
+      },
+      arg.load_trigger?.deps.map((e) => fm.data[e])
+    );
+  } else {
+    useEffect(() => {
+      if (isEditor) {
+        local.loaded = true;
+        local.render();
+        return;
+      }
+      reload();
+    }, []);
+  }
+
+  let value =
+    typeof arg.opt_get_value === "function"
+      ? arg.opt_get_value({
+          fm,
+          name: field.name,
+          options: local.options,
+          type: field.type,
+        })
+      : fm.data[field.name];
 
   let popupClassName = "";
 
@@ -120,6 +139,7 @@ export const TypeDropdown: FC<{
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
 
   if (!local.loaded) return <FieldLoading />;
+
   if (field.type === "single-option") {
     if (value === null) {
       fm.data[field.name] = undefined;

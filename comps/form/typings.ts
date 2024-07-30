@@ -48,6 +48,13 @@ export type FieldProp = {
   label: string;
   desc?: string;
   props?: any;
+  load_trigger?: {
+    deps: any[];
+    on_change: (arg: {
+      fm: FMLocal;
+      where: any;
+    }) => Promise<{ where?: any; result?: any[] }>;
+  };
   link: {
     text:
       | string
@@ -117,7 +124,7 @@ export type FieldProp = {
   model_upload?: "upload" | "import";
   max_date?: any;
   min_date?: any;
-  upload_style?: "inline" | "full"
+  upload_style?: "inline" | "full";
 };
 
 export type FMInternal = {
@@ -176,6 +183,7 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   width: FieldProp["width"];
   required: boolean;
   focused: boolean;
+  hidden: boolean;
   disabled: boolean | (() => boolean);
   required_msg: FieldProp["required_msg"];
   col?: GFCol;
