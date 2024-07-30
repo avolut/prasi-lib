@@ -56,6 +56,7 @@ export const TypeDropdown: FC<{
                   type: field.type,
                 })
               : fm.data[field.name];
+
           if (
             field.type === "single-option" &&
             !value &&
@@ -139,6 +140,8 @@ export const TypeDropdown: FC<{
                 selected: [item.value],
               });
             }
+
+            fm.data[field.name] = item?.value;
 
             return item?.value || search;
           }}

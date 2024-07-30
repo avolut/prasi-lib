@@ -34,6 +34,7 @@ export const Field: FC<FieldProp> = (arg) => {
       fm.render();
     }
   }, [fm.data[name]]);
+
   if (field.status === "init" && !isEditor) return null;
   const errors = fm.error.get(name);
   const props = { ...arg.props };

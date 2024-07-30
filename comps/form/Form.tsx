@@ -174,11 +174,6 @@ export const Form: FC<FMProps> = (props) => {
   if (fm.status === "resizing") {
     fm.status = "ready";
   }
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     fm.render();
-  //   }, 100);
-  // }, []);
   return (
     <form
       onSubmit={(e) => {

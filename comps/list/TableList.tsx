@@ -639,8 +639,8 @@ export const TableList: FC<TableListProp> = ({
                   },
                 },
               ]}
-              rows={genRows(200)} 
-            /> 
+              rows={genRows(200)}
+            />
           ) : (
             <>
               <DataGrid
