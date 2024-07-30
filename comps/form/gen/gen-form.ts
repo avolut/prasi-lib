@@ -174,11 +174,6 @@ export const generateForm = async (
             result = new_item;
           }
 
-          // if (result === new_item) {
-          //   const new_mapping = mapCompItemTree(new_body);
-          //   console.log(mapping, new_mapping);
-          // }
-
           copyProps(old_item, new_item, [
             "placeholder",
             "label",
