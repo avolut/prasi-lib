@@ -120,17 +120,17 @@ export const FieldUpload: FC<{
     }
   };
   return (
-    <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full c-items-center">
+    <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full c-items-stretch">
       {input.fase === "start" ? (
         <>
-          <div className="c-flex c-flex-row c-relative c-flex-grow">
+          <div className="c-flex c-flex-row c-relative c-flex-grow c-items-center">
             <input
               ref={(ref) => (input.ref = ref)}
               type="file"
               multiple={false}
               onChange={on_upload}
               className={cx(
-                "c-absolute c-w-full c-h-full c-cursor-pointer c-top-0 c-left-0 c-hidden"
+                "c-absolute c-w-full c-h-full c-cursor-pointer c-top-0 c-left-0 c-opacity-0"
               )}
             />
             {styling === "inline" ? (
@@ -138,11 +138,11 @@ export const FieldUpload: FC<{
                 <div
                   onClick={() => {
                     if (input.ref) {
-                      console.log(input.ref)
+                      console.log(input.ref);
                       input.ref.click();
                     }
                   }}
-                  className="c-items-center c-flex c-text-base c-px-5 c-py-3 c-outline-none c-rounded c-cursor-pointer "
+                  className="c-items-center c-flex c-text-base c-px-5 c-outline-none c-rounded c-cursor-pointer "
                 >
                   <div className="c-flex c-flex-row c-items-center c-px-2">
                     <Upload className="c-h-4 c-w-4" />
@@ -203,45 +203,38 @@ export const FieldUpload: FC<{
           </div>
         </>
       ) : input.fase === "upload" ? (
-        <>
+        <div className="c-flex c-items-center">
           <div className="c-px-2">
             <Loader2 className={cx("c-h-5 c-w-5 c-animate-spin")} />
           </div>
-          <div className="c-px-2">Uploading</div>
-        </>
+          <div className="">Uploading</div>
+        </div>
       ) : input.fase === "preview" ? (
-        <>
-          <div className="c-flex c-flex-row c-p-2  c-items-center">
-            <IconFile type={getFileName(siteurl(value)).extension} />
-          </div>
+        <div className="c-flex c-justify-between c-flex-1 c-p-1">
           <div
-            className="c-line-clamp-1 c-flex-grow  c-items-center"
+            className="c-flex c-border c-rounded c-items-center c-px-2 hover:c-bg-blue-50 c-cursor-pointer"
             onClick={() => {
               let url = siteurl(value);
               window.open(url, "_blank");
             }}
           >
-            {getFileName(siteurl(value)).fullname}
-          </div>
-          <div className="c-flex c-flex-row  c-items-center">
-            <div className="c-flex c-flex-row c-space-x-1 c-px-2">
-              <SquareArrowOutUpRight
-                className="c-h-5 c-w-5"
-                onClick={() => {
-                  let url = siteurl(value);
-                  window.open(url, "_blank");
-                }}
-              />
-              <Trash2
-                className="c-text-red-500 c-h-5 c-w-5"
-                onClick={() => {
-                  fm.data[field.name] = null;
-                  fm.render();
-                }}
-              />
+            <Filename url={siteurl(value)} />
+            <div className="ml-2">
+              <ExternalLink size="12px" />
             </div>
           </div>
-        </>
+          <div className="c-flex c-flex-row c-items-center c-border c-px-2 c-cursor-pointer hover:c-bg-red-100">
+            <Trash2
+              className="c-text-red-500 c-h-4 c-w-4"
+              onClick={() => {
+                if (confirm("Clear this file ?")) {
+                  fm.data[field.name] = null;
+                  fm.render();
+                }
+              }}
+            />
+          </div>
+        </div>
       ) : (
         <></>
       )}
@@ -281,6 +274,80 @@ export const FieldUpload: FC<{
     </div>
   );
 };
+
+const Filename = ({ url }: { url: string }) => {
+  const file = getFileName(url);
+
+  const color = darkenColor(generateRandomColor(file.extension));
+  return (
+    <>
+      <div
+        className={cx(
+          css`
+            border: 1px solid ${color};
+            color: ${color};
+            border-radius: 3px;
+            text-transform: uppercase;
+            padding: 0px 5px;
+            font-size: 9px;
+            height: 15px;
+            margin-right: 5px;
+          `,
+          "c-flex c-items-center"
+        )}
+      >
+        {file.extension}
+      </div>
+      <div
+        className={cx(
+          css`
+            font-size: 13px;
+          `
+        )}
+      >
+        Open in New Tab
+      </div>
+    </>
+  );
+};
+function darkenColor(color: string, factor: number = 0.5): string {
+  const rgb = hexToRgb(color);
+  const r = Math.floor(rgb.r * factor);
+  const g = Math.floor(rgb.g * factor);
+  const b = Math.floor(rgb.b * factor);
+  return rgbToHex(r, g, b);
+}
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : { r: 0, g: 0, b: 0 };
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return `#${r.toString(16).padStart(2, "0")}${g
+    .toString(16)
+    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+function generateRandomColor(str: string): string {
+  let hash = 0;
+  if (str.length === 0) return hash.toString(); // Return a string representation of the hash
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash;
+  }
+  let color = "#";
+  for (let i = 0; i < 3; i++) {
+    const value = (hash >> (i * 8)) & 255;
+    color += ("00" + value.toString(16)).substr(-2);
+  }
+  return color;
+}
 const getFileName = (url: string) => {
   const fileName = url.substring(url.lastIndexOf("/") + 1);
   const dotIndex = fileName.lastIndexOf(".");

@@ -42,7 +42,7 @@ export const gen_prop_fields = async (gen_table: string, depth?: number) => {
   }
   return await loadSchemaLayer(
     id_site,
-    typeof depth === "undefined" ? 5 : depth,
+    typeof depth === "undefined" ? 4 : depth,
     {},
     gen_table
   );
@@ -153,8 +153,8 @@ const loadSingle = async (id_site: string, table: string) => {
       }
       await Promise.all(pending[table]);
       single[table] = {
-        cols: await pending[table][0] as any,
-        rels: await pending[table][1] as any,
+        cols: (await pending[table][0]) as any,
+        rels: (await pending[table][1]) as any,
       };
 
       await kset(idb_key, single[table]);

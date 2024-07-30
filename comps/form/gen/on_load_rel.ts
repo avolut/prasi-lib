@@ -28,7 +28,7 @@ export const on_load_rel = ({
   const skip_select =
     !isEmptyString(type) &&
     ["checkbox", "typeahead", "button"].includes(type as any);
-
+ 
   return `\
 async (arg: {
   field: any;
@@ -55,7 +55,7 @@ async (arg: {
       ext_select[rel__id_parent] = true;
     }
 
-    const where = await call_prasi_events("field", "relation_load", [fm, arg.field]) || {};
+    const where = (await call_prasi_events("field", "relation_load", [fm, arg.field]) || {}) as Prisma.${table}WhereInput;
 
     let items = await db.${table}.findMany({
       select: {

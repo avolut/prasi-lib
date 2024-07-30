@@ -11,6 +11,7 @@ export const SingleOption: FC<{
   fm: FMLocal;
   arg: FieldProp;
 }> = ({ field, fm, arg }) => {
+
   return (
     <>
       {arg.sub_type === "dropdown" ? (
@@ -23,7 +24,7 @@ export const SingleOption: FC<{
         <FieldRadio arg={arg} field={field} fm={fm} />
       ) : arg.sub_type === "checkbox" ? (
         <FieldSingleCheckbox arg={arg} field={field} fm={fm} />
-      ) :(
+      ) : (
         <></>
       )}
     </>
