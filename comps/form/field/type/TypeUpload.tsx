@@ -119,21 +119,36 @@ export const FieldUpload: FC<{
       input.ref.value = null;
     }
   };
+
+  if (isEditor) input.fase = "start";
+
   return (
     <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full c-items-stretch">
       {input.fase === "start" ? (
         <>
-          <div className="c-flex c-flex-row c-relative c-flex-grow c-items-center">
-            <input
-              ref={(ref) => (input.ref = ref)}
-              type="file"
-              multiple={false}
-              onChange={on_upload}
-              className={cx(
-                "c-absolute c-w-full c-h-full c-cursor-pointer c-top-0 c-left-0 c-opacity-0"
-              )}
-            />
-            {styling === "inline" ? (
+          <div
+            className={cx(
+              "c-flex c-flex-row c-relative c-flex-grow c-items-center c-cursor-pointer hover:c-bg-blue-50",
+              css`
+                input[type="file"],
+                input[type="file"]::-webkit-file-upload-button {
+                  cursor: pointer;
+                }
+              `
+            )}
+          >
+            {!isEditor && (
+              <input
+                ref={(ref) => (input.ref = ref)}
+                type="file"
+                multiple={false}
+                onChange={on_upload}
+                className={cx(
+                  "c-absolute c-w-full c-h-full c-cursor-pointer c-top-0 c-left-0 c-opacity-0"
+                )}
+              />
+            )}
+            {styling !== "full" ? (
               <>
                 <div
                   onClick={() => {
@@ -148,7 +163,7 @@ export const FieldUpload: FC<{
                     <Upload className="c-h-4 c-w-4" />
                   </div>
                   <div className="c-flex c-flex-row c-items-center">
-                    Upload Your File
+                    Upload File
                   </div>
                 </div>
               </>
@@ -281,23 +296,25 @@ const Filename = ({ url }: { url: string }) => {
   const color = darkenColor(generateRandomColor(file.extension));
   return (
     <>
-      <div
-        className={cx(
-          css`
-            border: 1px solid ${color};
-            color: ${color};
-            border-radius: 3px;
-            text-transform: uppercase;
-            padding: 0px 5px;
-            font-size: 9px;
-            height: 15px;
-            margin-right: 5px;
-          `,
-          "c-flex c-items-center"
-        )}
-      >
-        {file.extension}
-      </div>
+      {file.extension && (
+        <div
+          className={cx(
+            css`
+              border: 1px solid ${color};
+              color: ${color};
+              border-radius: 3px;
+              text-transform: uppercase;
+              padding: 0px 5px;
+              font-size: 9px;
+              height: 15px;
+              margin-right: 5px;
+            `,
+            "c-flex c-items-center"
+          )}
+        >
+          {file.extension}
+        </div>
+      )}
       <div
         className={cx(
           css`
@@ -305,7 +322,7 @@ const Filename = ({ url }: { url: string }) => {
           `
         )}
       >
-        Open in New Tab
+        View File in New Tab
       </div>
     </>
   );
