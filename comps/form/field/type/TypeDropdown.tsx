@@ -25,6 +25,7 @@ export const TypeDropdown: FC<{
       : fm.data[field.name];
 
   useEffect(() => {
+    if (isEditor) return;
     if (typeof arg.on_load === "function") {
       const options = arg.on_load({ field });
       if (options instanceof Promise) {
@@ -57,26 +58,24 @@ export const TypeDropdown: FC<{
                 })
               : fm.data[field.name];
 
-          if (
-            field.type === "single-option" &&
-            !value &&
-            local.options.length > 0
-          ) {
-            arg.opt_set_value({
-              fm,
-              name: field.name,
-              type: field.type,
-              options: local.options,
-              selected: [local.options[0]?.value],
-            });
-          } else if (field.type === "single-option" && value) {
-            arg.opt_set_value({
-              fm,
-              name: field.name,
-              type: field.type,
-              options: local.options,
-              selected: [value],
-            });
+          if (field.type === "single-option") {
+            if (!value && local.options.length > 0) {
+              arg.opt_set_value({
+                fm,
+                name: field.name,
+                type: field.type,
+                options: local.options,
+                selected: [local.options[0]?.value],
+              });
+            } else if ( value) {
+              arg.opt_set_value({
+                fm,
+                name: field.name,
+                type: field.type,
+                options: local.options,
+                selected: [value],
+              });
+            }
           }
 
           local.loaded = true;
@@ -140,8 +139,6 @@ export const TypeDropdown: FC<{
                 selected: [item.value],
               });
             }
-
-            fm.data[field.name] = item?.value;
 
             return item?.value || search;
           }}
