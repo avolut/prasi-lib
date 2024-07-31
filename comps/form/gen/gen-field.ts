@@ -12,6 +12,7 @@ export const generateField = async (
   commit: boolean
 ) => {
   let fieldType = getString(data.sub_type.value) as string;
+
   let table = getString(data.rel__gen_table.value) as string;
   const raw_fields = JSON.parse(data.rel__gen_fields.value) as (
     | string

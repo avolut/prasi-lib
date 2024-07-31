@@ -101,7 +101,7 @@ export const newField = async (
           type: "date",
           ext__show_label: show ? "y" : "n",
           ext__required: field.optional ? "n" : "y",
-          sub_type: "datetime",
+          sub_type: "date",
           child: {
             childs: [],
           },

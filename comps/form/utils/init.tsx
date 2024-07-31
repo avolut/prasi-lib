@@ -54,28 +54,32 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           }
         }
         if (should_load) {
-          const on_load_result = on_load({ fm });
-          let result = undefined;
-          if (
-            typeof on_load_result === "object" &&
-            on_load_result instanceof Promise
-          ) {
-            result = await on_load_result;
+          if (!on_load) {
+            console.error("Form on_load is empty. Please re-generate the form.");
           } else {
-            result = on_load_result;
-          }
+            const on_load_result = on_load({ fm });
+            let result = undefined;
+            if (
+              typeof on_load_result === "object" &&
+              on_load_result instanceof Promise
+            ) {
+              result = await on_load_result;
+            } else {
+              result = on_load_result;
+            }
 
-          fm.data = result;
+            fm.data = result;
 
-          if (result === undefined) fm.data = {};
+            if (result === undefined) fm.data = {};
 
-          if (isEditor) {
-            const item_id = props.item.id;
-            if (item_id) {
-              editorFormData[item_id] = {
-                data: fm.data,
-                on_load: get(props.item, "component.props.on_load.value"),
-              };
+            if (isEditor) {
+              const item_id = props.item.id;
+              if (item_id) {
+                editorFormData[item_id] = {
+                  data: fm.data,
+                  on_load: get(props.item, "component.props.on_load.value"),
+                };
+              }
             }
           }
         }
