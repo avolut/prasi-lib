@@ -29,7 +29,7 @@ export const generateMDForm = async (
       mode: "raw",
       value: `({ md: typeof md !== "undefined" ? md : undefined })`,
     },
-    on_load: { 
+    on_load: {
       mode: "string",
       value: "",
     },
@@ -43,9 +43,9 @@ export const generateMDForm = async (
         name: "item",
         childs: [],
       }),
-    }, 
+    },
   };
-  const newitem: any = {
+  const raw_new_item: any = {
     type: "item",
     name: "item",
     component: {
@@ -53,7 +53,28 @@ export const generateMDForm = async (
       props,
     },
   };
-  generateForm(async (props: any) => {}, props, newitem, false, true);
+
+  let cur_item = (
+    item.edit.childs
+      .find((e) => e.name.includes("child"))
+      ?.edit?.childs?.find((e) => e.name === "tab")?.component?.props as any
+  )?.child?.content?.childs?.[0];
+
+  if (cur_item) {
+    const new_item = createItem(raw_new_item) as IItem;
+    for (const [k, v] of Object.entries(new_item.component?.props || {})) {
+      if (cur_item.component) {
+        const prop = v as any;
+        if (prop.meta.type !== "content-element") {
+          cur_item.component.props[k] = v;
+        }
+      }
+    }
+  } else {
+    cur_item = raw_new_item;
+  }
+
+  generateForm(async (props: any) => {}, props, cur_item, false, true);
 
   tab_detail?.edit.setProp("breadcrumb", {
     mode: "raw",
