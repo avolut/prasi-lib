@@ -157,7 +157,7 @@ export const FieldUpload: FC<{
                       input.ref.click();
                     }
                   }}
-                  className="c-items-center c-flex c-text-base c-px-5 c-outline-none c-rounded c-cursor-pointer "
+                  className="c-items-center c-flex c-text-base c-px-3 c-outline-none c-rounded c-cursor-pointer "
                 >
                   <div className="c-flex c-flex-row c-items-center c-px-2">
                     <Upload className="c-h-4 c-w-4" />
