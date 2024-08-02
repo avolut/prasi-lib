@@ -1,4 +1,4 @@
-import { GFCol } from "./fields";
+import { formatName, GFCol } from "./fields";
 
 export const on_load = ({
   pk,
@@ -23,16 +23,16 @@ export const on_load = ({
       sample[k] = {};
 
       Object.keys(v.select).map((e) => {
-        sample[k][e] = "sample";
+        sample[k][e] = formatName(e);
       });
     } else {
-      sample[k] = "sample";
+      sample[k] = formatName(k);
     }
   }
 
   let is_md: string | boolean =
     typeof opt?.is_md === "undefined" ? true : !!opt?.is_md;
-    
+
   if (!is_md) is_md = "";
 
   return `\

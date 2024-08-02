@@ -1,3 +1,5 @@
+import { formatName } from "lib/gen/utils";
+
 export const on_load = ({
   pk,
   table,
@@ -19,7 +21,7 @@ export const on_load = ({
       Object.keys(v.select)
         .filter((e) => e !== pks[k])
         .map((e) => {
-          val[e] = "sample";
+          val[e] = formatName(`${e}_${k}`);
         });
       const field = fields.find((e) => e.name === k);
       sample[k] = val;
@@ -29,7 +31,7 @@ export const on_load = ({
         }
       }
     } else {
-      sample[k] = "sample";
+      sample[k] = formatName(k);
     }
   }
 
