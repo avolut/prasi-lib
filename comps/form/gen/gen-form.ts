@@ -147,67 +147,67 @@ export const generateForm = async (
       walkGenForm(new_body, existing_childs as any);
     }
 
-    const prop_item = propFromItem(item);
-    const current_body = prop_item?.body?.value as IItem;
+    // const prop_item = propFromItem(item);
+    // const current_body = prop_item?.body?.value as IItem;
 
-    if (current_body) {
-      const mapping = mapCompItemTree(new_body, {
-        shouldAdd({ item }) {
-          if (item.component?.props?.sub_type?.value === "table-edit")
-            return "add-skip-children";
+    // if (current_body) {
+    //   const mapping = mapCompItemTree(new_body, {
+    //     shouldAdd({ item }) {
+    //       if (item.component?.props?.sub_type?.value === "table-edit")
+    //         return "add-skip-children";
 
-          return "add";
-        },
-      });
+    //       return "add";
+    //     },
+    //   });
 
-      reduceItemMapping(current_body, mapping, (old_item, new_item) => {
-        const pold = propFromItem(old_item);
-        const pnew = propFromItem(new_item);
+    //   reduceItemMapping(current_body, mapping, (old_item, new_item) => {
+    //     const pold = propFromItem(old_item);
+    //     const pnew = propFromItem(new_item);
 
-        let result = old_item;
-        if (
-          result.component &&
-          result.component?.id === "32550d01-42a3-4b15-a04a-2c2d5c3c8e67"
-        ) {
-          if (pold.type.value !== pnew.type.value) {
-            result = new_item;
-          } else if (pold.sub_type.value !== pnew.sub_type.value) {
-            result = new_item;
-          }
+    //     let result = old_item;
+    //     if (
+    //       result.component &&
+    //       result.component?.id === "32550d01-42a3-4b15-a04a-2c2d5c3c8e67"
+    //     ) {
+    //       if (pold.type.value !== pnew.type.value) {
+    //         result = new_item;
+    //       } else if (pold.sub_type.value !== pnew.sub_type.value) {
+    //         result = new_item;
+    //       }
 
-          copyProps(old_item, new_item, [
-            "placeholder",
-            "label",
-            "link__url",
-            "ext__width",
-            "opt__load_trigger",
-            "ext__on_change",
-            "ext__description",
-            "ext__show_label",
-            "ext__disabled",
-            "ext__prefix",
-            "ext__suffix",
-          ]);
-        }
+    //       copyProps(old_item, new_item, [
+    //         "placeholder",
+    //         "label",
+    //         "link__url",
+    //         "ext__width",
+    //         "opt__load_trigger",
+    //         "ext__on_change",
+    //         "ext__description",
+    //         "ext__show_label",
+    //         "ext__disabled",
+    //         "ext__prefix",
+    //         "ext__suffix",
+    //       ]);
+    //     }
 
-        return result;
-      });
+    //     return result;
+    //   });
 
-      if (
-        mapping["32550d01-42a3-4b15-a04a-2c2d5c3c8e67"] &&
-        Object.keys(mapping["32550d01-42a3-4b15-a04a-2c2d5c3c8e67"]).length > 0
-      ) {
-        for (const val of Object.values(
-          mapping["32550d01-42a3-4b15-a04a-2c2d5c3c8e67"]
-        )) {
-          current_body.childs?.[0]?.childs.push(val);
-        }
-      }
+    //   if (
+    //     mapping["32550d01-42a3-4b15-a04a-2c2d5c3c8e67"] &&
+    //     Object.keys(mapping["32550d01-42a3-4b15-a04a-2c2d5c3c8e67"]).length > 0
+    //   ) {
+    //     for (const val of Object.values(
+    //       mapping["32550d01-42a3-4b15-a04a-2c2d5c3c8e67"]
+    //     )) {
+    //       current_body.childs?.[0]?.childs.push(val);
+    //     }
+    //   }
 
-      if (current_body?.childs?.length > 0) {
-        new_body = current_body;
-      }
-    }
+    //   if (current_body?.childs?.length > 0) {
+    //     new_body = current_body;
+    //   }
+    // }
 
     if (commit) {
       Object.keys(result).map((e) => {

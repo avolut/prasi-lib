@@ -1,6 +1,9 @@
 import { formatName, GenFn } from "lib/gen/utils";
 import { generateMDForm } from "./md-form";
 import { generateMDList } from "./md-list";
+import { getValueProp } from "lib/comps/form/gen/gen-rel";
+import { getProp } from "lib/utils/get-prop";
+import { propFromItem } from "lib/utils/diff-gen";
 const w = window as any;
 export const generateMasterDetail: GenFn<{
   item: PrasiItem;
@@ -20,6 +23,14 @@ export const generateMasterDetail: GenFn<{
       item.edit.setProp("title", table.value);
     }
   } catch (e) {}
+
+  if (!arg.fields && data?.gen_fields?.valueBuilt) {
+    eval(`arg.fields = ${data.gen_fields.valueBuilt}`);
+  }
+
+  if (!arg.table && data?.gen_table?.valueBuilt) {
+    eval(`arg.table = ${data.gen_table.valueBuilt}`);
+  }
 
   await generateMDList(arg, data, false);
   await generateMDForm(arg, data, false);
