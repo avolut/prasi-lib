@@ -60,7 +60,7 @@ async (arg: {
       (await call_prasi_events("field", "relation_load", [fm, arg.field]) || {}) as Prisma.${table}WhereInput;
 
       if (typeof opt__load_trigger === "object" && typeof opt__load_trigger?.on_change === "function") {
-        const trigger = await opt__load_trigger.on_change({ md, fm, where });
+        const trigger = await opt__load_trigger.on_change({ md: typeof md !== 'undefined' ? md : undefined, fm, where });
         if (trigger.hidden) {
           done([]);
           arg.field.hidden = true;

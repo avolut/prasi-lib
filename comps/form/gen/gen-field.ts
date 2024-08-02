@@ -31,7 +31,7 @@ export const generateField = async (
       pk: generateSelect(parseGenField(master.value.checked)).pk,
       table: master?.name,
       select: generateSelect(parseGenField(master.value.checked)).select,
-      pks: {},
+      pks: {}, 
       type: fieldType,
     } as any);
     const result = {

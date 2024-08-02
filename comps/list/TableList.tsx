@@ -820,7 +820,7 @@ export const TableList: FC<TableListProp> = ({
                     );
                   })
                 ) : (
-                  <>No Data</>
+                  <>No&nbsp;Data asf as</>
                 )}
               </div>
             </>

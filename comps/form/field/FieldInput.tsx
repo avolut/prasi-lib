@@ -103,6 +103,8 @@ export const FieldInput: FC<{
     );
   }
 
+  // console.log(prefix, suffix);
+
   return (
     <div
       className={cx(

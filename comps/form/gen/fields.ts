@@ -83,6 +83,14 @@ export const newField = async (
           label: formatName(field.name),
           ext__show_label: show ? "y" : "n",
           ext__required: field.optional ? "n" : "y",
+          opt__on_load: [
+            `() => {
+  return [
+    { label: "No", value: false },
+    { label: "Yes", value: true },
+  ];
+}`,
+          ],
           type: "single-option",
           sub_type: "toogle",
           ext__on_change: opt.on_change

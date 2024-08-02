@@ -110,9 +110,9 @@ export const generateForm = async (
         align: "top-left",
       },
     };
-    const existing_childs = (
-      (item.component?.props.body as any)?.content as IItem
-    )?.childs;
+    // const existing_childs = (
+    //   (item.component?.props.body as any)?.content as IItem
+    // )?.childs;
 
     let new_body = createItem({
       name: "item",
@@ -143,9 +143,9 @@ export const generateForm = async (
       ].filter((e) => e),
     });
 
-    if (Array.isArray(existing_childs) && existing_childs.length > 0) {
-      walkGenForm(new_body, existing_childs as any);
-    }
+    // if (Array.isArray(existing_childs) && existing_childs.length > 0) {
+    //   walkGenForm(new_body, existing_childs as any);
+    // }
 
     // const prop_item = propFromItem(item);
     // const current_body = prop_item?.body?.value as IItem;
