@@ -22,6 +22,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     tab_mode,
     editor_tab,
     gen_fields,
+    footer,
     gen_table,
     on_init,
     _item,
@@ -69,7 +70,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
         masterDetailApplyParams(md);
       },
     },
-    master: { render() {} },
+    master: { render() {}, reload() {} },
     panel: {
       size: 25,
       min_size: 0,
@@ -128,6 +129,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
       md.header.render();
     }, [title]);
   }
+
   return (
     <div
       className={cx(
@@ -140,6 +142,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
           {md.props.mode === "full" && <ModeFull md={md} mdr={mdr} />}
           {md.props.mode === "v-split" && <ModeVSplit md={md} mdr={mdr} />}
           {md.props.mode === "h-split" && <ModeHSplit md={md} mdr={mdr} />}
+          <PassProp md={md}>{[footer]}</PassProp>
         </>
       )}
     </div>

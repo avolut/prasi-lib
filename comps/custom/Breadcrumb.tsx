@@ -54,9 +54,18 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ value, className }) => {
         <FieldLoading />
       ) : (
         <>
-          {(!local.value || local.value.length === 0) &&
-            isEditor &&
-            "Breadcrumb"}
+          {(!local.value || local.value.length === 0) && isEditor && (
+            <>
+              {" "}
+              {isDesktop ? (
+                "Breadcrumb"
+              ) : (
+                <h1 className="bredcrumb-label c-font-semibold c-flex c-px-3 c-items-center c-text-xs md:c-text-base">
+                  Breadcrumb
+                </h1>
+              )}
+            </>
+          )}
           {isDesktop && (
             <>
               {list.map((cur, index): ReactNode => {

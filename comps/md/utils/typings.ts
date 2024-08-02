@@ -21,6 +21,7 @@ export type MDProps = {
   tab_mode: "h-tab" | "v-tab" | "hidden";
   editor_tab: string;
   gen_fields: any;
+  footer: any;
   gen_table: string;
   on_init: (md: MDLocal) => void;
   _item: PrasiItem;

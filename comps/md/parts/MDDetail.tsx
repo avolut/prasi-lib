@@ -17,6 +17,7 @@ export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   if (!detail) {
     return null;
   }
+
   return (
     <>
       {md.props.show_head === "only-child" && <MDHeader md={md} mdr={mdr} />}
