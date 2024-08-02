@@ -92,7 +92,7 @@ export const newField = async (
 }`,
           ],
           type: "single-option",
-          sub_type: "toogle",
+          sub_type: "toggle",
           ext__on_change: opt.on_change
             ? [opt.on_change, opt.on_change]
             : undefined,

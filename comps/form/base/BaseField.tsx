@@ -60,7 +60,7 @@ export const BaseField = (prop: {
       <div className="field-input c-flex c-flex-1 c-flex-col">
         <div
           className={cx(
-            !["toogle", "button", "radio", "checkbox"].includes(arg.sub_type)
+            !["toggle", "button", "radio", "checkbox"].includes(arg.sub_type)
               ? cx(
                   "field-outer c-overflow-hidden c-flex-1 c-flex c-flex-row c-text-sm c-bg-white",
                   "c-rounded "

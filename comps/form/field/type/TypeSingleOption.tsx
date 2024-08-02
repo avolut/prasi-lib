@@ -16,7 +16,7 @@ export const SingleOption: FC<{
     <>
       {arg.sub_type === "dropdown" ? (
         <TypeDropdown arg={arg} field={field} fm={fm} />
-      ) : arg.sub_type === "toogle" ? (
+      ) : arg.sub_type === "toggle" ? (
         <FieldToggle arg={arg} field={field} fm={fm} />
       ) : arg.sub_type === "button" ? (
         <FieldButton arg={arg} field={field} fm={fm} />
