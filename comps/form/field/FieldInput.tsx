@@ -4,13 +4,9 @@ import { FieldLoading } from "../../ui/field-loading";
 import { FMLocal, FieldLocal, FieldProp } from "../typings";
 import { TableEdit } from "./table-edit/TableEdit";
 import { FieldTypeInput, PropTypeInput } from "./type/TypeInput";
+import { FieldLink } from "./type/TypeLink";
 import { MultiOption } from "./type/TypeMultiOption";
 import { SingleOption } from "./type/TypeSingleOption";
-import { FieldLink } from "./type/TypeLink";
-
-const modify = {
-  timeout: null as any,
-};
 
 export const FieldInput: FC<{
   field: FieldLocal;
