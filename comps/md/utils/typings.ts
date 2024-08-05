@@ -18,6 +18,7 @@ export type MDProps = {
   name: string;
   mode: "full" | "h-split" | "v-split";
   show_head: "always" | "only-master" | "only-child" | "hidden";
+  show_footer: "always" | "only-master" | "only-child" | "hidden";
   tab_mode: "h-tab" | "v-tab" | "hidden";
   editor_tab: string;
   gen_fields: any;

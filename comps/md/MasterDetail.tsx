@@ -142,7 +142,9 @@ export const MasterDetail: FC<MDProps> = (arg) => {
           {md.props.mode === "full" && <ModeFull md={md} mdr={mdr} />}
           {md.props.mode === "v-split" && <ModeVSplit md={md} mdr={mdr} />}
           {md.props.mode === "h-split" && <ModeHSplit md={md} mdr={mdr} />}
-          <PassProp md={md}>{[footer]}</PassProp>
+          {arg.show_footer !== "hidden" && (
+            <PassProp md={md}>{[footer]}</PassProp>
+          )}
         </>
       )}
     </div>

@@ -1,8 +1,11 @@
 export { FieldLoading } from "@/comps/ui/field-loading";
 import { lazify, lazifyMany } from "@/utils/lazify";
+import __get from "lodash.get";
 export { guessLabel } from "./utils/guess-label";
 export { fetchLinkParams } from "./comps/form/field/type/TypeLink";
 export { prasi_gen } from "./gen/prasi_gen";
+
+export const _get = __get;
 
 export const Accordion = lazify(
   async () => (await import("@/comps/ui/accordion")).Accordion
