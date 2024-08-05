@@ -7,7 +7,7 @@ export { prasi_gen } from "./gen/prasi_gen";
 
 export const _get = __get;
 
-export const Accordion = lazify(
+export const Accordion = lazify( 
   async () => (await import("@/comps/ui/accordion")).Accordion
 );
 
