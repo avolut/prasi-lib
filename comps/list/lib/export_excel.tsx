@@ -1,5 +1,3 @@
-import * as XLSX from "xlsx";
-import { TableListProp } from "../TableList";
 import { filterWhere } from "lib/comps/filter/parser/filter-where";
 import { call_prasi_events } from "lib/exports";
 
@@ -8,7 +6,7 @@ export const export_excel = async ({
   tbl,
   on_load,
 }: {
-  list: TableListProp;
+  list: any;
   tbl: {
     columns: any[];
     sort: {

@@ -1,8 +1,8 @@
 import { FieldLocal } from "lib/comps/form/typings";
 import { FMLocal } from "../..";
-import { Prisma } from "../../typings/prisma";
 import { set } from "./set";
 import { MDLocal } from "lib/comps/md/utils/typings";
+import { Prisma } from "../../typings/prisma";
 
 const events = {
   form: {

@@ -42,7 +42,7 @@ export const Menu: FC<MenuProp> = (props) => {
 
   return (
     <div
-      className={cx("c-overflow-y-auto c-relative c-h-full c-w-full ")}
+      className={cx("c-overflow-y-auto c-relative c-h-full c-w-full c-flex-1")}
       ref={ref}
     >
       <div className="sidebar-menu c-absolute c-inset-0 c-flex c-flex-col c-flex-grow c-px-3 c-py-4 ">
