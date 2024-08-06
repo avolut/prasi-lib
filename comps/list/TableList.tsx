@@ -824,7 +824,7 @@ export const TableList: FC<TableListProp> = ({
               ) : (
                 <div className="c-flex c-items-center c-justify-center c-flex-1 w-full h-full c-flex-col ">
                   <Sticker size={35} strokeWidth={1.3} />
-                  <div className="c-pt-2">No&nbsp;Data</div>
+                  <div className="c-pt-1">No&nbsp;Data</div>
                 </div>
               )}
             </>
