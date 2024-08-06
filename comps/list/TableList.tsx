@@ -2,8 +2,9 @@ import { GFCol, parseGenField } from "@/gen/utils";
 import { cn } from "@/utils";
 import { fields_map } from "@/utils/format-value";
 import { useLocal } from "@/utils/use-local";
+import { set } from "lib/utils/set";
 import get from "lodash.get";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2, Sticker } from "lucide-react";
 import {
   ChangeEvent,
   FC,
@@ -26,10 +27,9 @@ import { Toaster, toast } from "sonner";
 import { call_prasi_events } from "../../..";
 import { filterWhere } from "../filter/parser/filter-where";
 import { getFilter } from "../filter/utils/get-filter";
+import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
 import { sortTree } from "./utils/sort-tree";
-import { set } from "lib/utils/set";
-import { MDLocal } from "../md/utils/typings";
 
 type OnRowClick = (arg: {
   row: any;
@@ -283,6 +283,7 @@ export const TableList: FC<TableListProp> = ({
           try {
             callback(await result);
           } catch (e) {
+            console.error(e);
             local.status = "error";
             toast.dismiss();
             toast.error(
@@ -793,12 +794,12 @@ export const TableList: FC<TableListProp> = ({
             />
           ) : (
             <>
-              <div
-                className="w-full h-full overflow-y-auto c-flex-col"
-                onScroll={local.paging.scroll}
-              >
-                {Array.isArray(data) ? (
-                  data.map((e, idx) => {
+              {Array.isArray(data) && data.length > 0 ? (
+                <div
+                  className="w-full h-full overflow-y-auto c-flex-col"
+                  onScroll={local.paging.scroll}
+                >
+                  {data.map((e, idx) => {
                     return (
                       <div
                         className="c-flex-grow c-flex"
@@ -818,11 +819,14 @@ export const TableList: FC<TableListProp> = ({
                         </PassProp>
                       </div>
                     );
-                  })
-                ) : (
-                  <>No&nbsp;Data asf as</>
-                )}
-              </div>
+                  })}
+                </div>
+              ) : (
+                <div className="c-flex c-items-center c-justify-center c-flex-1 w-full h-full c-flex-col ">
+                  <Sticker size={35} strokeWidth={1.3} />
+                  <div className="c-pt-2">No&nbsp;Data</div>
+                </div>
+              )}
             </>
           )}
         </div>

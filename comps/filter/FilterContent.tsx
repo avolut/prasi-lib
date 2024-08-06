@@ -65,6 +65,7 @@ export const FilterContent: FC<{
             }
 
             .field.search {
+              width: auto;
               &.focused,
               &.filled {
                 input {
