@@ -87,23 +87,14 @@ export const TypeDropdown: FC<{
     });
   };
 
-  if ((arg.load_trigger?.deps || []).length > 0 && !isEditor) {
-    useEffect(
-      () => {
-        reload();
-      },
-      arg.load_trigger?.deps.map((e) => fm.data[e])
-    );
-  } else {
-    useEffect(() => {
-      if (isEditor) {
-        local.loaded = true;
-        local.render();
-        return;
-      }
-      reload();
-    }, []);
-  }
+  useEffect(() => {
+    if (isEditor) {
+      local.loaded = true;
+      local.render();
+      return;
+    }
+    reload();
+  }, []);
 
   let value =
     typeof arg.opt_get_value === "function"

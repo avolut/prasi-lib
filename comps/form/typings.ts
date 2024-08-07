@@ -48,13 +48,6 @@ export type FieldProp = {
   label: string;
   desc?: string;
   props?: any;
-  load_trigger?: {
-    deps: any[];
-    on_change: (arg: {
-      fm: FMLocal;
-      where: any;
-    }) => Promise<{ where?: any; result?: any[] }>;
-  };
   link: {
     text:
       | string
