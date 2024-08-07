@@ -14,7 +14,7 @@ export const TypeDropdown: FC<{
     options: [] as { value: string; label: string; data: any }[],
   });
 
-  const reload = () => {
+  const reload = (callback?: () => void) => {
     if (typeof arg.on_load === "function") {
       local.loaded = false;
       local.render();
@@ -71,13 +71,20 @@ export const TypeDropdown: FC<{
 
           local.loaded = true;
           local.render();
+          callback?.();
         });
       } else {
         local.loaded = true;
         local.options = Array.isArray(options) ? options : ([] as any);
         local.render();
+        callback?.();
       }
     }
+  };
+  field.reload_options = () => {
+    return new Promise((done) => {
+      reload(done);
+    });
   };
 
   if ((arg.load_trigger?.deps || []).length > 0 && !isEditor) {

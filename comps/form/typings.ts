@@ -196,6 +196,7 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   options: {
     on_load?: () => Promise<{ value: string; label: string }[]>;
   };
+  reload_options: () => Promise<void>;
   on_change?: (arg: {
     value: any;
     name: string;

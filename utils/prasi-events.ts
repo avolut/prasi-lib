@@ -1,8 +1,8 @@
 import { FieldLocal } from "lib/comps/form/typings";
-import { FMLocal } from "../..";
-import { set } from "./set";
 import { MDLocal } from "lib/comps/md/utils/typings";
+import { FMLocal } from "../..";
 import { Prisma } from "../../typings/prisma";
+import { set } from "./set";
 
 const events = {
   form: {
@@ -20,9 +20,9 @@ const events = {
     },
   },
   field: {
-    relation_load: async (fm: FMLocal, field: FieldLocal) => {
-      return {} as Record<string, any>;
-    },
+    on_init: async (fm: FMLocal, field: FieldLocal) => {},
+    on_change: async (fm: FMLocal, field: FieldLocal) => {},
+    options_load: async (fm: FMLocal, field: FieldLocal) => {},
   },
   tablelist: {
     after_load: async <T extends Prisma.ModelName>(
@@ -34,6 +34,11 @@ const events = {
   },
 };
 
+type TriggerOnChange = {
+  fm: FMLocal;
+  md: any;
+  where: any;
+};
 type PRASI_EVENT = typeof events;
 export const prasi_events = <
   K extends keyof PRASI_EVENT,
