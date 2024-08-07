@@ -149,13 +149,13 @@ ${
       fm.status = "ready";
       fm.data = form;
       md.selected = form;
+      if (md.props.mode !== "full") md.master.reload({ toast: false });
       md.render();
       fm.render();
 
       if (fm.props.back_on_save === "y") {
         md.selected = null;
         md.tab.active = "master";
-        md.internal.action_should_refresh = true;
         md.params.apply();
         md.render();
       }

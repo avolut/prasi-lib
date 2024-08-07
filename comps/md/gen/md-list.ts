@@ -38,7 +38,6 @@ export const generateMDList = async (
       value: `\
 ({ row, rows, idx, event }: OnRowClick) => {
 md.selected = row;
-md.internal.action_should_refresh = true;
 md.tab.active = "detail";
 md.params.apply();
 md.render();

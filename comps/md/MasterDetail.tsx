@@ -27,6 +27,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     on_init,
     _item,
     title,
+    detail_size,
   } = arg;
   const _ref = useRef({ PassProp, item: _item, childs: {} });
   const mdr = _ref.current;
@@ -47,7 +48,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
       active: "",
       list: [],
     },
-    internal: { action_should_refresh: true },
+    internal: { action_should_refresh: false },
     childs: {},
     props: {
       mode,
@@ -70,11 +71,8 @@ export const MasterDetail: FC<MDProps> = (arg) => {
         masterDetailApplyParams(md);
       },
     },
+    detail_size: Number(detail_size || "400"),
     master: { render() {}, reload() {} },
-    panel: {
-      size: 25,
-      min_size: 0,
-    },
   });
 
   mdr.PassProp = PassProp;

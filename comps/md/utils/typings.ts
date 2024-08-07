@@ -24,6 +24,7 @@ export type MDProps = {
   gen_fields: any;
   footer: any;
   gen_table: string;
+  detail_size: string;
   on_init: (md: MDLocal) => void;
   _item: PrasiItem;
   deps?: any[];
@@ -54,7 +55,11 @@ export type MDLocalInternal = {
     list: string[];
   };
   internal: { action_should_refresh: boolean };
-  master: { reload: () => void; render: () => void };
+  master: {
+    reload: (arg?: { toast: boolean }) => void;
+    render: () => void;
+    pk?: string;
+  };
   params: {
     links: LinkParam[];
     hash: Record<string, any>;
@@ -74,6 +79,7 @@ export type MDLocalInternal = {
     item: PrasiItem;
   };
   deps?: object;
+  detail_size: number;
   childs: Record<
     string,
     {
@@ -87,10 +93,6 @@ export type MDLocalInternal = {
       list?: any;
     }
   >;
-  panel: {
-    size: number;
-    min_size: number;
-  };
 };
 export type MDRef = {
   PassProp: any;
@@ -133,7 +135,7 @@ export const MasterDetailType = `const md = {
     apply: () => void;
   };
   props: {
-    mode: "full" | "h-split" | "v-split";
+    mode: string;
     show_head: "always" | "only-master" | "only-child" | "hidden";
     tab_mode: "h-tab" | "v-tab" | "hidden";
     editor_tab: string;
@@ -143,7 +145,7 @@ export const MasterDetailType = `const md = {
   };
   internal: { action_should_refresh: boolean };
   render: () => void;
-  master: { reload: () => void; render: () => void };
+  master: { reload: (arg?:{toast: boolean}) => void; render: () => void };
   pk?: {
     name: string;
     type: string;
@@ -168,9 +170,6 @@ export const MasterDetailType = `const md = {
       md?: md;
     }
   >;
-  panel: {
-    size: number;
-    min_size: number;
-  };
+  detail_size: number;
   deps: any
 };`;

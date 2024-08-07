@@ -3,6 +3,7 @@ import { FC, useEffect } from "react";
 import { breadcrumbPrefix } from "../utils/md-hash";
 import { MDLocal, MDRef } from "../utils/typings";
 import { MDHeader } from "./MDHeader";
+import { hashSum } from "lib/utils/hash-sum";
 
 export const should_show_tab = (md: MDLocal) => {
   if (isEditor) {
@@ -12,6 +13,7 @@ export const should_show_tab = (md: MDLocal) => {
 };
 
 export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
+  const local = useLocal({ selected: "", synced: false });
   const detail = md.childs[md.tab.active];
   const PassProp = mdr.PassProp;
   if (!detail) {

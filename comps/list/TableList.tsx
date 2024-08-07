@@ -23,13 +23,14 @@ import DataGrid, {
 } from "react-data-grid";
 import "react-data-grid/lib/styles.css";
 import { createPortal } from "react-dom";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
 import { call_prasi_events } from "../../..";
 import { filterWhere } from "../filter/parser/filter-where";
 import { getFilter } from "../filter/utils/get-filter";
 import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
 import { sortTree } from "./utils/sort-tree";
+import { toast } from "../ui/toast";
 
 type OnRowClick = (arg: {
   row: any;
@@ -37,6 +38,8 @@ type OnRowClick = (arg: {
   idx: any;
   event: React.MouseEvent<HTMLDivElement>;
 }) => void;
+let EMPTY_SET = new Set() as ReadonlySet<any>;
+
 type SelectedRow = (arg: { row: any; rows: any[]; idx: any }) => boolean;
 type TableListProp = {
   child: any;
@@ -147,6 +150,7 @@ export const TableList: FC<TableListProp> = ({
       | "init"
       | "error",
     where: null as any,
+    should_toast: true,
     paging: {
       take: 0,
       skip: 0,
@@ -235,75 +239,82 @@ export const TableList: FC<TableListProp> = ({
     },
   });
 
-  const reload = useCallback(() => {
-    if (typeof on_load === "function") {
-      local.status = "loading";
-      local.render();
+  const reload = useCallback(
+    (arg?: { toast: boolean }) => {
+      let should_toast = true;
+      if (arg?.toast === false) should_toast = false;
+      local.should_toast = should_toast;
 
-      const orderBy = local.sort.orderBy || undefined;
-      const where = filterWhere(filter_name, __props);
-
-      if (md) {
-        const last = md.params.links[md.params.links.length - 1];
-        if (last && last.where) {
-          for (const [k, v] of Object.entries(last.where)) {
-            where[k] = v;
-          }
-        }
-      }
-
-      call_prasi_events("tablelist", "where", [__props?.gen__table, where]);
-
-      const load_args: any = {
-        async reload() {},
-        orderBy,
-        where,
-        paging: {
-          take: local.paging.take > 0 ? local.paging.take : undefined,
-          skip: local.paging.skip,
-        },
-      };
-      if (id_parent) {
-        load_args.paging = {};
-      }
-      const result = on_load({ ...load_args, mode: "query" });
-      const callback = (data: any[]) => {
-        if (local.paging.skip === 0) {
-          local.data = data;
-        } else {
-          local.data = [...local.data, ...data];
-        }
-
-        local.status = "ready";
+      if (typeof on_load === "function") {
+        local.status = "loading";
         local.render();
-      };
 
-      if (result instanceof Promise) {
-        (async () => {
-          try {
-            callback(await result);
-          } catch (e) {
-            console.error(e);
-            local.status = "error";
-            toast.dismiss();
-            toast.error(
-              <div className="c-flex c-text-red-600 c-items-center">
-                <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
-                Failed to load data
-              </div>,
-              {
-                dismissible: true,
-                className: css`
-                  background: #ffecec;
-                  border: 2px solid red;
-                `,
-              }
-            );
+        const orderBy = local.sort.orderBy || undefined;
+        const where = filterWhere(filter_name, __props);
+
+        if (md) {
+          const last = md.params.links[md.params.links.length - 1];
+          if (last && last.where) {
+            for (const [k, v] of Object.entries(last.where)) {
+              where[k] = v;
+            }
           }
-        })();
-      } else callback(result);
-    }
-  }, [on_load, local.sort.orderBy, local.paging.take, local.paging.skip]);
+        }
+
+        call_prasi_events("tablelist", "where", [__props?.gen__table, where]);
+
+        const load_args: any = {
+          async reload() {},
+          orderBy,
+          where,
+          paging: {
+            take: local.paging.take > 0 ? local.paging.take : undefined,
+            skip: local.paging.skip,
+          },
+        };
+        if (id_parent) {
+          load_args.paging = {};
+        }
+        const result = on_load({ ...load_args, mode: "query" });
+        const callback = (data: any[]) => {
+          if (local.paging.skip === 0) {
+            local.data = data;
+          } else {
+            local.data = [...local.data, ...data];
+          }
+
+          local.status = "ready";
+          local.render();
+        };
+
+        if (result instanceof Promise) {
+          (async () => {
+            try {
+              callback(await result);
+            } catch (e) {
+              console.error(e);
+              local.status = "error";
+              toast.dismiss();
+              toast.error(
+                <div className="c-flex c-text-red-600 c-items-center">
+                  <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+                  Failed to load data
+                </div>,
+                {
+                  dismissible: true,
+                  className: css`
+                    background: #ffecec;
+                    border: 2px solid red;
+                  `,
+                }
+              );
+            }
+          })();
+        } else callback(result);
+      }
+    },
+    [on_load, local.sort.orderBy, local.paging.take, local.paging.skip]
+  );
 
   if (md) {
     md.master.reload = reload;
@@ -540,16 +551,20 @@ export const TableList: FC<TableListProp> = ({
 
   if (!isEditor) {
     if (local.status === "loading") {
-      toast.dismiss();
-      toast.loading(
-        <>
-          <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
-          Loading {local.paging.skip === 0 ? "Data" : "more rows"} ...
-        </>,
-        {
-          dismissible: true,
-        }
-      );
+      if (local.should_toast) {
+        toast.dismiss();
+        toast.loading(
+          <>
+            <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
+            Loading {local.paging.skip === 0 ? "Data" : "more rows"} ...
+          </>,
+          {
+            dismissible: true,
+          }
+        );
+      } else {
+        local.should_toast = true;
+      }
     } else {
       if (local.status !== "error") {
         toast.dismiss();
@@ -682,7 +697,7 @@ export const TableList: FC<TableListProp> = ({
                 rows={data}
                 className="rdg-light"
                 onScroll={local.paging.scroll}
-                selectedRows={new Set() as ReadonlySet<any>}
+                selectedRows={EMPTY_SET}
                 onSelectedCellChange={() => {}}
                 onSelectedRowsChange={() => {}}
                 headerRowHeight={show_header === false ? 0 : undefined}
@@ -722,7 +737,10 @@ export const TableList: FC<TableListProp> = ({
                               isRowSelected={true}
                               className={cx(
                                 props.className,
-                                isSelect && "row-selected"
+                                (isSelect ||
+                                  md?.selected?.[local.pk?.name || ""] ===
+                                    props.row[local.pk?.name || ""]) &&
+                                  "row-selected"
                               )}
                             />
                           );
@@ -911,7 +929,7 @@ const dataGridStyle = (local: { height: number }) => css`
   }
 
   .row-selected {
-    background: #e2f1ff;
+    background: #bddfff !important;
   }
 `;
 

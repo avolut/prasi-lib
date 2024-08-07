@@ -139,16 +139,6 @@ export type FMInternal = {
     clear: (name?: string) => void;
   };
   internal: {
-    reload: {
-      timeout: ReturnType<typeof setTimeout>;
-      promises: Promise<void>[];
-      done: any[];
-    };
-    submit: {
-      promises: Promise<boolean>[];
-      timeout: ReturnType<typeof setTimeout>;
-      done: any[];
-    };
     original_render?: () => void;
   };
   props: Exclude<FMProps, "body" | "PassProp">;

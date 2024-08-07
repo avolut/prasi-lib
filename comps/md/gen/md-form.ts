@@ -86,10 +86,8 @@ export const generateMDForm = async (
       onClick: () => {
         md.selected = null;
         md.tab.active = "master";
-        md.internal.action_should_refresh = true;
         md.params.apply();
         md.render();
-
       },
     },
   ];
