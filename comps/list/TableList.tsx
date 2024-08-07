@@ -196,11 +196,20 @@ export const TableList: FC<TableListProp> = ({
                       },
                     };
                   } else {
-                    const field = rel.checked.find((e) => !e.is_pk);
+                    const field = rel.checked.find(
+                      (e) => !e.is_pk && !e.relation
+                    );
                     if (field) {
                       local.sort.orderBy = {
                         [columnKey]: {
                           [field.name]: direction === "ASC" ? "asc" : "desc",
+                        },
+                      };
+                    } else if (rel.relation) {
+                      local.sort.orderBy = {
+                        [columnKey]: {
+                          [rel.relation.to.fields[0]]:
+                            direction === "ASC" ? "asc" : "desc",
                         },
                       };
                     }
@@ -618,7 +627,8 @@ export const TableList: FC<TableListProp> = ({
     }
   }
 
-  let data = local.data || [];
+  let data = Array.isArray(local.data) ? local.data : [];
+  if (typeof local.data === "string") console.error(local.data);
 
   if (isEditor) {
     if (data.length > 0) {

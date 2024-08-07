@@ -3,7 +3,7 @@ import { toast as sonner } from "sonner";
 const timer = {
   timeout: null as any,
   done: false,
-  limit: 400,
+  limit: 200,
 };
 
 export const toast = {

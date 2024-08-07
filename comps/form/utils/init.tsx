@@ -158,7 +158,6 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         if (!success) {
           const errors = Object.keys(fm.error.list);
           const count = errors.length;
-          console.log(fm.error.list);
           toast.error(
             <div className="c-flex c-text-red-600 c-items-center">
               <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
@@ -177,20 +176,18 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
             }
           );
         } else {
-          if (!fm.is_newly_created) {
-            toast.success(
-              <div className="c-flex c-text-green-700 c-items-center">
-                <Check className="c-h-4 c-w-4 c-mr-1 " />
-                Saved
-              </div>,
-              {
-                className: css`
-                  background: #e4ffed;
-                  border: 2px solid green;
-                `,
-              }
-            );
-          }
+          toast.success(
+            <div className="c-flex c-text-green-700 c-items-center">
+              <Check className="c-h-4 c-w-4 c-mr-1 " />
+              Saved
+            </div>,
+            {
+              className: css`
+                background: #e4ffed;
+                border: 2px solid green;
+              `,
+            }
+          );
         }
       }
       return success;
