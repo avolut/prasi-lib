@@ -734,14 +734,8 @@ export const TableList: FC<TableListProp> = ({
                         noRowsFallback: (
                           <div className="c-flex-1 c-w-full absolute inset-0 c-flex c-flex-col c-items-center c-justify-center">
                             <div className="c-max-w-[15%] c-flex c-flex-col c-items-center">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 128 140"
-                              >
-                                <path d="M52.77 74.89a2 2 0 002.83 0l8.4-8.4 8.4 8.4a2 2 0 002.83-2.83l-8.4-8.4 8.4-8.4a2 2 0 00-2.83-2.83l-8.4 8.4-8.4-8.4a2 2 0 00-2.83 2.83l8.4 8.4-8.4 8.4a2 2 0 000 2.83z"></path>
-                                <path d="M127.11 36.34l-24-16A2 2 0 00102 20H2a2 2 0 00-1.49.68A2 2 0 000 22v68a2 2 0 00.89 1.66l24 16A2.29 2.29 0 0026 108h100a2 2 0 002-2V38a2 2 0 00-.89-1.66zM104 25.74L119.39 36H104zm-80 76.52L8.61 92H24zM24 88H4V25.74l20 13.33zM8.61 24H100v12H26.61zM100 40v48H28V40zm-72 64V92h73.39l18 12zm96-1.74l-20-13.33V40h20z"></path>
-                              </svg>
-                              <div className="c-text-lg">No Data</div>
+                              <Sticker size={35} strokeWidth={1} />
+                              <div className="c-pt-1">No&nbsp;Data</div>
                             </div>
                           </div>
                         ),
@@ -823,7 +817,7 @@ export const TableList: FC<TableListProp> = ({
                 </div>
               ) : (
                 <div className="c-flex c-items-center c-justify-center c-flex-1 w-full h-full c-flex-col ">
-                  <Sticker size={35} strokeWidth={1.3} />
+                  <Sticker size={35} strokeWidth={1} />
                   <div className="c-pt-1">No&nbsp;Data</div>
                 </div>
               )}
