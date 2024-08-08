@@ -16,7 +16,7 @@ export const generateTableList = async (
   let table = "" as string;
   try {
     table = eval(data.gen__table.value);
-  } catch (e) {
+  } catch (e) { 
     table = data.gen__table?.value;
   }
   const raw_fields = JSON.parse(data.gen__fields.value) as (
