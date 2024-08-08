@@ -28,7 +28,7 @@ export const FormatValue: FC<{
               ...JSON.parse(e.value),
               checked: e.checked.map((ex: any) => {
                 if (typeof ex === "string") {
-                  return JSON.parse(e.value);
+                  return JSON.parse(ex);
                 }
                 try {
                   return JSON.parse(ex["value"]);
