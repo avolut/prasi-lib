@@ -61,9 +61,9 @@ export const BaseForm = <T extends Record<string, any>>(
     return prop;
   };
 
-  form.createFm = () => {
+  form.createFm = useCallback(() => {
     if (form.fm) {
-      form.fm.data = form.data;
+      form.fm.data = data;
       return form.fm;
     }
     let size = "full";
@@ -72,7 +72,7 @@ export const BaseForm = <T extends Record<string, any>>(
       size = "half";
     }
     form.fm = {
-      data: form.data,
+      data: data,
       props: { label_mode: "vertical" },
       error: {
         get: () => {
@@ -84,7 +84,7 @@ export const BaseForm = <T extends Record<string, any>>(
       render: form.render,
     } as any;
     return form.fm as any;
-  };
+  }, [data]);
 
   form.fieldProps = (arg) => {
     return {
@@ -95,8 +95,8 @@ export const BaseForm = <T extends Record<string, any>>(
   };
 
   useEffect(() => {
-    form.data = data;
-    form.render();
+    // form.data = data;
+    // form.render();
 
     if (form.internal.width === 0) {
       setTimeout(() => {
@@ -142,7 +142,9 @@ export const BaseForm = <T extends Record<string, any>>(
       form.render();
     }, 50);
   }
-
+  if (!form.fm) {
+    form.fm = form.createFm();
+  }
   return (
     <form
       onSubmit={(e) => {

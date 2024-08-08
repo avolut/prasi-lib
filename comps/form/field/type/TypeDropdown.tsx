@@ -33,6 +33,24 @@ export const TypeDropdown: FC<{
                 data: e.data,
               };
             });
+            let v = typeof arg.opt_get_value === "function"
+            ? arg.opt_get_value({
+                fm,
+                name: field.name,
+                options: local.options,
+                type: field.type,
+              })
+            : fm.data[field.name];
+            let f = list.find((ex) => ex.value === v);
+            if(!f){
+              arg.opt_set_value({
+                fm,
+                name: field.name,
+                type: field.type,
+                options: local.options,
+                selected: [],
+              });
+            }
             local.options = list;
           } else {
             local.options = res;

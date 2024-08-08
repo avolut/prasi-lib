@@ -49,7 +49,7 @@ export const FormatValue: FC<{
 
     if (mode === "money") {
       if (isEmptyString(value)) return "-";
-      return formatMoney(Number(value) || 0);
+      return formatMoney(ceil_comma(Number(value) || 0));
     } else if (mode === "datetime") {
       if (!value || isEmptyString(value)) return "-";
       try {
@@ -120,7 +120,7 @@ export const FormatValue: FC<{
       }
     } else if (["float"].includes(field?.type as string)) {
       if (!value || isEmptyString(value)) return "-";
-      return formatMoney(Number(value) || 0);
+      return formatMoney(ceil_comma(Number(value) || 0));
     }
   }
 
@@ -169,12 +169,13 @@ const timeAgo = (date: any) => {
       const daysPast = Math.floor(secondsPast / 86400);
       return `${daysPast} days ago`;
     } else {
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const day = date.getDate().toString().padStart(2, "0");
-      return `${day}-${month}-${year}`;
+      return formatDate(dayjs(date), "DD MMMM YYYY");
     }
   } catch (e) {
     return null;
   }
+};
+const ceil_comma = (number: number) => {
+  if (!number) return 0;
+  return Math.ceil(number * 100) / 100;
 };

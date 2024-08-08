@@ -3,7 +3,7 @@ import { FMLocal, FieldLocal, FieldProp } from "../typings";
 
 export const default_base_form_local = {
   status: "init" as "init" | "submitting" | "ready",
-  data: {} as any,
+  // data: {} as any,
   internal: {
     width: 0,
     init_render: 0,
@@ -23,7 +23,7 @@ type CreateFieldArg = {
 };
 
 export type BaseFormLocal<T> = Omit<typeof default_base_form_local, "data"> & {
-  data: T;
+  // data: T;
   createArg: (arg: CreateFieldArg) => FieldProp;
   createField: (arg: CreateFieldArg) => FieldLocal;
   createFm: () => FMLocal;

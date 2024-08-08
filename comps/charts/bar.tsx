@@ -41,6 +41,7 @@ export const BarChart: FC<{
         datasetIdKey="id"
         options={{
           responsive: true,
+          maintainAspectRatio: false,
           plugins:
             legend === "none"
               ? {

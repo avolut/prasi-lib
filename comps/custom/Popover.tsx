@@ -137,6 +137,7 @@ function PopoverArrow() {
         top: arrowY != null ? `${arrowY}px` : "",
         [staticSide]: "-4px",
         transform: "rotate(45deg)",
+        cursor: "pointer"
       }}
       className={cx(
         "arrow",

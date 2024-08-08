@@ -28,7 +28,8 @@ export type PropTypeInput = {
     | "file"
     | "search"
     | "password"
-    | "import";
+    | "import"
+    | "monthly";
   placeholder?: string;
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
@@ -168,7 +169,7 @@ export const FieldTypeInput: FC<{
     case "upload":
       return (
         <FieldUpload
-        arg={arg}
+          arg={arg}
           field={field}
           fm={fm}
           prop={prop}
@@ -178,7 +179,7 @@ export const FieldTypeInput: FC<{
     case "import":
       return (
         <FieldUpload
-        arg={arg}
+          arg={arg}
           field={field}
           fm={fm}
           prop={prop}
@@ -199,11 +200,34 @@ export const FieldTypeInput: FC<{
           value={{ startDate: value, endDate: value }}
           disabled={disabled}
           displayFormat="DD MMM YYYY"
+          mode={"daily"}
           maxDate={field.max_date instanceof Date ? field.max_date : null}
           minDate={field.min_date instanceof Date ? field.min_date : null}
           asSingle={true}
           useRange={false}
           onChange={(value) => {
+            console.log({ value });
+            fm.data[field.name] = value?.startDate
+              ? new Date(value?.startDate)
+              : null;
+            renderOnChange();
+          }}
+        />
+      );
+    }
+    case "monthly": {
+      return (
+        <Datepicker
+          value={{ startDate: value, endDate: value }}
+          disabled={disabled}
+          displayFormat="MMM YYYY"
+          mode={"monthly"}
+          maxDate={field.max_date instanceof Date ? field.max_date : null}
+          minDate={field.min_date instanceof Date ? field.min_date : null}
+          asSingle={true}
+          useRange={false}
+          onChange={(value) => {
+            console.log({ value });
             fm.data[field.name] = value?.startDate
               ? new Date(value?.startDate)
               : null;

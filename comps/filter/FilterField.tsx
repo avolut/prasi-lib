@@ -29,7 +29,7 @@ export const FilterField: FC<{
     internal.render_timeout = setTimeout(() => {
       filter_window.prasiContext.render();
     }, 500);
-  }, [filter.form?.data[name]]);
+  }, [filter.form]);
 
   let show_modifier = filter.mode !== "inline";
 

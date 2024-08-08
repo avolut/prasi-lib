@@ -43,6 +43,7 @@ interface Props {
   onClickNext: () => void;
   changeMonth: (month: number) => void;
   changeYear: (year: number) => void;
+  mode?: "monthly" | "daily";
 }
 
 const Calendar: React.FC<Props> = ({
@@ -53,6 +54,7 @@ const Calendar: React.FC<Props> = ({
   onClickNext,
   changeMonth,
   changeYear,
+  mode = "daily",
 }) => {
   // Contexts
   const {
@@ -73,6 +75,12 @@ const Calendar: React.FC<Props> = ({
   const [showMonths, setShowMonths] = useState(false);
   const [showYears, setShowYears] = useState(false);
   const [year, setYear] = useState(date.year());
+  useEffect(() => {
+    if (mode === "monthly") {
+      setShowMonths(true);
+      hideYears();
+    }
+  }, []);
   // Functions
   const previous = useCallback(() => {
     return getLastDaysInMonth(
@@ -104,7 +112,12 @@ const Calendar: React.FC<Props> = ({
     (month: number) => {
       setTimeout(() => {
         changeMonth(month);
-        setShowMonths(!showMonths);
+        if (mode === "daily") {
+          setShowMonths(!showMonths);
+        } else {
+          hideDatepicker();
+          clickDay(1,month + 1, date.year() );
+        }
       }, 250);
     },
     [changeMonth, showMonths]
@@ -115,6 +128,10 @@ const Calendar: React.FC<Props> = ({
       setTimeout(() => {
         changeYear(year);
         setShowYears(!showYears);
+        if (mode === "monthly") {
+          setShowMonths(true);
+          clickDay(1,date.month() + 1, year );
+        }
       }, 250);
     },
     [changeYear, showYears]
@@ -125,7 +142,6 @@ const Calendar: React.FC<Props> = ({
       const fullDay = `${year}-${month}-${day}`;
       let newStart;
       let newEnd = null;
-
       function chosePeriod(start: string, end: string) {
         const ipt = input?.current;
         changeDatepickerValue(

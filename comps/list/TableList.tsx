@@ -183,7 +183,6 @@ export const TableList: FC<TableListProp> = ({
               let should_set = true;
               const gf = JSON.stringify(gen_fields);
               const fields = fields_map.get(gf);
-
               if (fields) {
                 const rel = fields?.find((e) => e.name === columnKey);
                 if (rel && rel.checked) {
@@ -196,9 +195,7 @@ export const TableList: FC<TableListProp> = ({
                       },
                     };
                   } else {
-                    const field = rel.checked.find(
-                      (e) => !e.is_pk && !e.relation
-                    );
+                    const field = rel.checked.find((e) => !e.is_pk);
                     if (field) {
                       local.sort.orderBy = {
                         [columnKey]: {

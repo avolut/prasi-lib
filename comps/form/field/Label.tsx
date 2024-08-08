@@ -6,13 +6,14 @@ export const Label: FC<{ field: FieldLocal; fm: FMLocal }> = ({
   fm,
 }) => {
   const errors = fm.error.get(field.name);
-
+  const disabled =
+    typeof field.disabled === "function" ? field.disabled() : field.disabled;
   return (
     <div className={cx("label c-text-sm c-flex c-items-center", "c-mt-3")}>
       <span className={cx(errors.length > 0 && `c-text-red-600`)}>
         {field.label}
       </span>
-      {field.required && !field.disabled && (
+      {field.required && !disabled && (
         <span className="c-text-red-600 c-mb-2 c-ml-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"

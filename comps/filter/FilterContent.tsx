@@ -3,14 +3,16 @@ import { BaseForm } from "../form/base/BaseForm";
 import { FilterLocal } from "./utils/types";
 import { useLocal } from "lib/utils/use-local";
 import { getFilter } from "./utils/get-filter";
+import { FMLocal } from "lib/exports";
 
 export const FilterContent: FC<{
   mode: string;
   filter: FilterLocal;
+  onSubmit?: (form: FMLocal | null) => Promise<any>;
   PassProp: any;
   child: any;
   _item: PrasiItem;
-}> = ({ mode, filter, PassProp, child, _item }) => {
+}> = ({ mode, filter, PassProp, child, _item, onSubmit }) => {
   const internal = useLocal({});
   return (
     <div
@@ -97,9 +99,18 @@ export const FilterContent: FC<{
     >
       <BaseForm
         data={filter.data}
-        on_submit={(form) => {
-          const f = getFilter(filter.name);
+        on_submit={async (form) => {
+          if (typeof onSubmit === "function" && mode === "raw") {
+            const data = await onSubmit(form.fm);
+            if(typeof form.fm?.data === "object"){
+              form.fm.data = {
+                ...form.fm.data,
+                _where: data
+              }
+            }
+          }
 
+          const f = getFilter(filter.name);
           if (f) {
             for (const list of Object.values(f.list.ref)) {
               list.reload();
@@ -113,7 +124,9 @@ export const FilterContent: FC<{
           return (
             <>
               {!!(PassProp && child) && (
-                <PassProp filter={filter}>{child}</PassProp>
+                <PassProp filter={filter} fm={form.fm}>
+                  {child}
+                </PassProp>
               )}
             </>
           );

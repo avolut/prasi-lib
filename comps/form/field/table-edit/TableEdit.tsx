@@ -154,15 +154,10 @@ export const TableEdit: FC<{
   }
   return (
     <>
-    
       <div
         className={cx(
           `c-w-full c-h-full c-flex c-flex-col`,
           css`
-            .rdg {
-              overflow-y: hidden !important;
-              height: var(--rdg-scroll-height) !important;
-            }
             .rdg-cell > div {
               flex-direction: row;
               align-items: center;
@@ -171,9 +166,6 @@ export const TableEdit: FC<{
                 flex: 1;
                 padding-top: 0px;
               }
-            }
-            .field-error {
-              display: none;
             }
             .rdg-header-row {
               border-top-right-radius: 5px;
@@ -192,6 +184,7 @@ export const TableEdit: FC<{
           className={cx(
             "c-table-auto",
             css`
+              height: 1px;
               border-collapse: collapse;
               table-layout: auto; /* Kolom akan menyesuaikan konten */
             `
@@ -241,7 +234,7 @@ export const TableEdit: FC<{
                       {columns.map((header) => {
                         return (
                           <td>
-                            <div className="c-flex c-flex-row c-py-2 c-w-full">
+                            <div className="c-flex c-flex-row c-py-2 c-w-full c-h-full">
                               {header.renderCell({
                                 props: {
                                   row: row,

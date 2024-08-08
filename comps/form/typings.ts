@@ -107,6 +107,10 @@ export type FieldProp = {
     current: any;
     options: { value: string; label: string; item?: any }[];
   }) => boolean;
+  on_init: (arg: {
+    field: any,
+    name: string
+  }) => void;
   pk: string;
   sub_type: string;
   placeholder: string;
@@ -188,6 +192,8 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   prop?: any;
   max_date?: FieldProp["max_date"];
   min_date?: FieldProp["min_date"];
+  error?: any;
+  table_fields?: any[]
 };
 export type FieldLocal = FieldInternal<any> & {
   render: () => void;

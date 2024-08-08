@@ -51,6 +51,7 @@ const Datepicker: React.FC<DatepickerType> = ({
   startWeekOn = "sun",
   classNames = undefined,
   popoverDirection = undefined,
+  mode="daily"
 }) => {
   const local = useLocal({ open: false });
   // Ref
@@ -95,6 +96,7 @@ const Datepicker: React.FC<DatepickerType> = ({
       if (newDate.isSame(reformatDate) || newDate.isAfter(reformatDate)) {
         setSecondDate(nextMonth(date));
       }
+      console.log(date)
       setFirstDate(date);
     },
     [secondDate]
@@ -110,6 +112,7 @@ const Datepicker: React.FC<DatepickerType> = ({
 
   const changeFirstMonth = useCallback(
     (month: number) => {
+      console.log("HALOOO")
       firstGotoDate(
         dayjs(`${firstDate.year()}-${month < 10 ? "0" : ""}${month}-01`)
       );
@@ -148,6 +151,7 @@ const Datepicker: React.FC<DatepickerType> = ({
 
   const changeSecondMonth = useCallback(
     (month: number) => {
+      console.log("ALOO")
       secondGotoDate(
         dayjs(`${secondDate.year()}-${month < 10 ? "0" : ""}${month}-01`)
       );
@@ -323,8 +327,8 @@ const Datepicker: React.FC<DatepickerType> = ({
     return typeof containerClassName === "function"
       ? containerClassName(defaultContainerClassName)
       : typeof containerClassName === "string" && containerClassName !== ""
-        ? containerClassName
-        : defaultContainerClassName;
+      ? containerClassName
+      : defaultContainerClassName;
   }, [containerClassName]);
 
   return (
@@ -339,7 +343,9 @@ const Datepicker: React.FC<DatepickerType> = ({
         open={local.open}
         content={
           <div
-            className={cx("c-text-sm 2xl:c-text-sm")}
+            className={cx(
+              "c-text-sm 2xl:c-text-sm",
+            )}
             ref={calendarContainerRef}
           >
             <div className="c-flex c-flex-col lg:c-flex-row c-py-1">
@@ -356,6 +362,7 @@ const Datepicker: React.FC<DatepickerType> = ({
                   onClickNext={nextMonthFirst}
                   changeMonth={changeFirstMonth}
                   changeYear={changeFirstYear}
+                  mode={mode}
                   minDate={minDate}
                   maxDate={maxDate}
                 />
@@ -372,6 +379,7 @@ const Datepicker: React.FC<DatepickerType> = ({
                       onClickNext={nextMonthSecond}
                       changeMonth={changeSecondMonth}
                       changeYear={changeSecondYear}
+                      mode={mode}
                       minDate={minDate}
                       maxDate={maxDate}
                     />

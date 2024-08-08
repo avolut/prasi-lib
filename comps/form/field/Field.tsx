@@ -13,7 +13,7 @@ export const Field: FC<FieldProp> = (arg) => {
   const { fm } = arg;
   const field = useField(arg);
   const name = field.name;
-  const local = useLocal({ prev_val: fm.data[name] });
+  const local = useLocal({ prev_val: fm.data?.[name] });
 
   const w = field.width;
 
@@ -29,14 +29,29 @@ export const Field: FC<FieldProp> = (arg) => {
       if (arg.on_change) {
         arg.on_change({ value: fm.data[name], name, fm });
       }
+      if(!fm.events){
+        fm.events = {
+          on_change(name, new_value) {
+            
+          },
+        } 
+      }
 
       fm.events.on_change(name, fm.data[name]);
       fm.render();
     }
   }, [fm.data[name]]);
 
+  useEffect(() => {
+    if (typeof arg.on_init === "function") {
+      arg.on_init({ name, field });
+    }
+  }, [field]);
   if (field.status === "init" && !isEditor) return null;
-  const errors = fm.error.get(name);
+  let errors = fm.error.get(name);
+  if(field.error){
+    errors = [field.error]
+  }
   const props = { ...arg.props };
 
   let editorClassName = "";
@@ -45,6 +60,8 @@ export const Field: FC<FieldProp> = (arg) => {
       props.className.split(" ").find((e: string) => e.startsWith("s-")) || "";
   }
 
+  const disabled =
+    typeof field.disabled === "function" ? field.disabled() : field.disabled;
   if (field.hidden) return <></>;
 
   return (
@@ -72,7 +89,7 @@ export const Field: FC<FieldProp> = (arg) => {
         "c-flex-col c-space-y-1",
         css`
           .field-outer {
-            border: 1px solid ${field.disabled ? "#ececeb" : "#cecece"};
+            border: 1px solid ${disabled ? "#ececeb" : "#cecece"};
 
             &.focused {
               border: 1px solid #1c4ed8;
@@ -98,18 +115,18 @@ export const Field: FC<FieldProp> = (arg) => {
             {field.desc}
           </div>
         )}
-        {errors.length > 0 && (
+        {errors.length ? (
           <div
             className={cx(
               "field-error c-p-2 c-text-xs c-text-red-600",
               field.desc && "c-pt-0"
             )}
-          >
+          > 
             {errors.map((err) => {
               return <div>{err}</div>;
             })}
           </div>
-        )}
+        ) : <></>}
       </div>
     </LabelDiv>
   );

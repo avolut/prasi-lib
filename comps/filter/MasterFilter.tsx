@@ -1,7 +1,7 @@
 import { useLocal } from "@/utils/use-local";
 import { FC, ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { GenField } from "../form/typings";
+import { FMLocal, GenField } from "../form/typings";
 import { FilterContent } from "./FilterContent";
 import { getFilter } from "./utils/get-filter";
 import { default_filter_local } from "./utils/types";
@@ -16,6 +16,7 @@ type FilterProps = {
   mode: FilterMode;
   children?: ReactNode;
   onClose?: () => void;
+  onSubmit?: (fm: FMLocal | null) => Promise<any>;
   PassProp: any;
   child: any;
   _item: PrasiItem;
@@ -31,6 +32,7 @@ export const MasterFilter: FC<FilterProps> = ({
   child,
   onClose,
   _item,
+  onSubmit,
 }): ReactNode => {
   const filter = useLocal({ ...default_filter_local });
   filter.name = name;
@@ -74,6 +76,7 @@ export const MasterFilter: FC<FilterProps> = ({
             )}
           >
             <FilterContent
+              onSubmit={onSubmit}
               PassProp={PassProp}
               child={child}
               mode={mode}
@@ -90,6 +93,7 @@ export const MasterFilter: FC<FilterProps> = ({
   return (
     <>
       <FilterContent
+        onSubmit={onSubmit}
         PassProp={PassProp}
         _item={_item}
         child={child}

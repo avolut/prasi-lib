@@ -5,17 +5,24 @@ import { softDeleteFilter } from "./soft-delete-filter";
 
 export const filterWhere = (filter_name: string, p: any) => {
   const f = getFilter(filter_name);
-
   let where: any = {};
   if (f) {
     let fields: GFCol[] = [];
+    //
     if (p.gen__fields) {
       fields = parseGenField(p.gen__fields);
     }
     for (const pf of Object.values(f.filter.ref)) {
-      const w = parseSingleFilter(pf, fields);
-      for (const [k, v] of Object.entries(w)) {
-        where[k] = v;
+      if (pf.mode === "raw") {
+        const data = pf.data?._where ? pf.data?._where : pf.data
+        for (const [k, v] of Object.entries(data)) {
+          where[k] = v;
+        }
+      } else {
+        const w = parseSingleFilter(pf, fields);
+        for (const [k, v] of Object.entries(w)) {
+          where[k] = v;
+        }
       }
     }
   }
@@ -27,6 +34,6 @@ export const filterWhere = (filter_name: string, p: any) => {
       type: p.sft__type,
     });
   }
-
+console.log({where})
   return where;
 };
