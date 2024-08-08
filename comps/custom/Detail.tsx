@@ -8,10 +8,12 @@ export const Detail: FC<{
   detail: (
     item: any
   ) => Record<string, [string, string, string | (() => void)]>;
-  on_load: (arg: {
-    params: any;
-    bind: (fn: (on_load: any) => void) => void;
-  }) => Promise<any>;
+  on_load:
+    | Record<string, any>
+    | ((arg: {
+        params: any;
+        bind: (fn: (on_load: any) => void) => void;
+      }) => Promise<any>);
   mode: "standard" | "compact" | "inline";
 }> = ({ detail, mode, on_load }) => {
   const local = useLocal({
@@ -32,6 +34,11 @@ export const Detail: FC<{
       local.status = "init";
       local.on_load = on_load;
       local.mode = mode;
+    }
+
+    if (typeof on_load === "object") {
+      local.detail = detail(on_load);
+      local.status = "ready";
     }
 
     useEffect(() => {
@@ -79,7 +86,7 @@ export const Detail: FC<{
   }
   let values = {};
 
-  if (!isEditor && typeof on_load === "function") {
+  if (!isEditor) {
     values = local.detail || {};
   } else {
     values = detail(null);
@@ -133,9 +140,13 @@ export const Detail: FC<{
           (typeof data === "object" && !Array.isArray(data))
         )
           return null;
-        const [label, sample, link] = data;
+        let [label, sample, link] = data;
 
-        if (typeof link === 'string') {
+        if (typeof on_load === "object" && on_load[name]) {
+          sample = on_load[name];
+        }
+
+        if (typeof link === "string") {
           preload(link);
         }
 
