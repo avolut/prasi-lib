@@ -54,7 +54,7 @@ export type MDLocalInternal = {
     active: string;
     list: string[];
   };
-  internal: { action_should_refresh: boolean };
+  internal: { action_should_refresh: boolean; reset_detail: boolean };
   master: {
     reload: (arg?: { toast: boolean }) => void;
     render: () => void;

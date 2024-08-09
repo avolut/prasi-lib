@@ -13,9 +13,15 @@ export const should_show_tab = (md: MDLocal) => {
 };
 
 export const MDDetail: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
-  const local = useLocal({ selected: "", synced: false });
   const detail = md.childs[md.tab.active];
   const PassProp = mdr.PassProp;
+
+  if (md.internal.reset_detail) {
+    md.internal.reset_detail = false;
+    md.render();
+    return null;
+  }
+
   if (!detail) {
     return null;
   }

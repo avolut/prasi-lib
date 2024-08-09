@@ -15,5 +15,6 @@ export const MDHeader: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
     md.header.breadcrumb = [...prefix, ...md.header.master.breadcrumb()];
   }
 
+  if (md.internal.reset_detail) return null;
   return <PassProp md={md}>{head}</PassProp>;
 };

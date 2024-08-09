@@ -7,6 +7,7 @@ import { formError } from "./error";
 import { toast } from "lib/comps/ui/toast";
 import { Button } from "lib/comps/ui/button";
 import { MDLocal } from "lib/comps/md/utils/typings";
+import { masterDetailApplyParams } from "lib/comps/md/utils/md-hash";
 
 export const formInit = (fm: FMLocal, props: FMProps) => {
   for (const [k, v] of Object.entries(props)) {
@@ -57,6 +58,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
               size={"xs"}
               className="c-cursor-pointer"
               onClick={() => {
+                const md = fm.deps.md as MDLocal;
                 toast.dismiss();
                 md.selected = null;
                 md.tab.active = "master";
@@ -74,14 +76,14 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
               size={"xs"}
               className="c-cursor-pointer"
               onClick={() => {
+                const md = fm.deps.md as MDLocal;
                 toast.dismiss();
-                for (const k of Object.keys(md.selected)) {
-                  delete md.selected[k];
-                }
-                md.tab.active = "detail";
+
                 md.params.hash[md.name] = "+";
+                md.selected = {};
+                md.internal.reset_detail = true;
+                md.tab.active = "detail";
                 md.params.apply();
-                md.render();
               }}
             >
               <div className="c-px-1">{opt.addNewText}</div> <Plus size={18} />

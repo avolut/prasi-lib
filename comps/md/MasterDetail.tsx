@@ -48,7 +48,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
       active: "",
       list: [],
     },
-    internal: { action_should_refresh: false },
+    internal: { action_should_refresh: false, reset_detail: false },
     childs: {},
     props: {
       mode,
