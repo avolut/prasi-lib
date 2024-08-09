@@ -611,6 +611,7 @@ export const TableList: FC<TableListProp> = ({
                     "c-flex c-items-center c-cursor-pointer"
                   )}
                   onClick={(e) => {
+                    console.log(props.row);
                     if (!local.pk) return;
                     if (props?.row?.__children?.length > 0) {
                       e.stopPropagation();
@@ -641,7 +642,7 @@ export const TableList: FC<TableListProp> = ({
                     )}
                   </div>
                   {props.row?.__parent &&
-                    props.row?.__children?.length === 0 && (
+                    (props.row?.__children || []).length === 0 && (
                       <div
                         className={cx(
                           " c-border-l c-border-b c-border-black c-w-[10px] c-h-[15px]",

@@ -42,53 +42,88 @@ export const treePrefix = (props: any) => {
   }
   return prefix;
 };
+
 export const sortTree = (list: any[], parent_key: string, pk: string) => {
   const nodes: { [id: string]: any } = {};
+  const result: any[] = [];
 
-  // First pass: Create nodes
   list.forEach((node) => {
     const id = node[pk];
-    nodes[id] = { ...node, __depth: 0, __children: [], __parent: null };
+    nodes[id] = { ...node, __depth: 0, __children: [] };
   });
 
-  // Second pass: Build relationships
-  list.forEach((node) => {
+  let mode = "";
+  const final = list;
+  // .sort((a, b) => {
+  //   if (!mode) mode = typeof a[pk];
+  //   if (mode === "string")
+  //     return (a?.[parent_key] || "").localeCompare(b?.[parent_key] || "");
+  //   return (a?.[parent_key] || 0) - (b?.[parent_key] || 0);
+  // });
+
+  final.forEach((node, idx) => {
     const id = node[pk];
     const parentId = node[parent_key];
-    
-    if (parentId && parentId !== id && nodes[parentId]) {
-      nodes[id].__parent = nodes[parentId];
-      nodes[parentId].__children.push(nodes[id]);
+
+    if (parentId === null || parentId === undefined) {
+      result.push(nodes[id]);
+    } else {
+      if (nodes[parentId]) {
+        nodes[parentId].__children.push(nodes[id]);
+      } else {
+        // Handle the case where a parent is missing
+        result.push(nodes[id]);
+      }
     }
   });
 
-  // Function to calculate depth
-  const calculateDepth = (node: any, visited: Set<string> = new Set()): number => {
-    if (visited.has(node.id)) return 0; // Prevent cycles
-    visited.add(node.id);
-    
-    if (!node.__parent) return 0;
-    return 1 + calculateDepth(node.__parent, visited);
-  };
+  const added = new Set<any>();
 
-  // Calculate depths
-  Object.values(nodes).forEach((node: any) => {
-    node.__depth = calculateDepth(node);
-  });
+  // Function to flatten the tree
+  function flattenTree(
+    node: any,
+    depth: number = 0,
+    parent: any = null
+  ): any[] {
+    node.__depth = depth;
+    const children = node.__children || [];
+    node.__parent = parent;
 
-  // Sort nodes
-  const sortedNodes = Object.values(nodes).sort((a: any, b: any) => {
-    if (a.__depth !== b.__depth) return a.__depth - b.__depth;
-    if (a.__children.length !== b.__children.length) {
-      return b.__children.length - a.__children.length;
+    if (!added.has(node[pk])) {
+      added.add(node[pk]);
     }
-    return a.name.localeCompare(b.name);
-  });
 
-  // Assign indices
-  sortedNodes.forEach((node: any, index: number) => {
+    return [
+      node,
+      ...children
+        .sort((a: any, b: any) => {
+          if (
+            a.__children.length === 0 &&
+            b.__children.length === 0 &&
+            a.name &&
+            b.name
+          ) {
+            return a.name.localeCompare(b.name);
+          }
+
+          return (b.__children?.length || 0) - (a.__children?.length || 0);
+        })
+        .flatMap((child: any) => flattenTree(child, depth + 1, node)),
+    ];
+  }
+
+  // Flatten and assign indices
+  const flatResult = result.flatMap((node) => flattenTree(node));
+
+  for (const item of list) {
+    if (!added.has(item[pk])) {
+      flatResult.push(item);
+    }
+  }
+
+  flatResult.forEach((node, index) => {
     node.idx = index;
   });
 
-  return sortedNodes;
+  return flatResult;
 };

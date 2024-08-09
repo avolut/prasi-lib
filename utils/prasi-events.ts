@@ -21,6 +21,9 @@ const events = {
   },
   field: {
     on_change: async (fm: FMLocal, field: FieldLocal) => {},
+    relation_load: async (fm: FMLocal, field: FieldLocal) => {
+      return {} as Record<string, any>;
+    },
   },
   tablelist: {
     after_load: async <T extends Prisma.ModelName>(
