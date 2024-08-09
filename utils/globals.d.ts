@@ -16,3 +16,4 @@ declare var navigate: (
   }
 ) => void;
 declare var siteurl: (path: string) => string;
+declare var baseurl: (path: string) => string;
