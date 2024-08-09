@@ -82,6 +82,7 @@ export const HeaderProfile = lazify(
 /** charts */
 export { BarChart } from "@/comps/charts/bar";
 export { PieChart } from "@/comps/charts/pie";
+export { DoughnutChart } from "@/comps/charts/doughnut";
 // export { LineChart } from "@/comps/charts/line";
 
 /** Generator */
@@ -100,7 +101,10 @@ export { sortTree, treePrefix } from "@/comps/list/utils/sort-tree";
 
 export { getFilter } from "@/comps/filter/utils/get-filter";
 export {
-  fieldType, FieldTypeCustom, FMLocal, formType
+  fieldType,
+  FieldTypeCustom,
+  FMLocal,
+  formType,
 } from "@/comps/form/typings";
 export { TableListType } from "@/comps/list/utils/typings";
 export { generateTableList as generateTableList } from "@/comps/md/gen/gen-table-list";
@@ -117,8 +121,9 @@ export { Login } from "@/preset/login/Login";
 export { generateLogin } from "@/preset/login/utils/generate";
 export { logout } from "@/preset/login/utils/logout";
 export {
-  registerSession, RG,
-  UserSession
+  registerSession,
+  RG,
+  UserSession,
 } from "@/preset/login/utils/register";
 
 export { Card } from "@/comps/custom/Card";
