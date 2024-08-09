@@ -175,6 +175,7 @@ export const TableList: FC<TableListProp> = ({
     },
     collapsed: new Set<number>(),
     cached_row: new WeakMap<any, ReactElement>(),
+    filtering: "" as ReactNode | string | true,
     sort: {
       columns: (ls_sort?.columns || []) as SortColumn[],
       on_change: (cols: SortColumn[]) => {
@@ -260,12 +261,33 @@ export const TableList: FC<TableListProp> = ({
       if (arg?.toast === false) should_toast = false;
       local.should_toast = should_toast;
 
+      local.filtering = "";
       if (typeof on_load === "function") {
         local.status = "loading";
         local.render();
 
         const orderBy = local.sort.orderBy || undefined;
         const where = filterWhere(filter_name, __props);
+
+        if (where?.OR?.length > 0) {
+          const key = Object.keys(where.OR[0])[0];
+          if (key && where.OR[0][key]) {
+            let filtering = where.OR[0][key].contains;
+            if (typeof local.filtering === "string") {
+              filtering = filtering.slice(1, -1);
+            } else {
+              filtering = "";
+            }
+
+            if (filtering) {
+              local.filtering = (
+                <div className="c-pt-2">
+                  Searching for: <pre>"{filtering.trim()}"</pre>
+                </div>
+              );
+            }
+          }
+        }
 
         if (md) {
           const last = md.params.links[md.params.links.length - 1];
@@ -846,7 +868,21 @@ export const TableList: FC<TableListProp> = ({
                           <div className="c-flex-1 c-w-full absolute inset-0 c-flex c-flex-col c-items-center c-justify-center">
                             <div className="c-max-w-[15%] c-flex c-flex-col c-items-center">
                               <Sticker size={35} strokeWidth={1} />
-                              <div className="c-pt-1">No&nbsp;Data</div>
+                              <div className="c-pt-1 c-text-center">
+                                No&nbsp;Data
+                                <br />
+                                {local.filtering && (
+                                  <div
+                                    className={css`
+                                      color: gray;
+                                      font-style: italic;
+                                      font-size: 90%;
+                                    `}
+                                  >
+                                    {local.filtering}
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ),
@@ -929,7 +965,21 @@ export const TableList: FC<TableListProp> = ({
               ) : (
                 <div className="c-flex c-items-center c-justify-center c-flex-1 w-full h-full c-flex-col ">
                   <Sticker size={35} strokeWidth={1} />
-                  <div className="c-pt-1">No&nbsp;Data</div>
+                  <div className="c-pt-1">
+                    No&nbsp;Data
+                    <br />
+                    {local.filtering && (
+                      <div
+                        className={css`
+                          color: gray;
+                          font-style: italic;
+                          font-size: 90%;
+                        `}
+                      >
+                        {local.filtering}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </>

@@ -1,14 +1,12 @@
 import { GFCol, parseGenField } from "lib/gen/utils";
 import { getFilter } from "../utils/get-filter";
 import { parseSingleFilter } from "./single-filter";
-import { softDeleteFilter } from "./soft-delete-filter";
 
 export const filterWhere = (filter_name: string, p: any) => {
   const f = getFilter(filter_name);
   let where: any = {};
   if (f) {
     let fields: GFCol[] = [];
-    //
     if (p.gen__fields) {
       fields = parseGenField(p.gen__fields);
     }
@@ -27,12 +25,5 @@ export const filterWhere = (filter_name: string, p: any) => {
     }
   }
 
-  if (p && p.opt__feature && p.sft__fields && p.sft__type) {
-    where = softDeleteFilter(where, {
-      feature: p.opt_feature,
-      field: p.sft__fields,
-      type: p.sft__type,
-    });
-  }
   return where;
 };
