@@ -1,9 +1,10 @@
 import { GFCol } from "@/gen/utils";
+import dayjs from "dayjs";
+import { formatDate } from "lib/comps/custom/Datepicker/helpers";
+import { FilePreview } from "lib/comps/form/field/type/FilePreview";
+import { formatMoney } from "lib/comps/form/field/type/TypeMoney";
 import { FC } from "react";
 import { isEmptyString } from "./is-empty-string";
-import { formatDate } from "lib/comps/custom/Datepicker/helpers";
-import dayjs from "dayjs";
-import { formatMoney } from "lib/comps/form/field/type/TypeMoney";
 
 export const fields_map = new Map<string, (GFCol & { checked?: GFCol[] })[]>();
 
@@ -121,25 +122,13 @@ export const FormatValue: FC<{
     }
   }
 
-  // let prefix = <></>;
-  // if (typeof tree_depth === "number" && tree_depth > 0) {
-  //   prefix = (
-  //     <div
-  //       className={css`
-  //         padding-left: ${tree_depth * 5}px;
-  //       `}
-  //     >
-  //       <div
-  //         className={cx(
-  //           " c-border-l c-border-b c-border-black c-w-[10px] c-h-[15px]",
-  //           css`
-  //             margin-top: -10px;
-  //           `
-  //         )}
-  //       ></div>
-  //     </div>
-  //   );
-  // }
+  if (
+    ["attachment", "file", "img", "image"].find((e) =>
+      name.toLowerCase().includes(e)
+    )
+  ) {
+    return <FilePreview url={value || ""} />;
+  }
 
   return (
     <div className="c-flex c-space-x-2 c-items-center">

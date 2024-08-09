@@ -3,12 +3,11 @@ import { useLocal } from "@/utils/use-local";
 import parser from "any-date-parser";
 import Datepicker from "lib/comps/custom/Datepicker";
 import { EyeIcon, EyeOff } from "lucide-react";
-import { FC, FocusEvent, KeyboardEvent, MouseEvent } from "react";
+import { FC, FocusEvent } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldMoney } from "./TypeMoney";
 import { FieldRichText } from "./TypeRichText";
 import { FieldUpload } from "./TypeUpload";
-import { FieldToggle } from "./TypeToggle";
 
 export type PropTypeInput = {
   type: "input";
@@ -25,7 +24,6 @@ export type PropTypeInput = {
     | "toggle"
     | "rich-text"
     | "upload"
-    | "file"
     | "search"
     | "password"
     | "import"

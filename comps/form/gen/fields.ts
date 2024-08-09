@@ -60,7 +60,7 @@ export const newField = async (
           field.name.includes(e)
         )
       ) {
-        sub_type = "file";
+        sub_type = "upload";
       }
 
       return createItem({
