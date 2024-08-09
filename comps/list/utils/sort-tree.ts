@@ -42,158 +42,53 @@ export const treePrefix = (props: any) => {
   }
   return prefix;
 };
-
 export const sortTree = (list: any[], parent_key: string, pk: string) => {
   const nodes: { [id: string]: any } = {};
-  const result: any[] = [];
 
   // First pass: Create nodes
   list.forEach((node) => {
     const id = node[pk];
-    nodes[id] = { ...node, __depth: 0, __children: [] };
+    nodes[id] = { ...node, __depth: 0, __children: [], __parent: null };
   });
 
-  // Second pass: Build the tree structure
+  // Second pass: Build relationships
   list.forEach((node) => {
     const id = node[pk];
     const parentId = node[parent_key];
-    if (parentId === null || parentId === undefined) {
-      result.push(nodes[id]);
-    } else {
-      if (nodes[parentId]) {
-        nodes[parentId].__children.push(nodes[id]);
-      } else {
-        // Handle the case where a parent is missing
-        result.push(nodes[id]);
-      }
+    
+    if (parentId && parentId !== id && nodes[parentId]) {
+      nodes[id].__parent = nodes[parentId];
+      nodes[parentId].__children.push(nodes[id]);
     }
   });
 
-  // Function to flatten the tree
-  function flattenTree(node: any, depth: number = 0): any[] {
-    node.__depth = depth;
-    const children = node.__children || [];
-    delete node.__children;
-    return [
-      node,
-      ...children
-        .sort((a: any, b: any) => {
-          if (
-            a.__children.length === 0 &&
-            b.__children.length === 0 &&
-            a.name &&
-            b.name
-          ) {
-            return a.name.localeCompare(b.name);
-          }
+  // Function to calculate depth
+  const calculateDepth = (node: any, visited: Set<string> = new Set()): number => {
+    if (visited.has(node.id)) return 0; // Prevent cycles
+    visited.add(node.id);
+    
+    if (!node.__parent) return 0;
+    return 1 + calculateDepth(node.__parent, visited);
+  };
 
-          return (b.__children?.length || 0) - (a.__children?.length || 0);
-        })
-        .flatMap((child: any) => flattenTree(child, depth + 1)),
-    ];
-  }
+  // Calculate depths
+  Object.values(nodes).forEach((node: any) => {
+    node.__depth = calculateDepth(node);
+  });
 
-  // Flatten and assign indices
-  const flatResult = result.flatMap((node) => flattenTree(node));
-  flatResult.forEach((node, index) => {
+  // Sort nodes
+  const sortedNodes = Object.values(nodes).sort((a: any, b: any) => {
+    if (a.__depth !== b.__depth) return a.__depth - b.__depth;
+    if (a.__children.length !== b.__children.length) {
+      return b.__children.length - a.__children.length;
+    }
+    return a.name.localeCompare(b.name);
+  });
+
+  // Assign indices
+  sortedNodes.forEach((node: any, index: number) => {
     node.idx = index;
   });
 
-  return flatResult;
+  return sortedNodes;
 };
-
-// export const sortTree = (list: any[], parent_key: string, pk: string) => {
-//   let meta = {} as Record<
-//     string,
-//     { item: any; idx: string; depth: number; id_parent: any }
-//   >;
-
-//   let mode = "" as "" | "str" | "num";
-//   let _list = list.sort((a, b) => {
-//     if (!mode) {
-//       mode = typeof a[pk] === "string" ? "str" : "num";
-//     }
-
-//     if (mode === "str") return b[pk].toLocaleString(a[pk]);
-
-//     return a[pk] - b[pk];
-//   });
-
-//   if (_list.length > 0 && !isEditor) {
-//     const new_list = [];
-//     const unlisted = {} as Record<string, any>;
-//     for (const item of _list) {
-//       if (item[parent_key] === null) {
-//         if (!meta[item[pk]]) {
-//           meta[item[pk]] = {
-//             item,
-//             idx: new_list.length + "",
-//             depth: 0,
-//             id_parent: null,
-//           };
-//           item.__depth = 0;
-//           new_list.push(item);
-//         }
-//       } else {
-//         unlisted[item[pk]] = item;
-//       }
-//     }
-
-//     let cyclic = {} as Record<string, number>;
-//     while (Object.values(unlisted).length > 0) {
-//       for (const item of Object.values(unlisted)) {
-//         const parent = meta[item[parent_key]];
-//         if (!cyclic[item[pk]]) {
-//           cyclic[item[pk]] = 1;
-//         } else {
-//           cyclic[item[pk]]++;
-//         }
-//         if (cyclic[item[pk]] > 5) {
-//           item.__depth = 0;
-//           meta[item[pk]] = {
-//             item,
-//             depth: 0,
-//             idx: new_list.length + "",
-//             id_parent: null,
-//           };
-//           new_list.push(item);
-//           delete unlisted[item[pk]];
-//           continue;
-//         }
-
-//         if (item[parent_key] === item[pk]) {
-//           item.__depth = 0;
-
-//           meta[item[pk]] = {
-//             item,
-//             depth: 0,
-//             idx: new_list.length + "",
-//             id_parent: null,
-//           };
-//           new_list.push(item);
-//           delete unlisted[item[pk]];
-//           continue;
-//         }
-
-//         if (parent) {
-//           item.__depth = parent.depth + 1;
-
-//           meta[item[pk]] = {
-//             item,
-//             depth: parent.depth + 1,
-//             idx: parent.idx + ".",
-//             id_parent: item[parent_key],
-//           };
-//           delete unlisted[item[pk]];
-//         }
-//       }
-//     }
-//     const sorted = Object.values(meta)
-//       .sort((a, b) => a.idx.localeCompare(b.idx))
-//       .map((e) => e.item);
-
-//     return sorted;
-//   }
-
-//   return _list;
-// };

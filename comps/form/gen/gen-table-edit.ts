@@ -50,13 +50,6 @@ export const genTableEdit = async (
           },
           false
         );
-        let tree_depth = "";
-        let tree_depth_built = "";
-        if (first) {
-          tree_depth = `tree_depth={col.depth}`;
-          tree_depth_built = `tree_depth:col.depth`;
-          first = false;
-        }
         childs.push({
           component: {
             id: "297023a4-d552-464a-971d-f40dcd940b77",

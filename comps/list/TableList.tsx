@@ -4,7 +4,13 @@ import { fields_map } from "@/utils/format-value";
 import { useLocal } from "@/utils/use-local";
 import { set } from "lib/utils/set";
 import get from "lodash.get";
-import { AlertTriangle, Loader2, Sticker } from "lucide-react";
+import {
+  AlertTriangle,
+  ChevronDown,
+  ChevronRight,
+  Loader2,
+  Sticker,
+} from "lucide-react";
 import {
   ChangeEvent,
   FC,
@@ -31,6 +37,7 @@ import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
 import { sortTree } from "./utils/sort-tree";
 import { toast } from "../ui/toast";
+import { Arrow } from "../custom/Datepicker/components/utils";
 
 type OnRowClick = (arg: {
   row: any;
@@ -150,6 +157,7 @@ export const TableList: FC<TableListProp> = ({
       | "init"
       | "error",
     where: null as any,
+    firstKey: "",
     should_toast: true,
     paging: {
       take: 0,
@@ -165,6 +173,7 @@ export const TableList: FC<TableListProp> = ({
         }
       },
     },
+    collapsed: new Set<number>(),
     cached_row: new WeakMap<any, ReactElement>(),
     sort: {
       columns: (ls_sort?.columns || []) as SortColumn[],
@@ -421,9 +430,72 @@ export const TableList: FC<TableListProp> = ({
   }
   let columns: ColumnOrColumnGroup<any>[] = [];
   let isCheckbox = false;
+  let isTree = false;
   try {
     if (feature?.find((e) => e === "checkbox")) isCheckbox = true;
+    if (feature?.find((e) => e === "tree")) isTree = true;
   } catch (e) {}
+
+  if (local.status === "init") {
+    const fields = parseGenField(gen_fields);
+    for (const field of fields) {
+      if (field.is_pk) {
+        local.pk = field;
+      }
+    }
+  }
+
+  if (typeof value !== "undefined") {
+    local.data = value;
+    local.status = "ready" as any;
+  } else {
+    if (isEditor && local.status !== "ready") {
+      if (local.data.length === 0) {
+        const load_args: any = {
+          async reload() {},
+          where: {},
+          paging: {
+            take: local.paging.take > 0 ? local.paging.take : undefined,
+            skip: local.paging.skip,
+          },
+        };
+        if (id_parent) load_args.paging = {};
+        if (typeof on_load === "function") {
+          let res = on_load({ ...load_args, mode: "query" }) as any;
+          if (typeof res === "object" && res instanceof Promise) {
+            res.then((e) => {
+              local.data = e;
+            });
+          } else {
+            local.data = res;
+          }
+        }
+      }
+      local.status = "ready";
+    }
+  }
+  let data = Array.isArray(local.data) ? local.data : [];
+  if (typeof local.data === "string") console.error(local.data);
+
+  if (isEditor) {
+    if (data.length > 0) {
+      w.prasi_table_list_temp_data = data;
+    } else if (
+      w.prasi_table_list_temp_data &&
+      w.prasi_table_list_temp_data.length > 0
+    ) {
+      data = w.prasi_table_list_temp_data;
+    }
+  }
+
+  if (isTree && id_parent && local.pk && local.sort.columns.length === 0) {
+    data = sortTree(local.data, id_parent, local.pk.name).filter((e) => {
+      if (local.pk && local.collapsed.has(e?.__parent?.[local.pk.name])) {
+        return false;
+      }
+      return true;
+    });
+  }
 
   if (childs.length && isCheckbox) {
     columns.push({
@@ -466,13 +538,14 @@ export const TableList: FC<TableListProp> = ({
       cellClass: selectCellClassname,
     });
   }
+
+  let first = true;
   for (const child of childs) {
     let key = getProp(child, "name", {});
     const name = getProp(child, "title", "");
     const type = getProp(child, "type", "");
     const width = parseInt(getProp(child, "width", {}));
     if (type === "checkbox") {
-      const on_click = getProp(child, "opt__on_click", "");
       columns.push({
         key,
         name,
@@ -528,21 +601,79 @@ export const TableList: FC<TableListProp> = ({
             });
 
           return (
-            <PassProp
-              idx={props.rowIdx}
-              row={props.row}
-              col={{
-                name: props.column.key,
-                value: get(props.row, props.column.key),
-                depth: props.row.__depth || 0,
-              }}
-              rows={local.data}
-            >
-              {child}
-            </PassProp>
+            <>
+              {isTree && local.firstKey === key && local.pk && (
+                <div
+                  className={cx(
+                    css`
+                      padding-left: ${3 + props.row.__depth * 8}px;
+                    `,
+                    "c-flex c-items-center c-cursor-pointer"
+                  )}
+                  onClick={(e) => {
+                    if (!local.pk) return;
+                    if (props?.row?.__children?.length > 0) {
+                      e.stopPropagation();
+                      if (!local.collapsed.has(props.row?.[local.pk.name])) {
+                        local.collapsed.add(props.row?.[local.pk.name]);
+                      } else {
+                        local.collapsed.delete(props.row?.[local.pk.name]);
+                      }
+                      local.render();
+                    }
+                  }}
+                >
+                  <div
+                    className={cx(
+                      css`
+                        width: 16px;
+                      `
+                    )}
+                  >
+                    {props.row?.__children?.length > 0 && (
+                      <>
+                        {local.collapsed.has(props.row?.[local.pk.name]) ? (
+                          <ChevronRight size={16} />
+                        ) : (
+                          <ChevronDown size={16} />
+                        )}
+                      </>
+                    )}
+                  </div>
+                  {props.row?.__parent &&
+                    props.row?.__children?.length === 0 && (
+                      <div
+                        className={cx(
+                          " c-border-l c-border-b c-border-black c-w-[10px] c-h-[15px]",
+                          css`
+                            margin-top: -10px;
+                          `
+                        )}
+                      ></div>
+                    )}
+                </div>
+              )}
+              <PassProp
+                idx={props.rowIdx}
+                row={props.row}
+                col={{
+                  name: props.column.key,
+                  value: get(props.row, props.column.key),
+                  depth: props.row.__depth || 0,
+                }}
+                rows={local.data}
+              >
+                {child}
+              </PassProp>
+            </>
           );
         },
       });
+
+      if (first) {
+        first = false;
+        local.firstKey = key;
+      }
     }
   }
   if (mode === "list") {
@@ -585,63 +716,6 @@ export const TableList: FC<TableListProp> = ({
   }
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
 
-  if (local.status === "init") {
-    const fields = parseGenField(gen_fields);
-    for (const field of fields) {
-      if (field.is_pk) {
-        local.pk = field;
-      }
-    }
-  }
-
-  if (typeof value !== "undefined") {
-    local.data = value;
-    local.status = "ready" as any;
-  } else {
-    if (isEditor && local.status !== "ready") {
-      if (local.data.length === 0) {
-        const load_args: any = {
-          async reload() {},
-          where: {},
-          paging: {
-            take: local.paging.take > 0 ? local.paging.take : undefined,
-            skip: local.paging.skip,
-          },
-        };
-        if (id_parent) load_args.paging = {};
-        if (typeof on_load === "function") {
-          let res = on_load({ ...load_args, mode: "query" }) as any;
-          if (typeof res === "object" && res instanceof Promise) {
-            res.then((e) => {
-              local.data = e;
-            });
-          } else {
-            local.data = res;
-          }
-        }
-      }
-      local.status = "ready";
-    }
-  }
-
-  let data = Array.isArray(local.data) ? local.data : [];
-  if (typeof local.data === "string") console.error(local.data);
-
-  if (isEditor) {
-    if (data.length > 0) {
-      w.prasi_table_list_temp_data = data;
-    } else if (
-      w.prasi_table_list_temp_data &&
-      w.prasi_table_list_temp_data.length > 0
-    ) {
-      data = w.prasi_table_list_temp_data;
-    }
-  }
-
-  if (id_parent && local.pk && local.sort.columns.length === 0) {
-    data = sortTree(local.data, id_parent, local.pk.name);
-  }
-
   if (mode === "table") {
     return (
       <div
@@ -651,6 +725,17 @@ export const TableList: FC<TableListProp> = ({
           css`
             .rdg {
               display: grid !important;
+
+              .rdg-cell,
+              .rdg-header-sort-name {
+                display: flex;
+                flex-direction: row;
+                align-items: stretch;
+
+                &.rdg-header-sort-name {
+                  align-items: center;
+                }
+              }
             }
           `
         )}

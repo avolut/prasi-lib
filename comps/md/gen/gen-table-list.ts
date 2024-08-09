@@ -181,13 +181,6 @@ const genTable = async (opt: GenOpt) => {
           return;
         }
         if (e.is_pk && (arg.mode === "table" || arg.mode === "auto")) return;
-        let tree_depth = "";
-        let tree_depth_built = "";
-        if (first) {
-          tree_depth = `tree_depth={col.depth}`;
-          tree_depth_built = `tree_depth:col.depth`;
-          first = false;
-        }
         return {
           component: {
             id: "297023a4-d552-464a-971d-f40dcd940b77",
@@ -211,10 +204,10 @@ const genTable = async (opt: GenOpt) => {
                 adv: {
                   js: `\
 <div {...props} className={cx(props.className, \`s-\${_item?.edit?.parent?.item?.id}\` , "table-col")}>
-  <FormatValue value={col.value} name={col.name} gen_fields={gen__fields} ${tree_depth} />
+  <FormatValue value={col.value} name={col.name} gen_fields={gen__fields} />
 </div>`,
                   jsBuilt: `\
-render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, \`s-\${_item?.edit?.parent?.item?.id}\` , "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields, ${tree_depth_built} })));
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, \`s-\${_item?.edit?.parent?.item?.id}\` , "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields })));
               `,
                 },
               }),

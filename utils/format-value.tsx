@@ -11,10 +11,9 @@ export const FormatValue: FC<{
   value: any;
   name: string;
   gen_fields: string[];
-  tree_depth?: number;
   mode?: "money" | "datetime" | "timeago" | "date";
 }> = (prop) => {
-  const { value, gen_fields, name, tree_depth, mode } = prop;
+  const { value, gen_fields, name, mode } = prop;
   if (gen_fields) {
     const gf = JSON.stringify(gen_fields);
     if (!fields_map.has(gf)) {
@@ -122,29 +121,28 @@ export const FormatValue: FC<{
     }
   }
 
-  let prefix = <></>;
-  if (typeof tree_depth === "number" && tree_depth > 0) {
-    prefix = (
-      <div
-        className={css`
-          padding-left: ${tree_depth * 5}px;
-        `}
-      >
-        <div
-          className={cx(
-            " c-border-l c-border-b c-border-black c-w-[10px] c-h-[15px]",
-            css`
-              margin-top: -10px;
-            `
-          )}
-        ></div>
-      </div>
-    );
-  }
+  // let prefix = <></>;
+  // if (typeof tree_depth === "number" && tree_depth > 0) {
+  //   prefix = (
+  //     <div
+  //       className={css`
+  //         padding-left: ${tree_depth * 5}px;
+  //       `}
+  //     >
+  //       <div
+  //         className={cx(
+  //           " c-border-l c-border-b c-border-black c-w-[10px] c-h-[15px]",
+  //           css`
+  //             margin-top: -10px;
+  //           `
+  //         )}
+  //       ></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="c-flex c-space-x-2 c-items-center">
-      {prefix}
       <div>{value}</div>
     </div>
   );

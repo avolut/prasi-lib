@@ -14,7 +14,7 @@ export const filterWhere = (filter_name: string, p: any) => {
     }
     for (const pf of Object.values(f.filter.ref)) {
       if (pf.mode === "raw") {
-        const data = pf.data?._where ? pf.data?._where : pf.data
+        const data = pf.data?._where ? pf.data?._where : pf.data;
         for (const [k, v] of Object.entries(data)) {
           where[k] = v;
         }
@@ -34,6 +34,5 @@ export const filterWhere = (filter_name: string, p: any) => {
       type: p.sft__type,
     });
   }
-console.log({where})
   return where;
 };

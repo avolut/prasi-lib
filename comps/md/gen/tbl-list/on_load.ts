@@ -55,6 +55,10 @@ async (arg: TableOnLoad) => {
       const fields = parseGenField(gen__fields);
       const gen = generateSelect(fields);
 
+      if (opt__feature.includes("tree") && opt__id_parent) {
+        gen.select[opt__id_parent] = true
+      }
+
       const result = {items: []}
       result.items = await db.${table}.findMany({
         select: gen.select,
