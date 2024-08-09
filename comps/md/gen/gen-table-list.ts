@@ -196,8 +196,14 @@ const genTable = async (opt: GenOpt) => {
               title: formatName(e.name),
               child: createItem({
                 name: "cell",
+                "layout": {
+                  "dir": "col",
+                  "align": "left",
+                  "gap": 0,
+                  "wrap": "flex-nowrap"
+                },
                 padding: {
-                  l: 8,
+                  l: 8, 
                   b: 0,
                   t: 0,
                   r: 8,
