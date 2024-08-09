@@ -1,10 +1,12 @@
 import { parseGenField } from "@/gen/utils";
 import get from "lodash.get";
-import { AlertTriangle, Check, Loader2 } from "lucide-react";
+import { AlertTriangle, Check, ChevronLeft, Loader2, Plus } from "lucide-react";
 import { FMLocal, FMProps } from "../typings";
 import { editorFormData } from "./ed-data";
 import { formError } from "./error";
 import { toast } from "lib/comps/ui/toast";
+import { Button } from "lib/comps/ui/button";
+import { MDLocal } from "lib/comps/md/utils/typings";
 
 export const formInit = (fm: FMLocal, props: FMProps) => {
   for (const [k, v] of Object.entries(props)) {
@@ -18,6 +20,107 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
   for (const d of defs) {
     fm.field_def[d.name] = d;
   }
+
+  const toastSuccess = (opt: { addNewText: string }) => {
+    const md = fm.deps.md as MDLocal;
+    if (md) {
+      toast.success(
+        <div
+          className={cx(
+            "c-flex c-flex-col c-select-none c-items-stretch c-flex-1 c-w-full"
+          )}
+          onClick={() => {
+            toast.dismiss();
+          }}
+        >
+          <div className="c-flex c-text-green-700 c-items-center success-title c-font-semibold">
+            <Check className="c-h-6 c-w-6 c-mr-1 " />
+            Record Saved
+          </div>
+          <div
+            className={cx(
+              "c-flex c-items-center c-justify-between c-space-x-2 c-p-3",
+              css`
+                border-radius: 10px;
+                margin: 0px -10px -10px -10px;
+                background: white;
+                border: 1px solid rgb(164, 208, 180);
+                padding-left: 5px !important;
+                .button {
+                  font-size: 13px;
+                }
+              `
+            )}
+          >
+            <Button
+              variant={"link"}
+              size={"xs"}
+              className="c-cursor-pointer"
+              onClick={() => {
+                toast.dismiss();
+                md.selected = null;
+                md.tab.active = "master";
+                md.params.apply();
+                md.render();
+                md.master.reload();
+              }}
+            >
+              <ChevronLeft size={18} />{" "}
+              <div className="c-px-1">Back To List</div>
+            </Button>
+
+            <Button
+              variant={"default"}
+              size={"xs"}
+              className="c-cursor-pointer"
+              onClick={() => {
+                toast.dismiss();
+                for (const k of Object.keys(md.selected)) {
+                  delete md.selected[k];
+                }
+                md.tab.active = "detail";
+                md.params.hash[md.name] = "+";
+                md.params.apply();
+                md.render();
+              }}
+            >
+              <div className="c-px-1">{opt.addNewText}</div> <Plus size={18} />
+            </Button>
+          </div>
+        </div>,
+        {
+          duration: 60 * 1000,
+          className: css`
+            background: #e4ffed;
+            border: 2px solid green;
+
+            .success-title {
+              margin-bottom: 20px;
+            }
+          `,
+        }
+      );
+    } else {
+      toast.success(
+        <div
+          className={cx("c-flex c-flex-col c-select-none")}
+          onClick={() => {}}
+        >
+          <div className="c-flex c-text-green-700 c-items-center">
+            <Check className="c-h-4 c-w-4 c-mr-1 " />
+            Saved
+          </div>
+        </div>,
+        {
+          duration: 60 * 1000,
+          className: css`
+            background: #e4ffed;
+            border: 2px solid green;
+          `,
+        }
+      );
+    }
+  };
 
   fm.reload = async () => {
     fm.status = isEditor ? "ready" : "loading";
@@ -82,18 +185,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
 
     if (fm.is_newly_created) {
       fm.is_newly_created = false;
-      toast.success(
-        <div className="c-flex c-text-green-700 c-items-center">
-          <Check className="c-h-4 c-w-4 c-mr-1 " />
-          Saved
-        </div>,
-        {
-          className: css`
-            background: #e4ffed;
-            border: 2px solid green;
-          `,
-        }
-      );
+      toastSuccess({ addNewText: "Add Another" });
     }
 
     fm.status = "ready";
@@ -176,18 +268,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
             }
           );
         } else {
-          toast.success(
-            <div className="c-flex c-text-green-700 c-items-center">
-              <Check className="c-h-4 c-w-4 c-mr-1 " />
-              Saved
-            </div>,
-            {
-              className: css`
-                background: #e4ffed;
-                border: 2px solid green;
-              `,
-            }
-          );
+          toastSuccess({ addNewText: "Add New" });
         }
       }
       return success;

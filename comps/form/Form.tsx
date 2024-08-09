@@ -119,7 +119,7 @@ export const Form: FC<FMProps> = (props) => {
       fm.status = "init";
       fm.render();
     }
-  }, [getPathname()]);
+  }, [getPathname({ hash: true })]);
 
   useEffect(() => {
     if (fm.status === "ready") {

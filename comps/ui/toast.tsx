@@ -26,7 +26,7 @@ export const toast = {
   },
   success: (
     el: ReactElement,
-    props?: { dismissible?: boolean; className?: string }
+    props?: { dismissible?: boolean; className?: string; duration?: number }
   ) => {
     clearTimeout(timer.timeout);
     timer.timeout = setTimeout(() => {

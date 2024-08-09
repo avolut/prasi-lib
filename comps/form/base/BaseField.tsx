@@ -124,7 +124,11 @@ export const BaseField = (prop: {
           <div
             className={cx(
               "field-error c-p-2 c-text-xs c-text-red-600",
-              field.desc && "c-pt-0"
+              field.desc && "c-pt-0",
+
+              css`
+                padding-left: 0px !important;
+              `
             )}
           >
             {errors.map((err) => {

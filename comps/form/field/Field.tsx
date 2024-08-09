@@ -30,12 +30,10 @@ export const Field: FC<FieldProp> = (arg) => {
       if (arg.on_change) {
         arg.on_change({ value: fm.data[name], name, fm });
       }
-      if(!fm.events){
+      if (!fm.events) {
         fm.events = {
-          on_change(name, new_value) {
-            
-          },
-        } 
+          on_change(name, new_value) {},
+        };
       }
 
       fm.events.on_change(name, fm.data[name]);
@@ -52,8 +50,8 @@ export const Field: FC<FieldProp> = (arg) => {
   }, [field]);
   if (field.status === "init" && !isEditor) return null;
   let errors = fm.error.get(name);
-  if(field.error){
-    errors = [field.error]
+  if (field.error) {
+    errors = [field.error];
   }
   const props = { ...arg.props };
 
@@ -122,14 +120,19 @@ export const Field: FC<FieldProp> = (arg) => {
           <div
             className={cx(
               "field-error c-p-2 c-text-xs c-text-red-600",
-              field.desc && "c-pt-0"
+              field.desc && "c-pt-0",
+              css`
+                padding-left: 0px !important;
+              `
             )}
-          > 
+          >
             {errors.map((err) => {
               return <div>{err}</div>;
             })}
           </div>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
       </div>
     </LabelDiv>
   );

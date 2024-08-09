@@ -10,7 +10,7 @@ export const getPathname = (opt?: { hash?: boolean }) => {
     ) {
       const hash = location.hash;
 
-      if (hash !== "" && opt?.hash !== false) {
+      if (hash !== "" && opt?.hash === true) {
         return "/" + location.pathname.split("/").slice(3).join("/") + hash;
       } else {
         return "/" + location.pathname.split("/").slice(3).join("/");
