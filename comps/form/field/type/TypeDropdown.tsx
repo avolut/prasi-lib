@@ -3,6 +3,7 @@ import { FieldLoading } from "lib/comps/ui/field-loading";
 import { Typeahead } from "lib/comps/ui/typeahead";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
+import { call_prasi_events } from "lib/exports";
 
 export const TypeDropdown: FC<{
   field: FieldLocal;
@@ -14,11 +15,12 @@ export const TypeDropdown: FC<{
     options: [] as { value: string; label: string; data: any }[],
   });
 
-  const reload = (callback?: () => void) => {
+  const reload = async (callback?: () => void) => {
     if (typeof arg.on_load === "function") {
       local.loaded = false;
       local.render();
-      const options = arg.on_load({ field });
+      let options: any = null;
+      options = arg.on_load({ field });
       if (options instanceof Promise) {
         options.then((res) => {
           if (Array.isArray(res)) {

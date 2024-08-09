@@ -90,6 +90,7 @@ ${
 
     return item;
   } else {
+    call_prasi_events("form", "after_load", [opt?.fm]);
     ${opt?.after_load ? opt?.after_load : ""}
   }
 }`;

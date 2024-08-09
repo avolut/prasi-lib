@@ -54,6 +54,15 @@ export const newField = async (
         },
       });
     } else {
+      let sub_type = "text";
+      if (
+        ["attachment", "file", "img", "image"].find((e) =>
+          field.name.includes(e)
+        )
+      ) {
+        sub_type = "file";
+      }
+
       return createItem({
         component: {
           id: "32550d01-42a3-4b15-a04a-2c2d5c3c8e67",
@@ -62,7 +71,7 @@ export const newField = async (
             label: formatName(field.name),
             type,
             ext__required: field.optional ? "n" : "y",
-            sub_type: "text",
+            sub_type,
             ext__show_label: show ? "y" : "n",
             child: {
               childs: [],

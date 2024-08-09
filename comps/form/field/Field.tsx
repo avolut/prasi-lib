@@ -5,6 +5,7 @@ import { useField } from "../utils/use-field";
 import { FieldInput } from "./FieldInput";
 import { Label } from "./Label";
 import { validate } from "../utils/validate";
+import { call_prasi_events } from "lib/exports";
 
 export const Field: FC<FieldProp> = (arg) => {
   const showlabel = arg.show_label || "y";
@@ -39,6 +40,8 @@ export const Field: FC<FieldProp> = (arg) => {
 
       fm.events.on_change(name, fm.data[name]);
       fm.render();
+
+      call_prasi_events("field", "on_change", [fm, field]);
     }
   }, [fm.data[name]]);
 

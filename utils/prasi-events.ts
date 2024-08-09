@@ -20,9 +20,7 @@ const events = {
     },
   },
   field: {
-    on_init: async (fm: FMLocal, field: FieldLocal) => {},
     on_change: async (fm: FMLocal, field: FieldLocal) => {},
-    options_load: async (fm: FMLocal, field: FieldLocal) => {},
   },
   tablelist: {
     after_load: async <T extends Prisma.ModelName>(
