@@ -1,12 +1,102 @@
 import { ExternalLink } from "lucide-react";
+import { ReactElement } from "react";
 
-export const FilePreview = ({
+export const ThumbPreview = ({
   url,
-  variant,
+  del,
 }: {
   url: string;
-  variant?: "thumb";
+  del: ReactElement;
 }) => {
+  const file = getFileName(url);
+  if (typeof file === "string") return;
+
+  const color = darkenColor(generateRandomColor(file.extension));
+  let content = (
+    <div
+      className={cx(
+        css`
+          background: white;
+          color: ${color};
+          border: 1px solid ${color};
+          color: ${color};
+          border-radius: 3px;
+          text-transform: uppercase;
+          font-size: 14px;
+          font-weight: black;
+          padding: 3px 7px;
+          height: 26px;
+        `,
+        "c-flex c-items-center"
+      )}
+    >
+      {file.extension}
+
+      <div className="c-ml-1">
+        <ExternalLink size="12px" />
+      </div>
+    </div>
+  );
+
+  let is_image = false;
+  if (url.startsWith("_file/")) {
+    if ([".png", ".jpeg", ".jpg", ".webp"].find((e) => url.endsWith(e))) {
+      is_image = true;
+      content = (
+        <img
+          className={cx(
+            "c-rounded-md",
+            css`
+              width: 60px;
+              height: 60px;
+              background-image: linear-gradient(
+                  45deg,
+                  #ccc 25%,
+                  transparent 25%
+                ),
+                linear-gradient(135deg, #ccc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ccc 75%),
+                linear-gradient(135deg, transparent 75%, #ccc 75%);
+              background-size: 25px 25px; /* Must be a square */
+              background-position: 0 0, 12.5px 0, 12.5px -12.5px, 0px 12.5px; /* Must be half of one side of the square */
+            `
+          )}
+          src={siteurl(
+            `/_img/${url.substring("_file/".length)}?${"w=60&h=60&fit=cover"}`
+          )}
+        />
+      );
+    }
+  }
+
+  return (
+    <>
+      {file.extension && (
+        <div
+          className={cx(
+            "c-flex c-border c-rounded c-items-start c-px-1 c-relative c-bg-white c-cursor-pointer",
+            css`
+              &:hover {
+                border: 1px solid #1c4ed8;
+                outline: 1px solid #1c4ed8;
+              }
+            `,
+            "c-space-x-1 c-py-1"
+          )}
+          onClick={() => {
+            let _url = siteurl(url || "");
+            window.open(_url, "_blank");
+          }}
+        >
+          {content}
+          {del}
+        </div>
+      )}
+    </>
+  );
+};
+
+export const FilePreview = ({ url }: { url: string }) => {
   const file = getFileName(url);
   if (typeof file === "string")
     return (
@@ -49,62 +139,40 @@ export const FilePreview = ({
     </div>
   );
 
-  if (variant === "thumb") {
-    content = (
-      <div
-        className={cx(
-          css`
-            background: white;
-            color: ${color};
-            border: 1px solid ${color};
-            color: ${color};
-            border-radius: 3px;
-            text-transform: uppercase;
-            font-size: 16px;
-            font-weight: black;
-            padding: 3px 7px;
-            margin-left: 5px;
-            height: 30px;
-          `,
-          "c-flex c-items-center"
-        )}
-      >
-        {file.extension}
-
-        <div className="c-ml-1">
-          <ExternalLink size="12px" />
-        </div>
-      </div>
-    );
-  }
-
   if (url.startsWith("_file/")) {
     if ([".png", ".jpeg", ".jpg", ".webp"].find((e) => url.endsWith(e))) {
       content = (
         <img
-          className="c-py-1 c-rounded-md"
+          className={cx(
+            "c-my-1 c-rounded-md",
+            css`
+              background-image: linear-gradient(
+                  45deg,
+                  #ccc 25%,
+                  transparent 25%
+                ),
+                linear-gradient(135deg, #ccc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ccc 75%),
+                linear-gradient(135deg, transparent 75%, #ccc 75%);
+              background-size: 25px 25px; /* Must be a square */
+              background-position: 0 0, 12.5px 0, 12.5px -12.5px, 0px 12.5px; /* Must be half of one side of the square */
+            `
+          )}
           src={siteurl(
-            `/_img/${url.substring("_file/".length)}?${
-              variant === "thumb" ? "w=95&h=95" : "w=100&h=20"
-            }`
+            `/_img/${url.substring("_file/".length)}?${"w=100&h=20"}`
           )}
         />
       );
     }
   }
+
   return (
     <>
       {file.extension && (
         <div
           className={cx(
             "c-flex c-border c-rounded c-items-center c-px-1  c-bg-white c-cursor-pointer",
-            variant !== "thumb"
-              ? "c-pr-2"
-              : css`
-                  width: 95px;
-                  max-height: 95px;
-                  min-height: 50px;
-                `,
+            "c-pr-2",
             css`
               &:hover {
                 border: 1px solid #1c4ed8;
@@ -118,11 +186,9 @@ export const FilePreview = ({
           }}
         >
           {content}
-          {variant !== "thumb" && (
-            <div className="c-ml-2">
-              <ExternalLink size="12px" />
-            </div>
-          )}
+          <div className="c-ml-2">
+            <ExternalLink size="12px" />
+          </div>
         </div>
       )}
     </>

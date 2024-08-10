@@ -4,7 +4,7 @@ import { Trash2, Upload } from "lucide-react";
 import { ChangeEvent, FC } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
-import { FilePreview } from "./FilePreview";
+import { FilePreview, ThumbPreview } from "./FilePreview";
 import { Spinner } from "lib/comps/ui/field-loading";
 const w = window as unknown as {
   serverurl: string;
@@ -123,50 +123,46 @@ export const FieldUploadMulti: FC<{
                 e.preventDefault();
               }}
             >
-              <div
-                className={cx(
-                  "c-relative",
-                  css`
-                    .del {
-                      opacity: 0;
-                    }
-                    &:hover {
-                      .del {
-                        opacity: 1;
-                      }
-                    }
-                  `
-                )}
-              >
-                <FilePreview url={value || ""} variant="thumb" />
-                <div
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (confirm("Remove this file ?")) {
-                      list.splice(idx, 1);
-                      fm.data[field.name] = JSON.stringify(list);
-                      fm.render();
-                    }
-                  }}
-                  className={cx(
-                    "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-red-100 c-absolute c-top-0 c-right-0 del transition-all",
-                    css`
-                      border: 1px solid red;
-                      width: 25px;
-                      height: 25px;
-                      margin: 5px;
-                    `
-                  )}
-                >
-                  <Trash2 className="c-text-red-500 c-h-4 c-w-4 " />
-                </div>
+              <div className={cx("c-relative")}>
+                <ThumbPreview
+                  url={value || ""}
+                  del={
+                    <div
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (confirm("Remove this file ?")) {
+                          list.splice(idx, 1);
+                          fm.data[field.name] = JSON.stringify(list);
+                          fm.render();
+                        }
+                      }}
+                      className={cx(
+                        "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-red-100 transition-all",
+                        css`
+                          border: 1px solid red;
+                          width: 25px;
+                          height: 25px;
+                        `
+                      )}
+                    >
+                      <Trash2 className="c-text-red-500 c-h-4 c-w-4 " />
+                    </div>
+                  }
+                />
               </div>
             </div>
           );
         })}
         {input.uploading.size > 0 && (
-          <div className="c-flex c-space-x-1 c-p-2 c-border">
+          <div
+            className={cx(
+              "c-flex c-space-x-1 c-p-2 c-border",
+              css`
+                height: 30px;
+              `
+            )}
+          >
             <Spinner /> <div>Uploading</div>
           </div>
         )}
@@ -175,8 +171,10 @@ export const FieldUploadMulti: FC<{
         <div className={cx("c-flex c-border c-rounded ")}>
           <div
             className={cx(
-              "c-flex c-flex-row c-relative c-py-1 c-flex-grow c-pr-2 c-items-center c-cursor-pointer hover:c-bg-blue-50",
+              "c-flex c-flex-row c-relative c-flex-grow c-pr-2 c-items-center c-cursor-pointer hover:c-bg-blue-50",
               css`
+                padding-top: 3px;
+                padding-bottom: 2px;
                 input[type="file"],
                 input[type="file"]::-webkit-file-upload-button {
                   cursor: pointer;
@@ -200,12 +198,12 @@ export const FieldUploadMulti: FC<{
                 )}
               />
             )}
-            <div className="c-items-center c-flex c-text-base c-px-1 c-outline-none c-rounded c-cursor-pointer ">
+            <div className="c-items-center c-flex c-text-base c-px-1 c-outline-none c-rounded c-cursor-pointer">
               <div className="c-flex c-flex-row c-items-center c-px-2">
                 <Upload className="c-h-4 c-w-4" />
               </div>
               <div className="c-flex c-flex-row c-items-center c-text-sm">
-                Upload File
+                Upload Multiple Files
               </div>
             </div>
           </div>

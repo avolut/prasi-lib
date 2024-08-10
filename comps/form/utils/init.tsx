@@ -81,6 +81,8 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
               className={cx(
                 css`
                   color: green;
+                  border: 1px solid green !important;
+                  background: #f1fff6 !important;
                 `,
                 "c-cursor-pointer"
               )}
