@@ -16,9 +16,9 @@ export const useField = (
     input: {},
     ref: null as any,
   } as any);
-  const ref = useRef(null as any)
+  const ref = useRef(null as any);
   field.ref = ref;
-  
+
   const name = typeof arg.name === "string" ? arg.name : arg.name();
   const label = typeof arg.label === "string" ? arg.label : arg.label();
   const required =
@@ -34,11 +34,12 @@ export const useField = (
     custom: arg.custom,
     required: required === "y",
     required_msg: arg.required_msg,
-    disabled: typeof arg.disabled === "function" ? arg.disabled : arg.disabled === "y",
+    disabled:
+      typeof arg.disabled === "function" ? arg.disabled : arg.disabled === "y",
     on_change: arg.on_change,
     max_date: arg.max_date,
     min_date: arg.min_date,
-    table_fields: []
+    table_fields: [],
   };
 
   if (field.status === "init" || isEditor) {
@@ -52,13 +53,14 @@ export const useField = (
   useEffect(() => {
     if (field.status === "init" || !fm.fields[name]) {
       field.status = "ready";
-      if(!fm.fields){
-        fm.fields = {}
+      if (!fm.fields) {
+        fm.fields = {};
       }
       fm.fields[name] = field;
       field.render();
     }
   }, []);
+  field.prop = arg;
 
   return field;
 };
