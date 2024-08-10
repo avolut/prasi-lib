@@ -1,7 +1,7 @@
 import { useLocal } from "@/utils/use-local";
 import get from "lodash.get";
 import { Loader2, Paperclip, Trash2, Upload } from "lucide-react";
-import { FC } from "react";
+import { ChangeEvent, FC } from "react";
 import * as XLSX from "xlsx";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FilePreview } from "./FilePreview";
@@ -19,7 +19,6 @@ export const FieldUploadSingle: FC<{
   on_change: (e: any) => void | Promise<void>;
 }> = ({ field, fm, prop, on_change, arg }) => {
   const styling = arg.upload_style ? arg.upload_style : "full";
-  let type_field = prop.sub_type;
   let value: any = fm.data[field.name];
   // let type_upload =
   const input = useLocal({
@@ -31,30 +30,46 @@ export const FieldUploadSingle: FC<{
     style: "inline" as "inline" | "full",
   });
 
-  const on_upload = async (event: any) => {
+  const on_upload = async (event: ChangeEvent<HTMLInputElement>) => {
     let file = null;
     try {
-      file = event.target.files[0];
+      file = event.target?.files?.[0];
     } catch (ex) {}
-    if (type_field === "import") {
+    if (prop.model_upload === "import") {
       const reader = new FileReader();
 
-      reader.onload = (e: any) => {
-        const binaryStr = e.target.result;
-        const workbook = XLSX.read(binaryStr, { type: "binary" });
+      function arrayBufferToBinaryString(buffer: ArrayBuffer): string {
+        const bytes = new Uint8Array(buffer);
+        return String.fromCharCode.apply(null, Array.from(bytes));
+      }
 
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-        if (typeof on_change === "function") {
-          const res = on_change({
-            value: jsonData,
-            file: file,
-            binnary: e.target.result,
-          });
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target && e.target.result) {
+          const binaryStr =
+            typeof e.target.result === "string"
+              ? e.target.result
+              : arrayBufferToBinaryString(e.target.result);
+          const workbook = XLSX.read(binaryStr, { type: "binary" });
+
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          if (typeof on_change === "function") {
+            on_change({
+              value: jsonData,
+              file: file,
+              binnary: e.target.result,
+            });
+          }
         }
       };
-      reader.readAsBinaryString(file);
-    } else {
+      if (file) {
+        if (typeof reader.readAsArrayBuffer === "function") {
+          reader.readAsArrayBuffer(file);
+        } else {
+          reader.readAsBinaryString(file);
+        }
+      }
+    } else if (file) {
       const formData = new FormData();
       formData.append("file", file);
 
@@ -132,6 +147,7 @@ export const FieldUploadSingle: FC<{
                 ref={(ref) => (input.ref = ref)}
                 type="file"
                 multiple={false}
+                accept={field.prop.upload?.accept}
                 onChange={on_upload}
                 className={cx(
                   "c-absolute c-w-full c-h-full c-cursor-pointer c-top-0 c-left-0 c-opacity-0"
@@ -152,7 +168,7 @@ export const FieldUploadSingle: FC<{
                   <div className="c-flex c-flex-row c-items-center c-px-2">
                     <Upload className="c-h-4 c-w-4" />
                   </div>
-                  <div className="c-flex c-flex-row c-items-center">
+                  <div className="c-flex c-flex-row c-items-center  c-text-sm">
                     Upload File
                   </div>
                 </div>
@@ -173,7 +189,7 @@ export const FieldUploadSingle: FC<{
                   }}
                   className={cx(
                     input.drop ? "c-bg-gray-100" : "",
-                    "hover:c-bg-gray-100 c-flex-grow c-m-1 c-relative c-flex-grow c-p-4 c-items-center c-flex c-flex-row c-text-gray-400 c-border c-border-gray-200 c-border-dashed c-rounded c-cursor-pointer"
+                    "hover:c-bg-gray-100 c-m-1 c-relative c-flex-grow c-p-4 c-items-center c-flex c-flex-row c-text-gray-400 c-border c-border-gray-200 c-border-dashed c-rounded c-cursor-pointer"
                   )}
                 >
                   <div className="c-flex-row c-flex c-flex-grow c-space-x-2">
@@ -217,19 +233,19 @@ export const FieldUploadSingle: FC<{
       ) : input.fase === "preview" ? (
         <div className="c-flex c-justify-between c-flex-1 c-p-1">
           <FilePreview url={value || ""} />
-          <div className="c-flex c-flex-row c-items-center c-border c-px-2 c-rounded c-cursor-pointer hover:c-bg-red-100">
-            <Trash2
-              className="c-text-red-500 c-h-4 c-w-4"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (confirm("Clear this file ?")) {
-                  input.fase = "start";
-                  fm.data[field.name] = null;
-                  fm.render();
-                }
-              }}
-            />
+          <div
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (confirm("Clear this file ?")) {
+                input.fase = "start";
+                fm.data[field.name] = null;
+                fm.render();
+              }
+            }}
+            className="c-flex c-flex-row c-items-center c-border c-px-2 c-rounded c-cursor-pointer hover:c-bg-red-100"
+          >
+            <Trash2 className="c-text-red-500 c-h-4 c-w-4" />
           </div>
         </div>
       ) : (

@@ -48,7 +48,7 @@ export type FieldProp = {
   label: string;
   desc?: string;
   props?: any;
-  upload?: { mode: "single-file" | "multi-file" };
+  upload?: { mode: "single-file" | "multi-file"; accept: string };
   link: {
     text:
       | string
@@ -187,7 +187,7 @@ export type FieldInternal<T extends FieldProp["type"]> = {
     name: string;
     fm: FMLocal;
   }) => void | Promise<void>;
-  prop?: FieldProp;
+  prop: FieldProp;
   max_date?: FieldProp["max_date"];
   min_date?: FieldProp["min_date"];
   error?: any;

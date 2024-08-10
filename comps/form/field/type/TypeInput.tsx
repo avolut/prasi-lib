@@ -63,7 +63,6 @@ export const FieldTypeInput: FC<{
 
   // let value: any = "2024-05-14T05:58:01.376Z" // case untuk date time
   field.input = input;
-  if (!field.prop) field.prop = prop;
   if (["date", "datetime", "datetime-local", "time"].includes(type_field)) {
     if (typeof value === "string" || value instanceof Date) {
       let date = parse(value);

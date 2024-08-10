@@ -56,7 +56,12 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
             <Button
               variant={"link"}
               size={"xs"}
-              className="c-cursor-pointer"
+              className={cx(
+                css`
+                  color: gray !important;
+                `,
+                "c-cursor-pointer"
+              )}
               onClick={() => {
                 const md = fm.deps.md as MDLocal;
                 toast.dismiss();
@@ -72,9 +77,14 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
             </Button>
 
             <Button
-              variant={"default"}
+              variant={"outline"}
+              className={cx(
+                css`
+                  color: green;
+                `,
+                "c-cursor-pointer"
+              )}
               size={"xs"}
-              className="c-cursor-pointer"
               onClick={() => {
                 const md = fm.deps.md as MDLocal;
                 toast.dismiss();

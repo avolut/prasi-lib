@@ -1,12 +1,38 @@
 import { ExternalLink } from "lucide-react";
 
-export const FilePreview = ({ url }: { url: string }) => {
+export const FilePreview = ({
+  url,
+  variant,
+}: {
+  url: string;
+  variant?: "thumb";
+}) => {
   const file = getFileName(url);
+  if (typeof file === "string")
+    return (
+      <div
+        className={cx(
+          css`
+            border-radius: 3px;
+            padding: 0px 5px;
+            height: 20px;
+            margin-right: 5px;
+            height: 20px;
+            border: 1px solid #ccc;
+            background: white;
+          `,
+          "c-flex c-items-center c-text-sm"
+        )}
+      >
+        {file}
+      </div>
+    );
   const color = darkenColor(generateRandomColor(file.extension));
   let content = (
     <div
       className={cx(
         css`
+          background: white;
           border: 1px solid ${color};
           color: ${color};
           border-radius: 3px;
@@ -22,12 +48,46 @@ export const FilePreview = ({ url }: { url: string }) => {
       {file.extension}
     </div>
   );
+
+  if (variant === "thumb") {
+    content = (
+      <div
+        className={cx(
+          css`
+            background: white;
+            color: ${color};
+            border: 1px solid ${color};
+            color: ${color};
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-size: 16px;
+            font-weight: black;
+            padding: 3px 7px;
+            margin-left: 5px;
+            height: 30px;
+          `,
+          "c-flex c-items-center"
+        )}
+      >
+        {file.extension}
+
+        <div className="c-ml-1">
+          <ExternalLink size="12px" />
+        </div>
+      </div>
+    );
+  }
+
   if (url.startsWith("_file/")) {
     if ([".png", ".jpeg", ".jpg", ".webp"].find((e) => url.endsWith(e))) {
       content = (
         <img
           className="c-py-1 c-rounded-md"
-          src={siteurl(`/_img/${url.substring("_file/".length)}?w=100&h=20`)}
+          src={siteurl(
+            `/_img/${url.substring("_file/".length)}?${
+              variant === "thumb" ? "w=95&h=95" : "w=100&h=20"
+            }`
+          )}
         />
       );
     }
@@ -36,16 +96,33 @@ export const FilePreview = ({ url }: { url: string }) => {
     <>
       {file.extension && (
         <div
-          className="c-flex c-border c-rounded c-items-center c-px-1 c-pr-2 c-bg-white hover:c-bg-blue-50 c-cursor-pointer"
+          className={cx(
+            "c-flex c-border c-rounded c-items-center c-px-1  c-bg-white c-cursor-pointer",
+            variant !== "thumb"
+              ? "c-pr-2"
+              : css`
+                  width: 95px;
+                  max-height: 95px;
+                  min-height: 50px;
+                `,
+            css`
+              &:hover {
+                border: 1px solid #1c4ed8;
+                outline: 1px solid #1c4ed8;
+              }
+            `
+          )}
           onClick={() => {
             let _url = siteurl(url || "");
             window.open(_url, "_blank");
           }}
         >
           {content}
-          <div className="c-ml-2">
-            <ExternalLink size="12px" />
-          </div>
+          {variant !== "thumb" && (
+            <div className="c-ml-2">
+              <ExternalLink size="12px" />
+            </div>
+          )}
         </div>
       )}
     </>
@@ -90,6 +167,17 @@ function generateRandomColor(str: string): string {
   return color;
 }
 const getFileName = (url: string) => {
+  if (url.startsWith("[")) {
+    try {
+      const list = JSON.parse(url);
+      if (list.length === 0) return "Empty";
+      return `${list.length} File${list.length > 1 ? "s" : ""}`;
+    } catch (e) {
+      console.error(`Error parsing multi-file: ${url}`);
+    }
+    return "Unknown File";
+  }
+
   const fileName = url.substring(url.lastIndexOf("/") + 1);
   const dotIndex = fileName.lastIndexOf(".");
   const fullname = fileName;
