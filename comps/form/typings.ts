@@ -48,7 +48,12 @@ export type FieldProp = {
   label: string;
   desc?: string;
   props?: any;
-  upload?: { mode: "single-file" | "multi-file"; accept: string };
+  upload?: {
+    mode: "single-file" | "multi-file";
+    accept: string;
+    cover_text: string;
+    cover_field: string;
+  };
   link: {
     text:
       | string

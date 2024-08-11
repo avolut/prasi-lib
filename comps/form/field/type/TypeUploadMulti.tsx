@@ -1,11 +1,12 @@
 import { useLocal } from "@/utils/use-local";
+import { Spinner } from "lib/comps/ui/field-loading";
+import { Tooltip } from "lib/comps/ui/tooltip";
 import get from "lodash.get";
-import { Trash2, Upload } from "lucide-react";
+import { Check, Trash2, Upload } from "lucide-react";
 import { ChangeEvent, FC } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
+import { ThumbPreview } from "./FilePreview";
 import { PropTypeInput } from "./TypeInput";
-import { FilePreview, ThumbPreview } from "./FilePreview";
-import { Spinner } from "lib/comps/ui/field-loading";
 const w = window as unknown as {
   serverurl: string;
 };
@@ -29,6 +30,11 @@ export const FieldUploadMulti: FC<{
     fase: value ? "preview" : ("start" as "start" | "upload" | "preview"),
     style: "inline" as "inline" | "full",
   });
+
+  const cover = {
+    field: field.prop.upload?.cover_field || "",
+    text: field.prop.upload?.cover_text,
+  };
 
   const parse_list = () => {
     let list: string[] = [];
@@ -114,46 +120,118 @@ export const FieldUploadMulti: FC<{
           `
         )}
       >
-        {list.map((value, idx) => {
-          return (
-            <div
-              className="c-py-1 c-pr-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-            >
-              <div className={cx("c-relative")}>
-                <ThumbPreview
-                  url={value || ""}
-                  del={
-                    <div
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (confirm("Remove this file ?")) {
-                          list.splice(idx, 1);
-                          fm.data[field.name] = JSON.stringify(list);
-                          fm.render();
+        {!isEditor &&
+          list.map((value, idx) => {
+            return (
+              <div
+                className="c-py-1 c-pr-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+              >
+                <div
+                  className={cx(
+                    "c-relative",
+                    fm.data[cover.field] === value &&
+                      css`
+                        .thumb-preview {
+                          border: 1px solid #1c4ed8;
+                          outline: 1px solid #1c4ed8;
                         }
-                      }}
+
+                        &:hover {
+                          .cover-field {
+                            opacity: 0;
+                          }
+                        }
+                      `
+                  )}
+                >
+                  {fm.data[cover.field] === value && (
+                    <div
                       className={cx(
-                        "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-red-100 transition-all",
+                        "absolute cover-field c-transition-all",
                         css`
-                          border: 1px solid red;
-                          width: 25px;
-                          height: 25px;
+                          bottom: 0px;
+                          font-size: 9px;
+                          z-index: 99;
+                          padding: 0px 7px;
+                          border-radius: 5px;
+                          border-top-left-radius: 0px;
+                          border-bottom-right-radius: 0px;
+                          background: #1c4ed8;
+                          color: white;
                         `
                       )}
                     >
-                      <Trash2 className="c-text-red-500 c-h-4 c-w-4 " />
+                      {cover.text}
                     </div>
-                  }
-                />
+                  )}
+                  <ThumbPreview
+                    url={value || ""}
+                    options={
+                      <div className={cx("c-flex c-flex-col c-space-y-1")}>
+                        <div
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (confirm("Remove this file ?")) {
+                              list.splice(idx, 1);
+                              fm.data[field.name] = JSON.stringify(list);
+                              fm.render();
+                            }
+                          }}
+                          className={cx(
+                            "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-red-100 transition-all",
+                            css`
+                              border: 1px solid red;
+                              width: 25px;
+                              height: 25px;
+                            `
+                          )}
+                        >
+                          <Trash2 className="c-text-red-500 c-h-4 c-w-4 " />
+                        </div>
+
+                        {cover.field && (
+                          <Tooltip content={`Mark as ${cover.text}`} placement="right">
+                            <div
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                if (fm.data[cover.field] === value) {
+                                  fm.data[cover.field] = "";
+                                } else {
+                                  fm.data[cover.field] = value;
+                                }
+                                fm.render();
+                              }}
+                              className={cx(
+                                "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-blue-100 transition-all",
+                                css`
+                                  border: 1px solid black;
+                                  width: 25px;
+                                  height: 25px;
+                                `
+                              )}
+                            >
+                              {value === fm.data[cover.field] && (
+                                <>
+                                  <Check />
+                                </>
+                              )}
+                            </div>
+                          </Tooltip>
+                        )}
+                      </div>
+                    }
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
         {input.uploading.size > 0 && (
           <div
             className={cx(

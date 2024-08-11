@@ -67,6 +67,7 @@ const get_layer = async (
   table: string
 ) => {
   const { cols, rels } = await loadSingle(id_site, table);
+
   const options = [];
   if (cols) {
     for (const [k, v] of Object.entries(cols)) {
@@ -125,6 +126,7 @@ const loadSingle = async (id_site: string, table: string) => {
   const idb_key = `${id_site}-${table}`;
   let cached_raw = localStorage.getItem(ls_key);
   let cached_keys: string[] = [];
+
   if (cached_raw) {
     try {
       let res = JSON.parse(cached_raw);

@@ -3,10 +3,10 @@ import { ReactElement } from "react";
 
 export const ThumbPreview = ({
   url,
-  del,
+  options,
 }: {
   url: string;
-  del: ReactElement;
+  options: ReactElement;
 }) => {
   const file = getFileName(url);
   if (typeof file === "string") return;
@@ -25,16 +25,23 @@ export const ThumbPreview = ({
           font-size: 14px;
           font-weight: black;
           padding: 3px 7px;
-          height: 26px;
+
+          width: 60px;
+          height: 60px;
+
+          &:hover {
+            border: 1px solid #1c4ed8;
+            outline: 1px solid #1c4ed8;
+          }
         `,
-        "c-flex c-items-center"
+        "c-flex c-justify-center c-items-center"
       )}
+      onClick={() => {
+        let _url = siteurl(url || "");
+        window.open(_url, "_blank");
+      }}
     >
       {file.extension}
-
-      <div className="c-ml-1">
-        <ExternalLink size="12px" />
-      </div>
     </div>
   );
 
@@ -44,8 +51,17 @@ export const ThumbPreview = ({
       is_image = true;
       content = (
         <img
+          onClick={() => {
+            let _url = siteurl(url || "");
+            window.open(_url, "_blank");
+          }}
           className={cx(
             "c-rounded-md",
+            css`
+              &:hover {
+                outline: 2px solid #1c4ed8;
+              }
+            `,
             css`
               width: 60px;
               height: 60px;
@@ -75,21 +91,11 @@ export const ThumbPreview = ({
         <div
           className={cx(
             "c-flex c-border c-rounded c-items-start c-px-1 c-relative c-bg-white c-cursor-pointer",
-            css`
-              &:hover {
-                border: 1px solid #1c4ed8;
-                outline: 1px solid #1c4ed8;
-              }
-            `,
-            "c-space-x-1 c-py-1"
+            "c-space-x-1 c-py-1 thumb-preview"
           )}
-          onClick={() => {
-            let _url = siteurl(url || "");
-            window.open(_url, "_blank");
-          }}
         >
           {content}
-          {del}
+          {options}
         </div>
       )}
     </>
