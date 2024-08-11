@@ -44,7 +44,20 @@ export const FieldRichText: FC<{
   }, []);
   let value: any = fm.data[field.name];
   return (
-    <div className="c-flex c-flex-col c-w-full">
+    <div
+      className={cx(
+        "c-flex c-flex-col c-w-full",
+        css`
+          .ql-toolbar,
+          .ql-container {
+            border: 0px !important;
+          }
+          .ql-container {
+            border-top: 1px solid #cecece !important;
+          }
+        `
+      )}
+    >
       <div
         ref={(e) => (local.ref = e)}
         className={cx(css`

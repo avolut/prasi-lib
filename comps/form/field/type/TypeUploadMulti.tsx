@@ -2,14 +2,11 @@ import { useLocal } from "@/utils/use-local";
 import { Spinner } from "lib/comps/ui/field-loading";
 import { Tooltip } from "lib/comps/ui/tooltip";
 import get from "lodash.get";
-import { Check, Trash2, Upload } from "lucide-react";
+import { Star, Trash2, Upload } from "lucide-react";
 import { ChangeEvent, FC } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { ThumbPreview } from "./FilePreview";
 import { PropTypeInput } from "./TypeInput";
-const w = window as unknown as {
-  serverurl: string;
-};
 
 export const FieldUploadMulti: FC<{
   field: FieldLocal;
@@ -19,8 +16,9 @@ export const FieldUploadMulti: FC<{
   arg: FieldProp;
   on_change: (e: any) => void | Promise<void>;
 }> = ({ field, fm, prop, on_change, arg }) => {
+
   let value: string = (fm.data[field.name] || "").trim();
-  // let type_upload =
+  
   const input = useLocal({
     value: 0 as any,
     display: false as any,
@@ -133,6 +131,13 @@ export const FieldUploadMulti: FC<{
                 <div
                   className={cx(
                     "c-relative",
+                    css`
+                      &:hover {
+                        .upload-star {
+                          border: 1px solid gray;
+                        }
+                      }
+                    `,
                     fm.data[cover.field] === value &&
                       css`
                         .thumb-preview {
@@ -195,7 +200,10 @@ export const FieldUploadMulti: FC<{
                         </div>
 
                         {cover.field && (
-                          <Tooltip content={`Mark as ${cover.text}`} placement="right">
+                          <Tooltip
+                            content={`Mark as ${cover.text}`}
+                            placement="right"
+                          >
                             <div
                               onClick={(e) => {
                                 e.preventDefault();
@@ -209,17 +217,22 @@ export const FieldUploadMulti: FC<{
                                 fm.render();
                               }}
                               className={cx(
-                                "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-blue-100 transition-all",
+                                "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-blue-100 transition-all upload-star",
                                 css`
-                                  border: 1px solid black;
+                                  border: 1px solid transparent;
                                   width: 25px;
                                   height: 25px;
+
+                                  &:hover {
+                                    border: 1px solid #1c4ed8;
+                                    outline: 1px solid #1c4ed8;
+                                  }
                                 `
                               )}
                             >
                               {value === fm.data[cover.field] && (
                                 <>
-                                  <Check />
+                                  <Star fill="#1c4ed8" stroke="#1c4ed8" />
                                 </>
                               )}
                             </div>

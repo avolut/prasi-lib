@@ -101,7 +101,7 @@ export const Field: FC<FieldProp> = (arg) => {
       )}
       ref={typeof arg.field_ref === "function" ? arg.field_ref : undefined}
     >
-      {showlabel !== "n" && <Label field={field} fm={fm} />}
+      {showlabel !== "n" && field.label && <Label field={field} fm={fm} />}
       <div className={cx("field-input c-flex c-flex-1 c-flex-col")}>
         <FieldInput
           field={field}
