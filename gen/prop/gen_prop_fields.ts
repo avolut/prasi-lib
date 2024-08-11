@@ -143,6 +143,10 @@ const loadSingle = async (id_site: string, table: string) => {
     cached = await kget(idb_key);
   }
 
+  if (!cached || (cached && typeof cached.cols === "string")) {
+    cached = null;
+  }
+
   if (!single[table]) {
     if (cached) {
       single[table] = cached;
