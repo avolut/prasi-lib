@@ -262,7 +262,7 @@ export const FieldUploadMulti: FC<{
       <div className="c-flex c-pt-1">
         <div
           className={cx(
-            "c-flex c-border c-rounded c-cursor-pointer hover:c-bg-blue-50",
+            "button c-flex c-border c-rounded c-cursor-pointer hover:c-bg-blue-50",
             css`
               &:hover {
                 border: 1px solid #1c4ed8;

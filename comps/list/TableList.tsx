@@ -35,9 +35,9 @@ import { filterWhere } from "../filter/parser/filter-where";
 import { getFilter } from "../filter/utils/get-filter";
 import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
-import { sortTree } from "./utils/sort-tree";
 import { toast } from "../ui/toast";
-import { Arrow } from "../custom/Datepicker/components/utils";
+import { sortTree } from "./utils/sort-tree";
+import { getPathname } from "lib/exports";
 
 type OnRowClick = (arg: {
   row: any;
@@ -176,6 +176,104 @@ export const TableList: FC<TableListProp> = ({
     collapsed: new Set<number>(),
     cached_row: new WeakMap<any, ReactElement>(),
     filtering: "" as ReactNode | string | true,
+    reload: (arg?: { toast: boolean }) => {
+      return new Promise<void>((done) => {
+        let should_toast = true;
+        if (arg?.toast === false) should_toast = false;
+        local.should_toast = should_toast;
+
+        local.filtering = "";
+        if (typeof on_load === "function") {
+          local.status = "loading";
+          local.render();
+
+          const orderBy = local.sort.orderBy || undefined;
+          const where = filterWhere(filter_name, __props);
+
+          if (where?.OR?.length > 0) {
+            const key = Object.keys(where.OR[0])[0];
+            if (key && where.OR[0][key]) {
+              let filtering = where.OR[0][key].contains;
+              if (typeof local.filtering === "string") {
+                filtering = filtering.slice(1, -1);
+              } else {
+                filtering = "";
+              }
+
+              if (filtering) {
+                local.filtering = (
+                  <div className="c-pt-2">
+                    Searching for: <pre>"{filtering.trim()}"</pre>
+                  </div>
+                );
+              }
+            }
+          }
+
+          if (md) {
+            const last = md.params.links[md.params.links.length - 1];
+
+            if (last && last.where) {
+              for (const [k, v] of Object.entries(last.where)) {
+                where[k] = v;
+              }
+            }
+          }
+
+          call_prasi_events("tablelist", "where", [__props?.gen__table, where]);
+
+          const load_args: any = {
+            async reload() {},
+            orderBy,
+            where,
+            paging: {
+              take: local.paging.take > 0 ? local.paging.take : undefined,
+              skip: local.paging.skip,
+            },
+          };
+          if (id_parent) {
+            load_args.paging = {};
+          }
+          const result = on_load({ ...load_args, mode: "query" });
+          const callback = (data: any[]) => {
+            if (local.paging.skip === 0) {
+              local.data = data;
+            } else {
+              local.data = [...local.data, ...data];
+            }
+
+            local.status = "ready";
+            local.render();
+            done();
+          };
+
+          if (result instanceof Promise) {
+            (async () => {
+              try {
+                callback(await result);
+              } catch (e) {
+                console.error(e);
+                local.status = "error";
+                toast.dismiss();
+                toast.error(
+                  <div className="c-flex c-text-red-600 c-items-center">
+                    <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+                    Failed to load data
+                  </div>,
+                  {
+                    dismissible: true,
+                    className: css`
+                      background: #ffecec;
+                      border: 2px solid red;
+                    `,
+                  }
+                );
+              }
+            })();
+          } else callback(result);
+        }
+      });
+    },
     sort: {
       columns: (ls_sort?.columns || []) as SortColumn[],
       on_change: (cols: SortColumn[]) => {
@@ -255,104 +353,7 @@ export const TableList: FC<TableListProp> = ({
     },
   });
 
-  const reload = useCallback(
-    (arg?: { toast: boolean }) => {
-      let should_toast = true;
-      if (arg?.toast === false) should_toast = false;
-      local.should_toast = should_toast;
-
-      local.filtering = "";
-      if (typeof on_load === "function") {
-        local.status = "loading";
-        local.render();
-
-        const orderBy = local.sort.orderBy || undefined;
-        const where = filterWhere(filter_name, __props);
-
-        if (where?.OR?.length > 0) {
-          const key = Object.keys(where.OR[0])[0];
-          if (key && where.OR[0][key]) {
-            let filtering = where.OR[0][key].contains;
-            if (typeof local.filtering === "string") {
-              filtering = filtering.slice(1, -1);
-            } else {
-              filtering = "";
-            }
-
-            if (filtering) {
-              local.filtering = (
-                <div className="c-pt-2">
-                  Searching for: <pre>"{filtering.trim()}"</pre>
-                </div>
-              );
-            }
-          }
-        }
-
-        if (md) {
-          const last = md.params.links[md.params.links.length - 1];
-          if (last && last.where) {
-            for (const [k, v] of Object.entries(last.where)) {
-              where[k] = v;
-            }
-          }
-        }
-
-        call_prasi_events("tablelist", "where", [__props?.gen__table, where]);
-
-        const load_args: any = {
-          async reload() {},
-          orderBy,
-          where,
-          paging: {
-            take: local.paging.take > 0 ? local.paging.take : undefined,
-            skip: local.paging.skip,
-          },
-        };
-        if (id_parent) {
-          load_args.paging = {};
-        }
-        const result = on_load({ ...load_args, mode: "query" });
-        const callback = (data: any[]) => {
-          if (local.paging.skip === 0) {
-            local.data = data;
-          } else {
-            local.data = [...local.data, ...data];
-          }
-
-          local.status = "ready";
-          local.render();
-        };
-
-        if (result instanceof Promise) {
-          (async () => {
-            try {
-              callback(await result);
-            } catch (e) {
-              console.error(e);
-              local.status = "error";
-              toast.dismiss();
-              toast.error(
-                <div className="c-flex c-text-red-600 c-items-center">
-                  <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
-                  Failed to load data
-                </div>,
-                {
-                  dismissible: true,
-                  className: css`
-                    background: #ffecec;
-                    border: 2px solid red;
-                  `,
-                }
-              );
-            }
-          })();
-        } else callback(result);
-      }
-    },
-    [on_load, local.sort.orderBy, local.paging.take, local.paging.skip]
-  );
-
+  const reload = local.reload;
   if (md) {
     md.master.reload = reload;
   }
@@ -366,6 +367,7 @@ export const TableList: FC<TableListProp> = ({
 
   // code ini digunakan untuk mengambil nama dari pk yang akan digunakan sebagai key untuk id
   const pk = local.pk?.name || "id";
+
   useEffect(() => {
     if (isEditor || value) {
       on_init(local);
@@ -373,7 +375,10 @@ export const TableList: FC<TableListProp> = ({
     }
     (async () => {
       on_init(local);
-      if (local.status === "reload" && typeof on_load === "function") {
+      if (
+        (local.status === "init" || local.status === "reload") &&
+        typeof on_load === "function"
+      ) {
         reload();
       }
     })();
@@ -703,33 +708,22 @@ export const TableList: FC<TableListProp> = ({
     if (columns.length > 1) columns = columns.slice(0, 0 + 1);
   }
 
+  if (local.status === "loading") {
+    toast.dismiss();
+    toast.loading(
+      <>
+        <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
+        Loading Data ...
+      </>
+    );
+  } else {
+    toast.dismiss();
+  }
+
   if (local.status === "resizing" && !isEditor) {
     local.status = "ready";
     local.render();
     return null;
-  }
-
-  if (!isEditor) {
-    if (local.status === "loading") {
-      if (local.should_toast) {
-        toast.dismiss();
-        toast.loading(
-          <>
-            <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
-            Loading {local.paging.skip === 0 ? "Data" : "more rows"} ...
-          </>,
-          {
-            dismissible: true,
-          }
-        );
-      } else {
-        local.should_toast = true;
-      }
-    } else {
-      if (local.status !== "error") {
-        toast.dismiss();
-      }
-    }
   }
 
   if (document.getElementsByClassName("prasi-toaster").length === 0) {
@@ -908,32 +902,16 @@ export const TableList: FC<TableListProp> = ({
           }
         }}
       >
-        <div className="c-absolute c-inset-0">
-          {toaster_el && createPortal(<Toaster cn={cn} />, toaster_el)}
-          {local.status === "init" ? (
-            <DataGrid
-              style={{ opacity: 0 }}
-              columns={[
-                {
-                  key: "_",
-                  name: "",
-                  renderCell({ rowIdx }) {
-                    if (local.paging.take < rowIdx) {
-                      local.paging.take = rowIdx;
-                    }
-                    clearTimeout(local.paging.timeout);
-                    local.paging.timeout = setTimeout(() => {
-                      local.status = "reload";
-                      local.paging.take = local.paging.take * 5;
-                      local.render();
-                    }, 100);
-                    return <></>;
-                  },
-                },
-              ]}
-              rows={genRows(200)}
-            />
-          ) : (
+        {toaster_el && createPortal(<Toaster cn={cn} />, toaster_el)}
+
+        {local.status !== "ready" ? (
+          <div className="c-flex c-flex-col c-space-y-2 c-m-4 c-absolute c-left-0 c-top-0">
+            <Skeleton className={cx("c-w-[200px] c-h-[11px]")} />
+            <Skeleton className={cx("c-w-[170px] c-h-[11px]")} />
+            <Skeleton className={cx("c-w-[180px] c-h-[11px]")} />
+          </div>
+        ) : (
+          <div className="c-absolute c-inset-0">
             <>
               {Array.isArray(data) && data.length > 0 ? (
                 <div
@@ -965,7 +943,7 @@ export const TableList: FC<TableListProp> = ({
               ) : (
                 <div className="c-flex c-items-center c-justify-center c-flex-1 w-full h-full c-flex-col ">
                   <Sticker size={35} strokeWidth={1} />
-                  <div className="c-pt-1">
+                  <div className="c-pt-1 c-text-center">
                     No&nbsp;Data
                     <br />
                     {local.filtering && (
@@ -983,8 +961,8 @@ export const TableList: FC<TableListProp> = ({
                 </div>
               )}
             </>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     );
   } else {

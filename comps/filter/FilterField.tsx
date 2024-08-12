@@ -13,8 +13,8 @@ export const FilterField: FC<{
   name?: string;
   label?: string;
   type: FilterFieldType;
-  modifiers?: any[]
-}> = ({ filter, name, label, type,modifiers }) => {
+  modifiers?: any[];
+}> = ({ filter, name, label, type, modifiers }) => {
   const internal = useLocal({ render_timeout: null as any });
   if (!name) return <>No Name</>;
   if (!filter.form) return <div>Loading...</div>;
@@ -85,7 +85,7 @@ export const FilterField: FC<{
                 prop={{
                   type: "input",
                   sub_type: "search",
-                  placeholder: "Search...",
+                  placeholder: field.field.label,
                   onBlur(e) {
                     filter.form?.submit();
                   },

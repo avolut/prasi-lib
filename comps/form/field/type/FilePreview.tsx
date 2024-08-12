@@ -290,3 +290,47 @@ const getFileName = (url: string) => {
   const extension = fileName.substring(dotIndex + 1);
   return { name, extension, fullname };
 };
+
+export const ImgThumb = ({
+  className,
+  url,
+  w,
+  h,
+}: {
+  className?: string;
+  url: string;
+  w: number;
+  h: number;
+}) => {
+  const local = useLocal({ error: false });
+  return (
+    <div
+      className={cx(
+        "img-thumb",
+        className,
+        css`
+          width: ${w}px;
+          height: ${h}px;
+          background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
+            linear-gradient(135deg, #ccc 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #ccc 75%),
+            linear-gradient(135deg, transparent 75%, #ccc 75%);
+          background-size: 25px 25px; /* Must be a square */
+          background-position: 0 0, 12.5px 0, 12.5px -12.5px, 0px 12.5px; /* Must be half of one side of the square */
+        `
+      )}
+    >
+      {!local.error && (
+        <img
+          onError={() => {
+            local.error = true;
+            local.render();
+          }}
+          src={siteurl(
+            `/_img/${url.substring("_file/".length)}?w=${w}&h=${h}&fit=cover`
+          )}
+        />
+      )}
+    </div>
+  );
+};

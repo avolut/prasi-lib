@@ -26,6 +26,10 @@ export const Typeahead = lazify(
   async () => (await import("@/comps/ui/typeahead")).Typeahead
 );
 
+export const ImgThumb = lazify(
+  async () => (await import("@/comps/form/field/type/FilePreview")).ImgThumb
+);
+
 /** Master - Detail - List - Form */
 export const MasterDetail = lazify(
   async () => (await import("@/comps/md/MasterDetail")).MasterDetail

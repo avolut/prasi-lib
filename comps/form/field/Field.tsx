@@ -71,6 +71,8 @@ export const Field: FC<FieldProp> = (arg) => {
       {...props}
       className={cx(
         "field",
+        field.type,
+        sub_type,
         "c-flex c-relative",
         editorClassName,
         field.type === "single-option" && sub_type === "checkbox"

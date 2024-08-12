@@ -12,6 +12,7 @@ export const toast = {
       sonner.dismiss();
     } else {
       clearTimeout(timer.timeout);
+      timer.timeout = null;
     }
   },
   loading: (
@@ -41,6 +42,8 @@ export const toast = {
     clearTimeout(timer.timeout);
     timer.timeout = setTimeout(() => {
       sonner.error(el, props);
+      clearTimeout(timer.timeout);
+
       timer.timeout = null;
     }, timer.limit);
   },

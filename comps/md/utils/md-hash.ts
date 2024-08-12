@@ -81,7 +81,7 @@ export const masterDetailApplyParams = (md: MDLocal) => {
 };
 
 export const breadcrumbPrefix = (md: MDLocal) => {
-  const prefix: BreadItem[] = [];
+  let prefix: (BreadItem & { url: string })[] = [];
   if (md.params.links && md.params.links.length > 0) {
     const hashes: string[] = [];
     for (const link of md.params.links) {
@@ -93,6 +93,7 @@ export const breadcrumbPrefix = (md: MDLocal) => {
       for (const p of link.prefix) {
         prefix.push({
           label: p.label,
+          url: p.url || link.url,
           onClick(ev) {
             let url = "";
 
@@ -103,7 +104,7 @@ export const breadcrumbPrefix = (md: MDLocal) => {
             if (p.md) {
               url = `${p.url || link.url}#${p.md.name}=${p.md.value}${lnk}`;
             } else {
-              url = `${p.url  || link.url}${lnk}`;
+              url = `${p.url || link.url}${lnk}`;
             }
 
             if (url) {
