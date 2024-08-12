@@ -309,7 +309,7 @@ export const ImgThumb = ({
         "img-thumb",
         className,
         css`
-          width: ${w}px;
+          width: ${w}px; 
           height: ${h}px;
           background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
             linear-gradient(135deg, #ccc 25%, transparent 25%),
@@ -320,7 +320,7 @@ export const ImgThumb = ({
         `
       )}
     >
-      {!local.error && (
+      {!local.error && url && (
         <img
           onError={() => {
             local.error = true;

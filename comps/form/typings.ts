@@ -48,6 +48,7 @@ export type FieldProp = {
   label: string;
   desc?: string;
   props?: any;
+  kv?: { default: any };
   upload?: {
     mode: "single-file" | "multi-file";
     accept: string;

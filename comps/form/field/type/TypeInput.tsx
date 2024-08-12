@@ -215,7 +215,19 @@ export const FieldTypeInput: FC<{
       );
     }
     case "key-value":
-      return <KeyValue />;
+      return (
+        <KeyValue
+          value={
+            Object.keys(fm.data[field.name] || {}).length === 0
+              ? field.prop.kv?.default
+              : fm.data[field.name] || {}
+          }
+          onChange={(val) => {
+            fm.data[field.name] = val;
+            fm.render();
+          }}
+        />
+      );
     case "monthly": {
       return (
         <Datepicker
