@@ -50,6 +50,10 @@ export const KeyValue = ({
   return (
     <div className="c-flex c-relative c-flex-1" ref={ref}>
       <table
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
         className={cx(
           "c-flex-1",
           css`
@@ -141,7 +145,7 @@ const KVRow = ({
           "kv-key",
           css`
             border-right: 1px solid #ececeb;
-            width: 30%;
+            width: 35%;
           `,
           idx > 0 &&
             css`
@@ -150,7 +154,6 @@ const KVRow = ({
         )}
       >
         <input
-          tabIndex={0}
           type="text"
           spellCheck={false}
           value={k}
@@ -177,7 +180,6 @@ const KVRow = ({
         )}
       >
         <input
-          tabIndex={0}
           type="text"
           spellCheck={false}
           value={v || ""}

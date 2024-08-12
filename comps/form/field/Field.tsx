@@ -67,7 +67,7 @@ export const Field: FC<FieldProp> = (arg) => {
 
   return (
     <LabelDiv
-      mode={sub_type === "table-edit" ? "div" : "label"}
+      mode={sub_type === "table-edit" ? "div" : field.label ? "label" : "div"}
       {...props}
       className={cx(
         "field",
