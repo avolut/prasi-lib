@@ -85,11 +85,14 @@ export const Layout: FC<LYTChild> = (props) => {
         if (params) {
           const prefix: LinkParam["prefix"] =
             params.breads?.map((e) => {
-              return { label: e.label, url: e.url || getPathname() };
+              return {
+                label: e.label,
+                url: e.url || getPathname({ hash: true }),
+              };
             }) || [];
 
           const values: LinkParam = {
-            url: getPathname({ hash: false }),
+            url: getPathname({ hash: true }),
             prefix,
             hash: "",
             create: params.create,

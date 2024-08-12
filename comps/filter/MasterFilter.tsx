@@ -1,12 +1,12 @@
 import { useLocal } from "@/utils/use-local";
 import { FC, ReactNode } from "react";
-import { createPortal } from "react-dom";
 import { FMLocal, GenField } from "../form/typings";
 import { FilterContent } from "./FilterContent";
 import { getFilter } from "./utils/get-filter";
 import { default_filter_local } from "./utils/types";
+import { FieldLoading } from "lib/exports";
 
-type FilterMode = "regular" | "inline" | "popup";
+type FilterMode = "raw" | "inline";
 
 type FilterProps = {
   gen_fields: GenField[];
@@ -17,6 +17,7 @@ type FilterProps = {
   children?: ReactNode;
   onClose?: () => void;
   onSubmit?: (fm: FMLocal | null) => Promise<any>;
+  onLoad?: () => Promise<any>;
   PassProp: any;
   child: any;
   _item: PrasiItem;
@@ -33,6 +34,7 @@ export const MasterFilter: FC<FilterProps> = ({
   onClose,
   _item,
   onSubmit,
+  onLoad,
 }): ReactNode => {
   const filter = useLocal({ ...default_filter_local });
   filter.name = name;
@@ -41,53 +43,25 @@ export const MasterFilter: FC<FilterProps> = ({
   if (!isEditor) {
     const wf = getFilter(name);
     if (wf) {
+      if (wf.filter.ref[_item.id]) {
+        filter.data = wf.filter.ref[_item.id].data;
+      } else {
+        if (mode === "raw" && onLoad) {
+          if (filter.raw_status === "init") {
+            filter.raw_status = "loading";
+            filter.data = onLoad();
+            filter.raw_status = "ready";
+            filter.render();
+          }
+
+          if (filter.raw_status !== "ready") {
+            return <FieldLoading />;
+          }
+        }
+      }
       wf.filter.ref[_item.id] = filter;
       wf.list.render();
     }
-  }
-
-  if (mode === "popup") {
-    let popup = document.querySelector(".main-content-preview > .portal");
-    if (!popup) {
-      popup = document.createElement("div");
-      popup.classList.add("portal");
-
-      const main = document.querySelector(".main-content-preview");
-      if (main) {
-        main.appendChild(popup);
-      }
-    }
-    return (
-      <>
-        {createPortal(
-          <div
-            onClick={onClose}
-            className={cx(
-              css`
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                right: 0;
-                left: 0;
-                background: white;
-                z-index: 100;
-              `,
-              "c-flex c-flex-col"
-            )}
-          >
-            <FilterContent
-              onSubmit={onSubmit}
-              PassProp={PassProp}
-              child={child}
-              mode={mode}
-              _item={_item}
-              filter={filter}
-            />
-          </div>,
-          popup
-        )}
-      </>
-    );
   }
 
   return (

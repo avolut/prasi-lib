@@ -39,7 +39,10 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           </div>
           <div
             className={cx(
-              "c-flex c-items-center c-justify-between c-space-x-2 c-p-3",
+              "c-flex c-items-center c-space-x-2 c-p-3",
+              md.props.mode === "full"
+                ? "c-justify-between"
+                : "c-justify-center",
               css`
                 border-radius: 10px;
                 margin: 0px -10px -10px -10px;
@@ -52,28 +55,30 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
               `
             )}
           >
-            <Button
-              variant={"link"}
-              size={"xs"}
-              className={cx(
-                css`
-                  color: gray !important;
-                `,
-                "c-cursor-pointer"
-              )}
-              onClick={() => {
-                const md = fm.deps.md as MDLocal;
-                toast.dismiss();
-                md.selected = null;
-                md.tab.active = "master";
-                md.params.apply();
-                md.render();
-                md.master.reload();
-              }}
-            >
-              <ChevronLeft size={18} />{" "}
-              <div className="c-px-1">Back To List</div>
-            </Button>
+            {md.props.mode === "full" && (
+              <Button
+                variant={"link"}
+                size={"xs"}
+                className={cx(
+                  css`
+                    color: gray !important;
+                  `,
+                  "c-cursor-pointer"
+                )}
+                onClick={() => {
+                  const md = fm.deps.md as MDLocal;
+                  toast.dismiss();
+                  md.selected = null;
+                  md.tab.active = "master";
+                  md.params.apply();
+                  md.render();
+                  md.master.reload();
+                }}
+              >
+                <ChevronLeft size={18} />{" "}
+                <div className="c-px-1">Back To List</div>
+              </Button>
+            )}
 
             <Button
               variant={"outline"}

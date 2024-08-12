@@ -14,6 +14,8 @@ export const FilterContent: FC<{
   _item: PrasiItem;
 }> = ({ mode, filter, PassProp, child, _item, onSubmit }) => {
   const internal = useLocal({});
+
+
   return (
     <div
       className={cx(
@@ -101,13 +103,7 @@ export const FilterContent: FC<{
         data={filter.data}
         on_submit={async (form) => {
           if (typeof onSubmit === "function" && mode === "raw") {
-            const data = await onSubmit(form.fm);
-            if(typeof form.fm?.data === "object"){
-              form.fm.data = {
-                ...form.fm.data,
-                _where: data
-              }
-            }
+            await onSubmit(form.fm);
           }
 
           const f = getFilter(filter.name);

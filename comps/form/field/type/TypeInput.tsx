@@ -8,6 +8,7 @@ import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { FieldMoney } from "./TypeMoney";
 import { FieldRichText } from "./TypeRichText";
 import { FieldUpload } from "./TypeUpload";
+import { KeyValue } from "./KeyValue";
 
 export type PropTypeInput = {
   type: "input";
@@ -27,7 +28,8 @@ export type PropTypeInput = {
     | "search"
     | "password"
     | "import"
-    | "monthly";
+    | "monthly"
+    | "key-value";
   placeholder?: string;
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
@@ -212,6 +214,8 @@ export const FieldTypeInput: FC<{
         />
       );
     }
+    case "key-value":
+      return <KeyValue />;
     case "monthly": {
       return (
         <Datepicker

@@ -19,6 +19,7 @@ export const default_filter_local = {
   types: {} as Record<string, FilterFieldType>,
   name: "",
   mode: "",
+  raw_status: "init" as "init" | "loading" | "ready",
 };
 
 export const modifiers = {
@@ -69,7 +70,7 @@ export const filter_window = window as unknown as {
     Record<
       string,
       {
-        filter: {ref: Record<string, FilterLocal>, render: () => void;};
+        filter: { ref: Record<string, FilterLocal>; render: () => void };
         list: {
           ref: Record<string, { reload: () => void }>;
           reload: () => void;
@@ -82,4 +83,3 @@ export const filter_window = window as unknown as {
     render: () => void;
   };
 };
-

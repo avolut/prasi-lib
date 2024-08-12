@@ -15,7 +15,10 @@ export const FilterField: FC<{
   type: FilterFieldType;
   modifiers?: any[];
 }> = ({ filter, name, label, type, modifiers }) => {
-  const internal = useLocal({ render_timeout: null as any });
+  const internal = useLocal({
+    render_timeout: null as any,
+    search_timeout: null as any,
+  });
   if (!name) return <>No Name</>;
   if (!filter.form) return <div>Loading...</div>;
 
@@ -80,20 +83,22 @@ export const FilterField: FC<{
                   <path d="m21 21-4.3-4.3" />
                 </svg>
               </div>
-              <FieldTypeInput
-                {...field}
-                prop={{
-                  type: "input",
-                  sub_type: "search",
-                  placeholder: field.field.label,
-                  onBlur(e) {
+              <input
+                type="search"
+                placeholder={field.field.label}
+                onBlur={() => {
+                  clearTimeout(internal.search_timeout);
+                  filter.form?.submit();
+                }}
+                spellCheck={false}
+                className="c-flex-1 c-transition-all c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
+                onChange={(e) => {
+                  field.fm.data[name] = e.currentTarget.value;
+
+                  clearTimeout(internal.search_timeout);
+                  internal.search_timeout = setTimeout(() => {
                     filter.form?.submit();
-                  },
-                  onChange(val) {
-                    if (!val) {
-                      filter.form?.submit();
-                    }
-                  },
+                  }, 1500);
                 }}
               />
             </div>

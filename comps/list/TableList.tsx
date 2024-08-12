@@ -708,16 +708,24 @@ export const TableList: FC<TableListProp> = ({
     if (columns.length > 1) columns = columns.slice(0, 0 + 1);
   }
 
-  if (local.status === "loading") {
-    toast.dismiss();
-    toast.loading(
-      <>
-        <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
-        Loading Data ...
-      </>
-    );
-  } else {
-    toast.dismiss();
+  if (!isEditor) {
+    let should_toast = true;
+    if (md && md.props.mode !== "full") {
+      should_toast = false;
+    }
+    if (should_toast) {
+      if (local.status === "loading") {
+        toast.dismiss();
+        toast.loading(
+          <>
+            <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
+            Loading Data ...
+          </>
+        );
+      } else {
+        toast.dismiss();
+      }
+    }
   }
 
   if (local.status === "resizing" && !isEditor) {

@@ -59,28 +59,6 @@ async (arg: {
       let where = 
       (await call_prasi_events("field", "relation_load", [fm, arg.field]) || {}) as Prisma.${table}WhereInput;
 
-      if (typeof opt__load_trigger === "object" && typeof opt__load_trigger?.on_change === "function") {
-        const trigger = await opt__load_trigger.on_change({ md: typeof md !== 'undefined' ? md : undefined, fm, where });
-        if (trigger.hidden) {
-          done([]);
-          arg.field.hidden = true;
-          arg.field.render();
-          return;
-        } else {
-          if (arg.field.hidden) {
-            arg.field.hidden = false;
-            arg.field.render();
-          }
-        }
-
-        if (trigger.result) {
-          done(trigger.result);
-          return;
-        } else if (trigger.where) {
-          where = trigger.where;
-        }
-      }
-
       let items = await db.${table}.findMany({
         select: {
           ...ext_select,
