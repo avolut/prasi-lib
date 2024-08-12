@@ -82,7 +82,7 @@ export const TypeaheadOptions: FC<{
       })}
 
       {searching ? (
-        <div className="c-px-4 c-w-full c-text-xs c-text-slate-400">
+        <div className="c-px-4 c-w-full c-text-slate-400">
           Loading...
         </div>
       ) : (

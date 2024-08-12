@@ -337,18 +337,33 @@ export const Typeahead: FC<{
     <div
       className={cx(
         local.mode === "single" ? "c-cursor-pointer" : "c-cursor-text",
-        "c-flex c-relative c-flex-wrap c-px-2 c-pb-0 c-items-center c-w-full c-h-full c-flex-1",
-        css`
-          padding-top: 0.35rem;
-        `,
-        className
+        "c-flex c-relative c-flex-wrap c-px-2 c-py-0 c-items-center c-w-full c-h-full c-flex-1",
+        className,
+        local.mode === "multi" && valueLabel.length > 0
+          ? css`
+              input {
+                margin-top: 5px;
+              }
+            `
+          : css`
+              input {
+                margin-top: 5px;
+              }
+            `
       )}
       onClick={() => {
         if (!disabled) input.current?.focus();
       }}
     >
       {local.mode === "multi" ? (
-        <>
+        <div
+          className={cx(
+            css`
+              margin-top: 5px;
+              margin-bottom: -3px;
+            `
+          )}
+        >
           {valueLabel.map((e, idx) => {
             return (
               <Badge
@@ -356,7 +371,8 @@ export const Typeahead: FC<{
                 variant={"outline"}
                 className={cx(
                   "c-space-x-1 c-mr-2 c-mb-2 c-bg-white",
-                  !disabled && " c-cursor-pointer hover:c-bg-red-100"
+                  !disabled &&
+                    " c-cursor-pointer hover:c-bg-red-100 hover:c-border-red-100"
                 )}
                 onClick={(ev) => {
                   if (!disabled) {
@@ -377,7 +393,7 @@ export const Typeahead: FC<{
               </Badge>
             );
           })}
-        </>
+        </div>
       ) : (
         <></>
       )}
@@ -531,7 +547,7 @@ export const Typeahead: FC<{
           disabled={disabled}
           spellCheck={false}
           className={cx(
-            "c-flex-1 c-mb-2 c-text-sm c-outline-none c-bg-transparent",
+            "c-flex-1 c-mb-2 c-outline-none c-bg-transparent",
             local.mode === "single" ? "c-cursor-pointer" : ""
           )}
           onKeyDown={keydown}

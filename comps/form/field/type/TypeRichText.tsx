@@ -11,38 +11,30 @@ export const FieldRichText: FC<{
   prop: PropTypeInput;
 }> = ({ field, fm, prop }) => {
   const local = useLocal({
-    ref: null as any,
+    ref: null as null | HTMLDivElement,
+    q: null as null | Quill,
   });
   useEffect(() => {
     if (local.ref) {
-      const q = new Quill(local.ref, {
+      local.ref.innerHTML = fm.data[field.name] || "";
+      local.q = new Quill(local.ref, {
         theme: "snow",
         modules: {
           toolbar: [
             ["bold", "italic", "underline", "strike"], // toggled buttons
-            ["blockquote", "code-block"],
-            ["link", "image", "video", "formula"],
-
-            [{ header: 1 }, { header: 2 }], // custom button values
             [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-            [{ script: "sub" }, { script: "super" }], // superscript/subscript
             [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-            [{ direction: "rtl" }], // text direction
-
-            [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-            [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-            [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-            [{ font: [] }],
-            [{ align: [] }],
-
             ["clean"], // remove formatting button
           ],
         },
       });
+
+      local.q.on("text-change", (delta, oldDelta, source) => {
+        fm.data[field.name] = local.q?.getSemanticHTML();
+        fm.render();
+      });
     }
   }, []);
-  let value: any = fm.data[field.name];
   return (
     <div
       className={cx(
@@ -55,13 +47,22 @@ export const FieldRichText: FC<{
           .ql-container {
             border-top: 1px solid #cecece !important;
           }
+          .ql-editor {
+            resize: vertical;
+            overflow-y: scroll;
+            min-height: 5rem !important;
+          }
         `
       )}
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}
     >
       <div
         ref={(e) => (local.ref = e)}
         className={cx(css`
-          height: 20rem !important;
+          min-height: 5rem !important;
         `)}
       ></div>
     </div>

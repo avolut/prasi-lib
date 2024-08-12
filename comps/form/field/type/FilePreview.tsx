@@ -1,3 +1,4 @@
+import { useLocal } from "lib/utils/use-local";
 import { ExternalLink } from "lucide-react";
 import { ReactElement } from "react";
 
@@ -8,6 +9,25 @@ export const ThumbPreview = ({
   url: string;
   options: ReactElement;
 }) => {
+  const local = useLocal({ size: "", is_doc: true }, async () => {
+    if (url.startsWith("_file/")) {
+      let _url = siteurl(`/_finfo/${url.substring("_file/".length)}`);
+
+      if (
+        location.hostname === "prasi.avolut.com" ||
+        location.host === "localhost:4550"
+      ) {
+        const newurl = new URL(location.href);
+        newurl.pathname = `/_proxy/${_url}`;
+        _url = newurl.toString();
+      }
+
+      const info = await fetch(_url);
+      local.size = (await info.json())?.size;
+      local.render();
+    }
+  });
+
   const file = getFileName(url);
   if (typeof file === "string") return;
 
@@ -34,14 +54,23 @@ export const ThumbPreview = ({
             outline: 1px solid #1c4ed8;
           }
         `,
-        "c-flex c-justify-center c-items-center"
+        "c-flex c-justify-center c-items-center c-flex-col"
       )}
       onClick={() => {
         let _url = siteurl(url || "");
         window.open(_url, "_blank");
       }}
     >
-      {file.extension}
+      <div>{file.extension}</div>
+      <div
+        className={css`
+          font-size: 9px;
+          color: gray;
+          margin-top: -3px;
+        `}
+      >
+        {local.size}
+      </div>
     </div>
   );
 
@@ -49,6 +78,7 @@ export const ThumbPreview = ({
   if (url.startsWith("_file/")) {
     if ([".png", ".jpeg", ".jpg", ".webp"].find((e) => url.endsWith(e))) {
       is_image = true;
+      local.is_doc = false;
       content = (
         <img
           onClick={() => {

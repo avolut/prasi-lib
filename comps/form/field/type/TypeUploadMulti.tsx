@@ -16,9 +16,8 @@ export const FieldUploadMulti: FC<{
   arg: FieldProp;
   on_change: (e: any) => void | Promise<void>;
 }> = ({ field, fm, prop, on_change, arg }) => {
-
   let value: string = (fm.data[field.name] || "").trim();
-  
+
   const input = useLocal({
     value: 0 as any,
     display: false as any,
@@ -136,6 +135,9 @@ export const FieldUploadMulti: FC<{
                         .upload-star {
                           border: 1px solid gray;
                         }
+                        .btn-del {
+                          border: 1px solid red;
+                        }
                       }
                     `,
                     fm.data[cover.field] === value &&
@@ -188,9 +190,8 @@ export const FieldUploadMulti: FC<{
                             }
                           }}
                           className={cx(
-                            "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-red-100 transition-all",
+                            "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-red-100 transition-all btn-del",
                             css`
-                              border: 1px solid red;
                               width: 25px;
                               height: 25px;
                             `
@@ -258,11 +259,21 @@ export const FieldUploadMulti: FC<{
           </div>
         )}
       </div>
-      <div className="c-flex">
-        <div className={cx("c-flex c-border c-rounded ")}>
+      <div className="c-flex c-pt-1">
+        <div
+          className={cx(
+            "c-flex c-border c-rounded c-cursor-pointer hover:c-bg-blue-50",
+            css`
+              &:hover {
+                border: 1px solid #1c4ed8;
+                outline: 1px solid #1c4ed8;
+              }
+            `
+          )}
+        >
           <div
             className={cx(
-              "c-flex c-flex-row c-relative c-flex-grow c-pr-2 c-items-center c-cursor-pointer hover:c-bg-blue-50",
+              "c-flex c-flex-row c-relative c-flex-grow c-pr-2 c-items-center ",
               css`
                 padding-top: 3px;
                 padding-bottom: 2px;
@@ -289,7 +300,11 @@ export const FieldUploadMulti: FC<{
                 )}
               />
             )}
-            <div className="c-items-center c-flex c-text-base c-px-1 c-outline-none c-rounded c-cursor-pointer">
+            <div
+              className={cx(
+                "c-items-center c-flex c-text-base c-px-1 c-outline-none c-rounded c-cursor-pointer"
+              )}
+            >
               <div className="c-flex c-flex-row c-items-center c-px-2">
                 <Upload className="c-h-4 c-w-4" />
               </div>

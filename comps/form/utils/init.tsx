@@ -1,13 +1,12 @@
 import { parseGenField } from "@/gen/utils";
+import { MDLocal } from "lib/comps/md/utils/typings";
+import { Button } from "lib/comps/ui/button";
+import { toast } from "lib/comps/ui/toast";
 import get from "lodash.get";
 import { AlertTriangle, Check, ChevronLeft, Loader2, Plus } from "lucide-react";
 import { FMLocal, FMProps } from "../typings";
 import { editorFormData } from "./ed-data";
 import { formError } from "./error";
-import { toast } from "lib/comps/ui/toast";
-import { Button } from "lib/comps/ui/button";
-import { MDLocal } from "lib/comps/md/utils/typings";
-import { masterDetailApplyParams } from "lib/comps/md/utils/md-hash";
 
 export const formInit = (fm: FMLocal, props: FMProps) => {
   for (const [k, v] of Object.entries(props)) {

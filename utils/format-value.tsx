@@ -130,6 +130,46 @@ export const FormatValue: FC<{
     return <FilePreview url={value || ""} />;
   }
 
+  if (name.startsWith("desc")) {
+    return (
+      <div className="c-flex c-space-x-2 c-items-center">
+        <div dangerouslySetInnerHTML={{ __html: value }} />
+      </div>
+    );
+  }
+
+  if (typeof value === "string" && value.startsWith("_file/")) {
+    return (
+      <img
+        onClick={() => {
+          let _url = siteurl(value || "");
+          window.open(_url, "_blank");
+        }}
+        className={cx(
+          "c-rounded-md",
+          css`
+            &:hover {
+              outline: 2px solid #1c4ed8;
+            }
+          `,
+          css`
+            width: 25px;
+            height: 25px;
+            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
+              linear-gradient(135deg, #ccc 25%, transparent 25%),
+              linear-gradient(45deg, transparent 75%, #ccc 75%),
+              linear-gradient(135deg, transparent 75%, #ccc 75%);
+            background-size: 25px 25px; /* Must be a square */
+            background-position: 0 0, 12.5px 0, 12.5px -12.5px, 0px 12.5px; /* Must be half of one side of the square */
+          `
+        )}
+        src={siteurl(
+          `/_img/${value.substring("_file/".length)}?${"w=25&h=25&fit=cover"}`
+        )}
+      />
+    );
+  }
+
   return (
     <div className="c-flex c-space-x-2 c-items-center">
       <div>{value}</div>

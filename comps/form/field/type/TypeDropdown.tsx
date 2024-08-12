@@ -3,7 +3,6 @@ import { FieldLoading } from "lib/comps/ui/field-loading";
 import { Typeahead } from "lib/comps/ui/typeahead";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
-import { call_prasi_events } from "lib/exports";
 
 export const TypeDropdown: FC<{
   field: FieldLocal;
@@ -35,23 +34,27 @@ export const TypeDropdown: FC<{
                 data: e.data,
               };
             });
-            let v = typeof arg.opt_get_value === "function"
-            ? arg.opt_get_value({
-                fm,
-                name: field.name,
-                options: local.options,
-                type: field.type,
-              })
-            : fm.data[field.name];
-            let f = list.find((ex) => ex.value === v);
-            if(!f){
-              arg.opt_set_value({
-                fm,
-                name: field.name,
-                type: field.type,
-                options: local.options,
-                selected: [],
-              });
+            let v =
+              typeof arg.opt_get_value === "function"
+                ? arg.opt_get_value({
+                    fm,
+                    name: field.name,
+                    options: local.options,
+                    type: field.type,
+                  })
+                : fm.data[field.name];
+            if (field.type === "single-option") {
+              let f = list.find((ex: any) => ex.value === v);
+
+              if (!f) {
+                arg.opt_set_value({
+                  fm,
+                  name: field.name,
+                  type: field.type,
+                  options: local.options,
+                  selected: [],
+                });
+              }
             }
             local.options = list;
           } else {
@@ -140,8 +143,8 @@ export const TypeDropdown: FC<{
       popupClassName = cx(
         css`
           .opt-item {
-            padding-top: 0px;
-            padding-bottom: 0px;
+            padding-top: 4px;
+            padding-bottom: 4px;
             line-height: 15px;
             font-size: 12px;
             border: 0px;

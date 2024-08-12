@@ -134,8 +134,12 @@ export const FieldInput: FC<{
         <>
           {prefix && prefix !== "" ? (
             <div
-              className="
-      c-px-2 c-bg-gray-200 c-flex c-flex-row c-items-center"
+              className={cx(
+                "c-px-2 c-flex c-flex-row c-items-center",
+                css`
+                  color: gray;
+                `
+              )}
             >
               {prefix}
             </div>
@@ -194,8 +198,12 @@ export const FieldInput: FC<{
           </div>
           {suffix && suffix !== "" ? (
             <div
-              className="
-      c-px-2 c-bg-gray-200 c-flex c-flex-row c-items-center"
+              className={cx(
+                "c-px-2 c-flex c-flex-row c-items-center",
+                css`
+                  color: gray;
+                `
+              )}
             >
               {suffix}
             </div>
