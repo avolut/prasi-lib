@@ -190,27 +190,17 @@ export const TableEdit: FC<{
             `
           )}
         >
-          <thead>
-            <tr className=" ">
-              {columns.map((header) => {
-                return (
-                  <th
-                    key={header.key}
-                    className={cx(
-                      css`
-                        background-color: #f9f9f9;
-                      `,
-                      header.width > 0
-                        ? css`
-                            width: ${header.width}px;
-                          `
-                        : ""
-                    )}
-                  >
-                    <div
+          {show_header !== "n" && (
+            <thead>
+              <tr className=" ">
+                {columns.map((header) => {
+                  return (
+                    <th
+                      key={header.key}
                       className={cx(
-                        "rdg-cell c-py-2 c-px-4 c-flex c-flex-row c-items-center c-h-full",
-
+                        css`
+                          background-color: #f9f9f9;
+                        `,
                         header.width > 0
                           ? css`
                               width: ${header.width}px;
@@ -218,14 +208,35 @@ export const TableEdit: FC<{
                           : ""
                       )}
                     >
-                      {header.label}
-                    </div>
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody className="c-pb-2">
+                      <div
+                        className={cx(
+                          "rdg-cell c-py-2 c-px-4 c-flex c-flex-row c-items-center c-h-full",
+
+                          header.width > 0
+                            ? css`
+                                width: ${header.width}px;
+                              `
+                            : ""
+                        )}
+                      >
+                        {header.label}
+                      </div>
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+          )}
+          <tbody
+            className={cx(
+              "c-pb-2",
+              css`
+                label {
+                  width: 100%;
+                }
+              `
+            )}
+          >
             {Array.isArray(value) && value.length ? (
               <>
                 {value.map((row: any, idx: number) => {
@@ -233,8 +244,21 @@ export const TableEdit: FC<{
                     <tr>
                       {columns.map((header) => {
                         return (
-                          <td>
-                            <div className="c-flex c-flex-row c-py-2 c-w-full c-h-full">
+                          <td
+                            className={cx(
+                              header.width > 0
+                                ? css`
+                                    width: ${header.width}px;
+                                  `
+                                : ""
+                            )}
+                          >
+                            <div
+                              className={cx(
+                                "c-flex c-flex-row c-pb-1 c-w-full c-h-full",
+                                idx === 0 && "c-pt-1"
+                              )}
+                            >
                               {header.renderCell({
                                 props: {
                                   row: row,

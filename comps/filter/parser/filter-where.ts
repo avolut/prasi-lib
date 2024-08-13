@@ -14,6 +14,7 @@ export const filterWhere = (filter_name: string, p: any) => {
       if (pf.mode === "raw") {
         const data = pf.data?._where ? pf.data?._where : pf.data;
         for (const [k, v] of Object.entries(data)) {
+          if (k.startsWith("_")) continue;
           where[k] = v;
         }
       } else {

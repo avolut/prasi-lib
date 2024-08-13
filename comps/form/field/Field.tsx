@@ -1,12 +1,31 @@
 import { useLocal } from "@/utils/use-local";
 import { call_prasi_events } from "lib/exports";
+import { hashSum } from "lib/utils/hash-sum";
 import { FC, useEffect } from "react";
 import { FieldProp } from "../typings";
 import { useField } from "../utils/use-field";
 import { validate } from "../utils/validate";
 import { FieldInput } from "./FieldInput";
 import { Label } from "./Label";
-import { hashSum } from "lib/utils/hash-sum";
+
+const prepForSum = (obj: any): any => {
+  if (Array.isArray(obj)) {
+    return obj.map((e) => prepForSum(e));
+  }
+  const new_obj: any = {};
+  for (const [k, v] of Object.entries(obj) as any) {
+    if (typeof v === "object" && v.id) {
+      new_obj[k] = v.id;
+      continue;
+    }
+    if (typeof v === "object" && v.connect.id) {
+      new_obj[k] = v.connect.id;
+      continue;
+    }
+    new_obj[k] = v;
+  }
+  return new_obj;
+};
 
 export const Field: FC<FieldProp> = (arg) => {
   const showlabel = arg.show_label || "y";
@@ -22,8 +41,9 @@ export const Field: FC<FieldProp> = (arg) => {
   useEffect(() => {
     if (fm.save_status === "init" || fm.status !== "ready") return;
     if (local.prev_val === undefined) {
-      if (typeof fm.data[name] === "object") {
-        const sfied = hashSum(fm.data[name]);
+      if (typeof fm.data[name] === "object" && fm.deps.md) {
+        const sfied = hashSum(prepForSum(fm.data[name]));
+
         if (sfied !== local.prev_val) {
           local.prev_val = sfied;
         } else {
@@ -36,8 +56,9 @@ export const Field: FC<FieldProp> = (arg) => {
     }
 
     if (local.prev_val !== fm.data[name]) {
-      if (typeof fm.data[name] === "object") {
-        const sfied = hashSum(fm.data[name]);
+      if (typeof fm.data[name] === "object" && fm.deps.md) {
+        const sfied = hashSum(prepForSum(fm.data[name]));
+
         if (sfied !== local.prev_val) {
           local.prev_val = sfied;
         } else {
@@ -58,7 +79,9 @@ export const Field: FC<FieldProp> = (arg) => {
         arg.on_change({ value: fm.data[name], name, fm });
       }
 
-      fm.save_status = "unsaved";
+      if (fm.deps.md) {
+        fm.save_status = "unsaved";
+      }
 
       if (!fm.events) {
         fm.events = {

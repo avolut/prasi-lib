@@ -22,7 +22,6 @@ export const FieldMoney: FC<{
 
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
-  const money = formatMoney(Number(value) || 0);
   return (
     <div className="c-flex-grow c-flex-row c-flex c-w-full c-h-full">
       <input
