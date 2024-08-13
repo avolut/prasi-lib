@@ -19,13 +19,13 @@ export const Profile: FC<PFTypes> = ({
   const local = useLocal(
     {
       item: {} as any,
-
     },
     async () => {
       if (!isEditor) {
-        const item =  await on_load({
+        const item = await on_load({
           params: {},
         });
+        local.item = item;
         local.render();
       } else {
         local.item = detail({});
@@ -43,7 +43,7 @@ export const Profile: FC<PFTypes> = ({
           on_load,
           detail,
           on_update,
-          internal: local
+          internal: local,
         }}
       >
         {child}
