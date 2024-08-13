@@ -6,6 +6,7 @@ import { useField } from "../utils/use-field";
 import { validate } from "../utils/validate";
 import { FieldInput } from "./FieldInput";
 import { Label } from "./Label";
+import { hashSum } from "lib/utils/hash-sum";
 
 export const Field: FC<FieldProp> = (arg) => {
   const showlabel = arg.show_label || "y";
@@ -19,7 +20,33 @@ export const Field: FC<FieldProp> = (arg) => {
   const w = field.width;
 
   useEffect(() => {
+    if (fm.save_status === "init" || fm.status !== "ready") return;
+    if (local.prev_val === undefined) {
+      if (typeof fm.data[name] === "object") {
+        const sfied = hashSum(fm.data[name]);
+        if (sfied !== local.prev_val) {
+          local.prev_val = sfied;
+        } else {
+          return;
+        }
+      } else {
+        local.prev_val = fm.data[name];
+      }
+      return;
+    }
+
     if (local.prev_val !== fm.data[name]) {
+      if (typeof fm.data[name] === "object") {
+        const sfied = hashSum(fm.data[name]);
+        if (sfied !== local.prev_val) {
+          local.prev_val = sfied;
+        } else {
+          return;
+        }
+      } else {
+        local.prev_val = fm.data[name];
+      }
+
       if (
         (!local.prev_val && fm.data[name]) ||
         (local.prev_val && !fm.data[name])
@@ -30,6 +57,9 @@ export const Field: FC<FieldProp> = (arg) => {
       if (arg.on_change) {
         arg.on_change({ value: fm.data[name], name, fm });
       }
+
+      fm.save_status = "unsaved";
+
       if (!fm.events) {
         fm.events = {
           on_change(name, new_value) {},

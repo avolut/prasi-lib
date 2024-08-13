@@ -24,6 +24,7 @@ export const Form: FC<FMProps> = (props) => {
     reload: async () => {
       formReload(fm);
     },
+    save_status: "init",
     fields: {},
     events: {
       on_change(name: string, new_value: any) {},
@@ -81,7 +82,9 @@ export const Form: FC<FMProps> = (props) => {
         fm.soft_delete.field = null;
       }
     }
+    
   }, []);
+
   const ref = useRef({
     el: null as null | HTMLFormElement,
     rob: new ResizeObserver(([e]) => {

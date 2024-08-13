@@ -217,6 +217,7 @@ export const FieldTypeInput: FC<{
     case "key-value":
       return (
         <KeyValue
+          index={field.prop.kv?.index}
           value={
             Object.keys(fm.data[field.name] || {}).length === 0
               ? field.prop.kv?.default

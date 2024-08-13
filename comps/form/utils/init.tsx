@@ -23,6 +23,8 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
 
   const toastSuccess = (opt: { addNewText: string }) => {
     const md = fm.deps.md as MDLocal;
+    fm.save_status = "saved";
+
     if (md) {
       toast.success(
         <div
@@ -184,6 +186,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         }
 
         fm.data = result;
+        fm.save_status = "saved";
 
         if (result === undefined) fm.data = {};
 

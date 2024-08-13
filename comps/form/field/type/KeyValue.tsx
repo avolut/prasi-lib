@@ -5,19 +5,30 @@ import { useEffect, useRef } from "react";
 export const KeyValue = ({
   value,
   onChange,
+  index,
 }: {
   value: any;
   onChange: (val: any) => void;
+  index?: "preserve" | "auto-sort";
 }) => {
   const local = useLocal({
-    entries: Object.entries(value),
+    entries: [] as [string, string][],
     new: { idx: -1, key: "", value: "" },
   });
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let entries: any[] = [];
+    if (index === "preserve") {
+      if (Array.isArray(value)) {
+        local.entries = value;
+      } else {
+        local.entries = Object.entries(value);
+      }
+    }
+
     if (local.entries.length > 0) {
-      Object.entries(value).forEach(([k, v], idx) => {
+      entries.forEach(([k, v], idx) => {
         const found = local.entries.find((e) => {
           if (e[0] === k) return true;
           return false;
@@ -30,8 +41,9 @@ export const KeyValue = ({
         }
       });
     } else {
-      local.entries = Object.entries(value);
+      local.entries = entries;
     }
+
     local.render();
   }, [value]);
 
@@ -87,7 +99,11 @@ export const KeyValue = ({
                 local.render();
               }}
               onBlur={() => {
-                onChange(reverseEntries(local.entries));
+                if (index === "preserve") {
+                  onChange([...local.entries]);
+                } else {
+                  onChange(reverseEntries(local.entries));
+                }
               }}
             />
           ))}
@@ -106,7 +122,11 @@ export const KeyValue = ({
                 local.new.key = "";
                 local.new.value = "";
                 local.render();
-                onChange(reverseEntries(local.entries));
+                if (index === "preserve") {
+                  onChange([...local.entries]);
+                } else {
+                  onChange(reverseEntries(local.entries));
+                }
                 setTimeout(() => {
                   (
                     ref?.current?.querySelector(
@@ -186,7 +206,7 @@ const KVRow = ({
           onChange={(e) => {
             update(idx, k, e.currentTarget.value || "");
           }}
-          onKeyDown={(e) => {
+          onKeyUp={(e) => {
             if (e.key === "Backspace" && !e.currentTarget.value) {
               keyref.current?.focus();
             }

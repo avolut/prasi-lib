@@ -65,6 +65,8 @@ ${
             data: v,
             fk: rel.fk,
           });
+        } else {
+          record[k] = v;
         }
       } else {
         record[k] = v;

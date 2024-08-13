@@ -48,7 +48,7 @@ export type FieldProp = {
   label: string;
   desc?: string;
   props?: any;
-  kv?: { default: any };
+  kv?: { default: any; index: "preserve" | "auto-sort" };
   upload?: {
     mode: "single-file" | "multi-file";
     accept: string;
@@ -137,6 +137,7 @@ export type FMInternal = {
   events: {
     on_change: (name: string, new_value: any) => void;
   };
+  save_status: "init" | "unsaved" | "saved";
   fields: Record<string, FieldLocal>;
   field_def: Record<string, GFCol>;
   error: {
