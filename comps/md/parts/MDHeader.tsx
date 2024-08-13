@@ -20,6 +20,7 @@ export const MDHeader: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
 
   md.header.breadcrumb = [];
   let overrideLabel = "" as ReactNode;
+  let skipItem = false;
   for (const v of breads) {
     if (v.label === "--reset--") {
       md.header.breadcrumb = [];
@@ -31,7 +32,14 @@ export const MDHeader: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
       overrideLabel = v.label;
       continue;
     }
-
+    if (v.label === "--skip--") {
+      skipItem = true;
+      continue;
+    }
+    if (skipItem) {
+      skipItem = false;
+      continue;
+    }
     if (overrideLabel) {
       v.label = overrideLabel;
       overrideLabel = "";
