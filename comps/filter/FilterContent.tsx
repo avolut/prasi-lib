@@ -3,7 +3,7 @@ import { BaseForm } from "../form/base/BaseForm";
 import { FilterLocal } from "./utils/types";
 import { useLocal } from "lib/utils/use-local";
 import { getFilter } from "./utils/get-filter";
-import { FMLocal } from "lib/exports";
+import { FieldLoading, FMLocal } from "lib/exports";
 
 export const FilterContent: FC<{
   mode: string;
@@ -14,12 +14,16 @@ export const FilterContent: FC<{
   _item: PrasiItem;
 }> = ({ mode, filter, PassProp, child, _item, onSubmit }) => {
   const internal = useLocal({});
-
-
   return (
     <div
       className={cx(
         `c-flex c-flex-1 filter-content filter-${mode}`,
+        mode === "raw"
+          ? css`
+              flex-grow: 1;
+              height: 100%;
+            `
+          : "",
         css`
           &.filter-regular {
             width: 100%;
@@ -102,10 +106,32 @@ export const FilterContent: FC<{
       <BaseForm
         data={filter.data}
         on_submit={async (form) => {
-          if (typeof onSubmit === "function" && mode === "raw") {
-            await onSubmit(form.fm);
-          }
+          try {
+            if (typeof form.fm?.data === "object") {
+              const fm = form.fm?.data as any
+              form.render();
+              form.fm.render();
+            }
+          } catch (ex) {}
 
+          if (typeof onSubmit === "function" && mode === "raw") {
+            const data = await onSubmit(form.fm);
+            if (typeof form.fm?.data === "object") {
+              form.fm.data = {
+                __status: "submit",
+                ...form.fm.data,
+                _where: data,
+              };
+              form.fm.render();
+              filter.data = {
+                __status: "submit",
+                ...form.fm.data,
+                _where: data,
+              };
+              filter.render();
+            }
+          }
+          // form.render();
           const f = getFilter(filter.name);
           if (f) {
             for (const list of Object.values(f.list.ref)) {

@@ -116,7 +116,7 @@ const Calendar: React.FC<Props> = ({
           setShowMonths(!showMonths);
         } else {
           hideDatepicker();
-          clickDay(1,month + 1, date.year() );
+          clickDay(1,month, date.year() );
         }
       }, 250);
     },
@@ -313,7 +313,7 @@ const Calendar: React.FC<Props> = ({
                 hideMonths();
               }}
             >
-              <>{calendarData.date.year()}</>
+              <div className="c-py-2">{calendarData.date.year()}</div>
             </RoundedButton>
           </div>
         </div>

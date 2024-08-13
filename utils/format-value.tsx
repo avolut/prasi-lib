@@ -15,6 +15,31 @@ export const FormatValue: FC<{
   mode?: "money" | "datetime" | "timeago" | "date";
 }> = (prop) => {
   const { value, gen_fields, name, mode } = prop;
+  if (mode === "money") {
+    if (isEmptyString(value)) return "-";
+    return formatMoney(ceil_comma(Number(value) || 0));
+  } else if (mode === "datetime") {
+    if (!value || isEmptyString(value)) return "-";
+    try {
+      return formatDate(dayjs(value), "DD MMMM YYYY HH:mm");
+    } catch (ex: any) {
+      return "-";
+    }
+  } else if (mode === "date") {
+    if (!value || isEmptyString(value)) return "-";
+    try {
+      return formatDate(dayjs(value), "DD MMMM YYYY");
+    } catch (ex: any) {
+      return "-";
+    }
+  } else if (mode === "timeago") {
+    if (!value || isEmptyString(value)) return "-";
+    try {
+      return timeAgo(dayjs(value));
+    } catch (ex: any) {
+      return "-";
+    }
+  }
   if (gen_fields) {
     const gf = JSON.stringify(gen_fields);
     if (!fields_map.has(gf)) {
@@ -45,31 +70,7 @@ export const FormatValue: FC<{
 
     if (typeof value === "boolean") return <>{value ? "Yes" : "No"}</>;
 
-    if (mode === "money") {
-      if (isEmptyString(value)) return "-";
-      return formatMoney(ceil_comma(Number(value) || 0));
-    } else if (mode === "datetime") {
-      if (!value || isEmptyString(value)) return "-";
-      try {
-        return formatDate(dayjs(value), "DD MMMM YYYY HH:mm");
-      } catch (ex: any) {
-        return "-";
-      }
-    } else if (mode === "date") {
-      if (!value || isEmptyString(value)) return "-";
-      try {
-        return formatDate(dayjs(value), "DD MMMM YYYY");
-      } catch (ex: any) {
-        return "-";
-      }
-    } else if (mode === "timeago") {
-      if (!value || isEmptyString(value)) return "-";
-      try {
-        return timeAgo(dayjs(value));
-      } catch (ex: any) {
-        return "-";
-      }
-    }
+   
     // await db._batch.update({
     //   table: "goal",
     //   data: [],

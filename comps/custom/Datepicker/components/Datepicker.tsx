@@ -112,7 +112,6 @@ const Datepicker: React.FC<DatepickerType> = ({
 
   const changeFirstMonth = useCallback(
     (month: number) => {
-      console.log("HALOOO")
       firstGotoDate(
         dayjs(`${firstDate.year()}-${month < 10 ? "0" : ""}${month}-01`)
       );
