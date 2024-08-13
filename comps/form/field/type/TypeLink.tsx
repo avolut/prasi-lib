@@ -157,6 +157,7 @@ export const FieldLink: FC<{
 
 export type LinkParam = {
   url: string;
+  name?: string;
   where: any;
   create: any;
   update: any;

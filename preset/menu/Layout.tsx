@@ -92,6 +92,7 @@ export const Layout: FC<LYTChild> = (props) => {
             }) || [];
 
           const values: LinkParam = {
+            name: params.name,
             url: getPathname({ hash: true }),
             prefix,
             hash: "",

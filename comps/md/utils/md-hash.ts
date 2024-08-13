@@ -90,6 +90,7 @@ export const breadcrumbPrefix = (md: MDLocal) => {
       }
     }
     for (const link of md.params.links) {
+      if (link.name && link.name !== md.name) continue;
       for (const p of link.prefix) {
         prefix.push({
           label: p.label,

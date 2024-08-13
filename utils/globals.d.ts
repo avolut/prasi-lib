@@ -9,6 +9,7 @@ declare var preloaded: (url: string) => boolean;
 declare var navigate: (
   url: string,
   params?: {
+    name?: string;
     where?: any;
     create?: any;
     update?: any;

@@ -214,8 +214,10 @@ export const TableList: FC<TableListProp> = ({
             const last = md.params.links[md.params.links.length - 1];
 
             if (last && last.where) {
-              for (const [k, v] of Object.entries(last.where)) {
-                where[k] = v;
+              if ((last.name && last.name === md.name) || !last.name) {
+                for (const [k, v] of Object.entries(last.where)) {
+                  where[k] = v;
+                }
               }
             }
           }
