@@ -169,14 +169,14 @@ export const Field: FC<FieldProp> = (arg) => {
           arg={arg}
         />
         {field.desc && (
-          <div className={cx("c-p-2 c-text-xs", errors.length > 0 && "c-pb-1")}>
+          <div className={cx("c-p-2 c-pl-0 c-text-xs", errors.length > 0 && "c-pb-1")}>
             {field.desc}
           </div>
         )}
         {errors.length ? (
           <div
             className={cx(
-              "field-error c-p-2 c-text-xs c-text-red-600",
+              "field-error c-p-2 c-pl-0 c-text-xs c-text-red-600",
               field.desc && "c-pt-0",
               css`
                 padding-left: 0px !important;

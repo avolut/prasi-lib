@@ -123,7 +123,7 @@ export const BaseField = (prop: {
         {errors.length > 0 && (
           <div
             className={cx(
-              "field-error c-p-2 c-text-xs c-text-red-600",
+              "field-error c-p-2 c-pl-0 c-text-xs c-text-red-600",
               field.desc && "c-pt-0",
 
               css`
