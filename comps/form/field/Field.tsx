@@ -19,7 +19,7 @@ const prepForSum = (obj: any): any => {
         new_obj[k] = v.id;
         continue;
       }
-      if (typeof v === "object" && v.connect.id) {
+      if (typeof v === "object" && v?.connect?.id) {
         new_obj[k] = v.connect.id;
         continue;
       }
