@@ -1,10 +1,6 @@
-import { getPathname } from "lib/utils/pathname";
-import { FC, ReactNode, useEffect, useLayoutEffect, useState } from "react";
-import { loadSession } from "../login/utils/load";
-import { createPortal } from "react-dom";
-import { Toaster } from "sonner";
-import { PFTypes } from "./typings";
 import { useLocal } from "lib/utils/use-local";
+import { FC, useEffect } from "react";
+import { PFTypes } from "./typings";
 export { PFTypes } from "./typings";
 export { generateProfile } from "./utils/generate";
 export const Profile: FC<PFTypes> = ({

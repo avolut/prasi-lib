@@ -17,7 +17,6 @@ import {
   MouseEvent,
   ReactElement,
   ReactNode,
-  useCallback,
   useEffect,
 } from "react";
 import DataGrid, {
@@ -37,7 +36,6 @@ import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "../ui/toast";
 import { sortTree } from "./utils/sort-tree";
-import { getPathname } from "lib/exports";
 
 type OnRowClick = (arg: {
   row: any;
@@ -781,7 +779,11 @@ export const TableList: FC<TableListProp> = ({
           </div>
         )}
         <div className="table-list-inner c-absolute c-inset-0">
-          {toaster_el && createPortal(<Toaster cn={cn} />, toaster_el)}
+          {toaster_el &&
+            createPortal(
+              <Toaster position={toast.position} cn={cn} />,
+              toaster_el
+            )}
           {local.status === "init" ? (
             <DataGrid
               style={{ opacity: 0 }}

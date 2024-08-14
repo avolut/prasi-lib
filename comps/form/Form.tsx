@@ -8,6 +8,7 @@ import { formInit } from "./utils/init";
 import { formReload } from "./utils/reload";
 import { getPathname } from "lib/utils/pathname";
 import { sofDeleteField as softDeleteField } from "lib/utils/soft-del-rel";
+import { toast } from "../ui/toast";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
@@ -82,7 +83,6 @@ export const Form: FC<FMProps> = (props) => {
         fm.soft_delete.field = null;
       }
     }
-    
   }, []);
 
   const ref = useRef({
@@ -196,7 +196,8 @@ export const Form: FC<FMProps> = (props) => {
         "form c-flex-1 c-w-full c-h-full c-relative c-overflow-auto"
       )}
     >
-      {toaster_el && createPortal(<Toaster cn={cx} />, toaster_el)}
+      {toaster_el &&
+        createPortal(<Toaster position={toast.position} cn={cx} />, toaster_el)}
       <div
         ref={form_inner_ref}
         className={cx(

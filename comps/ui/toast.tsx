@@ -7,6 +7,7 @@ const timer = {
 };
 
 export const toast = {
+  position: "top-right" as any,
   dismiss: () => {
     if (!timer.timeout) {
       sonner.dismiss();
