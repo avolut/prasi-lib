@@ -90,7 +90,7 @@ export const HeaderProfile = lazify(
 export { BarChart } from "@/comps/charts/bar";
 export { PieChart } from "@/comps/charts/pie";
 export { DoughnutChart } from "@/comps/charts/doughnut";
-// export { LineChart } from "@/comps/charts/line";
+export { LineChart } from "@/comps/charts/line";
 
 /** Generator */
 export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";
