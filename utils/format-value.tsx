@@ -171,9 +171,14 @@ export const FormatValue: FC<{
     );
   }
 
+  let _value = value;
+  if (typeof value === 'string' && value.startsWith('BigInt::')) {
+    _value = value.substring('BigInt::'.length)
+  }
+
   return (
     <div className="c-flex c-space-x-2 c-items-center">
-      <div>{value}</div>
+      <div>{_value}</div>
     </div>
   );
 };

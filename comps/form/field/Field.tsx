@@ -13,16 +13,18 @@ const prepForSum = (obj: any): any => {
     return obj.map((e) => prepForSum(e));
   }
   const new_obj: any = {};
-  for (const [k, v] of Object.entries(obj) as any) {
-    if (typeof v === "object" && v.id) {
-      new_obj[k] = v.id;
-      continue;
+  if (obj) {
+    for (const [k, v] of Object.entries(obj) as any) {
+      if (typeof v === "object" && v.id) {
+        new_obj[k] = v.id;
+        continue;
+      }
+      if (typeof v === "object" && v.connect.id) {
+        new_obj[k] = v.connect.id;
+        continue;
+      }
+      new_obj[k] = v;
     }
-    if (typeof v === "object" && v.connect.id) {
-      new_obj[k] = v.connect.id;
-      continue;
-    }
-    new_obj[k] = v;
   }
   return new_obj;
 };

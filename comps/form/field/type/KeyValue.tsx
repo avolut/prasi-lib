@@ -1,4 +1,3 @@
-import { update } from "autosize";
 import { useLocal } from "lib/utils/use-local";
 import { useEffect, useRef } from "react";
 

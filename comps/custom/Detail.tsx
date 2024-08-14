@@ -3,6 +3,7 @@ import { cx } from "class-variance-authority";
 import { ArrowRight } from "lucide-react";
 import { FC, useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
+import { formatName } from "lib/gen/utils";
 
 export const Detail: FC<{
   detail: (
@@ -15,7 +16,7 @@ export const Detail: FC<{
         bind: (fn: (on_load: any) => void) => void;
       }) => Promise<any>);
   mode: "standard" | "compact" | "inline";
-}> = ({ detail, mode, on_load }) => {
+}> = ({ detail: _detail, mode, on_load }) => {
   const local = useLocal({
     status: "init" as "init" | "loading" | "ready",
     detail: null as any,
@@ -24,6 +25,20 @@ export const Detail: FC<{
     on_load,
     bound: false,
   });
+
+  let detail: any = _detail;
+  if (typeof detail !== "function") {
+    detail = (load: any) => {
+      const result: any = {};
+      if (typeof load === "object" && !!load) {
+        for (const [k, v] of Object.entries(load)) {
+          if (k !== "id")
+            if (typeof v !== "object") result[k] = [formatName(k), v];
+        }
+      }
+      return result;
+    };
+  }
 
   if (!isEditor) {
     if (
@@ -89,7 +104,11 @@ export const Detail: FC<{
   if (!isEditor) {
     values = local.detail || {};
   } else {
-    values = detail(null);
+    if (typeof on_load === "function") {
+      values = detail(on_load({} as any));
+    } else {
+      values = detail(on_load);
+    }
     local.status = "ready";
   }
 

@@ -6,7 +6,7 @@ import { lazify, lazifyMany } from "@/utils/lazify";
 import __get from "lodash.get";
 import { sum } from "./utils/sum";
 
-export const _sum = sum;
+export const _sum = sum; 
 export const _get = __get;
 
 export const Accordion = lazify(
@@ -19,9 +19,11 @@ export const Popover = lazify(
 export const Progress = lazify(
   async () => (await import("@/comps/ui/progress")).Progress
 );
+ 
 export const Dialog = lazify(
   async () => (await import("@/comps/ui/dialog")).Dialog
 );
+
 export const Typeahead = lazify(
   async () => (await import("@/comps/ui/typeahead")).Typeahead
 );
