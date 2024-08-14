@@ -296,11 +296,13 @@ export const ImgThumb = ({
   url,
   w,
   h,
+  fit
 }: {
   className?: string;
   url: string;
   w: number;
   h: number;
+  fit?: 'cover' | 'contain',
 }) => {
   const local = useLocal({ error: false });
   return (
@@ -327,7 +329,7 @@ export const ImgThumb = ({
             local.render();
           }}
           src={siteurl(
-            `/_img/${url.substring("_file/".length)}?w=${w}&h=${h}&fit=cover`
+            `/_img/${url.substring("_file/".length)}?w=${w}&h=${h}&fit=${fit || 'cover'}`
           )}
         />
       )}
