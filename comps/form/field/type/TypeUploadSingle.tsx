@@ -19,6 +19,8 @@ export const FieldUploadSingle: FC<{
   on_change: (e: any) => void | Promise<void>;
 }> = ({ field, fm, prop, on_change, arg }) => {
   const styling = arg.upload_style ? arg.upload_style : "full";
+  const disabled =
+    typeof field.disabled === "function" ? field.disabled() : field.disabled;
   let value: any = fm.data[field.name];
   // let type_upload =
   const input = useLocal({
@@ -142,7 +144,7 @@ export const FieldUploadSingle: FC<{
               `
             )}
           >
-            {!isEditor && (
+            {!isEditor && !disabled && (
               <input
                 ref={(ref) => (input.ref = ref)}
                 type="file"

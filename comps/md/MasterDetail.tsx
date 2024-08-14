@@ -89,6 +89,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
     const pk = fields.find((e) => e.is_pk);
     md.pk = pk;
     md.params.parse();
+
     if (pk) {
       const value = md.params.hash[md.name];
       if (!value && md.selected && Object.keys(md.selected).length === 0) {

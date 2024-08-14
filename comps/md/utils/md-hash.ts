@@ -80,6 +80,15 @@ export const masterDetailApplyParams = (md: MDLocal) => {
   }
 };
 
+const cleanHash = (hash: string) => {
+  return hash
+    .split("#")
+    .filter(function (value, index, self) {
+      return self.indexOf(value) === index;
+    })
+    .join("#");
+};
+
 export const breadcrumbPrefix = (md: MDLocal) => {
   let prefix: (BreadItem & { url: string })[] = [];
   if (md.params.links && md.params.links.length > 0) {
@@ -100,13 +109,13 @@ export const breadcrumbPrefix = (md: MDLocal) => {
 
             const hashIndex = hashes.indexOf(link.hash);
             const link_hashes = hashes.slice(0, hashIndex).join("+");
-            const lnk = link_hashes ? `#lnk=${link_hashes}` : ``;
+            let lnk = link_hashes ? `#lnk=${link_hashes}` : ``;
 
             if (p.md) {
-              url = `${p.url || link.url}#${p.md.name}=${p.md.value}${lnk}`;
-            } else {
-              url = `${p.url || link.url}${lnk}`;
+              lnk = `#${p.md.name}=${p.md.value}${lnk}`;
             }
+
+            url = `${p.url || link.url}${cleanHash(lnk)}`;
 
             if (url) {
               navigate(url);
