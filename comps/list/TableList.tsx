@@ -247,7 +247,7 @@ export const TableList: FC<TableListProp> = ({
             local.render();
             done();
 
-            if (local.grid_ref) local.paging.scroll(local.grid_ref);
+            if (local.grid_ref && !id_parent) local.paging.scroll(local.grid_ref);
           };
 
           if (result instanceof Promise) {

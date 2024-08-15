@@ -13,7 +13,6 @@ export const sessionClient = async <T extends SessionData>(arg: {
   editorSampleData: T;
   auth: {
     mode: "user-pass";
-    login: (arg: { username: string; password: string }) => Promise<false | T>;
   };
   on?: Partial<{
     active: (arg: { token: string; data: T }) => any;

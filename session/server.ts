@@ -12,7 +12,16 @@ type ServerSession = {
   }) => Promise<Response>;
 };
 
-export const sessionServer = (arg: { encrypt?: boolean }): ServerSession => {
+export const sessionServer = <T>(arg: {
+  encrypt?: boolean;
+  on: {
+    login: (arg: {
+      mode: "user-pass";
+      username: string;
+      password: string;
+    }) => Promise<false | T>;
+  };
+}): ServerSession => {
   const s: ServerSession = {
     async handle({ req, handle, mode, url }) {
       if (url.pathname.startsWith("/_session")) {
