@@ -3,7 +3,10 @@ export const langEn = {
   Save: "Save",
   Delete: "Delete",
   "Record Saved": "Record Saved",
-  "Search": "Search",
+  Search: "Search",
   "Add Another": "Add Another",
-  "Back To List": "Back To List"
+  "Mark as": "Mark as ",
+  "Remove this file ?": "Remove this file ?",
+  "Upload Multiple Files":"Upload Multiple Files",
+  "Back To List": "Back To List",
 };

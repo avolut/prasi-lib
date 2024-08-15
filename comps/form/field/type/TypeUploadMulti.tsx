@@ -7,6 +7,7 @@ import { ChangeEvent, FC } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { ThumbPreview } from "./FilePreview";
 import { PropTypeInput } from "./TypeInput";
+import { translate } from "lib/lang";
 
 export const FieldUploadMulti: FC<{
   field: FieldLocal;
@@ -179,30 +180,35 @@ export const FieldUploadMulti: FC<{
                     url={value || ""}
                     options={
                       <div className={cx("c-flex c-flex-col c-space-y-1")}>
-                        <div
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (confirm("Remove this file ?")) {
-                              list.splice(idx, 1);
-                              fm.data[field.name] = JSON.stringify(list);
-                              fm.render();
-                            }
-                          }}
-                          className={cx(
-                            "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-red-100 transition-all btn-del",
-                            css`
-                              width: 25px;
-                              height: 25px;
-                            `
-                          )}
+                        <Tooltip
+                          content={`${translate("Delete")}`}
+                          placement="right"
                         >
-                          <Trash2 className="c-text-red-500 c-h-4 c-w-4 " />
-                        </div>
+                          <div
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (confirm(translate("Remove this file ?"))) {
+                                list.splice(idx, 1);
+                                fm.data[field.name] = JSON.stringify(list);
+                                fm.render();
+                              }
+                            }}
+                            className={cx(
+                              "c-flex c-flex-row c-items-center c-px-1 c-rounded c-bg-white c-cursor-pointer hover:c-bg-red-100 transition-all btn-del",
+                              css`
+                                width: 25px;
+                                height: 25px;
+                              `
+                            )}
+                          >
+                            <Trash2 className="c-text-red-500 c-h-4 c-w-4 " />
+                          </div>
+                        </Tooltip>
 
                         {cover.field && (
                           <Tooltip
-                            content={`Mark as ${cover.text}`}
+                            content={`${translate("Mark as")} ${cover.text}`}
                             placement="right"
                           >
                             <div
@@ -309,7 +315,7 @@ export const FieldUploadMulti: FC<{
                 <Upload className="c-h-4 c-w-4" />
               </div>
               <div className="c-flex c-flex-row c-items-center c-text-sm">
-                Upload Multiple Files
+                {translate("Upload Multiple Files")}
               </div>
             </div>
           </div>

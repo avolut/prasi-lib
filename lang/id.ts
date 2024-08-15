@@ -7,5 +7,9 @@ export const langId: Record<LangKeyword, string> = {
   "Record Saved": "Data Tersimpan",
   Search: "Cari",
   "Add Another": "Tambah Baru",
+  "Mark as": "Tandai sebagai",
+  "Remove this file ?": "Hapus file ini ?",
+  "Upload Multiple Files": "Unggah Beberapa File",
   "Back To List": "Kembali ke List",
 };
+ 
