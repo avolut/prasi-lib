@@ -6,4 +6,5 @@ export const langId: Record<LangKeyword, string> = {
   Delete: "Hapus",
   "Record Saved": "Data Tersimpan",
   Search: "Cari",
+  "Add Another": "Tambah Baru",
 };

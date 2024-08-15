@@ -4,4 +4,5 @@ export const langEn = {
   Delete: "Delete",
   "Record Saved": "Record Saved",
   "Search": "Search",
+  "Add Another": "Add Another",
 };

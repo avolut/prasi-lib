@@ -7,7 +7,7 @@ import { AlertTriangle, Check, ChevronLeft, Loader2, Plus } from "lucide-react";
 import { FMLocal, FMProps } from "../typings";
 import { editorFormData } from "./ed-data";
 import { formError } from "./error";
-import { lang } from "lib/lang";
+import { lang, translate } from "lib/lang";
 
 export const formInit = (fm: FMLocal, props: FMProps) => {
   for (const [k, v] of Object.entries(props)) {
@@ -207,7 +207,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
 
     if (fm.is_newly_created) {
       fm.is_newly_created = false;
-      toastSuccess({ addNewText: "Add Another" });
+      toastSuccess({ addNewText: translate("Add Another") });
     }
 
     fm.status = "ready";
