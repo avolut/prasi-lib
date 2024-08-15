@@ -6,7 +6,7 @@ import { lazify, lazifyMany } from "@/utils/lazify";
 import __get from "lodash.get";
 import { sum } from "./utils/sum";
 
-export const _sum = sum; 
+export const _sum = sum;
 export const _get = __get;
 
 export const Accordion = lazify(
@@ -19,7 +19,7 @@ export const Popover = lazify(
 export const Progress = lazify(
   async () => (await import("@/comps/ui/progress")).Progress
 );
- 
+
 export const Dialog = lazify(
   async () => (await import("@/comps/ui/dialog")).Dialog
 );
@@ -87,10 +87,18 @@ export const HeaderProfile = lazify(
 );
 
 /** charts */
-export { BarChart } from "@/comps/charts/bar";
-export { PieChart } from "@/comps/charts/pie";
-export { DoughnutChart } from "@/comps/charts/doughnut";
-export { LineChart } from "@/comps/charts/line";
+export const BarChart = lazify(
+  async () => (await import("@/comps/charts/bar")).BarChart
+);
+export const PieChart = lazify(
+  async () => (await import("@/comps/charts/pie")).PieChart
+);
+export const DoughnutChart = lazify(
+  async () => (await import("@/comps/charts/doughnut")).DoughnutChart
+);
+export const LineChart = lazify(
+  async () => (await import("@/comps/charts/line")).LineChart
+);
 
 /** Generator */
 export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";

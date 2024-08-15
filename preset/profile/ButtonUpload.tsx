@@ -68,9 +68,3 @@ export const ButtonUpload: FC<{
     </div>
   );
 };
-const formatMoney = (res: number) => {
-  const formattedAmount = new Intl.NumberFormat("id-ID", {
-    minimumFractionDigits: 0,
-  }).format(res);
-  return formattedAmount;
-};
