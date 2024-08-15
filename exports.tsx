@@ -99,7 +99,7 @@ export { FieldLoading } from "@/comps/ui/field-loading";
 export { fetchLinkParams } from "@/comps/form/field/type/TypeLink";
 export { prasi_gen } from "./gen/prasi_gen";
 export { guessLabel } from "./utils/guess-label";
-export { lang } from "@/lang/lang";
+export { lang } from "lib/lang";
 
 import __get from "lodash.get";
 import { sum } from "./utils/sum";

@@ -93,14 +93,14 @@ export const generateMDForm = async (
   ];
 
   if (isEditor) {
-    breads.push({ label: "Add New" });
+    breads.push({ label: lang.t("Add New") });
   } else {
     if (
       md.selected &&
       typeof md.selected === "object"
     ) {
       if (Object.keys(md.selected).length === 0){
-        breads.push({ label: "Add New" });
+        breads.push({ label: lang.t("Add New") });
       } else {
         breads.push({ label: guessLabel(md.selected) || "Detail" });
       }
