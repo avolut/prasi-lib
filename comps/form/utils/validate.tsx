@@ -1,3 +1,4 @@
+import { translate } from "lib/lang";
 import { FMLocal, FieldLocal } from "../typings";
 
 export const validate = (field: FieldLocal, fm: FMLocal, record?: any) => {
@@ -12,7 +13,7 @@ export const validate = (field: FieldLocal, fm: FMLocal, record?: any) => {
         >
           {name}
         </b>{" "}
-        is required.
+        {translate("is required")}.
       </>
     );
   };

@@ -8,9 +8,9 @@ export const langId: Record<LangKeyword, string> = {
   Search: "Cari",
   "Add Another": "Tambah Baru",
   "Mark as": "Tandai sebagai",
-  "Add": "Tambah",
+  Add: "Tambah",
   "Remove this file ?": "Hapus file ini ?",
   "Upload Multiple Files": "Unggah Beberapa File",
   "Back To List": "Kembali ke List",
+  "is required": "harus diisi",
 };
- 
