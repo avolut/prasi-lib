@@ -38,7 +38,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         >
           <div className="c-flex c-text-green-700 c-items-center success-title c-font-semibold">
             <Check className="c-h-6 c-w-6 c-mr-1 " />
-            Record Saved
+            {translate("Record Saved")}
           </div>
           <div
             className={cx(
@@ -79,7 +79,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
                 }}
               >
                 <ChevronLeft size={18} />{" "}
-                <div className="c-px-1">Back To List</div>
+                <div className="c-px-1">{translate("Back To List")}</div>
               </Button>
             )}
 

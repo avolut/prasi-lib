@@ -15,4 +15,4 @@ export const lang = {
   base: null as null | Record<LangKeyword, string>,
 };
 
-export const translate = lang.t;
+export const translate = lang.t.bind(lang);
