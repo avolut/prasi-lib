@@ -6,6 +6,7 @@ export const langEn = {
   Search: "Search",
   "Add Another": "Add Another",
   "Mark as": "Mark as ",
+  "Add": "Add",
   "Remove this file ?": "Remove this file ?",
   "Upload Multiple Files":"Upload Multiple Files",
   "Back To List": "Back To List",

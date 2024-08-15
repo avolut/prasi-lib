@@ -186,7 +186,11 @@ export const TableEdit: FC<{
             css`
               height: 1px;
               border-collapse: collapse;
-              table-layout: auto; /* Kolom akan menyesuaikan konten */
+              table-layout: auto; 
+              
+              .field {
+                padding: 0px 0px 0px 10px;
+              }
             `
           )}
         >

@@ -468,10 +468,10 @@ export const genTableEdit = async (
                             {
                               id: createId(),
                               adv: {
-                                js: '<div {...props} className={cx(props.className, "")}>\n  Add\n</div>',
+                                js: '<div {...props} className={cx(props.className, "")}>\n  { lang.t("Add") }\n</div>',
                                 css: "",
                                 jsBuilt:
-                                  'render(/* @__PURE__ */ React.createElement("div", { ...props, className: cx(props.className, "") }, "Add"));\n',
+                                  'render(/* @__PURE__ */ React.createElement("div", { ...props, className: cx(props.className, "") }, lang.t("Add")));\n',
                               },
                               dim: { h: "full", w: "full" },
                               name: "new_item",

@@ -641,7 +641,6 @@ export const TableList: FC<TableListProp> = ({
                     "c-flex c-items-center c-cursor-pointer"
                   )}
                   onClick={(e) => {
-                    console.log(props.row);
                     if (!local.pk) return;
                     if (props?.row?.__children?.length > 0) {
                       e.stopPropagation();
