@@ -162,8 +162,8 @@ export const TableList: FC<TableListProp> = ({
       skip: 0,
       timeout: null as any,
       total: 0,
-      scroll: (event: React.UIEvent<HTMLDivElement>) => {
-        if (local.status === "loading" || !isAtBottom(event)) return;
+      scroll: (currentTarget: HTMLDivElement) => {
+        if (local.status === "loading" || !isAtBottom(currentTarget)) return;
         if (local.data.length >= local.paging.skip + local.paging.take) {
           local.paging.skip += local.paging.take;
           local.status = "reload";
@@ -171,6 +171,7 @@ export const TableList: FC<TableListProp> = ({
         }
       },
     },
+    grid_ref: null as null | HTMLDivElement,
     collapsed: new Set<number>(),
     cached_row: new WeakMap<any, ReactElement>(),
     filtering: "" as ReactNode | string | true,
@@ -245,6 +246,8 @@ export const TableList: FC<TableListProp> = ({
             local.status = "ready";
             local.render();
             done();
+
+            if (local.grid_ref) local.paging.scroll(local.grid_ref);
           };
 
           if (result instanceof Promise) {
@@ -817,7 +820,10 @@ export const TableList: FC<TableListProp> = ({
                 columns={columns}
                 rows={data}
                 className="rdg-light"
-                onScroll={local.paging.scroll}
+                ref={(e) => {
+                  local.grid_ref = e?.element as any;
+                }}
+                onScroll={(e) => local.paging.scroll(e.currentTarget)}
                 selectedRows={EMPTY_SET}
                 onSelectedCellChange={() => {}}
                 onSelectedRowsChange={() => {}}
@@ -859,8 +865,9 @@ export const TableList: FC<TableListProp> = ({
                               className={cx(
                                 props.className,
                                 (isSelect ||
-                                  md?.selected?.[local.pk?.name || ""] ===
-                                    props.row[local.pk?.name || ""]) &&
+                                  (md?.selected?.[local.pk?.name || ""] ===
+                                    props.row[local.pk?.name || ""] &&
+                                    props.row[local.pk?.name || ""])) &&
                                   "row-selected"
                               )}
                             />
@@ -928,7 +935,10 @@ export const TableList: FC<TableListProp> = ({
               {Array.isArray(data) && data.length > 0 ? (
                 <div
                   className="w-full h-full overflow-y-auto c-flex-col"
-                  onScroll={local.paging.scroll}
+                  ref={(e) => {
+                    local.grid_ref = e;
+                  }}
+                  onScroll={(e) => local.paging.scroll(e.currentTarget)}
                 >
                   {data.map((e, idx) => {
                     return (
@@ -1066,7 +1076,7 @@ const dataGridStyle = (local: { height: number }) => css`
   }
 `;
 
-function isAtBottom({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean {
+function isAtBottom(currentTarget: HTMLDivElement): boolean {
   return (
     currentTarget.scrollTop + 10 >=
     currentTarget.scrollHeight - currentTarget.clientHeight
