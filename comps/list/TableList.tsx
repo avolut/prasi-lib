@@ -36,6 +36,7 @@ import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "../ui/toast";
 import { sortTree } from "./utils/sort-tree";
+import { getPathname } from "lib/exports";
 
 type OnRowClick = (arg: {
   row: any;
@@ -129,235 +130,262 @@ export const TableList: FC<TableListProp> = ({
   if (ls_sort) {
     ls_sort = JSON.parse(ls_sort as any);
   }
-  const local = useLocal({
-    selectedRows: [] as {
-      pk: string | number;
-      rows: any;
-    }[],
-    el: null as null | HTMLDivElement,
-    width: 0,
-    height: 0,
-    selectedRowIds: [] as (string | number)[],
-    rob: new ResizeObserver(([e]) => {
-      local.height = e.contentRect.height;
-      local.width = e.contentRect.width;
-      if (local.status === "ready") local.status = "resizing";
-      local.render();
-    }),
-    pk: null as null | GFCol,
-    scrolled: false,
-    data: [] as any[],
-    status: "init" as
-      | "loading"
-      | "ready"
-      | "resizing"
-      | "reload"
-      | "init"
-      | "error",
-    where: null as any,
-    firstKey: "",
-    should_toast: true,
-    paging: {
-      take: 0,
-      skip: 0,
-      timeout: null as any,
-      total: 0,
-      scroll: (currentTarget: HTMLDivElement) => {
-        if (local.status === "loading" || !isAtBottom(currentTarget)) return;
-        if (local.data.length >= local.paging.skip + local.paging.take) {
-          local.paging.skip += local.paging.take;
-          local.status = "reload";
-          local.render();
-        }
-      },
-    },
-    grid_ref: null as null | HTMLDivElement,
-    collapsed: new Set<number>(),
-    cached_row: new WeakMap<any, ReactElement>(),
-    filtering: "" as ReactNode | string | true,
-    reload: (arg?: { toast: boolean }) => {
-      return new Promise<void>((done) => {
-        let should_toast = true;
-        if (arg?.toast === false) should_toast = false;
-        local.should_toast = should_toast;
-
-        local.filtering = "";
-        if (typeof on_load === "function") {
-          local.status = "loading";
-          local.render();
-
-          const orderBy = local.sort.orderBy || undefined;
-          const where = filterWhere(filter_name, __props);
-
-          if (where?.OR?.length > 0) {
-            const key = Object.keys(where.OR[0])[0];
-            if (key && where.OR[0][key]) {
-              let filtering = where.OR[0][key].contains;
-              if (typeof local.filtering === "string") {
-                filtering = filtering.slice(1, -1);
-              } else {
-                filtering = "";
-              }
-
-              if (filtering) {
-                local.filtering = (
-                  <div className="c-pt-2">
-                    Searching for: <pre>"{filtering.trim()}"</pre>
-                  </div>
-                );
-              }
-            }
+  const local = useLocal(
+    {
+      times: 0,
+      selectedRows: [] as {
+        pk: string | number;
+        rows: any;
+      }[],
+      el: null as null | HTMLDivElement,
+      width: 0,
+      height: 0,
+      selectedRowIds: [] as (string | number)[],
+      rob: new ResizeObserver(([e]) => {
+        local.height = e.contentRect.height;
+        local.width = e.contentRect.width;
+        if (local.status === "ready") local.status = "resizing";
+        local.render();
+      }),
+      pk: null as null | GFCol,
+      scrolled: false,
+      data: [] as any[],
+      status: "init" as
+        | "loading"
+        | "ready"
+        | "resizing"
+        | "reload"
+        | "init"
+        | "error",
+      where: null as any,
+      firstKey: "",
+      should_toast: true,
+      paging: {
+        take: 0,
+        skip: 0,
+        timeout: null as any,
+        total: 0,
+        scroll: (currentTarget: HTMLDivElement) => {
+          if (local.status === "loading" || !isAtBottom(currentTarget)) return;
+          if (local.data.length >= local.paging.skip + local.paging.take) {
+            local.paging.skip += local.paging.take;
+            local.status = "reload";
+            local.render();
           }
+        },
+      },
+      grid_ref: null as null | HTMLDivElement,
+      collapsed: new Set<number>(),
+      cached_row: new WeakMap<any, ReactElement>(),
+      filtering: "" as ReactNode | string | true,
+      reloading: null as any,
+      reload: (arg?: { toast: boolean }) => {
+        if (local.reloading) return local.reloading;
 
-          if (md) {
-            const last = md.params.links[md.params.links.length - 1];
+        local.reloading = new Promise<void>(async (done) => {
+          let should_toast = true;
+          if (arg?.toast === false) should_toast = false;
+          local.should_toast = should_toast;
 
-            if (last && last.where) {
-              if ((last.name && last.name === md.name) || !last.name) {
-                for (const [k, v] of Object.entries(last.where)) {
-                  where[k] = v;
+          local.filtering = "";
+          if (typeof on_load === "function") {
+            local.status = "loading";
+            local.render();
+
+            const orderBy = local.sort.orderBy || undefined;
+            const where = filterWhere(filter_name, __props);
+
+            if (where?.OR?.length > 0) {
+              const key = Object.keys(where.OR[0])[0];
+              if (key && where.OR[0][key]) {
+                let filtering = where.OR[0][key].contains;
+                if (typeof local.filtering === "string") {
+                  filtering = filtering.slice(1, -1);
+                } else {
+                  filtering = "";
+                }
+
+                if (filtering) {
+                  local.filtering = (
+                    <div className="c-pt-2">
+                      Searching for: <pre>"{filtering.trim()}"</pre>
+                    </div>
+                  );
                 }
               }
             }
-          }
 
-          call_prasi_events("tablelist", "where", [__props?.gen__table, where]);
+            if (md) {
+              if (md.header.loading) {
+                await new Promise<void>((resolve) => {
+                  const ival = setInterval(() => {
+                    if (!md.header.loading) {
+                      clearInterval(ival);
+                      resolve();
+                    }
+                  }, 10);
+                });
+              }
+              const last = md.params.links[md.params.links.length - 1];
 
-          const load_args: any = {
-            async reload() {},
-            orderBy,
-            where,
-            paging: {
-              take: local.paging.take > 0 ? local.paging.take : undefined,
-              skip: local.paging.skip,
-            },
-          };
-          if (id_parent) {
-            load_args.paging = {};
-          }
-          const result = on_load({ ...load_args, mode: "query" });
-          const callback = (data: any[]) => {
-            if (local.paging.skip === 0) {
-              local.data = data;
-            } else {
-              local.data = [...local.data, ...data];
+              if (last && last.where) {
+                if ((last.name && last.name === md.name) || !last.name) {
+                  for (const [k, v] of Object.entries(last.where)) {
+                    where[k] = v;
+                  }
+                }
+              }
             }
 
-            local.status = "ready";
-            local.render();
-            done();
+            call_prasi_events("tablelist", "where", [
+              __props?.gen__table,
+              where,
+            ]);
 
-            if (local.grid_ref && !id_parent) local.paging.scroll(local.grid_ref);
-          };
-
-          if (result instanceof Promise) {
-            (async () => {
-              try {
-                callback(await result);
-              } catch (e) {
-                console.error(e);
-                local.status = "error";
-                toast.dismiss();
-                toast.error(
-                  <div className="c-flex c-text-red-600 c-items-center">
-                    <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
-                    Failed to load data
-                  </div>,
-                  {
-                    dismissible: true,
-                    className: css`
-                      background: #ffecec;
-                      border: 2px solid red;
-                    `,
-                  }
-                );
+            const load_args: any = {
+              async reload() {},
+              orderBy,
+              where,
+              paging: {
+                take: local.paging.take > 0 ? local.paging.take : undefined,
+                skip: local.paging.skip,
+              },
+            };
+            if (id_parent) {
+              load_args.paging = {};
+            }
+            const result = on_load({ ...load_args, mode: "query" });
+            const callback = (data: any[]) => {
+              if (local.paging.skip === 0) {
+                local.data = data;
+              } else {
+                local.data = [...local.data, ...data];
               }
-            })();
-          } else callback(result);
-        }
-      });
-    },
-    sort: {
-      columns: (ls_sort?.columns || []) as SortColumn[],
-      on_change: (cols: SortColumn[]) => {
-        if (feature?.find((e) => e === "sorting")) {
-          local.sort.columns = cols;
-          local.paging.skip = 0;
-          if (cols.length > 0) {
-            let { columnKey, direction } = cols[0];
 
-            if (columnKey.includes(".")) {
-              let root: any = {};
-              set(root, columnKey, direction === "ASC" ? "asc" : "desc");
-              local.sort.orderBy = root;
-            } else {
-              let should_set = true;
-              const gf = JSON.stringify(gen_fields);
-              const fields = fields_map.get(gf);
-              if (fields) {
-                const rel = fields?.find((e) => e.name === columnKey);
-                if (rel && rel.checked) {
-                  should_set = false;
+              local.status = "ready";
+              local.reloading = null;
+              local.render();
+              done();
 
-                  if (rel.type === "has-many") {
-                    local.sort.orderBy = {
-                      [columnKey]: {
-                        _count: direction === "ASC" ? "asc" : "desc",
-                      },
-                    };
-                  } else {
-                    const field = rel.checked.find((e) => !e.is_pk);
-                    if (field) {
+              if (local.grid_ref && !id_parent)
+                local.paging.scroll(local.grid_ref);
+            };
+
+            if (result instanceof Promise) {
+              (async () => {
+                try {
+                  callback(await result);
+                } catch (e) {
+                  console.error(e);
+                  local.status = "error";
+                  toast.dismiss();
+                  toast.error(
+                    <div className="c-flex c-text-red-600 c-items-center">
+                      <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+                      Failed to load data
+                    </div>,
+                    {
+                      dismissible: true,
+                      className: css`
+                        background: #ffecec;
+                        border: 2px solid red;
+                      `,
+                    }
+                  );
+                }
+              })();
+            } else callback(result);
+          }
+        });
+
+        return local.reloading;
+      },
+      sort: {
+        columns: (ls_sort?.columns || []) as SortColumn[],
+        on_change: (cols: SortColumn[]) => {
+          if (feature?.find((e) => e === "sorting")) {
+            local.sort.columns = cols;
+            local.paging.skip = 0;
+            if (cols.length > 0) {
+              let { columnKey, direction } = cols[0];
+
+              if (columnKey.includes(".")) {
+                let root: any = {};
+                set(root, columnKey, direction === "ASC" ? "asc" : "desc");
+                local.sort.orderBy = root;
+              } else {
+                let should_set = true;
+                const gf = JSON.stringify(gen_fields);
+                const fields = fields_map.get(gf);
+                if (fields) {
+                  const rel = fields?.find((e) => e.name === columnKey);
+                  if (rel && rel.checked) {
+                    should_set = false;
+
+                    if (rel.type === "has-many") {
                       local.sort.orderBy = {
                         [columnKey]: {
-                          [field.name]: direction === "ASC" ? "asc" : "desc",
+                          _count: direction === "ASC" ? "asc" : "desc",
                         },
                       };
-                    } else if (rel.relation) {
-                      local.sort.orderBy = {
-                        [columnKey]: {
-                          [rel.relation.to.fields[0]]:
-                            direction === "ASC" ? "asc" : "desc",
-                        },
-                      };
+                    } else {
+                      const field = rel.checked.find((e) => !e.is_pk);
+                      if (field) {
+                        local.sort.orderBy = {
+                          [columnKey]: {
+                            [field.name]: direction === "ASC" ? "asc" : "desc",
+                          },
+                        };
+                      } else if (rel.relation) {
+                        local.sort.orderBy = {
+                          [columnKey]: {
+                            [rel.relation.to.fields[0]]:
+                              direction === "ASC" ? "asc" : "desc",
+                          },
+                        };
+                      }
                     }
                   }
                 }
-              }
 
-              if (should_set) {
-                local.sort.orderBy = {
-                  [columnKey]: direction === "ASC" ? "asc" : "desc",
-                };
+                if (should_set) {
+                  local.sort.orderBy = {
+                    [columnKey]: direction === "ASC" ? "asc" : "desc",
+                  };
+                }
               }
+            } else {
+              local.sort.orderBy = null;
             }
-          } else {
-            local.sort.orderBy = null;
-          }
-          localStorage.setItem(
-            `sort-${location.pathname}-${location.hash}-${name}`,
-            JSON.stringify({
-              columns: local.sort.columns,
-              orderBy: local.sort.orderBy,
-            })
-          );
+            localStorage.setItem(
+              `sort-${location.pathname}-${location.hash}-${name}`,
+              JSON.stringify({
+                columns: local.sort.columns,
+                orderBy: local.sort.orderBy,
+              })
+            );
 
-          local.status = "reload";
-          local.render();
-        }
+            local.status = "reload";
+            local.render();
+          }
+        },
+        orderBy: (ls_sort?.orderBy || null) as null | Record<
+          string,
+          "asc" | "desc" | Record<string, "asc" | "desc">
+        >,
       },
-      orderBy: (ls_sort?.orderBy || null) as null | Record<
-        string,
-        "asc" | "desc" | Record<string, "asc" | "desc">
-      >,
+      soft_delete: {
+        field: null as any,
+      },
     },
-    soft_delete: {
-      field: null as any,
-    },
-  });
+    ({ setDelayedRender }) => {
+      setDelayedRender(true);
+    }
+  );
 
   const reload = local.reload;
   if (md) {
+    md.master.list = local;
     md.master.reload = reload;
   }
 
@@ -712,9 +740,12 @@ export const TableList: FC<TableListProp> = ({
 
   if (!isEditor) {
     let should_toast = true;
-    if (md && md.props.mode !== "full") {
-      should_toast = false;
+    if (md) {
+      if (md.props.mode !== "full") {
+        should_toast = false;
+      }
     }
+
     if (should_toast) {
       if (local.status === "loading") {
         toast.dismiss();
@@ -730,12 +761,6 @@ export const TableList: FC<TableListProp> = ({
     }
   }
 
-  if (local.status === "resizing" && !isEditor) {
-    local.status = "ready";
-    local.render();
-    return null;
-  }
-
   if (document.getElementsByClassName("prasi-toaster").length === 0) {
     const elemDiv = document.createElement("div");
     elemDiv.className = "prasi-toaster";
@@ -744,6 +769,11 @@ export const TableList: FC<TableListProp> = ({
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
 
   if (mode === "table") {
+    if (local.status === "resizing" && !isEditor) {
+      local.status = "ready";
+      local.render();
+    }
+
     return (
       <div
         className={cx(
@@ -929,7 +959,26 @@ export const TableList: FC<TableListProp> = ({
             <Skeleton className={cx("c-w-[180px] c-h-[11px]")} />
           </div>
         ) : (
-          <div className="c-absolute c-inset-0">
+          <div
+            className={cx(
+              "c-absolute c-inset-0",
+              css`
+                @keyframes flasher {
+                  from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                  }
+                  to {
+                    opacity: 1;
+                    transform: translateY(0px);
+                  }
+                }
+                .list-row {
+                  animation: flasher 0.5s;
+                }
+              `
+            )}
+          >
             <>
               {Array.isArray(data) && data.length > 0 ? (
                 <div
@@ -942,7 +991,7 @@ export const TableList: FC<TableListProp> = ({
                   {data.map((e, idx) => {
                     return (
                       <div
-                        className="c-flex-grow c-flex"
+                        className={cx("list-row c-flex-grow c-flex")}
                         onClick={(ev) => {
                           if (!isEditor && typeof row_click === "function") {
                             row_click({
@@ -1047,9 +1096,14 @@ const genRows = (total: number) => {
 };
 
 const dataGridStyle = (local: { height: number }) => css`
-  .rdg {
-    block-size: ${local.height}px;
-  }
+  ${local.height
+    ? css`
+        .rdg {
+          block-size: ${local.height}px;
+        }
+      `
+    : ``}
+
   div[role="row"]:hover {
     background: #e2f1ff;
     .num-edit {

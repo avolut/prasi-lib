@@ -58,6 +58,7 @@ export type MDLocalInternal = {
   master: {
     reload: (arg?: { toast: boolean }) => void;
     render: () => void;
+    list?: any;
     pk?: string;
   };
   params: {
