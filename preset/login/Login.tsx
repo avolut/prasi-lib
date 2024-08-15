@@ -1,8 +1,8 @@
-import { FC, useEffect } from "react";
-import { loadSession } from "./utils/load";
-import { useLocal } from "lib/utils/use-local";
-import { FieldLoading } from "../../..";
 import { getBasename } from "lib/exports";
+import { useLocal } from "lib/utils/use-local";
+import { FC } from "react";
+import { FieldLoading } from "../../..";
+import { loadSession } from "./utils/load";
 
 const w = window as unknown as {
   user: any;

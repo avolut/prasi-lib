@@ -1,13 +1,4 @@
-export { FieldLoading } from "@/comps/ui/field-loading";
-export { fetchLinkParams } from "./comps/form/field/type/TypeLink";
-export { prasi_gen } from "./gen/prasi_gen";
-export { guessLabel } from "./utils/guess-label";
 import { lazify, lazifyMany } from "@/utils/lazify";
-import __get from "lodash.get";
-import { sum } from "./utils/sum";
-
-export const _sum = sum;
-export const _get = __get;
 
 export const Accordion = lazify(
   async () => (await import("@/comps/ui/accordion")).Accordion
@@ -100,6 +91,21 @@ export const LineChart = lazify(
   async () => (await import("@/comps/charts/line")).LineChart
 );
 
+export const ScrollArea = lazify(
+  async () => (await import("@/comps/ui/scroll-area")).ScrollArea
+);
+
+export { FieldLoading } from "@/comps/ui/field-loading";
+export { fetchLinkParams } from "./comps/form/field/type/TypeLink";
+export { prasi_gen } from "./gen/prasi_gen";
+export { guessLabel } from "./utils/guess-label";
+
+import __get from "lodash.get";
+import { sum } from "./utils/sum";
+
+export const _sum = sum;
+export const _get = __get;
+
 /** Generator */
 export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";
 export { generateRelation } from "@/comps/form/gen/gen-rel";
@@ -168,7 +174,5 @@ export { formatTime, longDate, shortDate, timeAgo } from "@/utils/date";
 export { getBasename, getPathname } from "@/utils/pathname";
 
 export { Flow } from "@/comps/ui/flow";
-// format money
-export { formatMoney } from "@/comps/form/field/type/TypeMoney";
 
-export { ScrollArea } from "@/comps/ui/scroll-area";
+export { formatMoney } from "@/comps/form/field/type/TypeMoney";
