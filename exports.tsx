@@ -96,16 +96,17 @@ export const ScrollArea = lazify(
 );
 
 export { FieldLoading } from "@/comps/ui/field-loading";
-export { fetchLinkParams } from "./comps/form/field/type/TypeLink";
+export { fetchLinkParams } from "@/comps/form/field/type/TypeLink";
 export { prasi_gen } from "./gen/prasi_gen";
 export { guessLabel } from "./utils/guess-label";
+export { lang } from "@/lang/lang";
 
 import __get from "lodash.get";
 import { sum } from "./utils/sum";
 
 export const _sum = sum;
 export const _get = __get;
-
+ 
 /** Generator */
 export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";
 export { generateRelation } from "@/comps/form/gen/gen-rel";
