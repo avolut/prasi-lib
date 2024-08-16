@@ -1,10 +1,10 @@
-import { getPathname } from "lib/utils/pathname";
-import { FC, ReactNode, useEffect, useLayoutEffect, useState } from "react";
-import { loadSession } from "../login/utils/load";
-import { useLocal } from "lib/utils/use-local";
-import { FieldLoading } from "lib/exports";
 import { LinkParam } from "lib/comps/form/field/type/TypeLink";
+import { FieldLoading } from "lib/exports";
 import { hashSum } from "lib/utils/hash-sum";
+import { getPathname } from "lib/utils/pathname";
+import { useLocal } from "lib/utils/use-local";
+import { FC, ReactNode, useLayoutEffect } from "react";
+import { loadSession } from "../login/utils/load";
 
 const w = window as any;
 const initResponsive = function () {
@@ -81,7 +81,6 @@ export const Layout: FC<LYTChild> = (props) => {
         const newurl = new URL(`${url.protocol}//${url.host}${_href}`);
         const pathname = newurl.pathname;
 
-        let link_params = "";
         if (params) {
           const prefix: LinkParam["prefix"] =
             params.breads?.map((e) => {

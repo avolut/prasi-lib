@@ -25,7 +25,9 @@ export const Menu: FC<MenuProp> = (props) => {
   role = props.on_init();
   let menu = get(imenu, role) || [];
   const ref = useRef<HTMLDivElement>(null);
-  const local = useLocal({ ...local_default });
+  const local = useLocal({ ...local_default }, ({ setDelayedRender }) => {
+    setDelayedRender(true);
+  });
 
   if (local.pathname !== getPathname()) {
     local.pathname = getPathname();
@@ -96,9 +98,11 @@ export const SideBar: FC<{
         value: item[2],
         hash: hashMenu(item),
       };
+
       if (typeof item[2] === "string" && local.pathname === item[2]) {
         let should_render = false;
-        if (local.active !== menu.hash && !local.loading) {
+
+        if (local.active !== menu.hash) {
           local.active = menu.hash;
           activate(menu.label);
           should_render = true;
@@ -128,7 +132,7 @@ export const SideBar: FC<{
         local.render();
       }
     });
-  }, []);
+  }, [getPathname({ hash: true })]);
 
   return (
     <div
