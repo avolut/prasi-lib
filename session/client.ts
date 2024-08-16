@@ -23,7 +23,7 @@ export const sessionClient = async <T extends SessionData>(arg: {
 }): Promise<Session<T>> => {
   const session: Session<T> = {
     active: false,
-    id_site: w._prasi.site_id,
+    id_site: isEditor ? "" : w._prasi.site_id,
     async login() {},
     async logout() {},
     token: "",
