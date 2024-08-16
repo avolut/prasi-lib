@@ -916,7 +916,7 @@ export const TableList: FC<TableListProp> = ({
             </>
           )}
         </div>
-      </div>
+      </div> 
     );
   } else if (mode === "list") {
     return (
