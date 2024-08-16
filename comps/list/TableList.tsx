@@ -771,7 +771,6 @@ export const TableList: FC<TableListProp> = ({
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
 
   if (mode === "table") {
-    console.log("ama",local.status, data.length);
     if (local.status === "resizing" && !isEditor) {
       local.status = "ready";
       local.render();
