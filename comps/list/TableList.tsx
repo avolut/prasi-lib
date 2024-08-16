@@ -142,12 +142,6 @@ export const TableList: FC<TableListProp> = ({
       width: 0,
       height: 0,
       selectedRowIds: [] as (string | number)[],
-      rob: new ResizeObserver(([e]) => {
-        local.height = e.contentRect.height;
-        local.width = e.contentRect.width;
-        if (local.status === "ready") local.status = "resizing";
-        local.render();
-      }),
       pk: null as null | GFCol,
       scrolled: false,
       data: [] as any[],
@@ -787,12 +781,6 @@ export const TableList: FC<TableListProp> = ({
           "table-list c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
           dataGridStyle(local)
         )}
-        ref={(el) => {
-          if (!local.el && el) {
-            local.el = el;
-            local.rob.observe(el);
-          }
-        }}
       >
         {local.status !== "ready" && (
           <div className="c-flex c-flex-col c-space-y-2 c-m-4 c-absolute c-left-0 c-top-0">
@@ -801,7 +789,13 @@ export const TableList: FC<TableListProp> = ({
             <Skeleton className={cx("c-w-[180px] c-h-[11px]")} />
           </div>
         )}
-        <div className="table-list-inner c-absolute c-inset-0">
+        <div
+          className="table-list-inner c-absolute c-inset-0"
+          ref={(e) => {
+            local.el = e;
+            if (e) local.height = e.offsetHeight;
+          }}
+        >
           {toaster_el &&
             createPortal(
               <Toaster position={toast.position} cn={cn} />,
@@ -934,7 +928,6 @@ export const TableList: FC<TableListProp> = ({
         ref={(el) => {
           if (!local.el && el) {
             local.el = el;
-            local.rob.observe(el);
           }
         }}
       >
@@ -1083,12 +1076,11 @@ const genRows = (total: number) => {
   return result;
 };
 
-const dataGridStyle = (local: { height: number }) => {
-  console.log(local.height);
+const dataGridStyle = (local: { el: null | HTMLDivElement }) => {
   return css`
     .rdg {
       display: grid !important;
-
+ 
       .rdg-cell,
       .rdg-header-sort-name {
         display: flex;
@@ -1101,7 +1093,7 @@ const dataGridStyle = (local: { height: number }) => {
       }
     }
     .rdg {
-      height: ${local.height || 100}px;
+      height: ${local.el?.clientHeight || 100}px;
     }
 
     div[role="row"]:hover {
