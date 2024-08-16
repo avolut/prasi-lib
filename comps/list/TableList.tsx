@@ -78,7 +78,7 @@ type TableListProp = {
   softdel_field?: string;
   gen_table?: string;
   softdel_type?: string;
-  paging?:boolean;
+  paging?: boolean;
   cache_row?: boolean;
   md?: MDLocal;
 };
@@ -162,7 +162,7 @@ export const TableList: FC<TableListProp> = ({
       firstKey: "",
       should_toast: true,
       paging: {
-        take: 0,
+        take: 100,
         skip: 0,
         timeout: null as any,
         total: 0,
@@ -257,7 +257,7 @@ export const TableList: FC<TableListProp> = ({
             }
             const result = on_load({ ...load_args, mode: "query" });
             const callback = (data: any[]) => {
-              if (local.paging.skip === 0 || (paging !== undefined || paging)) {
+              if (local.paging.skip === 0 || paging !== undefined || paging) {
                 local.data = data;
               } else {
                 local.data = [...local.data, ...data];
@@ -269,7 +269,11 @@ export const TableList: FC<TableListProp> = ({
 
               done();
 
-              if (local.grid_ref && !id_parent && (paging !== undefined || paging))
+              if (
+                local.grid_ref &&
+                !id_parent &&
+                (paging !== undefined || paging)
+              )
                 local.paging.scroll(local.grid_ref);
             };
 
@@ -781,23 +785,7 @@ export const TableList: FC<TableListProp> = ({
       <div
         className={cx(
           "table-list c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
-          dataGridStyle(local),
-          css`
-            .rdg {
-              display: grid !important;
-
-              .rdg-cell,
-              .rdg-header-sort-name {
-                display: flex;
-                flex-direction: row;
-                align-items: stretch;
-
-                &.rdg-header-sort-name {
-                  align-items: center;
-                }
-              }
-            }
-          `
+          dataGridStyle(local)
         )}
         ref={(el) => {
           if (!local.el && el) {
@@ -828,13 +816,10 @@ export const TableList: FC<TableListProp> = ({
                   key: "_",
                   name: "",
                   renderCell({ rowIdx }) {
-                    if (local.paging.take < rowIdx) {
-                      local.paging.take = rowIdx;
-                    }
                     clearTimeout(local.paging.timeout);
                     local.paging.timeout = setTimeout(() => {
                       local.status = "reload";
-                      local.paging.take = local.paging.take * 5;
+                      local.paging.take = local.paging.take * 3;
                       local.render();
                     }, 100);
                     return <></>;
@@ -1098,39 +1083,52 @@ const genRows = (total: number) => {
   return result;
 };
 
-const dataGridStyle = (local: { height: number }) => css`
-  ${local.height
-    ? css`
-        .rdg {
-          block-size: ${local.height}px;
+const dataGridStyle = (local: { height: number }) => {
+  console.log(local.height);
+  return css`
+    .rdg {
+      display: grid !important;
+
+      .rdg-cell,
+      .rdg-header-sort-name {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+
+        &.rdg-header-sort-name {
+          align-items: center;
         }
-      `
-    : ``}
-
-  div[role="row"]:hover {
-    background: #e2f1ff;
-    .num-edit {
-      display: flex;
+      }
     }
-    .num-idx {
-      display: none;
+    .rdg {
+      height: ${local.height || 100}px;
     }
-  }
-  div[role="columnheader"] span svg {
-    margin: 12px 2px;
-    /* color: #ffffff */
-  }
-  div[aria-selected="true"] {
-    outline: none;
-  }
-  div[role="gridcell"] {
-    padding-inline: 0px;
-  }
 
-  .row-selected {
-    background: #bddfff !important;
-  }
-`;
+    div[role="row"]:hover {
+      background: #e2f1ff;
+      .num-edit {
+        display: flex;
+      }
+      .num-idx {
+        display: none;
+      }
+    }
+    div[role="columnheader"] span svg {
+      margin: 12px 2px;
+      /* color: #ffffff */
+    }
+    div[aria-selected="true"] {
+      outline: none;
+    }
+    div[role="gridcell"] {
+      padding-inline: 0px;
+    }
+
+    .row-selected {
+      background: #bddfff !important;
+    }
+  `;
+};
 
 function isAtBottom(currentTarget: HTMLDivElement): boolean {
   return (
