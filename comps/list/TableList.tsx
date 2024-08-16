@@ -931,7 +931,7 @@ export const TableList: FC<TableListProp> = ({
           }
         }}
       >
-        {toaster_el && createPortal(<Toaster cn={cn} />, toaster_el)}
+        {toaster_el && createPortal(<Toaster position={toast.position} cn={cn} />, toaster_el)}
 
         {local.status !== "ready" ? (
           <div className="c-flex c-flex-col c-space-y-2 c-m-4 c-absolute c-left-0 c-top-0">
