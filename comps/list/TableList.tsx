@@ -36,7 +36,6 @@ import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "../ui/toast";
 import { sortTree } from "./utils/sort-tree";
-import { getPathname } from "lib/exports";
 
 type OnRowClick = (arg: {
   row: any;
@@ -79,6 +78,7 @@ type TableListProp = {
   softdel_field?: string;
   gen_table?: string;
   softdel_type?: string;
+  paging?:boolean;
   cache_row?: boolean;
   md?: MDLocal;
 };
@@ -111,6 +111,7 @@ export const TableList: FC<TableListProp> = ({
   render_col,
   show_header,
   value,
+  paging,
   cache_row,
   __props,
   md,
@@ -256,7 +257,7 @@ export const TableList: FC<TableListProp> = ({
             }
             const result = on_load({ ...load_args, mode: "query" });
             const callback = (data: any[]) => {
-              if (local.paging.skip === 0) {
+              if (local.paging.skip === 0 || (paging !== undefined || paging)) {
                 local.data = data;
               } else {
                 local.data = [...local.data, ...data];
@@ -265,9 +266,10 @@ export const TableList: FC<TableListProp> = ({
               local.status = "ready";
               local.reloading = null;
               local.render();
+
               done();
 
-              if (local.grid_ref && !id_parent)
+              if (local.grid_ref && !id_parent && (paging !== undefined || paging))
                 local.paging.scroll(local.grid_ref);
             };
 
@@ -769,9 +771,11 @@ export const TableList: FC<TableListProp> = ({
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
 
   if (mode === "table") {
+    console.log("ama",local.status, data.length);
     if (local.status === "resizing" && !isEditor) {
       local.status = "ready";
       local.render();
+      return null;
     }
 
     return (
