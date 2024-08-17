@@ -54,6 +54,14 @@ export const Field: FC<FieldProp> = (arg) => {
       } else {
         local.prev_val = fm.data[name];
       }
+
+      if (!fm.events) {
+        fm.events = {
+          on_change(name, new_value) {},
+        };
+      }
+
+      fm.events.on_change(name, fm.data[name]);
       return;
     }
 
@@ -169,7 +177,12 @@ export const Field: FC<FieldProp> = (arg) => {
           arg={arg}
         />
         {field.desc && (
-          <div className={cx("c-p-2 c-pl-0 c-text-xs", errors.length > 0 && "c-pb-1")}>
+          <div
+            className={cx(
+              "c-p-2 c-pl-0 c-text-xs",
+              errors.length > 0 && "c-pb-1"
+            )}
+          >
             {field.desc}
           </div>
         )}

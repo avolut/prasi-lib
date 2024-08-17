@@ -3,6 +3,7 @@ import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect, useRef } from "react";
 import { FMLocal } from "../../typings";
 import get from "lodash.get";
+import { BaseForm } from "../../base/BaseForm";
 
 export const TableEdit: FC<{
   on_init: () => FMLocal;
@@ -43,7 +44,17 @@ export const TableEdit: FC<{
     "props.meta.item.component.props.child.content.childs"
   );
 
-  let columns: any[] = [];
+  let columns: {
+    key: string;
+    name?: string;
+    label?: string;
+    width?: number;
+    minWidth?: number;
+    resizable?: boolean;
+    sortable?: boolean;
+    frozen?: boolean;
+    renderCell: (arg: any) => any;
+  }[] = [];
   let childs: any[] = [];
   const mode_child = raw_childs.find((e: any) =>
     ["tbl-col", "table: columns"].includes(e.name)
@@ -73,7 +84,6 @@ export const TableEdit: FC<{
         renderCell(arg: any) {
           // return <></>;
           const { props, tbl } = arg;
-          const fm_row = { ...fm, render: local.render };
           return (
             <PassProp
               idx={props.rowIdx}
@@ -84,7 +94,7 @@ export const TableEdit: FC<{
                 value: get(props.row, props.column.key),
                 depth: 0,
               }}
-              fm={fm_row}
+              fm={arg.fm}
               ext_fm={{
                 idx: props.rowIdx,
                 change: () => {},
@@ -114,8 +124,6 @@ export const TableEdit: FC<{
         sortable: true,
         renderCell(arg: any) {
           const { props, tbl } = arg;
-          const fm_row = { ...fm, render: local.render };
-          fm_row.data = props.row;
           local.tbl = tbl;
           const key = props.column.key;
           return (
@@ -128,7 +136,7 @@ export const TableEdit: FC<{
                 depth: props.row.__depth || 0,
               }}
               rows={tbl.data}
-              fm={fm_row}
+              fm={props.fm}
               fm_parent={parent}
               ext_fm={{
                 idx: props.rowIdx,
@@ -186,8 +194,8 @@ export const TableEdit: FC<{
             css`
               height: 1px;
               border-collapse: collapse;
-              table-layout: auto; 
-              
+              table-layout: auto;
+
               .field {
                 padding: 0px 0px 0px 10px;
               }
@@ -205,7 +213,7 @@ export const TableEdit: FC<{
                         css`
                           background-color: #f9f9f9;
                         `,
-                        header.width > 0
+                        header.width || 0 > 0
                           ? css`
                               width: ${header.width}px;
                             `
@@ -216,7 +224,7 @@ export const TableEdit: FC<{
                         className={cx(
                           "rdg-cell c-py-2 c-px-4 c-flex c-flex-row c-items-center c-h-full",
 
-                          header.width > 0
+                          header.width || 0 > 0
                             ? css`
                                 width: ${header.width}px;
                               `
@@ -245,39 +253,53 @@ export const TableEdit: FC<{
               <>
                 {value.map((row: any, idx: number) => {
                   return (
-                    <tr>
-                      {columns.map((header) => {
+                    <BaseForm
+                      is_form={false}
+                      data={row}
+                      on_change={(_fm) => {
+                        fm.data[name][idx] = _fm.data;
+                        fm.render();
+                      }}
+                    >
+                      {(form) => {
                         return (
-                          <td
-                            className={cx(
-                              header.width > 0
-                                ? css`
-                                    width: ${header.width}px;
-                                  `
-                                : ""
-                            )}
-                          >
-                            <div
-                              className={cx(
-                                "c-flex c-flex-row c-pb-1 c-w-full c-h-full",
-                                idx === 0 && "c-pt-1"
-                              )}
-                            >
-                              {header.renderCell({
-                                props: {
-                                  row: row,
-                                  rowIdx: idx,
-                                  column: header,
-                                },
-                                tbl: {
-                                  data: value,
-                                },
-                              })}
-                            </div>
-                          </td>
+                          <tr>
+                            {columns.map((header) => {
+                              return (
+                                <td
+                                  className={cx(
+                                    header.width || 0 > 0
+                                      ? css`
+                                          width: ${header.width || 0}px;
+                                        `
+                                      : ""
+                                  )}
+                                >
+                                  <div
+                                    className={cx(
+                                      "c-flex c-flex-row c-pb-1 c-w-full c-h-full",
+                                      idx === 0 && "c-pt-1"
+                                    )}
+                                  >
+                                    {header.renderCell({
+                                      props: {
+                                        row: row,
+                                        rowIdx: idx,
+                                        column: header,
+                                        fm: form.fm,
+                                      },
+                                      tbl: {
+                                        data: value,
+                                      },
+                                    })}
+                                  </div>
+                                </td>
+                              );
+                            })}
+                          </tr>
                         );
-                      })}
-                    </tr>
+                      }}
+                    </BaseForm>
                   );
                 })}
               </>

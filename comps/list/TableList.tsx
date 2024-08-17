@@ -909,7 +909,7 @@ export const TableList: FC<TableListProp> = ({
                               </div>
                             </div>
                           </div>
-                        ),
+                        ), 
                       }
                 }
               />
