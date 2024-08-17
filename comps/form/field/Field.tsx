@@ -66,7 +66,7 @@ export const Field: FC<FieldProp> = (arg) => {
     }
 
     if (local.prev_val !== fm.data[name]) {
-      if (typeof fm.data[name] === "object" && fm.deps.md) {
+      if (typeof fm.data[name] === "object") {
         const sfied = hashSum(prepForSum(fm.data[name]));
 
         if (sfied !== local.prev_val) {

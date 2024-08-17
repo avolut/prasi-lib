@@ -258,6 +258,7 @@ export const TableEdit: FC<{
                       data={row}
                       on_change={(_fm) => {
                         fm.data[name][idx] = _fm.data;
+                        fm.data[name] = [...fm.data[name]];
                         fm.render();
                       }}
                     >

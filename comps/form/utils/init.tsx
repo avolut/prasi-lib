@@ -30,7 +30,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
       toast.success(
         <div
           className={cx(
-            "c-flex c-flex-col c-select-none c-items-stretch c-flex-1 c-w-full"
+            "c-cursor-pointer c-flex c-flex-col c-select-none c-items-stretch c-flex-1 c-w-full"
           )}
           onClick={() => {
             toast.dismiss();
@@ -124,8 +124,10 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
     } else {
       toast.success(
         <div
-          className={cx("c-flex c-flex-col c-select-none")}
-          onClick={() => {}}
+          className={cx("c-cursor-pointer c-flex c-flex-col c-select-none")}
+          onClick={() => {
+            toast.dismiss();
+          }}
         >
           <div className="c-flex c-text-green-700 c-items-center">
             <Check className="c-h-4 c-w-4 c-mr-1 " />
@@ -265,6 +267,8 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         fm.status = "ready";
         fm.render();
       }
+
+      console.clear();
 
       if (fm.props.sonar === "on" && !isEditor) {
         toast.dismiss();
