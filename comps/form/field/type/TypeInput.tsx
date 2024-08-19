@@ -276,6 +276,7 @@ export const FieldTypeInput: FC<{
             prop.onChange(fm.data[field.name]);
           }
         }}
+        onInput={arg.sub_type === "phone" ? () => {} : undefined}
         placeholder={prop.placeholder || arg.placeholder || ""}
         value={value}
         disabled={disabled}
