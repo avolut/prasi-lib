@@ -31,6 +31,7 @@ export type PropTypeInput = {
     | "import"
     | "monthly"
     | "key-value"
+    | "mask"
     | "phone";
   placeholder?: string;
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
@@ -247,6 +248,45 @@ export const FieldTypeInput: FC<{
             }}
             value={format(value, {
               mask: "____-____-_______",
+              replacement: { _: /\d/ },
+            })}
+            placeholder={prop.placeholder || arg.placeholder || ""}
+            disabled={disabled}
+            className="c-flex-1 c-transition-all c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
+            spellCheck={false}
+            onFocus={(e) => {
+              field.focused = true;
+              field.render();
+              prop.onFocus?.(e);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && fm.status === "ready") fm.submit();
+            }}
+            onBlur={(e) => {
+              field.focused = false;
+              field.render();
+              prop.onBlur?.(e);
+            }}
+          />
+        </div>
+      );
+    case "mask":
+      const mask = arg.mask || "____-____-_______";
+      return (
+        <div className="c-flex c-relative c-flex-1">
+          <InputMask
+            mask={mask}
+            replacement={{ _: /\d/ }}
+            onChange={(ev) => {
+              fm.data[field.name] = ev.currentTarget.value.replace(/\D/g, "");
+              renderOnChange();
+
+              if (prop.onChange) {
+                prop.onChange(fm.data[field.name]);
+              }
+            }}
+            value={format(value, {
+              mask: mask,
               replacement: { _: /\d/ },
             })}
             placeholder={prop.placeholder || arg.placeholder || ""}

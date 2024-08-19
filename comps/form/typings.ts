@@ -48,6 +48,7 @@ export type FieldProp = {
   label: string;
   desc?: string;
   props?: any;
+  mask?:string;
   kv?: { default: any; index: "preserve" | "auto-sort" };
   upload?: {
     mode: "single-file" | "multi-file";
