@@ -69,6 +69,7 @@ export const FieldToggle: FC<{
               checked={checked}
               className="c-sr-only"
               onChange={(e) => {
+                console.log("HHHH")
                 const check = e.target.checked;
                 if (check) {
                   arg.opt_set_value({

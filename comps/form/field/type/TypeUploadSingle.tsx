@@ -235,20 +235,30 @@ export const FieldUploadSingle: FC<{
       ) : input.fase === "preview" ? (
         <div className="c-flex c-justify-between c-flex-1 c-p-1">
           <FilePreview url={value || ""} />
-          <div
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (confirm("Clear this file ?")) {
-                input.fase = "start";
-                fm.data[field.name] = null;
-                fm.render();
-              }
-            }}
-            className="c-flex c-flex-row c-items-center c-border c-px-2 c-rounded c-cursor-pointer hover:c-bg-red-100"
-          >
-            <Trash2 className="c-text-red-500 c-h-4 c-w-4" />
-          </div>
+          {!disabled ? (
+            <>
+              <div
+                onClick={(e) => {
+                  if (!disabled) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (confirm("Clear this file ?")) {
+                      input.fase = "start";
+                      fm.data[field.name] = null;
+                      fm.render();
+                    }
+                  }
+                }}
+                className={cx(
+                  "c-flex c-flex-row c-items-center c-border c-px-2 c-rounded c-cursor-pointer hover:c-bg-red-100"
+                )}
+              >
+                <Trash2 className="c-text-red-500 c-h-4 c-w-4" />
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       ) : (
         <></>

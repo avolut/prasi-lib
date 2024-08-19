@@ -761,6 +761,7 @@ export const TableList: FC<TableListProp> = ({
     }
   }
 
+  console.log('auo')
   if (document.getElementsByClassName("prasi-toaster").length === 0) {
     const elemDiv = document.createElement("div");
     elemDiv.className = "prasi-toaster";
@@ -834,7 +835,10 @@ export const TableList: FC<TableListProp> = ({
                 ref={(e) => {
                   local.grid_ref = e?.element as any;
                 }}
-                onScroll={(e) => local.paging.scroll(e.currentTarget)}
+                onScroll={(e) => {
+                  console.log("scroll");
+                  local.paging.scroll(e.currentTarget);
+                }}
                 selectedRows={EMPTY_SET}
                 onSelectedCellChange={() => {}}
                 onSelectedRowsChange={() => {}}
@@ -909,14 +913,14 @@ export const TableList: FC<TableListProp> = ({
                               </div>
                             </div>
                           </div>
-                        ), 
+                        ),
                       }
                 }
               />
             </>
           )}
         </div>
-      </div> 
+      </div>
     );
   } else if (mode === "list") {
     return (
@@ -931,7 +935,11 @@ export const TableList: FC<TableListProp> = ({
           }
         }}
       >
-        {toaster_el && createPortal(<Toaster position={toast.position} cn={cn} />, toaster_el)}
+        {toaster_el &&
+          createPortal(
+            <Toaster position={toast.position} cn={cn} />,
+            toaster_el
+          )}
 
         {local.status !== "ready" ? (
           <div className="c-flex c-flex-col c-space-y-2 c-m-4 c-absolute c-left-0 c-top-0">
@@ -1080,7 +1088,7 @@ const dataGridStyle = (local: { el: null | HTMLDivElement }) => {
   return css`
     .rdg {
       display: grid !important;
- 
+
       .rdg-cell,
       .rdg-header-sort-name {
         display: flex;

@@ -82,17 +82,15 @@ export const TableEdit: FC<{
         sortable: true,
         frozen: true,
         renderCell(arg: any) {
-          // return <></>;
           const { props, tbl } = arg;
           return (
             <PassProp
               idx={props.rowIdx}
               row={props.row}
-              fm_parent={parent}
               col={{
-                name: props.column.key,
-                value: get(props.row, props.column.key),
-                depth: 0,
+                name: key,
+                value: props.row[props.column.key],
+                depth: props.row.__depth || 0,
               }}
               fm={arg.fm}
               ext_fm={{
@@ -112,7 +110,7 @@ export const TableEdit: FC<{
             >
               {child}
             </PassProp>
-          );
+          ); 
         },
       });
     } else {
