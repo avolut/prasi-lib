@@ -9,6 +9,7 @@ import { FieldMoney } from "./TypeMoney";
 import { FieldRichText } from "./TypeRichText";
 import { FieldUpload } from "./TypeUpload";
 import { KeyValue } from "./KeyValue";
+import { InputMask, format } from "@react-input/mask";
 
 export type PropTypeInput = {
   type: "input";
@@ -29,7 +30,8 @@ export type PropTypeInput = {
     | "password"
     | "import"
     | "monthly"
-    | "key-value";
+    | "key-value"
+    | "phone";
   placeholder?: string;
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
@@ -229,6 +231,44 @@ export const FieldTypeInput: FC<{
           }}
         />
       );
+    case "phone":
+      return (
+        <div className="c-flex c-relative c-flex-1">
+          <InputMask
+            mask="____-____-_______"
+            replacement={{ _: /\d/ }}
+            onChange={(ev) => {
+              fm.data[field.name] = ev.currentTarget.value.replace(/\D/g, "");
+              renderOnChange();
+
+              if (prop.onChange) {
+                prop.onChange(fm.data[field.name]);
+              }
+            }}
+            value={format(value, {
+              mask: "____-____-_______",
+              replacement: { _: /\d/ },
+            })}
+            placeholder={prop.placeholder || arg.placeholder || ""}
+            disabled={disabled}
+            className="c-flex-1 c-transition-all c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
+            spellCheck={false}
+            onFocus={(e) => {
+              field.focused = true;
+              field.render();
+              prop.onFocus?.(e);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && fm.status === "ready") fm.submit();
+            }}
+            onBlur={(e) => {
+              field.focused = false;
+              field.render();
+              prop.onBlur?.(e);
+            }}
+          />
+        </div>
+      );
     case "monthly": {
       return (
         <Datepicker
@@ -276,27 +316,6 @@ export const FieldTypeInput: FC<{
             prop.onChange(fm.data[field.name]);
           }
         }}
-        onInput={
-          arg.sub_type === "phone"
-            ? (event) => {
-                const target = event.currentTarget;
-                var matrix = target.defaultValue,
-                  i = 0,
-                  def = matrix.replace(/\D/g, ""),
-                  val = target.value.replace(/\D/g, "");
-                def.length >= val.length && (val = def);
-                matrix = matrix.replace(/[_\d]/g, function (a) {
-                  return val.charAt(i++) || "_";
-                });
-                target.value = matrix;
-                i = matrix.lastIndexOf(val.substr(-1));
-                i < matrix.length && matrix != target.defaultValue
-                  ? i++
-                  : (i = matrix.indexOf("_"));
-                setCursorPosition(i, target);
-              }
-            : undefined
-        }
         placeholder={prop.placeholder || arg.placeholder || ""}
         value={value}
         disabled={disabled}

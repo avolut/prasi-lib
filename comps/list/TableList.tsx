@@ -163,13 +163,14 @@ export const TableList: FC<TableListProp> = ({
         last_length: 0,
         scroll: (currentTarget: HTMLDivElement) => {
           if (
+            local.data.length < local.paging.take ||
             local.data.length === 0 ||
             local.status !== "ready" ||
             !isAtBottom(currentTarget) ||
             local.reloading
           )
             return;
-            
+
           if (local.paging.last_length <= local.data.length) {
             local.paging.skip = local.data.length;
             local.reload();
@@ -788,8 +789,6 @@ export const TableList: FC<TableListProp> = ({
 
     return (
       <>
-        {local.paging.skip} {local.paging.last_length} {local.data.length}{" "}
-        {local.status}
         <div
           className={cx(
             "table-list c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
