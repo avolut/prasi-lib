@@ -419,6 +419,8 @@ export const TableList: FC<TableListProp> = ({
       on_init(local);
       if (isEditor && local.data.length === 0 && local.status === "ready") {
         reload();
+      } else {
+        local.render();
       }
       return;
     }
