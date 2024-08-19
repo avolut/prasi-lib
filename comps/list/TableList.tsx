@@ -160,12 +160,19 @@ export const TableList: FC<TableListProp> = ({
         skip: 0,
         timeout: null as any,
         total: 0,
+        last_length: 0,
         scroll: (currentTarget: HTMLDivElement) => {
-          if (local.status === "loading" || !isAtBottom(currentTarget)) return;
-          if (local.data.length >= local.paging.skip + local.paging.take) {
-            local.paging.skip += local.paging.take;
-            local.status = "reload";
-            local.render();
+          if (
+            local.data.length === 0 ||
+            local.status !== "ready" ||
+            !isAtBottom(currentTarget) ||
+            local.reloading
+          )
+            return;
+            
+          if (local.paging.last_length <= local.data.length) {
+            local.paging.skip = local.data.length;
+            local.reload();
           }
         },
       },
@@ -251,24 +258,28 @@ export const TableList: FC<TableListProp> = ({
             }
             const result = on_load({ ...load_args, mode: "query" });
             const callback = (data: any[]) => {
-              if (local.paging.skip === 0 || paging !== undefined || paging) {
+              if (!local.paging || (local.paging && !local.paging.take)) {
                 local.data = data;
               } else {
                 local.data = [...local.data, ...data];
               }
+
+              local.paging.last_length = local.data.length;
 
               local.status = "ready";
               local.reloading = null;
               local.render();
 
               done();
-
-              if (
-                local.grid_ref &&
-                !id_parent &&
-                (paging !== undefined || paging)
-              )
-                local.paging.scroll(local.grid_ref);
+              setTimeout(() => {
+                if (
+                  local.grid_ref &&
+                  !id_parent &&
+                  (paging !== undefined || paging)
+                ) {
+                  local.paging.scroll(local.grid_ref);
+                }
+              }, 100);
             };
 
             if (result instanceof Promise) {
@@ -761,7 +772,6 @@ export const TableList: FC<TableListProp> = ({
     }
   }
 
-  console.log('auo')
   if (document.getElementsByClassName("prasi-toaster").length === 0) {
     const elemDiv = document.createElement("div");
     elemDiv.className = "prasi-toaster";
@@ -777,150 +787,152 @@ export const TableList: FC<TableListProp> = ({
     }
 
     return (
-      <div
-        className={cx(
-          "table-list c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
-          dataGridStyle(local)
-        )}
-      >
-        {local.status !== "ready" && (
-          <div className="c-flex c-flex-col c-space-y-2 c-m-4 c-absolute c-left-0 c-top-0">
-            <Skeleton className={cx("c-w-[200px] c-h-[11px]")} />
-            <Skeleton className={cx("c-w-[170px] c-h-[11px]")} />
-            <Skeleton className={cx("c-w-[180px] c-h-[11px]")} />
-          </div>
-        )}
+      <>
+        {local.paging.skip} {local.paging.last_length} {local.data.length}{" "}
+        {local.status}
         <div
-          className="table-list-inner c-absolute c-inset-0"
-          ref={(e) => {
-            local.el = e;
-            if (e) local.height = e.offsetHeight;
-          }}
+          className={cx(
+            "table-list c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
+            dataGridStyle(local)
+          )}
         >
-          {toaster_el &&
-            createPortal(
-              <Toaster position={toast.position} cn={cn} />,
-              toaster_el
-            )}
-          {local.status === "init" ? (
-            <DataGrid
-              style={{ opacity: 0 }}
-              className="rdg-light"
-              columns={[
-                {
-                  key: "_",
-                  name: "",
-                  renderCell({ rowIdx }) {
-                    clearTimeout(local.paging.timeout);
-                    local.paging.timeout = setTimeout(() => {
-                      local.status = "reload";
-                      local.paging.take = local.paging.take * 3;
-                      local.render();
-                    }, 100);
-                    return <></>;
-                  },
-                },
-              ]}
-              rows={genRows(200)}
-            />
-          ) : (
-            <>
+          {local.status !== "ready" && (
+            <div className="c-flex c-flex-col c-space-y-2 c-m-4 c-absolute c-left-0 c-top-0">
+              <Skeleton className={cx("c-w-[200px] c-h-[11px]")} />
+              <Skeleton className={cx("c-w-[170px] c-h-[11px]")} />
+              <Skeleton className={cx("c-w-[180px] c-h-[11px]")} />
+            </div>
+          )}
+          <div
+            className="table-list-inner c-absolute c-inset-0"
+            ref={(e) => {
+              local.el = e;
+              if (e) local.height = e.offsetHeight;
+            }}
+          >
+            {toaster_el &&
+              createPortal(
+                <Toaster position={toast.position} cn={cn} />,
+                toaster_el
+              )}
+            {local.status === "init" ? (
               <DataGrid
-                rowHeight={rowHeight || 35}
-                sortColumns={local.sort.columns}
-                onSortColumnsChange={local.sort.on_change}
-                columns={columns}
-                rows={data}
+                style={{ opacity: 0 }}
                 className="rdg-light"
-                ref={(e) => {
-                  local.grid_ref = e?.element as any;
-                }}
-                onScroll={(e) => {
-                  console.log("scroll");
-                  local.paging.scroll(e.currentTarget);
-                }}
-                selectedRows={EMPTY_SET}
-                onSelectedCellChange={() => {}}
-                onSelectedRowsChange={() => {}}
-                headerRowHeight={show_header === false ? 0 : undefined}
-                renderers={
-                  local.status !== "ready"
-                    ? undefined
-                    : {
-                        renderRow(key, props) {
-                          if (
-                            cache_row === true &&
-                            local.cached_row.has(props.row)
-                          ) {
-                            return local.cached_row.get(props.row);
-                          }
-                          const isSelect = selected({
-                            idx: props.rowIdx,
-                            row: props.row,
-                            rows: local.data,
-                          });
-                          const child_row = (
-                            <Row
-                              key={key}
-                              {...props}
-                              onClick={(ev) => {
-                                if (
-                                  !isEditor &&
-                                  typeof row_click === "function"
-                                ) {
-                                  row_click({
-                                    event: ev,
-                                    idx: props.rowIdx,
-                                    row: props.row,
-                                    rows: local.data,
-                                  });
-                                }
-                              }}
-                              isRowSelected={true}
-                              className={cx(
-                                props.className,
-                                (isSelect ||
-                                  (md?.selected?.[local.pk?.name || ""] ===
-                                    props.row[local.pk?.name || ""] &&
-                                    props.row[local.pk?.name || ""])) &&
-                                  "row-selected"
-                              )}
-                            />
-                          );
-                          if (cache_row) {
-                            local.cached_row.set(props.row, child_row);
-                          }
-                          return child_row;
-                        },
-                        noRowsFallback: (
-                          <div className="c-flex-1 c-w-full absolute inset-0 c-flex c-flex-col c-items-center c-justify-center">
-                            <div className="c-max-w-[15%] c-flex c-flex-col c-items-center">
-                              <Sticker size={35} strokeWidth={1} />
-                              <div className="c-pt-1 c-text-center">
-                                No&nbsp;Data
-                                <br />
-                                {local.filtering && (
-                                  <div
-                                    className={css`
-                                      color: gray;
-                                      font-style: italic;
-                                      font-size: 90%;
-                                    `}
-                                  >
-                                    {local.filtering}
-                                  </div>
+                columns={[
+                  {
+                    key: "_",
+                    name: "",
+                    renderCell({ rowIdx }) {
+                      clearTimeout(local.paging.timeout);
+                      local.paging.timeout = setTimeout(() => {
+                        local.status = "reload";
+                        local.render();
+                      }, 100);
+                      return <></>;
+                    },
+                  },
+                ]}
+                rows={genRows(200)}
+              />
+            ) : (
+              <>
+                <DataGrid
+                  rowHeight={rowHeight || 35}
+                  sortColumns={local.sort.columns}
+                  onSortColumnsChange={local.sort.on_change}
+                  columns={columns}
+                  rows={data}
+                  className="rdg-light"
+                  ref={(e) => {
+                    local.grid_ref = e?.element as any;
+                  }}
+                  onScroll={(e) => {
+                    local.paging.scroll(e.currentTarget);
+                  }}
+                  selectedRows={EMPTY_SET}
+                  onSelectedCellChange={() => {}}
+                  onSelectedRowsChange={() => {}}
+                  headerRowHeight={show_header === false ? 0 : undefined}
+                  renderers={
+                    local.status !== "ready"
+                      ? undefined
+                      : {
+                          renderRow(key, props) {
+                            if (
+                              cache_row === true &&
+                              local.cached_row.has(props.row)
+                            ) {
+                              return local.cached_row.get(props.row);
+                            }
+                            const isSelect = selected({
+                              idx: props.rowIdx,
+                              row: props.row,
+                              rows: local.data,
+                            });
+                            const child_row = (
+                              <Row
+                                key={key}
+                                {...props}
+                                onClick={(ev) => {
+                                  if (
+                                    !isEditor &&
+                                    typeof row_click === "function"
+                                  ) {
+                                    row_click({
+                                      event: ev,
+                                      idx: props.rowIdx,
+                                      row: props.row,
+                                      rows: local.data,
+                                    });
+                                  }
+                                }}
+                                isRowSelected={true}
+                                className={cx(
+                                  props.className,
+                                  (isSelect ||
+                                    (md?.selected?.[local.pk?.name || ""] ===
+                                      props.row[local.pk?.name || ""] &&
+                                      props.row[local.pk?.name || ""])) &&
+                                    "row-selected"
                                 )}
+                              />
+                            );
+                            if (cache_row) {
+                              local.cached_row.set(props.row, child_row);
+                            }
+                            return child_row;
+                          },
+                          noRowsFallback: (
+                            <div className="c-flex-1 c-w-full absolute inset-0 c-flex c-flex-col c-items-center c-justify-center">
+                              <div className="c-max-w-[15%] c-flex c-flex-col c-items-center">
+                                <Sticker size={35} strokeWidth={1} />
+                                <div className="c-pt-1 c-text-center">
+                                  No&nbsp;Data
+                                  <br />
+                                  {local.filtering && (
+                                    <div
+                                      className={css`
+                                        color: gray;
+                                        font-style: italic;
+                                        font-size: 90%;
+                                      `}
+                                    >
+                                      {local.filtering}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ),
-                      }
-                }
-              />
-            </>
-          )}
+                          ),
+                        }
+                  }
+                />
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </>
     );
   } else if (mode === "list") {
     return (
