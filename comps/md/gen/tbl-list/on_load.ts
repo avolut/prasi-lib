@@ -40,7 +40,7 @@ async (arg: TableOnLoad) => {
   if (isEditor)
     return [${JSON.stringify(sample)}];
 
-  let where = arg.where;
+  let where = arg.where as Prisma.${table}WhereInput;
   if (arg.mode === "count") {
     return await db.${table}.count({
       where: {

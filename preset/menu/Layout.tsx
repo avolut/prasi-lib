@@ -81,6 +81,7 @@ export const Layout: FC<LYTChild> = (props) => {
         const newurl = new URL(`${url.protocol}//${url.host}${_href}`);
         const pathname = newurl.pathname;
 
+        _href = baseurl(_href);
         if (params) {
           const prefix: LinkParam["prefix"] =
             params.breads?.map((e) => {

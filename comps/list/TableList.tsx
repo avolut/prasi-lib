@@ -36,19 +36,17 @@ import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "../ui/toast";
 import { sortTree } from "./utils/sort-tree";
+import { TLList } from "./TLList";
+import { OnRowClick } from "./utils/type";
+import { TLSlider } from "./TLSlider";
 
-type OnRowClick = (arg: {
-  row: any;
-  rows: any[];
-  idx: any;
-  event: React.MouseEvent<HTMLDivElement>;
-}) => void;
 let EMPTY_SET = new Set() as ReadonlySet<any>;
 
 type SelectedRow = (arg: { row: any; rows: any[]; idx: any }) => boolean;
 type TableListProp = {
   child: any;
   PassProp: any;
+  list: { type: string; item_w: string };
   name: string;
   value?: any[];
   on_load?: (arg: {
@@ -75,7 +73,6 @@ type TableListProp = {
     tbl: any;
     child: any;
   }) => ReactNode;
-  softdel_field?: string;
   gen_table?: string;
   softdel_type?: string;
   paging?: boolean;
@@ -110,6 +107,7 @@ export const TableList: FC<TableListProp> = ({
   row_height: rowHeight,
   render_col,
   show_header,
+  list,
   value,
   paging,
   cache_row,
@@ -163,6 +161,7 @@ export const TableList: FC<TableListProp> = ({
         last_length: 0,
         scroll: (currentTarget: HTMLDivElement) => {
           if (
+            isEditor ||
             local.data.length < local.paging.take ||
             local.data.length === 0 ||
             local.status !== "ready" ||
@@ -259,7 +258,11 @@ export const TableList: FC<TableListProp> = ({
             }
             const result = on_load({ ...load_args, mode: "query" });
             const callback = (data: any[]) => {
-              if (!local.paging || (local.paging && !local.paging.take)) {
+              if (
+                id_parent ||
+                !local.paging ||
+                (local.paging && !local.paging.take)
+              ) {
                 local.data = data;
               } else {
                 local.data = [...local.data, ...data];
@@ -414,6 +417,9 @@ export const TableList: FC<TableListProp> = ({
   useEffect(() => {
     if (isEditor || value) {
       on_init(local);
+      if (isEditor && local.data.length === 0 && local.status === "ready") {
+        reload();
+      }
       return;
     }
     (async () => {
@@ -935,107 +941,35 @@ export const TableList: FC<TableListProp> = ({
     );
   } else if (mode === "list") {
     return (
-      <div
-        className={cx(
-          "c-w-full c-h-full c-flex-1 c-relative c-overflow-hidden",
-          dataGridStyle(local)
-        )}
-        ref={(el) => {
-          if (!local.el && el) {
-            local.el = el;
-          }
-        }}
-      >
+      <>
         {toaster_el &&
           createPortal(
             <Toaster position={toast.position} cn={cn} />,
             toaster_el
           )}
-
-        {local.status !== "ready" ? (
-          <div className="c-flex c-flex-col c-space-y-2 c-m-4 c-absolute c-left-0 c-top-0">
-            <Skeleton className={cx("c-w-[200px] c-h-[11px]")} />
-            <Skeleton className={cx("c-w-[170px] c-h-[11px]")} />
-            <Skeleton className={cx("c-w-[180px] c-h-[11px]")} />
-          </div>
-        ) : (
-          <div
-            className={cx(
-              "c-absolute c-inset-0",
-              css`
-                @keyframes flasher {
-                  from {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                  }
-                  to {
-                    opacity: 1;
-                    transform: translateY(0px);
-                  }
-                }
-                .list-row {
-                  animation: flasher 0.5s;
-                }
-              `
-            )}
-          >
-            <>
-              {Array.isArray(data) && data.length > 0 ? (
-                <div
-                  className="w-full h-full overflow-y-auto c-flex-col"
-                  ref={(e) => {
-                    local.grid_ref = e;
-                  }}
-                  onScroll={(e) => local.paging.scroll(e.currentTarget)}
-                >
-                  {data.map((e, idx) => {
-                    return (
-                      <div
-                        className={cx("list-row c-flex-grow c-flex")}
-                        onClick={(ev) => {
-                          if (!isEditor && typeof row_click === "function") {
-                            row_click({
-                              event: ev,
-                              idx: idx,
-                              row: e,
-                              rows: local.data,
-                            });
-                          }
-                        }}
-                      >
-                        <PassProp idx={idx} row={e} col={{}} rows={local.data}>
-                          {mode_child}
-                        </PassProp>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="c-flex c-items-center c-justify-center c-flex-1 w-full h-full c-flex-col ">
-                  <Sticker size={35} strokeWidth={1} />
-                  <div className="c-pt-1 c-text-center">
-                    No&nbsp;Data
-                    <br />
-                    {local.filtering && (
-                      <div
-                        className={css`
-                          color: gray;
-                          font-style: italic;
-                          font-size: 90%;
-                        `}
-                      >
-                        {local.filtering}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </>
-          </div>
+        {list.type !== "slider" && list.type !== "grid" && (
+          <TLList
+            row_click={row_click}
+            PassProp={PassProp}
+            local={local}
+            mode_child={mode_child}
+            data={data}
+            dataGridStyle={dataGridStyle}
+          />
         )}
-      </div>
+        {list.type === "slider" && (
+          <TLSlider
+            row_click={row_click}
+            PassProp={PassProp}
+            local={local}
+            mode_child={mode_child}
+            data={data}
+            item_w={list.item_w}
+            dataGridStyle={dataGridStyle}
+          />
+        )}
+      </>
     );
-  } else {
   }
 };
 const CheckboxList: FC<{

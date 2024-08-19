@@ -16,7 +16,7 @@ export const generateTableList = async (
   let table = "" as string;
   try {
     table = eval(data.gen__table.value);
-  } catch (e) { 
+  } catch (e) {
     table = data.gen__table?.value;
   }
   const raw_fields = JSON.parse(data.gen__fields.value) as (
@@ -129,11 +129,11 @@ const genList = async (opt: GenOpt) => {
               },
               adv: {
                 js: `\
-<div {...props} className={cx(props.className, \`s-\${_item?.edit?.parent?.item?.id}\` , "list-field")}>
+<div {...props} className={cx(props.className, _item?.edit?.parent?.item?.id && \`s-\${_item?.edit?.parent?.item?.id}\` , "list-field")}>
   <FormatValue value={_get(row, name)} name={name} gen_fields={gen__fields} />
 </div>`,
                 jsBuilt: `\
-render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, \`s-\${_item?.edit?.parent?.item?.id}\` , "") }),React.createElement(FormatValue, { value: _get(row, name), name: name, gen_fields: gen__fields })));
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, _item?.edit?.parent?.item?.id && \`s-\${_item?.edit?.parent?.item?.id}\` , "") }),React.createElement(FormatValue, { value: _get(row, name), name: name, gen_fields: gen__fields })));
             `,
               },
             }),
@@ -189,25 +189,25 @@ const genTable = async (opt: GenOpt) => {
               title: formatName(e.name),
               child: createItem({
                 name: "cell",
-                "layout": {
-                  "dir": "col",
-                  "align": "left",
-                  "gap": 0,
-                  "wrap": "flex-nowrap"
+                layout: {
+                  dir: "col",
+                  align: "left",
+                  gap: 0,
+                  wrap: "flex-nowrap",
                 },
                 padding: {
-                  l: 8, 
+                  l: 8,
                   b: 0,
                   t: 0,
                   r: 8,
                 },
                 adv: {
                   js: `\
-<div {...props} className={cx(props.className, \`s-\${_item?.edit?.parent?.item?.id}\` , "table-col")}>
+<div {...props} className={cx(props.className, _item?.edit?.parent?.item?.id && \`s-\${_item?.edit?.parent?.item?.id}\` , "table-col")}>
   <FormatValue value={col.value} name={col.name} gen_fields={gen__fields} />
 </div>`,
                   jsBuilt: `\
-render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, \`s-\${_item?.edit?.parent?.item?.id}\` , "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields })));
+render(React.createElement("div", Object.assign({}, props, { className: cx(props.className, _item?.edit?.parent?.item?.id && \`s-\${_item?.edit?.parent?.item?.id}\` , "") }),React.createElement(FormatValue, { value: col.value, name: col.name, gen_fields: gen__fields })));
               `,
                 },
               }),
