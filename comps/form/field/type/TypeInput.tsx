@@ -276,7 +276,27 @@ export const FieldTypeInput: FC<{
             prop.onChange(fm.data[field.name]);
           }
         }}
-        onInput={arg.sub_type === "phone" ? () => {} : undefined}
+        onInput={
+          arg.sub_type === "phone"
+            ? (event) => {
+                const target = event.currentTarget;
+                var matrix = target.defaultValue,
+                  i = 0,
+                  def = matrix.replace(/\D/g, ""),
+                  val = target.value.replace(/\D/g, "");
+                def.length >= val.length && (val = def);
+                matrix = matrix.replace(/[_\d]/g, function (a) {
+                  return val.charAt(i++) || "_";
+                });
+                target.value = matrix;
+                i = matrix.lastIndexOf(val.substr(-1));
+                i < matrix.length && matrix != target.defaultValue
+                  ? i++
+                  : (i = matrix.indexOf("_"));
+                setCursorPosition(i, target);
+              }
+            : undefined
+        }
         placeholder={prop.placeholder || arg.placeholder || ""}
         value={value}
         disabled={disabled}
@@ -321,3 +341,17 @@ const isTimeString = (time: any) => {
   const timePattern = /^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/;
   return timePattern.test(time);
 };
+
+function setCursorPosition(pos: number, elem: HTMLInputElement) {
+  elem.focus();
+  if (elem.setSelectionRange) elem.setSelectionRange(pos, pos);
+  //@ts-ignore
+  else if (elem.createTextRange) {
+    //@ts-ignore
+    let range = elem.createTextRange();
+    range.collapse(true);
+    range.moveEnd("character", pos);
+    range.moveStart("character", pos);
+    range.select();
+  }
+}
