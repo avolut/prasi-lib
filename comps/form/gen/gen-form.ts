@@ -25,10 +25,17 @@ export const generateForm = async (
 ) => {
   let table = "" as string;
   try {
-    table = eval(data.gen__table.value);
-  } catch (e) {
-    table = data.gen__table.value;
-  }
+    if (
+      data.gen__table.value.startsWith('"') ||
+      data.gen__table.value.startsWith("'") ||
+      data.gen__table.value.startsWith("`")
+    ) {
+      table = eval(data.gen__table.value);
+    } else {
+      table = data.gen__table.value;
+    }
+  } catch (e) {}
+
   const raw_fields = JSON.parse(data.gen__fields.value) as (
     | string
     | { value: string; checked: string[] }
@@ -66,6 +73,10 @@ export const generateForm = async (
   }
 
   if (pk) {
+    if (typeof table !== "string") {
+      console.log(data.gen__table.value, table);
+    }
+
     const gen_form_args = { result, pk, pks, table, select, is_md, rel_many };
     if (data["on_load"]) {
       genFormOnLoad(gen_form_args);

@@ -106,9 +106,10 @@ idx: any;
     value: `\
     () => {
       return [
-        { label: md.title || "List ${formatName(arg.table)}" },
+        { label: md.title || "List ${formatName(arg.table)}" }
       ] as BreadItem[];
     };
+    
     type BreadItem = {
       label: React.ReactNode;
       url?: string;

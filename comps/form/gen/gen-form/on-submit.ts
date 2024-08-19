@@ -7,8 +7,11 @@ export const genFormOnSubmit = ({
   table,
   select,
   is_md,
-  rel_many
+  rel_many,
 }: GenFormArgs) => {
+  if (typeof table !== "string") {
+    throw new Error('woi')
+  }
   result.on_submit = {
     mode: "raw",
     value: `\
