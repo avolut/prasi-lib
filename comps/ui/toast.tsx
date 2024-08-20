@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
-import { toast as sonner } from "sonner";
+import { createPortal } from "react-dom";
+import { toast as sonner, Toaster as SonnerToaster } from "sonner";
 const timer = {
   timeout: null as any,
   done: false,
@@ -48,4 +49,23 @@ export const toast = {
       timer.timeout = null;
     }, timer.limit);
   },
+};
+
+export const Toaster = () => {
+  if (document.getElementsByClassName("prasi-toaster").length === 0) {
+    const elemDiv = document.createElement("div");
+    elemDiv.className = "prasi-toaster";
+    document.body.appendChild(elemDiv);
+  }
+  const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
+
+  return (
+    <>
+      {toaster_el &&
+        createPortal(
+          <SonnerToaster position={toast.position} cn={cx} />,
+          toaster_el
+        )}
+    </>
+  );
 };

@@ -1,5 +1,4 @@
 import { Skeleton } from "@/comps/ui/skeleton";
-import { cn } from "lib/utils";
 import { Loader2 } from "lucide-react";
 import { FC } from "react";
 

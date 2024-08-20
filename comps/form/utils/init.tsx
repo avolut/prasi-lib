@@ -155,7 +155,8 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         <>
           <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
           Loading data...
-        </>
+        </>,
+        { dismissible: true }
       );
     }
 

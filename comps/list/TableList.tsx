@@ -776,7 +776,8 @@ export const TableList: FC<TableListProp> = ({
           <>
             <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
             Loading Data ...
-          </>
+          </>,
+          { dismissible: true }
         );
       } else {
         toast.dismiss();
