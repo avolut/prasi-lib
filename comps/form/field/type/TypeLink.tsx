@@ -223,7 +223,7 @@ const navigateLink = async (
     alert("No URL defined!");
     return false;
   }
-  
+
   await api._kv("set", vhash, values);
   const lnk = location.hash.split("#").find((e) => e.startsWith("lnk="));
   let prev_link = "";
@@ -256,12 +256,12 @@ export const fetchLinkParams = async (
   return await Promise.all(
     parsed.map(async (e) => {
       if (link_cache[e]) {
-        return link_cache[e];
+        return link_cache[e] as LinkParam;
       }
 
       const result = await api._kv("get", e);
       link_cache[e] = result;
-      return result;
+      return result as unknown as LinkParam;
     })
   );
 };
