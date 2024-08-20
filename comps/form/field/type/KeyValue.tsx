@@ -1,3 +1,4 @@
+import { kvToJSON } from "lib/utils/kv-to-json";
 import { useLocal } from "lib/utils/use-local";
 import { useEffect, useRef } from "react";
 
@@ -7,7 +8,7 @@ export const KeyValue = ({
   index,
 }: {
   value: any;
-  onChange: (val: any) => void;
+  onChange?: (val: any) => void;
   index?: "preserve" | "auto-sort";
 }) => {
   const local = useLocal({
@@ -48,18 +49,9 @@ export const KeyValue = ({
 
   if (typeof value !== "object") return null;
 
-  const reverseEntries = (input: [string, unknown][]) => {
-    return input
-      .filter(([k, v]) => {
-        return true; // some irrelevant conditions here
-      })
-      .reduce((accum: any, [k, v]) => {
-        accum[k] = v;
-        return accum;
-      }, {});
-  };
+  console.log(value);
   return (
-    <div className="c-flex c-relative c-flex-1" ref={ref}>
+    <div className="c-flex c-relative c-flex-1 key-value" ref={ref}>
       <table
         onClick={(e) => {
           e.stopPropagation();
@@ -67,6 +59,10 @@ export const KeyValue = ({
         }}
         className={cx(
           "c-flex-1",
+          !onChange &&
+            css`
+              border: 1px solid #ececeb;
+            `,
           css`
             input {
               width: 100%;
@@ -88,54 +84,60 @@ export const KeyValue = ({
               key={idx}
               item={item}
               idx={idx}
-              update={(idx, k, v) => {
-                local.entries[idx] = [k, v];
+              update={
+                onChange
+                  ? (idx, k, v) => {
+                      local.entries[idx] = [k, v];
 
-                if (k === "" && v === "") {
-                  local.entries.splice(idx, 1);
-                }
+                      if (k === "" && v === "") {
+                        local.entries.splice(idx, 1);
+                      }
 
-                local.render();
-              }}
+                      local.render();
+                    }
+                  : undefined
+              }
               onBlur={() => {
                 if (index === "preserve") {
-                  onChange([...local.entries]);
+                  onChange?.([...local.entries]);
                 } else {
-                  onChange(reverseEntries(local.entries));
+                  onChange?.(kvToJSON(local.entries));
                 }
               }}
             />
           ))}
-          <KVRow
-            item={[local.new.key, local.new.value]}
-            idx={local.entries.length}
-            update={(idx, k, v) => {
-              local.new.key = k;
-              local.new.value = v;
-              local.render();
-            }}
-            onBlur={(field, val) => {
-              if (field === "key" && val) {
-                const idx = local.entries.length;
-                local.entries[idx] = [local.new.key, local.new.value];
-                local.new.key = "";
-                local.new.value = "";
+          {onChange && (
+            <KVRow
+              item={[local.new.key, local.new.value]}
+              idx={local.entries.length}
+              update={(idx, k, v) => {
+                local.new.key = k;
+                local.new.value = v;
                 local.render();
-                if (index === "preserve") {
-                  onChange([...local.entries]);
-                } else {
-                  onChange(reverseEntries(local.entries));
+              }}
+              onBlur={(field, val) => {
+                if (field === "key" && val) {
+                  const idx = local.entries.length;
+                  local.entries[idx] = [local.new.key, local.new.value];
+                  local.new.key = "";
+                  local.new.value = "";
+                  local.render();
+                  if (index === "preserve") {
+                    onChange?.([...local.entries]);
+                  } else {
+                    onChange?.(kvToJSON(local.entries));
+                  }
+                  setTimeout(() => {
+                    (
+                      ref?.current?.querySelector(
+                        `.kv-row-${idx} .kv-value input`
+                      ) as HTMLInputElement
+                    )?.focus();
+                  }, 10);
                 }
-                setTimeout(() => {
-                  (
-                    ref?.current?.querySelector(
-                      `.kv-row-${idx} .kv-value input`
-                    ) as HTMLInputElement
-                  )?.focus();
-                }, 10);
-              }
-            }}
-          />
+              }}
+            />
+          )}
         </tbody>
       </table>
     </div>
@@ -150,7 +152,7 @@ const KVRow = ({
 }: {
   item: [string, unknown];
   idx: number;
-  update: (idx: number, key: string, value: string) => void;
+  update?: (idx: number, key: string, value: string) => void;
   onBlur?: (field: "key" | "value", val: string) => void;
 }) => {
   const [k, v] = item as any;
@@ -172,22 +174,26 @@ const KVRow = ({
             `
         )}
       >
-        <input
-          type="text"
-          spellCheck={false}
-          value={k}
-          onChange={(e) => {
-            update(idx, e.currentTarget.value, v || "");
-          }}
-          onBlur={
-            onBlur
-              ? (e) => {
-                  onBlur("key", e.currentTarget.value);
-                }
-              : undefined
-          }
-          ref={keyref}
-        ></input>
+        {update ? (
+          <input
+            type="text"
+            spellCheck={false}
+            value={k}
+            onChange={(e) => {
+              update(idx, e.currentTarget.value, v || "");
+            }}
+            onBlur={
+              onBlur
+                ? (e) => {
+                    onBlur("key", e.currentTarget.value);
+                  }
+                : undefined
+            }
+            ref={keyref}
+          ></input>
+        ) : (
+          k
+        )}
       </td>
       <td
         className={cx(
@@ -198,27 +204,31 @@ const KVRow = ({
             `
         )}
       >
-        <input
-          type="text"
-          spellCheck={false}
-          value={v || ""}
-          onChange={(e) => {
-            update(idx, k, e.currentTarget.value || "");
-          }}
-          onKeyUp={(e) => {
-            if (e.key === "Backspace" && !e.currentTarget.value) {
-              keyref.current?.focus();
+        {update ? (
+          <input
+            type="text"
+            spellCheck={false}
+            value={v || ""}
+            onChange={(e) => {
+              update(idx, k, e.currentTarget.value || "");
+            }}
+            onKeyUp={(e) => {
+              if (e.key === "Backspace" && !e.currentTarget.value) {
+                keyref.current?.focus();
+              }
+            }}
+            onBlur={
+              onBlur
+                ? (e) => {
+                    onBlur("value", e.currentTarget.value);
+                  }
+                : undefined
             }
-          }}
-          onBlur={
-            onBlur
-              ? (e) => {
-                  onBlur("value", e.currentTarget.value);
-                }
-              : undefined
-          }
-          ref={valref}
-        ></input>
+            ref={valref}
+          ></input>
+        ) : (
+          v
+        )}
       </td>
     </tr>
   );

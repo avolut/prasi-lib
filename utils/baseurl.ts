@@ -6,3 +6,21 @@ export const baseurl = (url: string) => {
   }
   return url;
 };
+
+export const imgThumb = ({
+  url,
+  w,
+  h,
+  fit,
+}: {
+  url: string;
+  w: number;
+  h: number;
+  fit?: "cover" | "contain" | "inside" | "fill" | "outside";
+}) => {
+  return siteurl(
+    `/_img/${url.substring("_file/".length)}?w=${w}&h=${h}&fit=${
+      fit || "cover"
+    }`
+  );
+};

@@ -95,18 +95,23 @@ export const ScrollArea = lazify(
   async () => (await import("@/comps/ui/scroll-area")).ScrollArea
 );
 
+export const KeyValue = lazify(
+  async () => (await import("@/comps/form/field/type/KeyValue")).KeyValue
+);
+
 export { fetchLinkParams } from "@/comps/form/field/type/TypeLink";
-export { FieldLoading } from "@/comps/ui/field-loading";
+export { FieldLoading, Spinner } from "@/comps/ui/field-loading";
 export { lang } from "lib/lang";
 export { prasi_gen } from "./gen/prasi_gen";
 export { guessLabel } from "./utils/guess-label";
-
 import __get from "lodash.get";
 import { sum } from "./utils/sum";
+export { kvToJSON } from "./utils/kv-to-json";
+export { overrideNav } from "./utils/override-nav";
 
 export const _sum = sum;
 export const _get = __get;
- 
+
 /** Generator */
 export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";
 export { generateRelation } from "@/comps/form/gen/gen-rel";
@@ -126,14 +131,14 @@ export {
   fieldType,
   FieldTypeCustom,
   FMLocal,
-  formType
+  formType,
 } from "@/comps/form/typings";
 export { TableListType } from "@/comps/list/utils/typings";
 export { generateTableList as generateTableList } from "@/comps/md/gen/gen-table-list";
 export { generateSelect } from "@/comps/md/gen/md-select";
 export { MasterDetailType } from "@/comps/md/utils/typings";
 export { Button, FloatButton } from "@/comps/ui/button";
-export { baseurl } from "@/utils/baseurl";
+export { baseurl, imgThumb } from "@/utils/baseurl";
 export { FormatValue } from "@/utils/format-value";
 export { GetValue } from "@/utils/get-value";
 export { password } from "@/utils/password";
@@ -146,7 +151,7 @@ export { logout } from "@/preset/login/utils/logout";
 export {
   registerSession,
   RG,
-  UserSession
+  UserSession,
 } from "@/preset/login/utils/register";
 
 export { Card } from "@/comps/custom/Card";

@@ -39,6 +39,7 @@ import { sortTree } from "./utils/sort-tree";
 import { TLList } from "./TLList";
 import { OnRowClick } from "./utils/type";
 import { TLSlider } from "./TLSlider";
+import { getPathname } from "lib/exports";
 
 let EMPTY_SET = new Set() as ReadonlySet<any>;
 
@@ -253,6 +254,7 @@ export const TableList: FC<TableListProp> = ({
                 skip: local.paging.skip,
               },
             };
+
             if (id_parent) {
               load_args.paging = {};
             }
@@ -261,7 +263,8 @@ export const TableList: FC<TableListProp> = ({
               if (
                 id_parent ||
                 !local.paging ||
-                (local.paging && !local.paging.take)
+                (local.paging && !local.paging.take) ||
+                local.paging.skip === 0
               ) {
                 local.data = data;
               } else {

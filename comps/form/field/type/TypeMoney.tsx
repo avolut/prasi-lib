@@ -129,7 +129,7 @@ const formatCurrency = (value: any) => {
     return (isNegative ? "-" : "") + rupiah;
   }
 };
-export const formatMoney = (res: number) => {
+export const formatMoney = (res: any) => {
   const formattedAmount = new Intl.NumberFormat("id-ID", {
     minimumFractionDigits: 0,
   }).format(res);

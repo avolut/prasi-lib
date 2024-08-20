@@ -81,7 +81,7 @@ export const TLSlider: FC<{
               })}
             </div>
           ) : (
-            <div className="c-flex c-items-center c-justify-center c-flex-1 w-full h-full c-flex-col ">
+            <div className="c-flex c-items-center c-justify-center c-flex-1 w-full h-full c-flex-col c-py-10 ">
               <Sticker size={35} strokeWidth={1} />
               <div className="c-pt-1 c-text-center">
                 No&nbsp;Data

@@ -114,6 +114,8 @@ export const Detail: FC<{
 
   if (typeof values !== "object" || values === null) return null;
   const entries = Object.entries(values);
+
+  console.log(entries)
   return (
     <div
       className={cx(

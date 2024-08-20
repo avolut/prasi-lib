@@ -296,13 +296,13 @@ export const ImgThumb = ({
   url,
   w,
   h,
-  fit
+  fit,
 }: {
   className?: string;
   url: string;
   w: number;
   h: number;
-  fit?: 'cover' | 'contain',
+  fit?: "cover" | "contain" | "inside" | "fill" | "outside";
 }) => {
   const local = useLocal({ error: false });
   return (
@@ -311,7 +311,7 @@ export const ImgThumb = ({
         "img-thumb",
         className,
         css`
-          width: ${w}px; 
+          width: ${w}px;
           height: ${h}px;
           background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
             linear-gradient(135deg, #ccc 25%, transparent 25%),
@@ -329,7 +329,9 @@ export const ImgThumb = ({
             local.render();
           }}
           src={siteurl(
-            `/_img/${url.substring("_file/".length)}?w=${w}&h=${h}&fit=${fit || 'cover'}`
+            `/_img/${url.substring("_file/".length)}?w=${w}&h=${h}&fit=${
+              fit || "cover"
+            }`
           )}
         />
       )}
