@@ -365,7 +365,7 @@ const Days: React.FC<Props> = ({
                     type="button"
                     key={index}
                     disabled={isDateDisabled(item, "current")}
-                    className={`${buttonClass(item, "current")}`}
+                    className={cx(`${buttonClass(item, "current")}`, item === 1 && "highlight")}
                     onClick={() => handleClickDay(item, "current")}
                     onMouseOver={() => {
                         hoverDay(item, "current");

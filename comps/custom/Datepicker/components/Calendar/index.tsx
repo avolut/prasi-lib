@@ -116,7 +116,7 @@ const Calendar: React.FC<Props> = ({
           setShowMonths(!showMonths);
         } else {
           hideDatepicker();
-          clickDay(1,month, date.year() );
+          clickDay(1, month, date.year());
         }
       }, 250);
     },
@@ -130,7 +130,7 @@ const Calendar: React.FC<Props> = ({
         setShowYears(!showYears);
         if (mode === "monthly") {
           setShowMonths(true);
-          clickDay(1,date.month() + 1, year );
+          clickDay(1, date.month() + 1, year);
         }
       }, 250);
     },
@@ -339,7 +339,6 @@ const Calendar: React.FC<Props> = ({
           </div>
         )}
       </div>
-
       <div className={cx("c-mt-0.5 c-min-h-[285px]")}>
         {showMonths && (
           <Months
