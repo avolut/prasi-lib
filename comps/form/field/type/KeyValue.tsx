@@ -49,7 +49,6 @@ export const KeyValue = ({
 
   if (typeof value !== "object") return null;
 
-  console.log(value);
   return (
     <div className="c-flex c-relative c-flex-1 key-value" ref={ref}>
       <table
