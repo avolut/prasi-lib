@@ -1,3 +1,4 @@
+import { overrideNav } from "./override-nav";
 
 const w = window as any;
 if (typeof isEditor === "undefined") {
@@ -12,3 +13,5 @@ if (typeof isEditor === "undefined") {
 }
 w.isMobile = false;
 w.isDesktop = false;
+
+overrideNav();

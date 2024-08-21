@@ -1,14 +1,7 @@
 /// <reference types="bun-types" />
 
-type ServerArg = {
-  req: Request;
-  handle: (req: Request) => Promise<Response>;
-  mode: "dev" | "prod";
-  url: {
-    raw: URL;
-    pathname: string;
-  };
-};
+import { ServerArg } from "./server-route";
+
 type ServerSession = {
   handle: (arg: ServerArg) => Promise<Response>;
 };
