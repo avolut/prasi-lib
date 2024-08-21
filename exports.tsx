@@ -19,10 +19,6 @@ export const Typeahead = lazify(
   async () => (await import("@/comps/ui/typeahead")).Typeahead
 );
 
-export const ImgThumb = lazify(
-  async () => (await import("@/comps/form/field/type/FilePreview")).ImgThumb
-);
-
 /** Master - Detail - List - Form */
 export const MasterDetail = lazify(
   async () => (await import("@/comps/md/MasterDetail")).MasterDetail
@@ -99,7 +95,6 @@ export const KeyValue = lazify(
   async () => (await import("@/comps/form/field/type/KeyValue")).KeyValue
 );
 
-
 export { fetchLinkParams } from "@/comps/form/field/type/TypeLink";
 export { FieldLoading, Spinner } from "@/comps/ui/field-loading";
 export { lang } from "lib/lang";
@@ -107,6 +102,7 @@ export { prasi_gen } from "./gen/prasi_gen";
 export { guessLabel } from "./utils/guess-label";
 import __get from "lodash.get";
 import { sum } from "./utils/sum";
+export { ImgThumb } from "@/comps/form/field/type/FilePreview";
 export { lastParams } from "@/comps/form/field/type/TypeLink";
 export { _post } from "./utils/post";
 export { toast, Toaster } from "./comps/ui/toast";
