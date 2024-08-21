@@ -246,6 +246,8 @@ export const FieldTypeInput: FC<{
                 prop.onChange(fm.data[field.name]);
               }
             }}
+            //@ts-ignore
+            inputmode="decimal"
             value={format(value, {
               mask: "____-____-_______",
               replacement: { _: /\d/ },
@@ -276,6 +278,8 @@ export const FieldTypeInput: FC<{
         <div className="c-flex c-relative c-flex-1">
           <InputMask
             mask={mask}
+            //@ts-ignore
+            inputmode="decimal"
             replacement={{ _: /\d/ }}
             onChange={(ev) => {
               fm.data[field.name] = ev.currentTarget.value.replace(/\D/g, "");

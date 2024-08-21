@@ -1,19 +1,23 @@
 /// <reference types="bun-types" />
 
+type ServerArg = {
+  req: Request;
+  handle: (req: Request) => Promise<Response>;
+  mode: "dev" | "prod";
+  url: {
+    raw: URL;
+    pathname: string;
+  };
+};
 type ServerSession = {
-  handle: (arg: {
-    req: Request;
-    handle: (req: Request) => Promise<Response>;
-    mode: "dev" | "prod";
-    url: {
-      raw: URL;
-      pathname: string;
-    };
-  }) => Promise<Response>;
+  handle: (arg: ServerArg) => Promise<Response>;
 };
 
 export const sessionServer = <T>(arg: {
   encrypt?: boolean;
+  router?: (
+    arg: ServerArg & { session: {} }
+  ) => Response | (() => Promise<Response | void>) | void;
   on: {
     login: (arg: {
       mode: "user-pass";
@@ -23,9 +27,19 @@ export const sessionServer = <T>(arg: {
   };
 }): ServerSession => {
   const s: ServerSession = {
-    async handle({ req, handle, mode, url }) {
-      if (url.pathname.startsWith("/_session")) {
-        return new Response("marjio");
+    async handle(server_arg) {
+      const { req, handle, mode, url } = server_arg;
+      if (typeof arg.router === "function") {
+        let result = arg.router({
+          ...server_arg,
+          session: {},
+        });
+        if (result && typeof result === "function") {
+          result = await result();
+        }
+        if (result instanceof Response) {
+          return result;
+        }
       }
 
       return await handle(req);

@@ -106,6 +106,7 @@ export { prasi_gen } from "./gen/prasi_gen";
 export { guessLabel } from "./utils/guess-label";
 import __get from "lodash.get";
 import { sum } from "./utils/sum";
+export { _post } from "./utils/post";
 export { toast, Toaster } from "./comps/ui/toast";
 export { NavLink } from "./comps/popup/NavLink";
 export { kvToJSON } from "./utils/kv-to-json";

@@ -135,6 +135,7 @@ export const Field: FC<FieldProp> = (arg) => {
       className={cx(
         "field",
         field.type,
+        name,
         sub_type,
         "c-flex c-relative",
         editorClassName,
