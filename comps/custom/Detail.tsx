@@ -1,7 +1,7 @@
 import { useLocal } from "@/utils/use-local";
 import { cx } from "class-variance-authority";
 import { ArrowRight } from "lucide-react";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { formatName } from "lib/gen/utils";
 
@@ -24,9 +24,12 @@ export const Detail: FC<{
     mode: mode,
     on_load,
     bound: false,
+    resolved_value: null as any,
   });
 
-  let detail: any = _detail;
+  local.on_load = on_load;
+
+  let detail = _detail;
   if (typeof detail !== "function") {
     detail = (load: any) => {
       const result: any = {};
@@ -40,76 +43,33 @@ export const Detail: FC<{
     };
   }
 
-  if (!isEditor) {
-    if (
-      location.pathname !== local.pathname ||
-      mode !== local.mode ||
-      local.on_load !== on_load
-    ) {
-      local.status = "init";
-      local.on_load = on_load;
-      local.mode = mode;
-    }
+  let values = {};
 
-    if (typeof on_load === "object") {
-      local.detail = detail(on_load);
-      local.status = "ready";
-    }
-
-    useEffect(() => {
-      if (local.status === "init" && typeof on_load === "function") {
-        local.status = "loading";
-        if (location.pathname === "") {
-          local.detail = detail({});
-        } else {
-          local.detail = detail({});
-          local.pathname = location.pathname;
-        }
-        local.render();
-
-        const res = on_load({
-          params: {},
-          bind: (fn) => {
-            if (!local.bound) {
-              local.bound = true;
-              local.render();
-
-              fn(async () => {
-                local.status = "loading";
-                local.render();
-                const item = await on_load({} as any);
-                local.detail = detail(item);
-                local.status = "ready";
-                local.render();
-              });
-            }
-          },
-        });
-        if (typeof res === "object" && res instanceof Promise) {
-          res.then((item) => {
-            local.detail = detail(item);
+  if (local.status !== "loading") {
+    if (typeof on_load === "function") {
+      if (local.resolved_value) {
+        values = detail(local.resolved_value);
+        local.resolved_value = null;
+        local.status = "ready";
+      } else {
+        const result = on_load({} as any);
+        if (result instanceof Promise) {
+          local.status = "loading";
+          values = detail({});
+          result.then((e) => {
+            local.resolved_value = e;
             local.status = "ready";
             local.render();
           });
         } else {
-          local.detail = detail(res);
+          values = detail(result);
           local.status = "ready";
-          local.render();
         }
       }
-    }, [local.status]);
-  }
-  let values = {};
-
-  if (!isEditor) {
-    values = local.detail || {};
-  } else {
-    if (typeof on_load === "function") {
-      values = detail(on_load({} as any));
     } else {
       values = detail(on_load);
+      local.status = "ready";
     }
-    local.status = "ready";
   }
 
   if (typeof values !== "object" || values === null) return null;
@@ -264,7 +224,7 @@ const Linkable: FC<{
   );
 
   if (!link) {
-    if (status !== "ready") return loading;
+    if (status !== "ready") return status;
     return sample || "-";
   }
 

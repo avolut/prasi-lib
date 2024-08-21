@@ -24,6 +24,8 @@ export const masterDetailParseHash = (md: MDLocal) => {
     }
   }
 
+  md.params.links = md.params.links.filter((e) => e);
+
   const parsed_link = parseLink();
   let changed = parsed_link.length !== md.params.links.length;
 
@@ -92,6 +94,7 @@ const cleanHash = (hash: string) => {
 export const breadcrumbPrefix = (md: MDLocal) => {
   let prefix: (BreadItem & { url: string })[] = [];
   if (md.params.links && md.params.links.length > 0) {
+    md.params.links = md.params.links.filter((e) => e);
     const hashes: string[] = [];
     for (const link of md.params.links) {
       if (!hashes.includes(link.hash)) {
