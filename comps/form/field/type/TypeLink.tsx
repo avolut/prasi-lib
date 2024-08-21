@@ -248,6 +248,15 @@ export const parseLink = () => {
   return [];
 };
 
+export const lastParams = async () => {
+  const parsed = parseLink();
+  if (parsed.length > 0) {
+    const res = await fetchLinkParams([parsed.pop() || ""]);
+    return res[0];
+  }
+  return null;
+};
+
 export const fetchLinkParams = async (
   parsed_link?: ReturnType<typeof parseLink>
 ) => {

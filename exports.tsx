@@ -99,6 +99,7 @@ export const KeyValue = lazify(
   async () => (await import("@/comps/form/field/type/KeyValue")).KeyValue
 );
 
+
 export { fetchLinkParams } from "@/comps/form/field/type/TypeLink";
 export { FieldLoading, Spinner } from "@/comps/ui/field-loading";
 export { lang } from "lib/lang";
@@ -106,6 +107,7 @@ export { prasi_gen } from "./gen/prasi_gen";
 export { guessLabel } from "./utils/guess-label";
 import __get from "lodash.get";
 import { sum } from "./utils/sum";
+export { lastParams } from "@/comps/form/field/type/TypeLink";
 export { _post } from "./utils/post";
 export { toast, Toaster } from "./comps/ui/toast";
 export { NavLink } from "./comps/popup/NavLink";
