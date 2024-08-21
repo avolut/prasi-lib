@@ -1,6 +1,6 @@
 /// <reference types="bun-types" />
 
-import { ServerArg, useServerRoutes } from "./server-route";
+import { ServerArg, useServerRouter } from "./server-route";
 
 type ServerSession = {
   handle: (arg: ServerArg) => Promise<Response>;
@@ -8,7 +8,7 @@ type ServerSession = {
 
 export const sessionServer = <T>(arg: {
   encrypt?: boolean;
-  router?: ReturnType<typeof useServerRoutes>;
+  router?: ReturnType<typeof useServerRouter>;
   on: {
     login: (arg: {
       mode: "user-pass";
@@ -19,7 +19,7 @@ export const sessionServer = <T>(arg: {
 }): ServerSession => {
   const internal = {
     has_router: false,
-    router: null as null | Awaited<ReturnType<typeof useServerRoutes>>,
+    router: null as null | Awaited<ReturnType<typeof useServerRouter>>,
   };
   if (typeof arg.router === "object" && arg.router instanceof Promise) {
     internal.has_router = true;

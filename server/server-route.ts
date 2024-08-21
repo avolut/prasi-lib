@@ -23,7 +23,7 @@ type RouteOption = {
   request_as?: "json" | "raw";
   response_as?: "json" | "raw";
 };
-export const newRouter = <
+export const newServerRouter = <
   T extends Record<string, SingleRoute | SingleRouteWithOption>
 >(
   arg: T
@@ -31,7 +31,7 @@ export const newRouter = <
   return arg;
 };
 
-export const serverRouting = <T extends ReturnType<typeof newRouter>>(
+export const createClientForServer = <T extends ReturnType<typeof newServerRouter>>(
   router: T
 ) => {
   return new Proxy(
@@ -52,7 +52,7 @@ export const serverRouting = <T extends ReturnType<typeof newRouter>>(
   };
 };
 
-export const useServerRoutes = async <T extends ReturnType<typeof newRouter>>(
+export const useServerRouter = async <T extends ReturnType<typeof newServerRouter>>(
   router: T
 ) => {
   const rou = createRouter<{
