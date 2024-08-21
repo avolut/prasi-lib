@@ -135,7 +135,7 @@ export const FieldInput: FC<{
           {prefix && prefix !== "" ? (
             <div
               className={cx(
-                "c-px-2 c-flex c-flex-row c-items-center",
+                "c-pl-2 c-flex c-flex-row c-items-center",
                 css`
                   color: gray;
                 `
@@ -199,7 +199,7 @@ export const FieldInput: FC<{
           {suffix && suffix !== "" ? (
             <div
               className={cx(
-                "c-px-2 c-flex c-flex-row c-items-center",
+                "c-pr-2 c-flex c-flex-row c-items-center",
                 css`
                   color: gray;
                 `
