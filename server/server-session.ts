@@ -32,13 +32,7 @@ export const sessionServer = <T>(arg: {
       const { req, handle } = server_arg;
 
       if (internal.has_router && internal.router) {
-        const result = await internal.router.handle(server_arg);
-
-        if (typeof result === "object" && result instanceof Response) {
-          return result;
-        }
-
-        return new Response(JSON.stringify(result));
+        return await internal.router.handle(server_arg);
       }
 
       return handle(req);

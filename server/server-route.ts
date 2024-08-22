@@ -91,8 +91,11 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
           result = await route.handler.default(...params);
         }
 
-        if (result) return result;
-        else return new Response(JSON.stringify(result));
+        if (typeof result === "object" && result instanceof Response) {
+          return result;
+        }
+        
+        return new Response(JSON.stringify(result));
       }
       return await arg.handle(arg.req);
     },
