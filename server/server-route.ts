@@ -31,7 +31,9 @@ export const newServerRouter = <
   return arg;
 };
 
-export const createClientForServer = <T extends ReturnType<typeof newServerRouter>>(
+export const createClientForServer = <
+  T extends ReturnType<typeof newServerRouter>
+>(
   router: T
 ) => {
   return new Proxy(
@@ -52,7 +54,7 @@ export const createClientForServer = <T extends ReturnType<typeof newServerRoute
   };
 };
 
-export const useServerRouter = async <T extends ReturnType<typeof newServerRouter>>(
+export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
   router: T
 ) => {
   const rou = createRouter<{
@@ -63,7 +65,7 @@ export const useServerRouter = async <T extends ReturnType<typeof newServerRoute
   for (const item of Object.values(router)) {
     try {
       addRoute(rou, undefined, item[0], {
-        handler: await (item as any)[1](),
+        handler: (item as any)[1](),
         opt: item[2],
       });
     } catch (e) {}
@@ -76,6 +78,10 @@ export const useServerRouter = async <T extends ReturnType<typeof newServerRoute
 
       if (found) {
         const route = found.data;
+
+        if (route.handler instanceof Promise) {
+          route.handler = await route.handler;
+        }
 
         let result = null;
         if (!route.opt || route.opt?.request_as === "raw") {

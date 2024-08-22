@@ -19,7 +19,7 @@ export const sessionServer = <T>(arg: {
 }): ServerSession => {
   const internal = {
     has_router: false,
-    router: null as null | Awaited<ReturnType<typeof useServerRouter>>,
+    router: null as null | ReturnType<typeof useServerRouter>,
   };
   if (typeof arg.router === "object" && arg.router instanceof Promise) {
     internal.has_router = true;
