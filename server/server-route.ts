@@ -13,8 +13,7 @@ export type ServerContext = {
   };
 };
 
-export interface SessionContext<T extends SessionData<any>>
-  extends ServerContext {
+export interface SessionContext<T> extends ServerContext {
   session: ServerSession<T>;
 }
 
@@ -92,7 +91,10 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
         if (route.opt && route.opt?.request_as === "raw") {
           result = await route.handler.default.bind(arg)();
         } else {
-          const params = await req.json();
+          let params = [];
+          try {
+            params = await req.json();
+          } catch (e) {}
           result = await route.handler.default.bind(arg)(...params);
         }
 

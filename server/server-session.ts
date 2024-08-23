@@ -8,7 +8,7 @@ import {
   SingleSession,
 } from "./session/session-store";
 
-export type ServerSession<T extends SessionData<any>> = SessionStore<T> & {
+export type ServerSession<T> = SessionStore<T> & {
   current?: SingleSession<T>;
 };
 
@@ -17,11 +17,12 @@ type SessionServerHandler = {
   handle: (arg: ServerContext) => Promise<Response>;
 };
 
-export const createSessionServer = <T extends SessionData<any>>(arg: {
+export const createSessionServer = <T >(arg: {
   encrypt?: boolean;
   router?: ReturnType<typeof useServerRouter>;
+  site_id?: string;
 }): SessionServerHandler => {
-  const server_session = newSessionStore<T>();
+  const server_session = newSessionStore<T>(arg.site_id);
 
   const server_handler: SessionServerHandler = {
     async cleanup() {},

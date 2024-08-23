@@ -5,15 +5,16 @@ import { select } from "lib/preset/login/utils/select";
 export const session = sqliteTable(
   "session",
   {
-    session_id: text("session_id")
+    sid: text("sid")
       .notNull()
       .primaryKey()
       .$defaultFn(() => createId()),
+    uid: text("uid").notNull(),
     created_at: integer("created_at", { mode: "timestamp_ms" }).default(
       new Date()
     ),
     active: integer("active", { mode: "boolean" }),
-    data: text("data", { mode: "json" }),
+    data: text("data", { mode: "json" }).notNull(),
     expired_at: integer("expired_at", { mode: "timestamp_ms" }),
   },
   (table) => {
@@ -26,7 +27,7 @@ export const session = sqliteTable(
 export const track = sqliteTable(
   "track",
   {
-    track_id: text("track_id")
+    id: text("id")
       .notNull()
       .primaryKey()
       .$defaultFn(() => createId()),
