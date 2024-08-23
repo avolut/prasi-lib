@@ -1,7 +1,8 @@
 import { _post } from "lib/utils/post";
 import { addRoute, createRouter, findRoute } from "rou3";
+import { ServerSession, SessionData } from "./server-session";
 
-export type ServerArg = {
+export type ServerContext = {
   req: Request;
   handle: (req: Request) => Promise<Response>;
   mode: "dev" | "prod";
@@ -10,6 +11,11 @@ export type ServerArg = {
     pathname: string;
   };
 };
+
+export interface SessionContext<T extends SessionData<any>>
+  extends ServerContext {
+  session: ServerSession<T>;
+}
 
 type RouteFn = (...arg: any[]) => Promise<any>;
 
@@ -31,9 +37,7 @@ export const newServerRouter = <
   return arg;
 };
 
-export const createClientForServer = <
-  T extends ReturnType<typeof newServerRouter>
->(
+export const newClientRouter = <T extends ReturnType<typeof newServerRouter>>(
   router: T
 ) => {
   return new Proxy(
@@ -72,7 +76,7 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
   }
 
   return {
-    async handle(arg: ServerArg) {
+    async handle(arg: ServerContext | SessionContext<any>) {
       const { url, req } = arg;
       const found = findRoute(rou, undefined, url.pathname);
 
@@ -94,7 +98,7 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
         if (typeof result === "object" && result instanceof Response) {
           return result;
         }
-        
+
         return new Response(JSON.stringify(result));
       }
       return await arg.handle(arg.req);

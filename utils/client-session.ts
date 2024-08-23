@@ -1,15 +1,15 @@
+import { SessionData } from "lib/server/server-session";
+
 const w = window as unknown as {
   _prasi_session: any;
   _prasi: { site_id: string };
 };
 
-export type SessionData = Record<string, any> & { role: string };
-
 type SessionResponse<T> =
   | { active: false; reason: string }
   | { active: true; data: T; token: string };
 
-export const sessionClient = async <T extends SessionData>(arg: {
+export const sessionClient = async <T extends SessionData<any>>(arg: {
   editorSampleData: T;
   auth: {
     mode: "user-pass";
@@ -70,7 +70,7 @@ export const sessionClient = async <T extends SessionData>(arg: {
   return session;
 };
 
-export type Session<T extends SessionData> = {
+export type Session<T extends SessionData<any>> = {
   active: boolean;
   id_site: string;
   login: (arg: { username: string; password: string }) => Promise<void>;
