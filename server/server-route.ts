@@ -86,13 +86,13 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
         if (route.handler instanceof Promise) {
           route.handler = await route.handler;
         }
-
+        
         let result = null;
         if (!route.opt || route.opt?.request_as === "raw") {
-          result = await route.handler.default();
+          result = await route.handler.default.bind(arg)();
         } else {
           const params = await req.json();
-          result = await route.handler.default(...params);
+          result = await route.handler.default.bind(arg)(...params);
         }
 
         if (typeof result === "object" && result instanceof Response) {
