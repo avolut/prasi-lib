@@ -20,7 +20,7 @@ export const generateLogin = async (
     (e: any) =>
       get(e, "component.id") !== "32550d01-42a3-4b15-a04a-2c2d5c3c8e67"
   );
-  form.edit.childs[0].edit.setProp("name", field.username)
+  form.edit.childs[0].edit.setProp("name", field.username);
   // form.edit.childs[1].edit.setProp("name", field.password)
   let rels = { ...rel };
   try {

@@ -10,7 +10,7 @@ export const genFormOnSubmit = ({
   rel_many,
 }: GenFormArgs) => {
   if (typeof table !== "string") {
-    throw new Error('woi')
+    throw new Error("woi");
   }
   result.on_submit = {
     mode: "raw",
@@ -18,12 +18,13 @@ export const genFormOnSubmit = ({
 async ({ form, error, fm }: IForm) => {
   let result = false;
   try {${
-    is_md &&
-    `\
+    is_md
+      ? `\
     if (typeof md !== "undefined") {
       fm.status = "saving";
       md.render();
     }`
+      : ""
   }
     const data = { ...form };
     const record = {} as Record<string, any>;
@@ -42,8 +43,8 @@ async ({ form, error, fm }: IForm) => {
       validateField(field, fm);
     }
 ${
-  is_md &&
-  `\
+  is_md
+    ? `\
     if (fm.error.list.length > 0) {
       if (typeof md !== "undefined") {
         fm.status = "ready";
@@ -51,6 +52,7 @@ ${
       }
       return false;
     }`
+    : ""
 }
 
     call_prasi_events("form", "before_save", [fm, data]);
@@ -149,8 +151,8 @@ ${
     call_prasi_events("form", "after_save", [fm, data]);
 
     ${
-      is_md &&
-      `if (typeof md !== "undefined") {
+      is_md
+        ? `if (typeof md !== "undefined") {
       fm.status = "ready";
       fm.data = form;
       md.selected = form;
@@ -167,6 +169,7 @@ ${
         fm.render();
       }
     }`
+        : ""
     }
   } catch (e) {
     console.error(e);

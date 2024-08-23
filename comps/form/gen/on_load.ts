@@ -56,22 +56,24 @@ ${
   ${opt?.before_load ? opt.before_load : `let id = raw_id`}
   let item = {};
   if (id){
-    //@ts-ignore
     const table = db[gen__table] as any;
-    //@ts-ignore
     const fields = parseGenField(gen__fields);
 
     if (Array.isArray(fields)) {
       const pk = fields.find((e) => e.is_pk);
+      //@ts-ignore
       if (pk && pk.type === "int") id = parseInt(id);
     }
 
-    let where = {
-      ${pk}: id,
-    };
-    
     try {
       const gen = generateSelect(fields);
+      const select = {
+        ...gen.select,
+      } as Prisma.${table}Select;
+      let where = {
+        id: id,
+      } as Prisma.${table}WhereInput;
+
       item = await table?.findFirst({
         where,
         select: gen.select,
