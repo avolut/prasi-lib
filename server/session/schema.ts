@@ -1,5 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
 import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { select } from "lib/preset/login/utils/select";
 
 export const session = sqliteTable(
   "session",
@@ -21,6 +22,7 @@ export const session = sqliteTable(
     };
   }
 );
+
 export const track = sqliteTable(
   "track",
   {
