@@ -1,6 +1,7 @@
 import { _post } from "lib/utils/post";
 import { addRoute, createRouter, findRoute } from "rou3";
-import { ServerSession, SessionData } from "./server-session";
+import { ServerSession } from "./server-session";
+import { SessionData } from "./session/session-store";
 
 export type ServerContext = {
   req: Request;
@@ -86,9 +87,9 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
         if (route.handler instanceof Promise) {
           route.handler = await route.handler;
         }
-        
+
         let result = null;
-        if (!route.opt || route.opt?.request_as === "raw") {
+        if (route.opt && route.opt?.request_as === "raw") {
           result = await route.handler.default.bind(arg)();
         } else {
           const params = await req.json();
