@@ -1,49 +1,12 @@
 /// <reference types="bun-types" />
 import Database from "bun:sqlite";
-import { dir } from "../utils/dir";
+import { and, eq, sql } from "drizzle-orm";
+import { BunSQLiteDatabase, drizzle } from "drizzle-orm/bun-sqlite";
 import { mkdirSync } from "fs";
 import { join } from "path";
-import { BunSQLiteDatabase, drizzle } from "drizzle-orm/bun-sqlite";
+import { dir } from "../../utils/dir";
+import { SessionData, SessionStore, SingleSession } from "../type";
 import { session } from "./schema";
-import { and, eq, sql } from "drizzle-orm";
-
-export interface NewSessionData<T> {
-  uid: string;
-  role: string;
-  data?: T;
-  expired_at?: number;
-}
-
-export interface SessionData<T> extends NewSessionData<T> {
-  sid: string;
-  active: boolean;
-  created_at: number;
-}
-
-export interface SingleSession<T> extends SessionData<T> {
-  track: (arg: { path: string }) => void;
-  destroy: () => boolean;
-}
-
-type FilterSessionArg = {
-  uid: string;
-  sid: string;
-  role: string;
-  active: boolean;
-  created_at: { gt?: number; lt?: number };
-  expired_at: { gt?: number; lt?: number };
-};
-
-export type SessionStore<T> = {
-  create: (arg: {
-    uid: string;
-    role: string;
-    data?: T;
-    expired_at?: number;
-  }) => SingleSession<T>;
-  findMany: (arg?: Partial<FilterSessionArg>) => SingleSession<T>[];
-  findFirst: (arg?: Partial<FilterSessionArg>) => null | SingleSession<T>;
-};
 
 export const newSessionStore = <T>(site_id?: string) => {
   const db_path = site_id

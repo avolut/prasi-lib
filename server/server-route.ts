@@ -1,7 +1,7 @@
 import { _post } from "lib/utils/post";
 import { addRoute, createRouter, findRoute } from "rou3";
-import { ServerSession } from "./server-session";
-import { SessionData } from "./session/session-store";
+import { ServerSession } from "./session/server-session";
+import { SessionData } from "./session/store/session-store";
 
 export type ServerContext = {
   req: Request;
@@ -104,7 +104,6 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
 
         return new Response(JSON.stringify(result));
       }
-      return await arg.handle(arg.req);
     },
   };
 };

@@ -1,4 +1,4 @@
-import { SessionData } from "lib/server/server-session";
+import { SessionData } from "lib/server/session/server-session";
 
 const w = window as unknown as {
   _prasi_session: any;
