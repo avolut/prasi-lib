@@ -1,8 +1,9 @@
 /// <reference types="bun-types" />
 
-import { ServerContext, useServerRouter } from "../server-route";
+import { useServerRouter } from "../server-route";
 import { sessionRouter } from "./router/session-router";
 import { newSessionStore } from "./store/session-store";
+import { ServerContext } from "./type";
 
 type SessionServerHandler = {
   cleanup: () => Promise<void>;

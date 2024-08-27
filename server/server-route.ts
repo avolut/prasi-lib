@@ -1,21 +1,6 @@
 import { _post } from "lib/utils/post";
 import { addRoute, createRouter, findRoute } from "rou3";
-import { ServerSession } from "./session/server-session";
-import { SessionData } from "./session/store/session-store";
-
-export type ServerContext = {
-  req: Request;
-  handle: (req: Request) => Promise<Response>;
-  mode: "dev" | "prod";
-  url: {
-    raw: URL;
-    pathname: string;
-  };
-};
-
-export interface SessionContext<T> extends ServerContext {
-  session: ServerSession<T>;
-}
+import { ServerContext, SessionContext } from "./session/type";
 
 type RouteFn = (...arg: any[]) => Promise<any>;
 
@@ -38,18 +23,22 @@ export const newServerRouter = <
 };
 
 export const newClientRouter = <T extends ReturnType<typeof newServerRouter>>(
-  router: T
+  ...routers: T[]
 ) => {
   return new Proxy(
     {},
     {
       get(target, api_name, receiver) {
         return (...args: any[]) => {
-          const [url, _, opt] = router[api_name as any];
-          if (opt && opt.response_as)
-            return _post(url, args, { response_as: opt.response_as });
+          for (const router of routers) {
+            if (router[api_name as any]) {
+              const [url, _, opt] = router[api_name as any];
+              if (opt && opt.response_as)
+                return _post(url, args, { response_as: opt.response_as });
 
-          return _post(url, args);
+              return _post(url, args);
+            }
+          }
         };
       },
     }

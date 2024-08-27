@@ -5,11 +5,10 @@ import { ClientSession } from "./type";
 
 export const newClientSession = <T>(arg?: {
   on: Partial<{
-    session: ClientSession<T>;
-    messageReceived: () => Promise<void>;
-    afterLogin: () => Promise<void>;
-    afterLogout: () => Promise<void>;
-    afterRecheck: () => Promise<void>;
+    messageReceived: (session: ClientSession<T>) => Promise<void>;
+    afterLogin: (session: ClientSession<T>) => Promise<void>;
+    afterLogout: (session: ClientSession<T>) => Promise<void>;
+    afterRecheck: (session: ClientSession<T>) => Promise<void>;
   }>;
 }) => {
   const store = sessionClientStore<T>();
@@ -18,13 +17,23 @@ export const newClientSession = <T>(arg?: {
   const session: ClientSession<T> = {
     status: "checking",
     current: null,
-    async recheck() {
-      const current = await store.load();
-      if (!current) {
-        this.status = "guest";
-      } else {
-        this.status = await client.check(current.uid, current.sid);
-      }
+    async connect() {
+      const url = new URL(location.href);
+      url.protocol = "wss:";
+      const ws = new WebSocket(url);
+
+      ws.onopen = () => {
+        ws.send("ok");
+      };
+      ws.onmessage = (m) => {
+        console.log(m);
+      };
+      // const current = await store.load();
+      // if (!current) {
+      //   this.status = "guest";
+      // } else {
+      //   this.status = await client.check(current.uid, current.sid);
+      // }
       return { status: this.status };
     },
     async login(arg: {
@@ -35,9 +44,6 @@ export const newClientSession = <T>(arg?: {
     async logout() {},
   };
 
-  session.recheck().then((e) => {
-    console.log(e);
-  });
-
+  session.connect();
   return session;
 };

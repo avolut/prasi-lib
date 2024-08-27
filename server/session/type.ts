@@ -44,11 +44,25 @@ export type ClientSessionStatus = "checking" | "guest" | "expired" | "active";
 export type ClientSession<T> = {
   status: ClientSessionStatus;
   current: null | SessionData<T>;
-  recheck(): Promise<{ status: ClientSessionStatus }>;
+  connect(): Promise<{ status: ClientSessionStatus }>;
   login(arg: {
     method: "user-pass";
     username: string;
     password: string;
   }): Promise<void>;
   logout(): Promise<void>;
+};
+
+export interface SessionContext<T> extends ServerContext {
+  session: ServerSession<T>;
+}
+
+export type ServerContext = {
+  req: Request;
+  handle: (req: Request) => Promise<Response>;
+  mode: "dev" | "prod";
+  url: {
+    raw: URL;
+    pathname: string;
+  };
 };
