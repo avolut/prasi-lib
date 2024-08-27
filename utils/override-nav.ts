@@ -6,7 +6,9 @@ const w = window as any;
 
 export const overrideNav = (arg?: { local?: any }) => {
   if ((!w.prasi_menu && !isEditor) || arg?.local) {
-    w.prasi_menu = { nav_override: true, nav: w.navigate, pm: null };
+    if (!w.prasi_menu) {
+      w.prasi_menu = { nav_override: true, nav: w.navigate, pm: null };
+    }
     w.navigate = (async (_href, params) => {
       if (!_href) {
         console.error("Failed to navigate, empty url");

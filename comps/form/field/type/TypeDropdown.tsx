@@ -165,10 +165,14 @@ export const TypeDropdown: FC<{
     if (value === null) {
       fm.data[field.name] = undefined;
     }
+    const typeahead_val = (Array.isArray(value) ? value : [value]).filter(
+      (e) => e
+    );
+
     return (
       <>
         <Typeahead
-          value={Array.isArray(value) ? value : [value]}
+          value={typeahead_val}
           popupClassName={popupClassName}
           onSelect={({ search, item }) => {
             if (item) {
