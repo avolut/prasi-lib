@@ -5,6 +5,7 @@ import { sessionClientStore } from "./store/client-store";
 import { ClientSession, SessionAuth, SessionData } from "./type";
 
 export const newClientSession = <T>(arg?: {
+  tracker?: { enabled?: boolean };
   on?: Partial<{
     messageReceived: (session: ClientSession<T>) => Promise<void>;
     afterLogin: (session: ClientSession<T>) => Promise<void>;
