@@ -32,6 +32,10 @@ export type SessionStore<T> = {
     data?: T;
     expired_at?: number;
   }) => SingleSession<T>;
+  update: (
+    where: Partial<FilterSessionArg>,
+    data: { active?: boolean; wsid?: string[] }
+  ) => SingleSession<T>[];
   findMany: (arg?: Partial<FilterSessionArg>) => SingleSession<T>[];
   findFirst: (arg?: Partial<FilterSessionArg>) => null | SingleSession<T>;
 };
@@ -40,16 +44,22 @@ export type ServerSession<T> = SessionStore<T> & {
   current?: SingleSession<T>;
 };
 
-export type ClientSessionStatus = "checking" | "guest" | "expired" | "active";
+export type ClientSessionStatus =
+  | "checking"
+  | "guest"
+  | "expired"
+  | "active"
+  | "logout";
 export type ClientSession<T> = {
   status: ClientSessionStatus;
   current: null | SessionData<T>;
-  connect(): Promise<{ status: ClientSessionStatus }>;
-  login(arg: {
-    method: "user-pass";
-    username: string;
-    password: string;
-  }): Promise<void>;
+  wsid: string;
+  connectURL: URL;
+  ws?: WebSocket;
+  init(): Promise<{ status: ClientSessionStatus }>;
+  connect(auth?: SessionAuth): Promise<void>;
+  connected: boolean;
+  login(auth: SessionAuth): Promise<SessionData<T>>;
   logout(): Promise<void>;
 };
 
@@ -65,4 +75,10 @@ export type ServerContext = {
     raw: URL;
     pathname: string;
   };
+};
+
+export type SessionAuth = {
+  method: "user-pass";
+  username: string;
+  password: string;
 };

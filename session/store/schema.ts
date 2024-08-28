@@ -14,6 +14,7 @@ export const session = sqliteTable(
     ),
     active: integer("active", { mode: "boolean" }),
     data: text("data", { mode: "json" }).notNull(),
+    wsid: text("wsid", { mode: "json" }).default([]),
     expired_at: integer("expired_at", { mode: "timestamp_ms" }),
   },
   (table) => {

@@ -1,4 +1,4 @@
-import { ServerContext, SessionContext } from "./server-route";
+import type { ServerContext, SessionContext } from "lib/session/type";
 
 export const sessionContext = <T>(sf: any) => {
   return sf as unknown as SessionContext<T>;

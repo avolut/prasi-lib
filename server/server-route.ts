@@ -1,6 +1,6 @@
 import { _post } from "lib/utils/post";
 import { addRoute, createRouter, findRoute } from "rou3";
-import { ServerContext, SessionContext } from "./session/type";
+import { ServerContext, SessionContext } from "../session/type";
 
 type RouteFn = (...arg: any[]) => Promise<any>;
 

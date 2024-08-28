@@ -4,8 +4,15 @@ import { ClientSessionStatus } from "../type";
 
 export default async function (this: any, uid: string, sid: string) {
   const ctx = sessionContext<EsensiSession>(this);
-
   let result = "invalid" as ClientSessionStatus;
+  const session = ctx.session.findFirst({ uid, sid });
+  if (session) {
+    if (!session.expired_at || session.expired_at > Date.now()) {
+      result = "active";
+    } else {
+      result = "expired";
+    }
+  }
 
   return result;
 }

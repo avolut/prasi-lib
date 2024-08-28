@@ -1,10 +1,10 @@
 /// <reference types="bun-types" />
 import Database from "bun:sqlite";
-import { and, eq, sql } from "drizzle-orm";
+import { and, ConsoleLogWriter, eq, sql } from "drizzle-orm";
 import { BunSQLiteDatabase, drizzle } from "drizzle-orm/bun-sqlite";
 import { mkdirSync } from "fs";
 import { join } from "path";
-import { dir } from "../../utils/dir";
+import { dir } from "../../server/utils/dir";
 import { SessionData, SessionStore, SingleSession } from "../type";
 import { session } from "./schema";
 
@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS session (
 	created_at integer NOT NULL DEFAULT current_timestamp,
 	active integer,
 	data text NOT NULL,
+	wsid text default \`[]\`,
 	expired_at integer
 );
 CREATE INDEX IF NOT EXISTS expired_at_idx ON session (expired_at);
@@ -68,24 +69,64 @@ CREATE INDEX IF NOT EXISTS expired_at_idx ON session (expired_at);
 
   return {
     create(data) {
-      return createSingleStore(
+      try {
+        return createSingleStore(
+          db.session
+            .insert(session)
+            .values({
+              uid: data.uid,
+              data,
+              active: true,
+              expired_at: data.expired_at
+                ? new Date(data.expired_at * 1000)
+                : undefined,
+            })
+            .returning()
+            .get()
+        );
+      } catch (e) {
+        console.error("Session Create Error:\n", e);
+      }
+    },
+    update(where, data) {
+      try {
         db.session
-          .insert(session)
-          .values({
-            uid: data.uid,
-            data,
-            active: true,
-            expired_at: data.expired_at
-              ? new Date(data.expired_at * 1000)
-              : undefined,
-          })
-          .returning()
-          .get()
-      );
+          .update(session)
+          .set(data)
+          .where(
+            and(
+              ...Object.entries(where || {}).map(([k, v]) => {
+                return eq(k as any, v);
+              })
+            )
+          )
+          .get();
+      } catch (e) {
+        console.error("Session Update Error:\n", e);
+      }
     },
     findFirst(arg) {
-      return createSingleStore(
-        db.session
+      try {
+        return createSingleStore(
+          db.session
+            .select()
+            .from(session)
+            .where(
+              and(
+                ...Object.entries(arg || {}).map(([k, v]) => {
+                  return eq((session as any)[k], v);
+                })
+              )
+            )
+            .get()
+        );
+      } catch (e) {
+        console.error("Session FindFirst Error:\n", e);
+      }
+    },
+    findMany(arg) {
+      try {
+        return db.session
           .select()
           .from(session)
           .where(
@@ -95,22 +136,11 @@ CREATE INDEX IF NOT EXISTS expired_at_idx ON session (expired_at);
               })
             )
           )
-          .get()
-      );
-    },
-    findMany(arg) {
-      return db.session
-        .select()
-        .from(session)
-        .where(
-          and(
-            ...Object.entries(arg || {}).map(([k, v]) => {
-              return eq((session as any)[k], v);
-            })
-          )
-        )
-        .all()
-        .map((e) => createSingleStore(e));
+          .all()
+          .map((e) => createSingleStore(e));
+      } catch (e) {
+        console.error("Session FindMany Error:\n", e);
+      }
     },
   } as SessionStore<T>;
 };

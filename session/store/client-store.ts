@@ -12,4 +12,14 @@ export const sessionClientStore = <T>() => ({
     }
     return null;
   },
+  async save(arg: SessionData<T>): Promise<void> {
+    if (w._prasi?.site_id) {
+      localStorage.setItem(`sid-${w._prasi?.site_id}`, JSON.stringify(arg));
+    }
+  },
+  async clear(): Promise<void> {
+    if (w._prasi?.site_id) {
+      localStorage.removeItem(`sid-${w._prasi?.site_id}`);
+    }
+  },
 });
