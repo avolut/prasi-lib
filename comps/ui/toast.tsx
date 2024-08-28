@@ -9,9 +9,14 @@ const timer = {
 
 export const toast = {
   position: "top-right" as any,
+  toasting: [] as any[],
   dismiss: () => {
     if (!timer.timeout) {
-      sonner.dismiss();
+      if (toast.toasting.length > 0) {
+        for (const t of toast.toasting) {
+          sonner.dismiss(t.id);
+        }
+      }
     } else {
       clearTimeout(timer.timeout);
       timer.timeout = null;
@@ -23,7 +28,14 @@ export const toast = {
   ) => {
     clearTimeout(timer.timeout);
     timer.timeout = setTimeout(() => {
-      sonner.loading(el, props);
+      toast.toasting.push(
+        sonner.loading(el, {
+          ...props,
+          onDismiss: (t) => {
+            toast.toasting = toast.toasting.filter((e) => e !== t.id);
+          },
+        })
+      );
       timer.timeout = null;
     }, timer.limit);
   },
@@ -33,7 +45,12 @@ export const toast = {
   ) => {
     clearTimeout(timer.timeout);
     timer.timeout = setTimeout(() => {
-      sonner.success(el, props);
+      sonner.success(el, {
+        ...props,
+        onDismiss: (t) => {
+          toast.toasting = toast.toasting.filter((e) => e !== t.id);
+        },
+      });
       timer.timeout = null;
     }, timer.limit);
   },
@@ -43,7 +60,12 @@ export const toast = {
   ) => {
     clearTimeout(timer.timeout);
     timer.timeout = setTimeout(() => {
-      sonner.error(el, props);
+      sonner.error(el, {
+        ...props,
+        onDismiss: (t) => {
+          toast.toasting = toast.toasting.filter((e) => e !== t.id);
+        },
+      });
       clearTimeout(timer.timeout);
 
       timer.timeout = null;
