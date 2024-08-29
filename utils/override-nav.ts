@@ -5,7 +5,8 @@ import { getPathname } from "lib/utils/pathname";
 const w = window as any;
 
 export const overrideNav = (arg?: { local?: any }) => {
-  if ((!w.prasi_menu && !isEditor) || arg?.local) {
+  if (isEditor) return;
+  if (!w.prasi_menu || arg?.local) {
     if (!w.prasi_menu) {
       w.prasi_menu = { nav_override: true, nav: w.navigate, pm: null };
     }
