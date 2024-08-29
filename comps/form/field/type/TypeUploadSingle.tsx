@@ -37,7 +37,7 @@ export const FieldUploadSingle: FC<{
     try {
       file = event.target?.files?.[0];
     } catch (ex) {}
-    if (prop.model_upload === "import") {
+    if (prop.sub_type === "import") {
       const reader = new FileReader();
 
       function arrayBufferToBinaryString(buffer: ArrayBuffer): string {
@@ -149,7 +149,8 @@ export const FieldUploadSingle: FC<{
                 ref={(ref) => (input.ref = ref)}
                 type="file"
                 multiple={false}
-                accept={field.prop.upload?.accept}
+                // accept={field.prop.upload?.accept}
+                accept={"file/**"}
                 onChange={on_upload}
                 className={cx(
                   "c-absolute c-w-full c-h-full c-cursor-pointer c-top-0 c-left-0 c-opacity-0"

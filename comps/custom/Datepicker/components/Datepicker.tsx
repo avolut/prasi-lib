@@ -96,7 +96,6 @@ const Datepicker: React.FC<DatepickerType> = ({
       if (newDate.isSame(reformatDate) || newDate.isAfter(reformatDate)) {
         setSecondDate(nextMonth(date));
       }
-      console.log(date)
       setFirstDate(date);
     },
     [secondDate]
@@ -150,7 +149,6 @@ const Datepicker: React.FC<DatepickerType> = ({
 
   const changeSecondMonth = useCallback(
     (month: number) => {
-      console.log("ALOO")
       secondGotoDate(
         dayjs(`${secondDate.year()}-${month < 10 ? "0" : ""}${month}-01`)
       );

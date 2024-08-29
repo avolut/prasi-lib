@@ -135,7 +135,7 @@ export const FieldInput: FC<{
           {prefix && prefix !== "" ? (
             <div
               className={cx(
-                "c-pl-2 c-flex c-flex-row c-items-center",
+                "c-px-2 c-flex c-flex-row c-items-center",
                 css`
                   color: gray;
                 `
@@ -174,6 +174,7 @@ export const FieldInput: FC<{
                         arg={arg}
                         prop={
                           {
+                            placeholder: arg.placeholder,
                             type: type_field as any,
                             sub_type: arg.sub_type,
                             model_upload: arg.model_upload,
@@ -199,7 +200,7 @@ export const FieldInput: FC<{
           {suffix && suffix !== "" ? (
             <div
               className={cx(
-                "c-pr-2 c-flex c-flex-row c-items-center",
+                "c-px-2 c-flex c-flex-row c-items-center",
                 css`
                   color: gray;
                 `

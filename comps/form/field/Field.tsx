@@ -15,7 +15,7 @@ const prepForSum = (obj: any): any => {
   const new_obj: any = {};
   if (obj) {
     for (const [k, v] of Object.entries(obj) as any) {
-      if (typeof v === "object" && v.id) {
+      if (typeof v === "object" && v?.id) {
         new_obj[k] = v.id;
         continue;
       }
@@ -86,7 +86,7 @@ export const Field: FC<FieldProp> = (arg) => {
       }
 
       if (arg.on_change) {
-        arg.on_change({ value: fm.data[name], name, fm });
+        arg.on_change({ value: fm.data?.[name], name, fm });
       }
 
       if (fm.deps.md) {

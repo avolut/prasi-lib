@@ -52,6 +52,10 @@ export const FieldTypeInput: FC<{
     show_pass: false,
     change_timeout: null as any,
   });
+  const internal = useLocal({
+    render_timeout: null as any,
+    search_timeout: null as any,
+  });
   let type_field = prop.sub_type;
   switch (type_field) {
     case "datetime":
@@ -332,6 +336,46 @@ export const FieldTypeInput: FC<{
             renderOnChange();
           }}
         />
+      );
+    }
+    case "search": {
+      return (
+        <div className={cx("search-all c-flex items-center")}>
+          <div className="c-pl-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </div>
+          <input
+            type="search"
+            placeholder={prop.placeholder}
+            spellCheck={false}
+            className="c-flex-1 c-transition-all c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
+            onChange={async (ev) => {
+              fm.data[field.name] = ev.currentTarget.value;
+              renderOnChange();
+              if (prop.onChange) {
+                await prop.onChange(fm.data[field.name]);
+              }
+
+              clearTimeout(internal.search_timeout);
+              internal.search_timeout = setTimeout(() => {
+                fm?.submit();
+              }, 1500);
+            }}
+          />
+        </div>
       );
     }
   }
