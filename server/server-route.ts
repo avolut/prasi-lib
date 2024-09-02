@@ -84,7 +84,7 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
           try {
             params = await req.json();
           } catch (e) {}
-          result = await route.handler.default.bind(arg)(...params);
+          result = await route.handler.default.bind(arg)(params);
         }
 
         if (typeof result === "object" && result instanceof Response) {

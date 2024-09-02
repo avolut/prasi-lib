@@ -21,106 +21,9 @@ export const newClientSession = <T>(arg?: {
 
   const session: ClientSession<T> = {
     status: "checking",
-    wsid: "",
     current: null,
     connected: false,
-    get connectURL() {
-      const url = new URL(location.href);
-      url.protocol = "wss:";
-      url.hash = "";
-      return url;
-    },
-    connect(auth?: SessionAuth) {
-      return new Promise<void>(async (done, reject) => {
-        const current = this.current;
-        if (current || auth) {
-          if (this.ws) {
-            await wsReady(this.ws);
-          }
-
-          const ws = new WebSocket(this.connectURL);
-          this.ws = ws;
-          ws.onclose = () => {
-            session.connected = false;
-            console.log(this.status);
-            if (this.status === "logout") {
-              store.clear();
-              this.current = null;
-              if (arg?.on?.afterLogout) {
-                arg.on.afterLogout(session);
-              }
-              logout_promise.resolve();
-              logout_promise.resolve = null;
-              logout_promise.reject = null;
-            } else {
-              setTimeout(() => {
-                console.warn("Reconnecting Session WS...");
-                this.connect();
-              }, 2000);
-            }
-          };
-          ws.onopen = () => {
-            if (session.current) {
-              ws.send(
-                JSON.stringify({
-                  uid: session.current.uid,
-                  sid: session.current.sid,
-                })
-              );
-            } else {
-              if (auth) {
-                ws.send(JSON.stringify(auth));
-              } else {
-                if (ws.readyState === ws.OPEN) {
-                  ws.close();
-                }
-              }
-            }
-          };
-          ws.onmessage = async (m) => {
-            if (!session.connected) {
-              try {
-                const parsed = JSON.parse(m.data) as
-                  | {
-                      status: "ok";
-                      wsid: string;
-                      session: SessionData<T>;
-                    }
-                  | { status: "failed" };
-
-                if (parsed.status === "ok") {
-                  session.wsid = parsed.wsid;
-                  session.current = parsed.session;
-                  if (login_promise.resolve) {
-                    session.connected = true;
-                    login_promise.resolve(session.current);
-                    await store.save(session.current);
-                  }
-                } else {
-                  if (login_promise.reject) login_promise.reject();
-                }
-                login_promise.resolve = null;
-                login_promise.reject = null;
-                if (arg?.on?.afterLogin) {
-                  arg.on.afterLogin(session);
-                }
-                done();
-
-                return;
-              } catch (e) {
-                reject(e);
-              }
-
-              if (ws.readyState === ws.OPEN) {
-                ws.close();
-              }
-            }
-          };
-        } else {
-          done();
-        }
-      });
-    },
+    async connect(auth) {},
     async init() {
       const current = await store.load();
       if (!current) {
@@ -190,12 +93,6 @@ Login is prevented, please logout first before re-login!`
 
         logout_promise.resolve = resolve;
         logout_promise.reject = reject;
-        if (this.status === "active" && this.ws) {
-          await wsReady(this.ws);
-          this.status = "logout";
-
-          this.ws.send(JSON.stringify({ action: "logout" }));
-        }
       });
     },
   };

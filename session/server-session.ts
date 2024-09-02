@@ -22,10 +22,6 @@ export const initSessionServer = <T>(
   arg: {
     encrypt?: boolean;
     router?: ReturnType<typeof useServerRouter>;
-    login: (
-      session: SessionStore<T>,
-      arg: SessionAuth
-    ) => Promise<SingleSession<T> | false>;
   }
 ) => {
   try {
@@ -33,7 +29,7 @@ export const initSessionServer = <T>(
     const session_router = useServerRouter(sessionRouter);
     const server_handler: SessionServerHandler = {
       async cleanup() {},
-    
+
       async handle(server_arg) {
         const { req, handle, url } = server_arg;
 

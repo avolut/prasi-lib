@@ -53,9 +53,6 @@ export type ClientSessionStatus =
 export type ClientSession<T> = {
   status: ClientSessionStatus;
   current: null | SessionData<T>;
-  wsid: string;
-  connectURL: URL;
-  ws?: WebSocket;
   init(): Promise<{ status: ClientSessionStatus }>;
   connect(auth?: SessionAuth): Promise<void>;
   connected: boolean;
@@ -81,4 +78,4 @@ export type SessionAuth = {
   method: "user-pass";
   username: string;
   password: string;
-};
+} & Record<string, any>;
