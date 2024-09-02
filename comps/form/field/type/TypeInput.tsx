@@ -10,6 +10,7 @@ import { FieldRichText } from "./TypeRichText";
 import { FieldUpload } from "./TypeUpload";
 import { KeyValue } from "./KeyValue";
 import { InputMask, format } from "@react-input/mask";
+import { FieldOTP } from "./TypeOTP";
 
 export type PropTypeInput = {
   type: "input";
@@ -32,7 +33,8 @@ export type PropTypeInput = {
     | "monthly"
     | "key-value"
     | "mask"
-    | "phone";
+    | "phone"
+    | "otp";
   placeholder?: string;
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
@@ -110,6 +112,7 @@ export const FieldTypeInput: FC<{
 
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
+
   switch (type_field) {
     case "toggle":
       return (
@@ -198,6 +201,8 @@ export const FieldTypeInput: FC<{
           <FieldMoney field={field} fm={fm} prop={prop} arg={arg} />
         </>
       );
+    case "otp":
+      return <FieldOTP field={field} fm={fm} prop={prop} arg={arg} digit={4} />;
     case "rich-text":
       return <FieldRichText field={field} fm={fm} prop={prop} />;
     case "date": {
