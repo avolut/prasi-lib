@@ -1,6 +1,6 @@
 import { ConsoleLogWriter } from "drizzle-orm";
 import { newClientRouter } from "../server/server-route";
-import { sessionRouter } from "./router/session-router";
+import { sessionRouter } from "./router/router";
 import { sessionClientStore } from "./store/client-store";
 import { ClientSession, SessionAuth, SessionData } from "./type";
 
