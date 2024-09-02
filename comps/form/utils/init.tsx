@@ -264,10 +264,8 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
 
       toast.dismiss();
 
-      if (!success) {
-        fm.status = "ready";
-        fm.render();
-      }
+      fm.status = "ready";
+      fm.render();
 
       if (fm.props.sonar === "on" && !isEditor) {
         toast.dismiss();

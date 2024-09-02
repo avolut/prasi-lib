@@ -169,16 +169,10 @@ export const Form: FC<FMProps> = (props) => {
   }
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        fm.status = "saving";
-        fm.render();
-
-        fm.submit();
-
-        fm.status = "ready";
-        fm.render();
+        await fm.submit();
       }}
       ref={(el) => {
         if (el) {
