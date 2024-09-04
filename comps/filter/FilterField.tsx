@@ -85,6 +85,7 @@ export const FilterField: FC<{
               </div>
               <input
                 type="search"
+                value={field.fm?.data?.[name]}
                 placeholder={field.field.label}
                 onBlur={() => {
                   clearTimeout(internal.search_timeout);

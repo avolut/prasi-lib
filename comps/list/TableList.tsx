@@ -202,7 +202,7 @@ export const TableList: FC<TableListProp> = ({
               const key = Object.keys(where.OR[0])[0];
               if (key && where.OR[0][key]) {
                 let filtering = where.OR[0][key].contains;
-                if (typeof local.filtering === "string") {
+                if (typeof local.filtering === "string" && filtering) {
                   filtering = filtering.slice(1, -1);
                 } else {
                   filtering = "";
@@ -556,7 +556,11 @@ export const TableList: FC<TableListProp> = ({
     }
   }
   let data = Array.isArray(local.data) ? local.data : [];
-  if (typeof local.data === "string") console.error(local.data);
+
+  if (typeof local.data === "string") {
+    console.error(local.data);
+    local.data = []
+  }
 
   if (isEditor) {
     if (data.length > 0) {
