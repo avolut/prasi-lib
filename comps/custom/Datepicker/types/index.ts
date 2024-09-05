@@ -82,7 +82,10 @@ export interface DatepickerType {
     disabledDates?: DateRangeType[] | null;
     startWeekOn?: string | null;
     popoverDirection?: PopoverDirectionType;
-    mode?: "daily" | "monthly"
+    mode?: "daily" | "monthly";
+    onMark?: (day: number, date: Date) => any;
+    onLoad?: () => Promise<void>
+
 }
 
 export type ColorKeys = (typeof COLORS)[number]; // "blue" | "orange"
