@@ -15,7 +15,6 @@ export const Dialog = lazify(
   async () => (await import("@/comps/ui/dialog")).Dialog
 );
 
-
 export const Typeahead = lazify(
   async () => (await import("@/comps/ui/typeahead")).Typeahead
 );
@@ -106,7 +105,7 @@ export const Import = lazify(
 export const Sheet = lazify(
   async () => (await import("@/comps/sheet/sheet")).SheetCn
 );
-export {formatBytes} from "@/comps/import/lib/formatBytes"
+export { formatBytes } from "@/comps/import/lib/formatBytes";
 export { fetchLinkParams } from "@/comps/form/field/type/TypeLink";
 export { FieldLoading, Spinner } from "@/comps/ui/field-loading";
 export { lang } from "lib/lang";
@@ -121,7 +120,7 @@ export { toast, Toaster } from "./comps/ui/toast";
 export { NavLink } from "./comps/popup/NavLink";
 export { kvToJSON } from "./utils/kv-to-json";
 export { overrideNav } from "./utils/override-nav";
-
+export { bulk_query } from "./utils/bulk-query";
 export const _sum = sum;
 export const _get = __get;
 
