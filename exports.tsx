@@ -121,6 +121,7 @@ export { NavLink } from "./comps/popup/NavLink";
 export { kvToJSON } from "./utils/kv-to-json";
 export { overrideNav } from "./utils/override-nav";
 export { bulk_query } from "./utils/bulk-query";
+export { get_user } from "./utils/get_user";
 export const _sum = sum;
 export const _get = __get;
 
