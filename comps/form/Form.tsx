@@ -12,7 +12,7 @@ import { toast } from "../ui/toast";
 
 const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
-export { FMLocal } from "./typings";
+export type { FMLocal } from "./typings";
 
 export const Form: FC<FMProps> = (props) => {
   const { PassProp, body, feature, sfd_field } = props;

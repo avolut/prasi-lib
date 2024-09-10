@@ -1,7 +1,7 @@
 import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect } from "react";
 import { PFTypes } from "./typings";
-export { PFTypes } from "./typings";
+export type { PFTypes } from "./typings";
 export { generateProfile } from "./utils/generate";
 export const Profile: FC<PFTypes> = ({
   on_load,

@@ -140,13 +140,13 @@ export { validate as validateField } from "@/comps/form/utils/validate";
 export { sortTree, treePrefix } from "@/comps/list/utils/sort-tree";
 
 export { getFilter } from "@/comps/filter/utils/get-filter";
-export {
+export type {
   fieldType,
   FieldTypeCustom,
   FMLocal,
   formType,
 } from "@/comps/form/typings";
-export { TableListType } from "@/comps/list/utils/typings";
+export type { TableListType } from "@/comps/list/utils/typings";
 export { generateTableList as generateTableList } from "@/comps/md/gen/gen-table-list";
 export { generateSelect } from "@/comps/md/gen/md-select";
 export { MasterDetailType } from "@/comps/md/utils/typings";
@@ -161,11 +161,9 @@ export { call_prasi_events, prasi_events } from "lib/utils/prasi-events";
 export { Login } from "@/preset/login/Login";
 export { generateLogin } from "@/preset/login/utils/generate";
 export { logout } from "@/preset/login/utils/logout";
-export {
-  registerSession,
-  RG,
-  UserSession,
-} from "@/preset/login/utils/register";
+export type { RG } from "@/preset/login/utils/register";
+export { registerSession } from "@/preset/login/utils/register";
+export type { UserSession } from "@/preset/login/utils/register";
 
 export { Card } from "@/comps/custom/Card";
 
