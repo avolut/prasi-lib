@@ -1,6 +1,6 @@
-import { BreadItem } from "@/comps/custom/Breadcrumb";
-import { FMLocal } from "@/comps/form/typings";
-import { GFCol } from "@/gen/utils";
+import { BreadItem } from "lib/comps/custom/Breadcrumb";
+import { FMLocal } from "lib/comps/form/typings";
+import { GFCol } from "lib/gen/utils";
 import { LinkParam } from "lib/comps/form/field/type/TypeLink";
 import { ReactNode } from "react";
 

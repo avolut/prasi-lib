@@ -1,8 +1,7 @@
-import { useLocal } from "@/utils/use-local";
-import get from "lodash.get";
+import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
-import { Button } from "../../../../..";
+import { Button } from "lib/comps/ui/button";
 
 export const FieldCheckbox: FC<{
   field: FieldLocal;

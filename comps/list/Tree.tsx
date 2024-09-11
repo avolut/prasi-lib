@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { ElementType, FC, ReactElement, ReactNode, useEffect } from "react";
 import { NodeRendererProps, Tree as Arborist, NodeApi } from "react-arborist";
 

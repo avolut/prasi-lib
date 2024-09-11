@@ -1,4 +1,4 @@
-import { get as kget, set as kset } from "@/utils/idb-keyval";
+import { get as kget, set as kset } from "lib/utils/idb-keyval";
 
 const single = {} as Record<
   string,

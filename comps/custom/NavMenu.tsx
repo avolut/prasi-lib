@@ -6,8 +6,8 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/comps/ui/navigation-menu";
-import { useLocal } from "@/utils/use-local";
+} from "lib/comps/ui/navigation-menu";
+import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
 import { FC, forwardRef } from "react";
 

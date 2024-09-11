@@ -1,51 +1,60 @@
-import { lazify, lazifyMany } from "@/utils/lazify";
+import { lazify, lazifyMany } from "lib/utils/lazify";
 
 export const Accordion = lazify(
-  async () => (await import("@/comps/ui/accordion")).Accordion
+  async () => (await import("lib/comps/ui/accordion")).Accordion
 );
 
 export const Popover = lazify(
-  async () => (await import("@/comps/custom/Popover")).Popover
+  async () => (await import("lib/comps/custom/Popover")).Popover
 );
 export const Progress = lazify(
-  async () => (await import("@/comps/ui/progress")).Progress
+  async () => (await import("lib/comps/ui/progress")).Progress
 );
 
 export const Dialog = lazify(
-  async () => (await import("@/comps/ui/dialog")).Dialog
+  async () => (await import("lib/comps/ui/dialog")).Dialog
 );
 
 export const Typeahead = lazify(
-  async () => (await import("@/comps/ui/typeahead")).Typeahead
+  async () => (await import("lib/comps/ui/typeahead")).Typeahead
 );
 
 /** Master - Detail - List - Form */
 export const MasterDetail = lazify(
-  async () => (await import("@/comps/md/MasterDetail")).MasterDetail
+  async () => (await import("lib/comps/md/MasterDetail")).MasterDetail
 );
 export const MDRenderMaster = lazify(
-  async () => (await import("@/comps/md/parts/MDMaster")).MDRenderMaster
+  async () => (await import("lib/comps/md/parts/MDMaster")).MDRenderMaster
 );
 export const MDRenderTab = lazify(
-  async () => (await import("@/comps/md/parts/MDDetail")).MDRenderTab
+  async () => (await import("lib/comps/md/parts/MDDetail")).MDRenderTab
 );
 export const MDAction = lazify(
-  async () => (await import("@/comps/md/parts/MDAction")).MDAction
+  async () => (await import("lib/comps/md/parts/MDAction")).MDAction
 );
 export const Breadcrumb = lazify(
-  async () => (await import("@/comps/custom/Breadcrumb")).Breadcrumb
+  async () => (await import("lib/comps/custom/Breadcrumb")).Breadcrumb
 );
 export const TableList = lazify(
-  async () => (await import("@/comps/list/TableList")).TableList
+  async () => (await import("lib/comps/list/TableList")).TableList
 );
 export const TableEdit = lazify(
   async () =>
-    (await import("@/comps/form/field/table-edit/TableEdit")).TableEdit
+    (await import("lib/comps/form/field/table-edit/TableEdit")).TableEdit
 );
 
+const loading = lazifyMany({
+  FieldLoading: async () =>
+    (await import("lib/comps/ui/field-loading")).FieldLoading,
+  Spinner: async () => (await import("lib/comps/ui/field-loading")).Spinner,
+});
+
+export const FieldLoading = loading.FieldLoading;
+export const Spinner = loading.Spinner;
+
 const form = lazifyMany({
-  Form: async () => (await import("@/comps/form/Form")).Form,
-  Field: async () => (await import("@/comps/form/field/Field")).Field,
+  Form: async () => (await import("lib/comps/form/Form")).Form,
+  Field: async () => (await import("lib/comps/form/field/Field")).Field,
 });
 
 export const Form = form.Form;
@@ -53,68 +62,71 @@ export const Field = form.Field;
 
 /** Export - Import */
 export const ImportExcel = lazify(
-  async () => (await import("@/comps/list/ImportExcel")).ImportExcel
+  async () => (await import("lib/comps/list/ImportExcel")).ImportExcel
 );
 
 export const ExportExcel = lazify(
-  async () => (await import("@/comps/list/ExportExcel")).ExportExcel
+  async () => (await import("lib/comps/list/ExportExcel")).ExportExcel
 );
 
 /** Filter */
 export const MasterFilter = lazify(
-  async () => (await import("@/comps/filter/MasterFilter")).MasterFilter
+  async () => (await import("lib/comps/filter/MasterFilter")).MasterFilter
 );
 
 export const FilterField = lazify(
-  async () => (await import("@/comps/filter/FilterField")).FilterField
+  async () => (await import("lib/comps/filter/FilterField")).FilterField
 );
 
 export const HeaderProfile = lazify(
-  async () => (await import("@/comps/custom/HeaderProfile")).HeaderProfile
+  async () => (await import("lib/comps/custom/HeaderProfile")).HeaderProfile
 );
 
 /** charts */
 export const BarChart = lazify(
-  async () => (await import("@/comps/charts/bar")).BarChart
+  async () => (await import("lib/comps/charts/bar")).BarChart
 );
 export const PieChart = lazify(
-  async () => (await import("@/comps/charts/pie")).PieChart
+  async () => (await import("lib/comps/charts/pie")).PieChart
 );
 export const DoughnutChart = lazify(
-  async () => (await import("@/comps/charts/doughnut")).DoughnutChart
+  async () => (await import("lib/comps/charts/doughnut")).DoughnutChart
 );
 export const LineChart = lazify(
-  async () => (await import("@/comps/charts/line")).LineChart
+  async () => (await import("lib/comps/charts/line")).LineChart
 );
 
 export const ScrollArea = lazify(
-  async () => (await import("@/comps/ui/scroll-area")).ScrollArea
+  async () => (await import("lib/comps/ui/scroll-area")).ScrollArea
 );
 
 export const KeyValue = lazify(
-  async () => (await import("@/comps/form/field/type/KeyValue")).KeyValue
+  async () => (await import("lib/comps/form/field/type/KeyValue")).KeyValue
 );
 export const Pop = lazify(
-  async () => (await import("@/comps/dialog/Dialog")).Pop
+  async () => (await import("lib/comps/dialog/Dialog")).Pop
 );
 
 export const Import = lazify(
-  async () => (await import("@/comps/import/Import")).Import
+  async () => (await import("lib/comps/import/Import")).Import
 );
 
 export const Sheet = lazify(
-  async () => (await import("@/comps/sheet/sheet")).SheetCn
+  async () => (await import("lib/comps/sheet/sheet")).SheetCn
 );
-export { formatBytes } from "@/comps/import/lib/formatBytes";
-export { fetchLinkParams } from "@/comps/form/field/type/TypeLink";
-export { FieldLoading, Spinner } from "@/comps/ui/field-loading";
+
+export const Layout = lazify(
+  async () => (await import("lib/preset/menu/Layout")).Layout
+);
+
+export { formatBytes } from "lib/comps/import/lib/formatBytes";
+export { fetchLinkParams, lastParams } from "lib/utils/fetch-link-params";
 export { lang } from "lib/lang";
 export { prasi_gen } from "./gen/prasi_gen";
 export { guessLabel } from "./utils/guess-label";
 import __get from "lodash.get";
 import { sum } from "./utils/sum";
-export { ImgThumb } from "@/comps/form/field/type/FilePreview";
-export { lastParams } from "@/comps/form/field/type/TypeLink";
+export { ImgThumb } from "lib/comps/form/field/type/FilePreview";
 export { _post } from "./utils/post";
 export { toast, Toaster } from "./comps/ui/toast";
 export { NavLink } from "./comps/popup/NavLink";
@@ -126,70 +138,56 @@ export const _sum = sum;
 export const _get = __get;
 
 /** Generator */
-export { generateFilter as genereteFilter } from "@/comps/filter/gen/gen-filter";
-export { generateRelation } from "@/comps/form/gen/gen-rel";
-export { genTableEdit } from "@/comps/form/gen/gen-table-edit";
-export { generateMasterDetail } from "@/comps/md/gen/md-gen";
-export { parseGenField } from "@/gen/utils";
+export { generateFilter as genereteFilter } from "lib/comps/filter/gen/gen-filter";
+export { generateRelation } from "lib/comps/form/gen/gen-rel";
+export { genTableEdit } from "lib/comps/form/gen/gen-table-edit";
+export { generateMasterDetail } from "lib/comps/md/gen/md-gen";
+export { parseGenField } from "lib/gen/utils";
 
-/** ETC */
-export { filterModifier } from "@/comps/filter/utils/filter-modifier";
-export { generateField } from "@/comps/form/gen/gen-field";
-export { generateForm } from "@/comps/form/gen/gen-form";
-export { validate as validateField } from "@/comps/form/utils/validate";
-export { sortTree, treePrefix } from "@/comps/list/utils/sort-tree";
-
-export { getFilter } from "@/comps/filter/utils/get-filter";
+/** ETC */ 
+export { filterModifier } from "lib/comps/filter/utils/filter-modifier";
+export { generateField } from "lib/comps/form/gen/gen-field";
+export { generateForm } from "lib/comps/form/gen/gen-form";
+export { validate as validateField } from "lib/comps/form/utils/validate";
+export { sortTree, treePrefix } from "lib/comps/list/utils/sort-tree";
+ 
+export { getFilter } from "lib/comps/filter/utils/get-filter";
 export type {
   fieldType,
   FieldTypeCustom,
   FMLocal,
   formType,
-} from "@/comps/form/typings";
-export type { TableListType } from "@/comps/list/utils/typings";
-export { generateTableList as generateTableList } from "@/comps/md/gen/gen-table-list";
-export { generateSelect } from "@/comps/md/gen/md-select";
-export { MasterDetailType } from "@/comps/md/utils/typings";
-export { Button, FloatButton } from "@/comps/ui/button";
-export { baseurl, imgThumb } from "@/utils/baseurl";
-export { FormatValue } from "@/utils/format-value";
-export { GetValue } from "@/utils/get-value";
-export { password } from "@/utils/password";
+} from "lib/comps/form/typings";
+export type { TableListType } from "lib/comps/list/utils/typings";
+export { generateTableList as generateTableList } from "lib/comps/md/gen/gen-table-list";
+export { generateSelect } from "lib/comps/md/gen/md-select";
+export { MasterDetailType } from "lib/comps/md/utils/typings";
+export { Button, FloatButton } from "lib/comps/ui/button";
+export { baseurl, imgThumb } from "lib/utils/baseurl";
+export { FormatValue } from "lib/utils/format-value";
+export { GetValue } from "lib/utils/get-value";
+export { password } from "lib/utils/password";
 export { call_prasi_events, prasi_events } from "lib/utils/prasi-events";
-
-/** Session */
-export { Login } from "@/preset/login/Login";
-export { generateLogin } from "@/preset/login/utils/generate";
-export { logout } from "@/preset/login/utils/logout";
-export type { RG } from "@/preset/login/utils/register";
-export { registerSession } from "@/preset/login/utils/register";
-export type { UserSession } from "@/preset/login/utils/register";
-
-export { Card } from "@/comps/custom/Card";
-
-/** Layout */
-export { Layout } from "@/preset/menu/Layout";
+export { Card } from "lib/comps/custom/Card";
 
 /* MENU */
-export { Menu, MenuIcon } from "@/preset/menu/Menu";
+export { Menu, MenuIcon } from "lib/preset/menu/Menu";
 
 /*Panel Tab*/
-export { ShowHidePanel } from "@/comps/custom/ShowHidePanel";
-export { PanelBody } from "@/comps/tab/parts/PanelBody";
-export { PanelHeader } from "@/comps/tab/parts/PanelHead";
-export { PanelTab } from "@/comps/tab/parts/PanelTab";
+export { ShowHidePanel } from "lib/comps/custom/ShowHidePanel";
+export { PanelBody } from "lib/comps/tab/parts/PanelBody";
+export { PanelHeader } from "lib/comps/tab/parts/PanelHead";
+export { PanelTab } from "lib/comps/tab/parts/PanelTab";
 
 /*Popup*/
-export { Popup } from "@/comps/popup/PopUp";
+export { Popup } from "lib/comps/popup/PopUp";
 
-export { Detail } from "@/comps/custom/Detail";
-export * from "@/comps/ui/input";
-export { ButtonUpload } from "@/preset/profile/ButtonUpload";
-export { Profile } from "@/preset/profile/Profile";
-export { generateProfile } from "@/preset/profile/utils/generate";
-export { formatTime, longDate, shortDate, timeAgo } from "@/utils/date";
-export { getBasename, getPathname } from "@/utils/pathname";
+export { Detail } from "lib/comps/custom/Detail";
+export * from "lib/comps/ui/input";
+export { ButtonUpload } from "lib/preset/profile/ButtonUpload";
+export { Profile } from "lib/preset/profile/Profile";
+export { generateProfile } from "lib/preset/profile/utils/generate";
+export { formatTime, longDate, shortDate, timeAgo } from "lib/utils/date";
+export { getBasename, getPathname } from "lib/utils/pathname";
 
-export { Flow } from "@/comps/ui/flow";
-
-export { formatMoney } from "@/comps/form/field/type/TypeMoney";
+export { formatMoney } from "lib/comps/form/field/type/TypeMoney";

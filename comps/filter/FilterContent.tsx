@@ -3,7 +3,7 @@ import { BaseForm } from "../form/base/BaseForm";
 import { FilterLocal } from "./utils/types";
 import { useLocal } from "lib/utils/use-local";
 import { getFilter } from "./utils/get-filter";
-import { FieldLoading, FMLocal } from "lib/exports";
+import { FMLocal } from "../form/typings";
 
 export const FilterContent: FC<{
   mode: string;

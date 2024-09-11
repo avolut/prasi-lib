@@ -1,4 +1,4 @@
-import { GFCol } from "@/gen/utils";
+import { GFCol } from "lib/gen/utils";
 import get from "lodash.get";
 import { FC } from "react";
 

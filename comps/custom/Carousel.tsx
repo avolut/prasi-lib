@@ -4,7 +4,7 @@ import {
   CarouselNext,
   CarouselPrevious,
   Carousel as SCarousel,
-} from "@/comps/ui/carousel";
+} from "lib/comps/ui/carousel";
 import { FC } from "react";
 
 export const Carousel: FC<{ list: any[] }> = ({ list }) => {

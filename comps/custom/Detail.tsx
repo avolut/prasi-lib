@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { cx } from "class-variance-authority";
 import { ArrowRight } from "lucide-react";
 import { FC } from "react";

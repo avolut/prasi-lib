@@ -1,7 +1,7 @@
-import { GFCol, parseGenField } from "@/gen/utils";
-import { cn } from "@/utils";
-import { fields_map } from "@/utils/format-value";
-import { useLocal } from "@/utils/use-local";
+import { GFCol, parseGenField } from "lib/gen/utils";
+import { cn } from "lib/utils";
+import { fields_map } from "lib/utils/format-value";
+import { useLocal } from "lib/utils/use-local";
 import { set } from "lib/utils/set";
 import get from "lodash.get";
 import {
@@ -29,17 +29,16 @@ import DataGrid, {
 import "react-data-grid/lib/styles.css";
 import { createPortal } from "react-dom";
 import { Toaster } from "sonner";
-import { call_prasi_events } from "../../..";
 import { filterWhere } from "../filter/parser/filter-where";
 import { getFilter } from "../filter/utils/get-filter";
 import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "../ui/toast";
-import { sortTree } from "./utils/sort-tree";
 import { TLList } from "./TLList";
-import { OnRowClick } from "./utils/type";
 import { TLSlider } from "./TLSlider";
-import { getPathname } from "lib/exports";
+import { sortTree } from "./utils/sort-tree";
+import { OnRowClick } from "./utils/type";
+import { call_prasi_events } from "lib/utils/prasi-events";
 
 let EMPTY_SET = new Set() as ReadonlySet<any>;
 

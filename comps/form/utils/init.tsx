@@ -1,4 +1,4 @@
-import { parseGenField } from "@/gen/utils";
+import { parseGenField } from "lib/gen/utils";
 import { MDLocal } from "lib/comps/md/utils/typings";
 import { Button } from "lib/comps/ui/button";
 import { toast } from "lib/comps/ui/toast";

@@ -4,11 +4,10 @@ import { FieldLoading, Spinner } from "lib/comps/ui/field-loading";
 import { hashSum } from "lib/utils/hash-sum";
 import { getPathname } from "lib/utils/pathname";
 import { useLocal } from "lib/utils/use-local";
-import { ArrowUpRight, Construction, Cuboid, Loader } from "lucide-react";
+import { ArrowUpRight, Construction } from "lucide-react";
 import { FC, ReactNode, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
-
-const link_cache = {} as Record<string, any>;
+import { link_cache } from "lib/utils/fetch-link-params";
 
 export const FieldLink: FC<{
   field: FieldLocal;
@@ -234,43 +233,4 @@ const navigateLink = async (
 
   navigate(`${link.url}#lnk=${prev_link + vhash}`);
   return true;
-};
-
-export const parseLink = () => {
-  const lnk = location.hash.split("#").find((e) => e.startsWith("lnk="));
-
-  if (lnk) {
-    const res = lnk.split("=").pop() || "";
-    if (res) {
-      return res.split("+");
-    }
-  }
-  return [];
-};
-
-export const lastParams = async () => {
-  const parsed = parseLink();
-  if (parsed.length > 0) {
-    const res = await fetchLinkParams([parsed.pop() || ""]);
-    return res[0];
-  }
-  return null;
-};
-
-export const fetchLinkParams = async (
-  parsed_link?: ReturnType<typeof parseLink>
-) => {
-  const parsed = parsed_link || parseLink();
-
-  return await Promise.all(
-    parsed.map(async (e) => {
-      if (link_cache[e]) {
-        return link_cache[e] as LinkParam;
-      }
-
-      const result = await api._kv("get", e);
-      link_cache[e] = result;
-      return result as unknown as LinkParam;
-    })
-  );
 };

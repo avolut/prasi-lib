@@ -1,4 +1,4 @@
-import { GFCol } from "@/gen/utils";
+import { GFCol } from "lib/gen/utils";
 import dayjs from "dayjs";
 import { formatDate } from "lib/comps/custom/Datepicker/helpers";
 import { FilePreview } from "lib/comps/form/field/type/FilePreview";

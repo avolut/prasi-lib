@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { PropTypeInput } from "./TypeInput";

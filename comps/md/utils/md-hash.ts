@@ -1,4 +1,4 @@
-import { fetchLinkParams, parseLink } from "lib/comps/form/field/type/TypeLink";
+import { fetchLinkParams, parseLink } from "lib/utils/fetch-link-params";
 import { MDLocal } from "./typings";
 import { BreadItem } from "lib/comps/custom/Breadcrumb";
 
@@ -37,7 +37,7 @@ export const masterDetailParseHash = (md: MDLocal) => {
     }
   }
 
-  if (changed) {
+  if (changed) { 
     md.params.links = [];
     md.header.loading = true;
     fetchLinkParams(parsed_link).then((links) => {

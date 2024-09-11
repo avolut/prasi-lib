@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import Quill from "quill";
 import "quill/dist/quill.snow.css"; // Import CSS untuk tema Quill
 import { FC, useEffect } from "react";

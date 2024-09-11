@@ -1,8 +1,8 @@
 import { GFCol } from "lib/comps/form/gen/fields";
+import { createItem, parseGenField } from "lib/gen/utils";
 import { set } from "lib/utils/set";
 import capitalize from "lodash.capitalize";
 import get from "lodash.get";
-import { createItem, parseGenField } from "../../../gen/utils";
 import { generateSelect } from "./md-select";
 import { on_load } from "./tbl-list/on_load";
 

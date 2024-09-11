@@ -1,7 +1,6 @@
-import { GFCol } from "@/gen/utils";
-import { FC, MutableRefObject, ReactElement, ReactNode } from "react";
+import { GFCol } from "lib/gen/utils";
+import { FC, ReactElement, ReactNode } from "react";
 import { editorFormData } from "./utils/ed-data";
-import { MDLocal } from "../md/utils/typings";
 
 export type FMProps = {
   on_init: (arg: { fm: FMLocal; submit: any; reload: any }) => any;

@@ -1,4 +1,4 @@
-import { isEmptyString } from "../../../utils/is-empty-string";
+import { isEmptyString } from "lib/utils/is-empty-string";
 
 export const softDeleteFilter = (
   where: any,

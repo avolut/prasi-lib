@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { FC } from "react";
 
 export type PropTypeSwitch = {};

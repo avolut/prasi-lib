@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { useEffect, useRef } from "react";
 import { FieldInternal, FieldProp } from "../typings";
 

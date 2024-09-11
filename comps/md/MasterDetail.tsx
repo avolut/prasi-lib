@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { parseGenField } from "lib/gen/utils";
 import { FC, useEffect, useRef } from "react";
 import { ModeFull } from "./mode/full";

@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
 import { Loader2, Paperclip, Trash2, Upload } from "lucide-react";
 import { ChangeEvent, FC } from "react";

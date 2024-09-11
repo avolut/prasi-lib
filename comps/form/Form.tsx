@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Toaster } from "sonner";

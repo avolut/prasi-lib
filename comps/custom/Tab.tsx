@@ -1,6 +1,6 @@
 import { FC, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 
 export const Tab: FC<{
   tabs: (arg: { count: (string | number)[] }) => {

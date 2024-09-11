@@ -1,7 +1,7 @@
 import { FC, ReactNode, isValidElement, useEffect } from "react";
 import * as card from "../ui/card";
-import { cn } from "@/utils";
-import { useLocal } from "@/utils/use-local";
+import { cn } from "lib/utils";
+import { useLocal } from "lib/utils/use-local";
 import { Skeleton } from "../ui/skeleton";
 
 export const Card: FC<{

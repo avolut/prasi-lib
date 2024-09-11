@@ -3,7 +3,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { MDDetail } from "../parts/MDDetail";
 import { MDMaster } from "../parts/MDMaster";
 import { MDLocal, MDRef } from "../utils/typings";
-import { getPathname } from "@/utils/pathname";
+import { getPathname } from "lib/utils/pathname";
 
 export const ModeVSplit: FC<{ md: MDLocal; mdr: MDRef }> = ({ md, mdr }) => {
   return (

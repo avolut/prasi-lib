@@ -1,5 +1,5 @@
 import { filterWhere } from "lib/comps/filter/parser/filter-where";
-import { call_prasi_events } from "lib/exports";
+import { call_prasi_events } from "lib/utils/prasi-events";
 
 export const export_excel = async ({
   list,

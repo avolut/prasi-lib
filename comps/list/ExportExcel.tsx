@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { FC, MouseEvent } from "react";
 // import ExcelJS from "exceljs";
 

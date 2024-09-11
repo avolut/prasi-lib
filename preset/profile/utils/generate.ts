@@ -1,4 +1,4 @@
-import { select } from "@/preset/login/utils/select";
+import { select } from "lib/preset/login/utils/select";
 import { set } from "lib/utils/set";
 import get from "lodash.get";
 

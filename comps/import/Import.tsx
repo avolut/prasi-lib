@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect } from "react";
 import * as XLSX from "xlsx";
 

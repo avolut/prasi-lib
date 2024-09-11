@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { glb } from "app/lib/goal";
 import { Button } from "lib/comps/ui/button";
 import {

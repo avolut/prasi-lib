@@ -1,6 +1,6 @@
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
 
 export const FieldButton: FC<{

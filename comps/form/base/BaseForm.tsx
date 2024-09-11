@@ -1,8 +1,8 @@
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { BaseFormLocal, default_base_form_local } from "./types";
 import { useLocal } from "lib/utils/use-local";
-import { FieldLocal, FieldProp, fieldType, FMLocal } from "../typings";
-import { FieldLoading } from "lib/exports";
+import { ReactNode, useCallback, useEffect } from "react";
+import { FieldLocal, FieldProp, FMLocal } from "../typings";
+import { BaseFormLocal, default_base_form_local } from "./types";
+import { FieldLoading } from "lib/comps/ui/field-loading";
 
 export type BaseFormProps<T> = {
   data: T;

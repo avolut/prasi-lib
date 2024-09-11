@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { FieldLoading } from "lib/comps/ui/field-loading";
 import { Typeahead } from "lib/comps/ui/typeahead";
 import { FC, useEffect } from "react";

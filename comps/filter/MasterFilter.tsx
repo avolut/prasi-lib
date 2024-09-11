@@ -1,10 +1,10 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { FC, ReactNode } from "react";
 import { FMLocal, GenField } from "../form/typings";
 import { FilterContent } from "./FilterContent";
 import { getFilter } from "./utils/get-filter";
 import { default_filter_local } from "./utils/types";
-import { FieldLoading } from "lib/exports";
+import { FieldLoading } from "../ui/field-loading";
 
 type FilterMode = "raw" | "inline";
 

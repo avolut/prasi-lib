@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { Typeahead } from "lib/comps/ui/typeahead";
 import { FC } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";

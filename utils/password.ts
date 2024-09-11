@@ -1,4 +1,4 @@
-import * as _bcrypt from "@/utils/bcrypt";
+import * as _bcrypt from "lib/utils/bcrypt";
 export const bcrypt = _bcrypt;
 
 export const hashPassword = (pass: string) => {

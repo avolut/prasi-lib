@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { Spinner } from "lib/comps/ui/field-loading";
 import { Tooltip } from "lib/comps/ui/tooltip";
 import get from "lodash.get";

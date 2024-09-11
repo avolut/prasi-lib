@@ -1,5 +1,5 @@
-import { AutoHeightTextarea } from "@/comps/custom/AutoHeightTextarea";
-import { useLocal } from "@/utils/use-local";
+import { AutoHeightTextarea } from "lib/comps/custom/AutoHeightTextarea";
+import { useLocal } from "lib/utils/use-local";
 import parser from "any-date-parser";
 import Datepicker from "lib/comps/custom/Datepicker";
 import { EyeIcon, EyeOff } from "lucide-react";

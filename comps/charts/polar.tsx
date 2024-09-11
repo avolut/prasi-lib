@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect } from "react";
 import { loadChart } from "./loader";
 import type { PolarArea } from "react-chartjs-2";
