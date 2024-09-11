@@ -21,6 +21,7 @@ export const overrideNav = (arg?: { local?: any }) => {
         const pathname = newurl.pathname;
 
         _href = baseurl(_href);
+
         if (params) {
           const prefix: LinkParam["prefix"] =
             params.breads?.map((e) => {

@@ -1,5 +1,8 @@
 export const baseurl = (url: string) => {
-  if (location.hostname === "prasi.avolut.com") {
+  if (
+    location.hostname === "prasi.avolut.com" ||
+    location.host === "localhost:4550"
+  ) {
     const id_site = location.pathname.split("/")[2];
 
     if (url.startsWith("/")) return `/prod/${id_site}${url}`;
