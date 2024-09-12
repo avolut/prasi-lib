@@ -130,6 +130,10 @@ const formatCurrency = (value: any) => {
   }
 };
 export const formatMoney = (res: any) => {
+  if (typeof res === "string" && res.startsWith("BigInt::")) {
+    res = res.substring(`BigInt::`.length);
+  }
+
   const formattedAmount = new Intl.NumberFormat("id-ID", {
     minimumFractionDigits: 0,
   }).format(res);
