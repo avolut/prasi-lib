@@ -1,6 +1,4 @@
-import { useLocal } from "lib/utils/use-local";
-import { glb } from "app/lib/goal";
-import { Button } from "lib/comps/ui/button";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   Dialog,
   DialogContent,
@@ -9,9 +7,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "lib/comps/ui/dialog";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { useLocal } from "lib/utils/use-local";
 import { X } from "lucide-react";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 
 export const Pop: FC<{
   child: any;
