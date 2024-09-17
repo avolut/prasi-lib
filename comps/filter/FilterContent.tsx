@@ -3,7 +3,7 @@ import { BaseForm } from "../form/base/BaseForm";
 import { FilterLocal } from "./utils/types";
 import { useLocal } from "lib/utils/use-local";
 import { getFilter } from "./utils/get-filter";
-import { FMLocal } from "../form/typings";
+import { FieldLoading, FMLocal } from "lib/exports";
 
 export const FilterContent: FC<{
   mode: string;
@@ -106,32 +106,37 @@ export const FilterContent: FC<{
       <BaseForm
         data={filter.data}
         on_submit={async (form) => {
+          const fm = form.fm;
           try {
             if (typeof form.fm?.data === "object") {
-              const fm = form.fm?.data as any
               form.render();
               form.fm.render();
             }
           } catch (ex) {}
 
-          if (typeof onSubmit === "function" && mode === "raw") {
-            const data = await onSubmit(form.fm);
-            if (typeof form.fm?.data === "object") {
-              form.fm.data = {
-                __status: "submit",
-                ...form.fm.data,
-                _where: data,
-              };
-              form.fm.render();
-              filter.data = {
-                __status: "submit",
-                ...form.fm.data,
-                _where: data,
-              };
-              filter.render();
-            }
+          if (mode === "raw" && fm) {
+            const submit = async (fm: FMLocal) => {
+              fm.render();
+              if (typeof onSubmit === "function") {
+                const data = await onSubmit(fm);
+                if (typeof form.fm?.data === "object") {
+                  form.fm.data = {
+                    __status: "submit",
+                    ...form.fm.data,
+                    _where: data,
+                  };
+                  form.fm.render();
+                  filter.data = {
+                    __status: "submit",
+                    ...form.fm.data,
+                    _where: data,
+                  };
+                  filter.render();
+                }
+              }
+            };
+            await submit(fm);
           }
-          // form.render();
           const f = getFilter(filter.name);
           if (f) {
             for (const list of Object.values(f.list.ref)) {

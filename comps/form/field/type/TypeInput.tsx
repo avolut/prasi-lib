@@ -1,5 +1,5 @@
-import { AutoHeightTextarea } from "lib/comps/custom/AutoHeightTextarea";
-import { useLocal } from "lib/utils/use-local";
+import { AutoHeightTextarea } from "@/comps/custom/AutoHeightTextarea";
+import { useLocal } from "@/utils/use-local";
 import parser from "any-date-parser";
 import Datepicker from "lib/comps/custom/Datepicker";
 import { EyeIcon, EyeOff } from "lucide-react";
@@ -217,7 +217,7 @@ export const FieldTypeInput: FC<{
           asSingle={true}
           useRange={false}
           onChange={(value) => {
-            console.log({ value });
+            // console.log({ value });
             fm.data[field.name] = value?.startDate
               ? new Date(value?.startDate)
               : null;

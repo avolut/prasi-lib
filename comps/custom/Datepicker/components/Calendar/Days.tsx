@@ -415,10 +415,10 @@ const Days: React.FC<Props> = ({
             hoverDay(item, "previous");
           }}
         >
-          <span className="c-relative">
-            {item}
-            <span className="c-relative">{load_marker(item, "previous")}</span>
-          </span>
+        <span className="c-relative">
+          {item}
+          {load_marker(item, "previous")}
+        </span>
         </button>
       ))}
 
@@ -438,7 +438,7 @@ const Days: React.FC<Props> = ({
         >
           <span className="c-relative">
             {item}
-            <span className="c-relative">{load_marker(item, "current")}</span>
+            {load_marker(item, "current")}
           </span>
         </button>
       ))}
@@ -454,10 +454,10 @@ const Days: React.FC<Props> = ({
             hoverDay(item, "next");
           }}
         >
-          <span className="c-relative">
-            {item}
-            <span className="c-relative">{load_marker(item, "next")}</span>
-          </span>
+        <span className="c-relative">
+          {item}
+          {load_marker(item, "next")}
+        </span>
         </button>
       ))}
     </div>

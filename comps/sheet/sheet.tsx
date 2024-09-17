@@ -1,4 +1,4 @@
-import { useLocal } from "lib/utils/use-local";
+import { useLocal } from "@/utils/use-local";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { FC, useEffect } from "react";
@@ -21,7 +21,22 @@ export const SheetCn: FC<{
   content: any;
   header: string;
   open: string;
-}> = ({ child, PassProp, props, content, header, open }) => {
+  close?: string;
+  mode?: "full" | "normal";
+  direction?: "left" | "right" | "bottom" | "top";
+  deps?: any;
+}> = ({
+  child,
+  PassProp,
+  props,
+  content,
+  header,
+  open,
+  close,
+  mode,
+  direction,
+  deps
+}) => {
   const local = useLocal({
     open: false,
   });
@@ -40,6 +55,7 @@ export const SheetCn: FC<{
         <div {...props} className={cx(props.className, "")}>
           <PassProp
             sheet={{
+              deps,
               open: () => {
                 local.open = true;
                 local.render();
@@ -71,39 +87,60 @@ export const SheetCn: FC<{
         )}
       />
       <SheetContent
+        side={direction}
         className={cx(
-          "sm:s-max-w-[425px]",
+          mode === "full" ? "c-w-screen" : "sm:s-max-w-[425px]",
           css`
             z-index: 2;
           `
         )}
       >
-        <SheetPrimitive.Close
-          onClick={() => {
-            local.open = false;
-            local.render();
-          }}
-          className={cx(
-            "c-absolute c-right-4 c-top-4 c-rounded-sm c-opacity-70 c-ring-offset-background c-transition-opacity hover:c-opacity-100 focus:c-outline-none focus:c-ring-2 focus:c-ring-ring focus:c-ring-offset-2 disabled:c-pointer-events-none data-[state=open]:c-bg-accent data-[state=open]:c-text-muted-foreground",
-            css`
-              right: 1rem;
-            `
-          )}
-        >
-          <X className="c-h-4 c-w-4" />
-          <span className="c-sr-only">Close</span>
-        </SheetPrimitive.Close>
-        <SheetHeader
-          className={cx(
-            css`
-              padding: 0px 0px 0px 10px;
-            `
-          )}
-        >
-          <SheetTitle>{header}</SheetTitle>
-        </SheetHeader>
+        {close !== "n" ? (
+          <SheetPrimitive.Close
+            onClick={() => {
+              local.open = false;
+              local.render();
+            }}
+            className={cx(
+              "c-absolute c-right-4 c-top-4 c-rounded-sm c-opacity-70 c-ring-offset-background c-transition-opacity hover:c-opacity-100 focus:c-outline-none focus:c-ring-2 focus:c-ring-ring focus:c-ring-offset-2 disabled:c-pointer-events-none data-[state=open]:c-bg-accent data-[state=open]:c-text-muted-foreground",
+              css`
+                right: 1rem;
+                z-index: 99;
+              `
+            )}
+          >
+            <X className="c-h-4 c-w-4" />
+            <span className="c-sr-only">Close</span>
+          </SheetPrimitive.Close>
+        ) : (
+          <></>
+        )}
+        {header !== "" && header ? (
+          <SheetHeader
+            className={cx(
+              css`
+                padding: 0px 0px 0px 10px;
+              `
+            )}
+          >
+            <SheetTitle>{header}</SheetTitle>
+          </SheetHeader>
+        ) : (
+          <>
+           <SheetHeader
+            className={cx(
+              css`
+                padding: 0px;
+              `
+            )}
+          >
+            <SheetTitle></SheetTitle>
+          </SheetHeader></>
+        )}
+
         <PassProp
           sheet={{
+            deps,
             open: () => {
               local.open = true;
               local.render();

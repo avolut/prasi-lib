@@ -1,5 +1,5 @@
-import { GFCol } from "lib/gen/utils";
-import { useLocal } from "lib/utils/use-local";
+import { GFCol } from "@/gen/utils";
+import { useLocal } from "@/utils/use-local";
 import { ChangeEvent, FC, MouseEvent } from "react";
 // import { Workbook } from 'exceljs';
 // import * as XLSX from "xlsx";
@@ -131,11 +131,7 @@ export const ImportExcel: FC<ImportExcelProps> = ({
           });
           rowIndex++;
 
-          // let insertedData = await table.create({ data: insertRow });
-          // local.insertedData.push({
-          //   pk: insertedData.id,
-          //   rows: insertedData
-          // });
+          
           local.insertedData.push({
             pk: insertRow[pk],
             rows: insertRow,

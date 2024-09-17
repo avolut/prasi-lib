@@ -4,7 +4,7 @@ import * as React from "react";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "lib/utils";
+import { cn } from "@/utils";
 
 const Sheet = SheetPrimitive.Root;
 
@@ -30,7 +30,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  "c-fixed c-z-50 c-gap-4 c-bg-background c-p-6 c-shadow-lg c-transition c-ease-in-out data-[state=closed]:c-duration-300 data-[state=open]:c-duration-500 data-[state=open]:c-animate-in data-[state=closed]:c-animate-out",
+  "c-fixed c-z-50 c-gap-4 c-bg-background c-shadow-lg c-transition c-ease-in-out data-[state=closed]:c-duration-300 data-[state=open]:c-duration-500 data-[state=open]:c-animate-in data-[state=closed]:c-animate-out",
   {
     variants: {
       side: {
@@ -39,7 +39,7 @@ const sheetVariants = cva(
           "c-inset-x-0 c-bottom-0 c-border-t data-[state=closed]:c-slide-out-to-bottom data-[state=open]:c-slide-in-from-bottom",
         left: "c-inset-y-0 c-left-0 c-h-full c-w-3/4 c-border-r data-[state=closed]:c-slide-out-to-left data-[state=open]:c-slide-in-from-left sm:c-max-w-sm",
         right:
-          "c-inset-y-0 c-right-0 c-h-full c-w-3/4 c-border-l data-[state=closed]:c-slide-out-to-right data-[state=open]:c-slide-in-from-right sm:c-max-w-sm",
+          "c-inset-y-0 c-right-0 c-h-full c-w-3/4 c-border-l data-[disabled]:c-bg-red-300 data-[state=closed]:c-slide-out-to-right data-[state=open]:c-slide-in-from-right sm:c-max-w-sm",
       },
     },
     defaultVariants: {

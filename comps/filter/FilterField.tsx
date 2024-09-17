@@ -88,14 +88,14 @@ export const FilterField: FC<{
                 value={field.fm?.data?.[name]}
                 placeholder={field.field.label}
                 onBlur={() => {
-                  clearTimeout(internal.search_timeout);
-                  filter.form?.submit();
+                  // clearTimeout(internal.search_timeout);
+                  // filter.form?.submit();
                 }}
                 spellCheck={false}
                 className="c-flex-1 c-transition-all c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"
                 onChange={(e) => {
+                  console.log("HALO")
                   field.fm.data[name] = e.currentTarget.value;
-
                   clearTimeout(internal.search_timeout);
                   internal.search_timeout = setTimeout(() => {
                     filter.form?.submit();

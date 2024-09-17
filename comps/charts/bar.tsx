@@ -1,4 +1,4 @@
-import { useLocal } from "lib/utils/use-local";
+import { useLocal } from "@/utils/use-local";
 import { FC, useEffect } from "react";
 import { loadChart } from "./loader";
 import type { Bar } from "react-chartjs-2";
@@ -14,8 +14,9 @@ const getRandomInt = (min: number, max: number) => {
 
 export const BarChart: FC<{
   data: () => ItemData;
-  legend?: any
-}> = ({ data, legend }) => {
+  legend?: any;
+  scale?: any;
+}> = ({ data, legend, scale }) => {
   const local = useLocal({
     data: null as unknown as ItemData,
     Bar: null as null | typeof Bar,
@@ -42,6 +43,7 @@ export const BarChart: FC<{
         options={{
           responsive: true,
           maintainAspectRatio: false,
+          scales: scale,
           plugins:
             legend === "none"
               ? {

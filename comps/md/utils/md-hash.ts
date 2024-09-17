@@ -1,4 +1,4 @@
-import { fetchLinkParams, parseLink } from "lib/utils/fetch-link-params";
+import { fetchLinkParams, parseLink } from "lib/comps/form/field/type/TypeLink";
 import { MDLocal } from "./typings";
 import { BreadItem } from "lib/comps/custom/Breadcrumb";
 
@@ -37,7 +37,7 @@ export const masterDetailParseHash = (md: MDLocal) => {
     }
   }
 
-  if (changed) { 
+  if (changed) {
     md.params.links = [];
     md.header.loading = true;
     fetchLinkParams(parsed_link).then((links) => {
@@ -60,7 +60,7 @@ export const masterDetailApplyParams = (md: MDLocal) => {
         delete md.params.tabs[md.name];
       }
     }
-
+console.log({select: JSON.parse(JSON.stringify(md.selected))})
     const pk = md.pk;
     if (pk && row[pk.name]) {
       md.params.hash[md.name] = row[pk.name];
@@ -79,6 +79,18 @@ export const masterDetailApplyParams = (md: MDLocal) => {
 
   if (!isEditor) {
     location.hash = hash;
+  }
+  if(!isEditor){
+    if(md.props.tab_mode === "v-tab" || md.props.tab_mode === "h-tab"){
+      try{
+        if(row && md?.childs?.form?.fm && md?.childs?.form?.fm?.status === "ready" && md.selected?.id){
+          md.childs.form.fm.reload();
+          // console.log("MASUK???")
+        }
+      }catch(ex){
+
+      }
+    }
   }
 };
 

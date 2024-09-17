@@ -1,4 +1,5 @@
-import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { useLocal } from "@/utils/use-local";
+import { Button } from "lib/comps/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,9 +8,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "lib/comps/ui/dialog";
-import { useLocal } from "lib/utils/use-local";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 
 export const Pop: FC<{
   child: any;
@@ -53,6 +54,7 @@ export const Pop: FC<{
         )}
       />
       <DialogContent className="sm:s-max-w-[425px]">
+        <div className="c-relative c-flex-grow">
         <DialogPrimitive.Close
           onClick={() => {
             local.open = false;
@@ -62,6 +64,7 @@ export const Pop: FC<{
             "c-absolute c-right-4 c-top-4 c-rounded-sm c-opacity-70 c-ring-offset-background c-transition-opacity hover:c-opacity-100 focus:c-outline-none focus:c-ring-2 focus:c-ring-ring focus:c-ring-offset-2 disabled:c-pointer-events-none data-[state=open]:c-bg-accent data-[state=open]:c-text-muted-foreground",
             css`
               right: 1rem;
+              z-index: 1;
             `
           )}
         >
@@ -85,6 +88,7 @@ export const Pop: FC<{
         >
           {content}
         </PassProp>
+        </div>
       </DialogContent>
     </Dialog>
   );
