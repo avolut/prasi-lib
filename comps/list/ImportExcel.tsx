@@ -1,5 +1,5 @@
-import { GFCol } from "@/gen/utils";
-import { useLocal } from "@/utils/use-local";
+import { GFCol } from "lib/gen/utils";
+import { useLocal } from "lib/utils/use-local";
 import { ChangeEvent, FC, MouseEvent } from "react";
 // import { Workbook } from 'exceljs';
 // import * as XLSX from "xlsx";

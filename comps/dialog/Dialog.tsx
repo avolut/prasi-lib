@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { Button } from "lib/comps/ui/button";
 import {
   Dialog,

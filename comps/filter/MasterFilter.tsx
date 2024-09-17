@@ -1,4 +1,4 @@
-import { useLocal } from "@/utils/use-local";
+import { useLocal } from "lib/utils/use-local";
 import { FC, ReactNode, useEffect } from "react";
 import { FMLocal, GenField } from "../form/typings";
 import { FilterContent } from "./FilterContent";
