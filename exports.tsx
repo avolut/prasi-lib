@@ -169,7 +169,9 @@ export { GetValue } from "lib/utils/get-value";
 export { password } from "lib/utils/password";
 export { call_prasi_events, prasi_events } from "lib/utils/prasi-events";
 export { Card } from "lib/comps/custom/Card";
-
+export {registerSession} from "lib/preset/login/utils/register";
+export {logout} from "lib/preset/login/utils/logout";
+export {Login} from "lib/preset/login/Login"
 /* MENU */
 export { Menu, MenuIcon } from "lib/preset/menu/Menu";
 
