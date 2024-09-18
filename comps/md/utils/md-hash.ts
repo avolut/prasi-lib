@@ -60,7 +60,6 @@ export const masterDetailApplyParams = (md: MDLocal) => {
         delete md.params.tabs[md.name];
       }
     }
-console.log({select: JSON.parse(JSON.stringify(md.selected))})
     const pk = md.pk;
     if (pk && row[pk.name]) {
       md.params.hash[md.name] = row[pk.name];
