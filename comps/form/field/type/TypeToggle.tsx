@@ -43,11 +43,6 @@ export const FieldToggle: FC<{
       <div className={cx("c-flex c-items-center c-justify-start c-w-full")}>
         <label
           className="c-flex c-items-center c-cursor-pointer"
-          onClick={(e) => {
-            if(local.ref){
-              local.ref.click();
-            }
-          }}
         >
           <div className="c-mr-3 c-text-gray-700 c-font-medium">
             {get(local, "list[0].label")}
