@@ -183,7 +183,6 @@ export const TableList: FC<TableListProp> = ({
       reloading: null as any,
       reload: (arg?: { toast: boolean }) => {
         if (local.reloading) return local.reloading;
-
         local.reloading = new Promise<void>(async (done) => {
           let should_toast = true;
           if (arg?.toast === false) should_toast = false;

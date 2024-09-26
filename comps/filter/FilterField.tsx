@@ -35,7 +35,6 @@ export const FilterField: FC<{
   }, [filter.form]);
 
   let show_modifier = filter.mode !== "inline";
-
   return (
     <BaseField
       {...filter.form.fieldProps({

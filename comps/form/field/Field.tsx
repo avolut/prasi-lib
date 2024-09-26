@@ -42,28 +42,6 @@ export const Field: FC<FieldProp> = (arg) => {
 
   useEffect(() => {
     if (fm.save_status === "init" || fm.status !== "ready") return;
-    if (local.prev_val === undefined) {
-      if (typeof fm.data[name] === "object" && fm.deps.md) {
-        const sfied = hashSum(prepForSum(fm.data[name]));
-
-        if (sfied !== local.prev_val) {
-          local.prev_val = sfied;
-        } else {
-          return;
-        }
-      } else {
-        local.prev_val = fm.data[name];
-      }
-
-      if (!fm.events) {
-        fm.events = {
-          on_change(name, new_value) {},
-        };
-      }
-
-      fm.events.on_change(name, fm.data[name]);
-      return;
-    }
 
     if (local.prev_val !== fm.data[name]) {
       if (typeof fm.data[name] === "object") {

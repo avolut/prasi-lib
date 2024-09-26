@@ -27,9 +27,7 @@ export const Form: FC<FMProps> = (props) => {
     },
     save_status: "init",
     fields: {},
-    events: {
-      on_change(name: string, new_value: any) {},
-    },
+    events: null as any,
     internal: {},
     submit: null as any,
     error: {} as any,

@@ -1,7 +1,8 @@
 import { FC, useEffect, useRef, useState } from "react";
 import QrScanner from "qr-scanner";
+import { QrReaderType } from "./typings";
 
-export const QrReader: FC<{ url: string }> = ({ url }) => {
+export const QrReader: FC<{ onSuccess: (result: QrReaderType) => {} }> = ({ onSuccess }) => {
     const scanner = useRef<QrScanner>();
     const videoEl = useRef<HTMLVideoElement>(null);
     const qrBoxEl = useRef<HTMLDivElement>(null);
@@ -12,9 +13,6 @@ export const QrReader: FC<{ url: string }> = ({ url }) => {
 
     // Success
     const onScanSuccess = (result: QrScanner.ScanResult) => {
-        // console.log(result);
-        // navigate("/hasil/scan");
-        // setScannedResult(result?.data);
         if (!hasScanned) {
             console.log(result);
             setScannedResult(result?.data);
@@ -22,9 +20,7 @@ export const QrReader: FC<{ url: string }> = ({ url }) => {
             scanner.current?.stop();
 
             setTimeout(() => {
-                // console.log("Mencoba trigger hasil scan");
-                // navigate(`/hasil/scan?id_asset=${result?.data}`);
-                navigate(url + result?.data);
+                onSuccess(result);
             }, 1000);
         }
     };

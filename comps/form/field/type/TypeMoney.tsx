@@ -10,7 +10,7 @@ export const FieldMoney: FC<{
   arg: FieldProp;
 }> = ({ field, fm, prop, arg }) => {
   let type_field = prop.sub_type;
-  let value: any = fm.data[field.name];
+  let value: any = Number(fm.data[field.name]);
   const input = useLocal({
     value: 0 as any,
     ref: null as any,
