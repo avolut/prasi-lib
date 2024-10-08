@@ -13,4 +13,7 @@ export const langId: Record<LangKeyword, string> = {
   "Upload Multiple Files": "Unggah Beberapa File",
   "Back To List": "Kembali ke List",
   "is required": "harus diisi",
+  "Save Failed": "Gagal Menyimpan",
+  "please correct": "mohon benahi",
+  "errors": "kesalahan berikut"
 };

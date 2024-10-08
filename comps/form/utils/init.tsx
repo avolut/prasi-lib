@@ -276,10 +276,10 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           toast.error(
             <div className="c-flex c-text-red-600 c-items-center">
               <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
-              Save Failed
+              {translate("Save Failed")}
               {count > 0 &&
-                `, please correct
-                    ${count} errors`}
+                `, ${translate("please correct")}
+                    ${count} ${translate("errors")}`}
               .
             </div>,
             {

@@ -12,6 +12,7 @@ export const toast = {
   toasting: [] as any[],
   dismiss: () => {
     if (!timer.timeout) {
+      console.log(toast.toasting);
       if (toast.toasting.length > 0) {
         for (const t of toast.toasting) {
           sonner.dismiss(t.id);

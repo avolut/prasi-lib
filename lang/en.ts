@@ -10,5 +10,8 @@ export const langEn = {
   "Remove this file ?": "Remove this file ?",
   "Upload Multiple Files":"Upload Multiple Files",
   "Back To List": "Back To List",
-  "is required": "is required"
+  "is required": "is required",
+  "Save Failed": "Save Failed",
+  "please correct": "please correct",
+  "errors": "errors"
 };
