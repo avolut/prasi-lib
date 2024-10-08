@@ -1,5 +1,5 @@
 import { useLocal } from "lib/utils/use-local";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { FieldLocal, FieldProp, FMLocal } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
 
@@ -14,6 +14,13 @@ export const FieldOTP: FC<{
     otp: [] as string[],
     ref: [] as HTMLInputElement[],
   });
+
+  // useEffect(() => {
+  //   if (typeof fm.data[field.name] === "string") {
+  //     local.otp = fm.data[field.name].split("");
+  //     local.render();
+  //   }
+  // }, [fm.data[field.name]]);
 
   if (local.otp.length === 0 && digit) {
     for (let i = 0; i < digit; i++) {
@@ -74,10 +81,8 @@ export const FieldOTP: FC<{
             }
 
             const otp = local.otp.join("");
-            if (otp.length === digit) {
-              fm.data[field.name] = otp;
-              fm.render();
-            }
+            fm.data[field.name] = otp;
+            fm.render();
             local.render();
           }}
         />

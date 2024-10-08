@@ -1,3 +1,5 @@
+import { Server } from "bun";
+
 export interface NewSessionData<T> {
   uid: string;
   role: string;
@@ -52,12 +54,14 @@ export type ClientSessionStatus =
   | "logout";
 export type ClientSession<T> = {
   status: ClientSessionStatus;
-  current: null | SessionData<T>;
+  current: null | T;
   init(): Promise<{ status: ClientSessionStatus }>;
-  connect(auth?: SessionAuth): Promise<void>;
   connected: boolean;
-  login(auth: SessionAuth): Promise<SessionData<T>>;
+  login(auth: SessionAuth): Promise<T>;
   logout(): Promise<void>;
+  save(data: T): Promise<void>;
+  load(): Promise<T | null>;
+  clear(): Promise<void>;
 };
 
 export interface SessionContext<T> extends ServerContext {
@@ -66,6 +70,7 @@ export interface SessionContext<T> extends ServerContext {
 
 export type ServerContext = {
   req: Request;
+  server: Server;
   handle: (req: Request) => Promise<Response>;
   mode: "dev" | "prod";
   url: {

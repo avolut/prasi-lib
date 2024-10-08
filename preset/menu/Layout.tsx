@@ -7,8 +7,9 @@ import { FieldLoading } from "lib/comps/ui/field-loading";
 
 const w = window as any;
 const initResponsive = function () {
-  const mode = localStorage.getItem("prasi-editor-mode");
+  let mode = "desktop";
   if (isEditor) {
+    const mode = localStorage.getItem("prasi-editor-mode");
     setTimeout(() => {
       if (mode === "mobile") {
         w.isMobile = true;

@@ -4,8 +4,8 @@ import { ServerContext, SessionContext } from "../session/type";
 
 type RouteFn = (...arg: any[]) => Promise<any>;
 
-type SingleRoute = [string, () => Promise<{ default: RouteFn }>];
-type SingleRouteWithOption = [
+export type SingleRoute = [string, () => Promise<{ default: RouteFn }>];
+export type SingleRouteWithOption = [
   string,
   () => Promise<{ default: RouteFn }>,
   RouteOption
@@ -22,6 +22,10 @@ export const newServerRouter = <
   return arg;
 };
 
+export const prasiApi = <T extends (...arg: any[]) => any>(fn: T) => {
+  return fn as (...arg: Parameters<T>) => ReturnType<T>;
+};
+
 export const newClientRouter = <T extends ReturnType<typeof newServerRouter>>(
   ...routers: T[]
 ) => {
@@ -33,6 +37,7 @@ export const newClientRouter = <T extends ReturnType<typeof newServerRouter>>(
           for (const router of routers) {
             if (router[api_name as any]) {
               const [url, _, opt] = router[api_name as any];
+
               if (opt && opt.response_as)
                 return _post(url, args, { response_as: opt.response_as });
 
@@ -84,7 +89,11 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
           try {
             params = await req.json();
           } catch (e) {}
-          result = await route.handler.default.bind(arg)(params);
+          if (Array.isArray(params)) {
+            result = await route.handler.default.bind(arg)(...params);
+          } else {
+            result = await route.handler.default.bind(arg)(params);
+          }
         }
 
         if (typeof result === "object" && result instanceof Response) {

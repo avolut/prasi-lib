@@ -1,3 +1,4 @@
+import { EsensiSession } from "app/server/session";
 import day from "dayjs";
 
 const w = window as any;
@@ -8,7 +9,7 @@ export type RG = {
 };
 
 export type UserSession = {
-  data: any;
+  data: EsensiSession;
   expired: Date; // second
 };
 export const registerSession = (session: RG) => {
