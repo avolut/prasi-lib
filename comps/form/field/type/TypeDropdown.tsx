@@ -119,6 +119,12 @@ export const TypeDropdown: FC<{
     reload();
   }, []);
 
+  useEffect(() => {
+    if (fm.save_status === 'saved') { 
+      reload();
+    }
+  }, [fm.save_status]);
+
   let value =
     typeof arg.opt_get_value === "function"
       ? arg.opt_get_value({
