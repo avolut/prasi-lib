@@ -45,12 +45,14 @@ export const toast = {
   ) => {
     clearTimeout(timer.timeout);
     timer.timeout = setTimeout(() => {
-      sonner.success(el, {
-        ...props,
-        onDismiss: (t) => {
-          toast.toasting = toast.toasting.filter((e) => e !== t.id);
-        },
-      });
+      toast.toasting.push(
+        sonner.success(el, {
+          ...props,
+          onDismiss: (t) => {
+            toast.toasting = toast.toasting.filter((e) => e !== t.id);
+          },
+        })
+      );
       timer.timeout = null;
     }, timer.limit);
   },
@@ -60,12 +62,14 @@ export const toast = {
   ) => {
     clearTimeout(timer.timeout);
     timer.timeout = setTimeout(() => {
-      sonner.error(el, {
-        ...props,
-        onDismiss: (t) => {
-          toast.toasting = toast.toasting.filter((e) => e !== t.id);
-        },
-      });
+      toast.toasting.push(
+        sonner.error(el, {
+          ...props,
+          onDismiss: (t) => {
+            toast.toasting = toast.toasting.filter((e) => e !== t.id);
+          },
+        })
+      );
       clearTimeout(timer.timeout);
 
       timer.timeout = null;
