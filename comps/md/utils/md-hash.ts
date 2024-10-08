@@ -1,6 +1,6 @@
+import { BreadItem } from "lib/comps/custom/Breadcrumb";
 import { fetchLinkParams, parseLink } from "lib/utils/fetch-link-params";
 import { MDLocal } from "./typings";
-import { BreadItem } from "lib/comps/custom/Breadcrumb";
 
 export const masterDetailParseHash = (md: MDLocal) => {
   let raw_hash = decodeURIComponent(location.hash);
