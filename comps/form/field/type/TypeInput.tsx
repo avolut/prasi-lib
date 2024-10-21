@@ -217,7 +217,6 @@ export const FieldTypeInput: FC<{
           asSingle={true}
           useRange={false}
           onChange={(value) => {
-            // console.log({ value });
             fm.data[field.name] = value?.startDate
               ? new Date(value?.startDate)
               : null;

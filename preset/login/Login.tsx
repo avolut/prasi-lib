@@ -19,7 +19,6 @@ export const Login: FC<LGProps> = (props) => {
     loadSession();
     if (w.user) {
       const home = props.url_home[w.user.role];
-      console.log(home);
       if (home) {
         location.href = getBasename() + home;
         return;

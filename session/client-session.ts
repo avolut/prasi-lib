@@ -73,8 +73,7 @@ Login is prevented, please logout first before re-login!`
         if (this.current) {
           resolve(this.current);
         } else {
-          if (auth) {
-          } else {
+          if (!auth) {
             reject("Current session not found");
           }
         }

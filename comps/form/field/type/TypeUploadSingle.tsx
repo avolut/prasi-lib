@@ -162,7 +162,6 @@ export const FieldUploadSingle: FC<{
                 <div
                   onClick={() => {
                     if (input.ref) {
-                      console.log(input.ref);
                       input.ref.click();
                     }
                   }}
