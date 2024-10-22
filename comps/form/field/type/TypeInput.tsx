@@ -116,7 +116,8 @@ export const FieldTypeInput: FC<{
   switch (type_field) {
     case "toggle":
       return (
-        <div className="c-px-2">ad
+        <div className="c-px-2">
+          ad
           <div
             className={cx(
               "c-relative",
@@ -254,7 +255,6 @@ export const FieldTypeInput: FC<{
                 prop.onChange(fm.data[field.name]);
               }
             }}
-            //@ts-ignore
             inputMode="decimal"
             value={format(value, {
               mask: "____-____-_______",
@@ -286,8 +286,7 @@ export const FieldTypeInput: FC<{
         <div className="c-flex c-relative c-flex-1">
           <InputMask
             mask={mask}
-            //@ts-ignore
-            inputmode="decimal"
+            inputMode="decimal"
             replacement={{ _: /\d/ }}
             onChange={(ev) => {
               fm.data[field.name] = ev.currentTarget.value.replace(/\D/g, "");

@@ -220,6 +220,8 @@ export const formType = (active: { item_id: string }, meta: any) => {
     }
   }
 
+  console.log(data, cache);
+
   return `
   const ___data = ${data} ;
   const fm = null as unknown as {
