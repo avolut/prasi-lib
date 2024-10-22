@@ -1,6 +1,7 @@
 import { GFCol } from "lib/gen/utils";
 import { FC, ReactElement, ReactNode } from "react";
 import { editorFormData } from "./utils/ed-data";
+import get from "lodash.get";
 
 export type FMProps = {
   on_init: (arg: { fm: FMLocal; submit: any; reload: any }) => any;
@@ -216,11 +217,21 @@ export const formType = (active: { item_id: string }, meta: any) => {
       const cache = editorFormData[m.parent.id];
       if (cache && cache.data) {
         data = JSON.stringify(cache.data);
+      } else {
+        const cur = get(m, "script.scope.fm.data");
+        if (!!cur && Object.keys(cur).length > 0) {
+          data = JSON.stringify(cur);
+        } else {
+          const fields = get(m, "script.scope.fm.fields");
+          if (!!fields) {
+            data = `null as {${Object.keys(fields)
+              .map((e) => `"${e}": any `)
+              .join(",")}}`;
+          }
+        }
       }
     }
   }
-
-  console.log(data, cache);
 
   return `
   const ___data = ${data} ;
