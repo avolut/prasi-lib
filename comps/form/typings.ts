@@ -47,7 +47,7 @@ export type FieldProp = {
   label: string;
   desc?: string;
   props?: any;
-  mask?:string;
+  mask?: string;
   kv?: { default: any; index: "preserve" | "auto-sort" };
   upload?: {
     mode: "single-file" | "multi-file";
@@ -221,7 +221,7 @@ export const formType = (active: { item_id: string }, meta: any) => {
   }
 
   return `
-  const ___data = ${data};
+  const ___data = ${data} ;
   const fm = null as unknown as {
     status: "init" | "loading" | "saving" | "ready";
     data: typeof ___data;

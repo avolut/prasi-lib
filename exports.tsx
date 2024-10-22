@@ -144,20 +144,20 @@ export { genTableEdit } from "lib/comps/form/gen/gen-table-edit";
 export { generateMasterDetail } from "lib/comps/md/gen/md-gen";
 export { parseGenField } from "lib/gen/utils";
 
-/** ETC */ 
+/** ETC */
 export { filterModifier } from "lib/comps/filter/utils/filter-modifier";
 export { generateField } from "lib/comps/form/gen/gen-field";
 export { generateForm } from "lib/comps/form/gen/gen-form";
 export { validate as validateField } from "lib/comps/form/utils/validate";
 export { sortTree, treePrefix } from "lib/comps/list/utils/sort-tree";
- 
+
 export { getFilter } from "lib/comps/filter/utils/get-filter";
 export type {
   fieldType,
   FieldTypeCustom,
   FMLocal,
-  formType,
 } from "lib/comps/form/typings";
+export { formType } from "lib/comps/form/typings";
 export type { TableListType } from "lib/comps/list/utils/typings";
 export { generateTableList as generateTableList } from "lib/comps/md/gen/gen-table-list";
 export { generateSelect } from "lib/comps/md/gen/md-select";
@@ -169,9 +169,9 @@ export { GetValue } from "lib/utils/get-value";
 export { password } from "lib/utils/password";
 export { call_prasi_events, prasi_events } from "lib/utils/prasi-events";
 export { Card } from "lib/comps/custom/Card";
-export {registerSession} from "lib/preset/login/utils/register";
-export {logout} from "lib/preset/login/utils/logout";
-export {Login} from "lib/preset/login/Login"
+export { registerSession } from "lib/preset/login/utils/register";
+export { logout } from "lib/preset/login/utils/logout";
+export { Login } from "lib/preset/login/Login";
 /* MENU */
 export { Menu, MenuIcon } from "lib/preset/menu/Menu";
 
@@ -193,4 +193,4 @@ export { formatTime, longDate, shortDate, timeAgo } from "lib/utils/date";
 export { getBasename, getPathname } from "lib/utils/pathname";
 
 export { formatMoney } from "lib/comps/form/field/type/TypeMoney";
-export {Flow} from "lib/comps/ui/flow"
+export { Flow } from "lib/comps/ui/flow";

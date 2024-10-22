@@ -255,7 +255,7 @@ export const FieldTypeInput: FC<{
               }
             }}
             //@ts-ignore
-            inputmode="decimal"
+            inputMode="decimal"
             value={format(value, {
               mask: "____-____-_______",
               replacement: { _: /\d/ },
