@@ -15,13 +15,6 @@ export const FieldOTP: FC<{
     ref: [] as HTMLInputElement[],
   });
 
-  // useEffect(() => {
-  //   if (typeof fm.data[field.name] === "string") {
-  //     local.otp = fm.data[field.name].split("");
-  //     local.render();
-  //   }
-  // }, [fm.data[field.name]]);
-
   if (local.otp.length === 0 && digit) {
     for (let i = 0; i < digit; i++) {
       local.otp.push("");
@@ -65,9 +58,13 @@ export const FieldOTP: FC<{
           }}
           onKeyDown={async (e) => {
             if (e.key === "Backspace") {
-              local.otp[idx] = "";
+              let _idx = idx;
+              if (local.otp[_idx].length === 0) {
+                _idx--;
+              }
+              local.otp[_idx] = "";
               local.render();
-              const ref = local.ref[idx - 1];
+              const ref = local.ref[Math.max(0, _idx - 1)];
               if (ref) {
                 ref.focus();
               }

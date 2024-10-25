@@ -3,8 +3,6 @@ import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
 import { FC, useEffect, useRef } from "react";
 import { IMenu, MenuProp } from "./utils/type-menu";
-import { LinkParam } from "lib/comps/form/field/type/TypeLink";
-import { hashSum } from "lib/utils/hash-sum";
 // import { icon } from "../../..";
 
 const local_default = {
