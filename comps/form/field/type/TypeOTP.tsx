@@ -25,7 +25,6 @@ export const FieldOTP: FC<{
     <div className="c-flex-1 c-flex c-justify-center c-items-center">
       {local.otp.map((item, idx) => (
         <input
-          type="text"
           key={idx}
           className={cx(
             "c-rounded-md c-text-center",
@@ -39,7 +38,8 @@ export const FieldOTP: FC<{
               background: white;
             `
           )}
-          onChange={() => {}}
+          inputMode="decimal"
+          pattern="[0-9]*"
           value={item}
           ref={(ref) => {
             if (ref) local.ref[idx] = ref;
@@ -79,8 +79,10 @@ export const FieldOTP: FC<{
 
             const otp = local.otp.join("");
             fm.data[field.name] = otp;
-            fm.render();
-            local.render();
+            if (otp.length === digit) {
+              fm.render();
+            }
+            // local.render();
           }}
         />
       ))}
