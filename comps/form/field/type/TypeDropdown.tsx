@@ -9,6 +9,7 @@ export const TypeDropdown: FC<{
   fm: FMLocal;
   arg: FieldProp;
 }> = ({ field, fm, arg }) => {
+  
   const local = useLocal({
     loaded: false,
     options: [] as { value: string; label: string; data: any }[],
@@ -164,7 +165,14 @@ export const TypeDropdown: FC<{
   }
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
-
+  const disabled_search =
+    typeof field.disabled_search === "function"
+      ? field.disabled_search()
+      : typeof field.disabled_search === "string"
+      ? field.disabled_search === "n"
+        ? true
+        : false
+      : field.disabled_search;
   if (!local.loaded) return <FieldLoading />;
 
   if (field.type === "single-option") {
@@ -179,6 +187,7 @@ export const TypeDropdown: FC<{
       <>
         <Typeahead
           value={typeahead_val}
+          disabledSearch={disabled_search ? true : false}
           popupClassName={popupClassName}
           onSelect={({ search, item }) => {
             if (item) {

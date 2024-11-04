@@ -56,7 +56,7 @@ export const BaseField = (prop: {
           "filled"
       )}
     >
-      {arg.show_label !== "n" && <Label field={field} fm={fm} />}
+      {arg.show_label !== "n" && <Label field={field} fm={fm} arg={arg}/>}
       <div className="field-input c-flex c-flex-1 c-flex-col">
         <div
           className={cx(

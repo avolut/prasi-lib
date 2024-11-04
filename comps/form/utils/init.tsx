@@ -25,7 +25,6 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
   const toastSuccess = (opt: { addNewText: string }) => {
     const md = fm.deps.md as MDLocal;
     fm.save_status = "saved";
-
     if (md) {
       toast.success(
         <div
@@ -110,7 +109,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           </div>
         </div>,
         {
-          duration: 60 * 1000,
+          duration:3000,
           className: css`
             background: #e4ffed;
             border: 2px solid green;
@@ -135,7 +134,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           </div>
         </div>,
         {
-          duration: 60 * 1000,
+          duration:3000,
           className: css`
             background: #e4ffed;
             border: 2px solid green;
@@ -233,7 +232,6 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           </>
         );
       }
-
       const form = JSON.parse(JSON.stringify(fm.data));
 
       if (fm.deps.md) {
@@ -291,6 +289,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
             }
           );
         } else {
+          
           toastSuccess({ addNewText: lang.t("Add New") });
         }
       }

@@ -71,96 +71,106 @@ export const TableEdit: FC<{
     const label = getProp(child, "title", "");
     const type = getProp(child, "type", "");
     const width = parseInt(getProp(child, "width", {}));
-    if (type === "checkbox") {
-      const on_click = getProp(child, "opt__on_click", "");
-      columns.push({
-        key,
-        name,
-        width: 35,
-        minWidth: 45,
-        resizable: true,
-        sortable: true,
-        frozen: true,
-        renderCell(arg: any) {
-          const { props, tbl } = arg;
-          local.tbl = tbl;
-          const key = props.column.key;
-          return (
-            <PassProp
-              idx={props.rowIdx}
-              row={props.row}
-              col={{
-                name: key,
-                value: props.row[props.column.key],
-                depth: props.row.__depth || 0,
-              }}
-              rows={tbl.data}
-              fm={props.fm}
-              fm_parent={parent}
-              ext_fm={{
-                idx: props.rowIdx,
-                change: () => {},
-                remove: () => {
-                  const data =
-                    tbl.data.filter((e: any) => e !== props.row) || [];
-                  fm.data[name] = data;
-                  fm.render();
-                },
-                add: (e: any) => {
-                  tbl.data.push(e ? e : {});
-                  fm.render();
-                },
-              }}
-            >
-              {child}
-            </PassProp>
-          );
-        },
-      });
-    } else {
-      columns.push({
-        key,
-        label,
-        width: width > 0 ? width : undefined,
-        resizable: true,
-        sortable: true,
-        renderCell(arg: any) {
-          const { props, tbl } = arg;
-          local.tbl = tbl;
-          const key = props.column.key;
-          return (
-            <PassProp
-              idx={props.rowIdx}
-              row={props.row}
-              col={{
-                name: key,
-                value: props.row[props.column.key],
-                depth: props.row.__depth || 0,
-              }}
-              rows={tbl.data}
-              fm={props.fm}
-              fm_parent={parent}
-              ext_fm={{
-                idx: props.rowIdx,
-                change: () => {},
-                remove: () => {
-                  const data =
-                    tbl.data.filter((e: any) => e !== props.row) || [];
-                  fm.data[name] = data;
-                  fm.render();
-                },
-                add: (e: any) => {
-                  tbl.data.push(e ? e : {});
-                  fm.render();
-                },
-              }}
-            >
-              {child}
-            </PassProp>
-          );
-        },
-      });
-    }
+    const show = getProp(child, "show", {});
+    let is_show =
+      typeof show === "function"
+        ? show({ data: fm.data })
+        : typeof show === "string"
+        ? show === "n"
+          ? false
+          : true
+        : true;
+    if (is_show)
+      if (type === "checkbox") {
+        const on_click = getProp(child, "opt__on_click", "");
+        columns.push({
+          key,
+          name,
+          width: 35,
+          minWidth: 45,
+          resizable: true,
+          sortable: true,
+          frozen: true,
+          renderCell(arg: any) {
+            const { props, tbl } = arg;
+            local.tbl = tbl;
+            const key = props.column.key;
+            return (
+              <PassProp
+                idx={props.rowIdx}
+                row={props.row}
+                col={{
+                  name: key,
+                  value: props.row[props.column.key],
+                  depth: props.row.__depth || 0,
+                }}
+                rows={tbl.data}
+                fm={props.fm}
+                fm_parent={parent}
+                ext_fm={{
+                  idx: props.rowIdx,
+                  change: () => {},
+                  remove: () => {
+                    const data =
+                      tbl.data.filter((e: any) => e !== props.row) || [];
+                    fm.data[name] = data;
+                    fm.render();
+                  },
+                  add: (e: any) => {
+                    tbl.data.push(e ? e : {});
+                    fm.render();
+                  },
+                }}
+              >
+                {child}
+              </PassProp>
+            );
+          },
+        });
+      } else {
+        columns.push({
+          key,
+          label,
+          width: width > 0 ? width : undefined,
+          resizable: true,
+          sortable: true,
+          renderCell(arg: any) {
+            const { props, tbl } = arg;
+            local.tbl = tbl;
+            const key = props.column.key;
+            return (
+              <PassProp
+                idx={props.rowIdx}
+                row={props.row}
+                col={{
+                  name: key,
+                  value: props.row[props.column.key],
+                  depth: props.row.__depth || 0,
+                }}
+                rows={tbl.data}
+                fm={props.fm}
+                fm_parent={parent}
+                ext_fm={{
+                  idx: props.rowIdx,
+                  change: () => {},
+                  remove: () => {
+                    const data =
+                      tbl.data.filter((e: any) => e !== props.row) || [];
+                    fm.data[name] = data;
+                    fm.render();
+                  },
+                  add: (e: any) => {
+                    tbl.data.push(e ? e : {});
+                    fm.render();
+                  },
+                }}
+              >
+                {child}
+              </PassProp>
+            );
+          },
+        });
+      }
   }
   return (
     <>
@@ -190,6 +200,7 @@ export const TableEdit: FC<{
           `
         )}
       >
+        {/* {JSON.stringify(value.map((e) => e.id))} */}
         <table
           className={cx(
             "c-table-auto",
@@ -255,15 +266,7 @@ export const TableEdit: FC<{
               <>
                 {value.map((row: any, idx: number) => {
                   return (
-                    <BaseForm
-                      is_form={false}
-                      data={row}
-                      on_change={(_fm) => {
-                        fm.data[name][idx] = _fm.data;
-                        fm.data[name] = [...fm.data[name]];
-                        fm.render();
-                      }}
-                    >
+                    <BaseForm is_form={false} data={row}>
                       {(form) => {
                         return (
                           <tr>
@@ -289,7 +292,10 @@ export const TableEdit: FC<{
                                         row: row,
                                         rowIdx: idx,
                                         column: header,
-                                        fm: form.fm,
+                                        fm: {
+                                          ...form.fm,
+                                          data: row,
+                                        },
                                       },
                                       tbl: {
                                         data: value,

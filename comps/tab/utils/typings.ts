@@ -10,9 +10,11 @@ export type PTProp = {
   PassProp: any;
   item: PrasiItem;
   pt: PTLocalInternal;
+  deps?: any;
 };
 
 export type PTLocalInternal = {
   mode: string;
+  deps?: any
 };
 export type PTLocal = PTLocalInternal & { render: (force?: boolean) => void };

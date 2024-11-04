@@ -80,6 +80,11 @@ export const FieldLink: FC<{
             if (!(await navigateLink(arg.link, field, fm.deps.md))) {
               link_local.navigating = false;
               link_local.render();
+              setTimeout(() => {
+                
+              local.init = true;
+              local.render();
+              }, 1000)
             }
           }
         }}
@@ -168,10 +173,11 @@ export type LinkParam = {
   }[];
 };
 
-const navigateLink = async (
+export const navigateLink = async (
   link: FieldProp["link"],
   field: FieldLocal,
-  md?: MDLocal
+  md?: MDLocal,
+  prm? :any
 ) => {
   let params = link.params(field) as { where: any; create: any; update: any };
 
@@ -217,20 +223,26 @@ const navigateLink = async (
   values.hash = vhash;
 
   link_cache[vhash] = values;
-
-  if (!link.url) {
-    alert("No URL defined!");
+  if (typeof link.url === "function") {
+    if (md) {
+      link.url(md.selected[md.pk?.name || ""]);
+    }
     return false;
-  }
+  } else {
+    if (!link.url) {
+      alert("No URL defined!");
+      return false;
+    }
 
-  await api._kv("set", vhash, values);
-  const lnk = location.hash.split("#").find((e) => e.startsWith("lnk="));
-  let prev_link = "";
-  if (lnk) {
-    prev_link = lnk.split("=").pop() || "";
-    if (prev_link) prev_link = prev_link + "+";
-  }
+    await api._kv("set", vhash, values);
+    const lnk = location.hash.split("#").find((e) => e.startsWith("lnk="));
+    let prev_link = "";
+    if (lnk) {
+      prev_link = lnk.split("=").pop() || "";
+      if (prev_link) prev_link = prev_link + "+";
+    }
 
-  navigate(`${link.url}#lnk=${prev_link + vhash}`);
-  return true;
+    navigate(`${link.url}#lnk=${prev_link + vhash}${prm}`);
+    return true;
+  }
 };

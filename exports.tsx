@@ -20,9 +20,9 @@ export const Typeahead = lazify(
 );
 
 /** Master - Detail - List - Form */
-export const MasterDetail = lazify(
-  async () => (await import("lib/comps/md/MasterDetail")).MasterDetail
-);
+// export const MasterDetail = lazify(
+//   async () => (await import("lib/comps/md/MasterDetail")).MasterDetail
+// );
 export const MDRenderMaster = lazify(
   async () => (await import("lib/comps/md/parts/MDMaster")).MDRenderMaster
 );
@@ -107,6 +107,13 @@ export const Pop = lazify(
   async () => (await import("lib/comps/dialog/Dialog")).Pop
 );
 
+export const Slide = lazify(
+  async () => (await import("lib/comps/slide/Slide")).Slide
+);
+
+export const AspectRatio = lazify(
+  async () => (await import("lib/comps/ui/aspect-ratio")).AspectRatio
+); 
 export const Import = lazify(
   async () => (await import("lib/comps/import/Import")).Import
 );
@@ -134,11 +141,12 @@ export { kvToJSON } from "./utils/kv-to-json";
 export { overrideNav } from "./utils/override-nav";
 export { bulk_query } from "./utils/bulk-query";
 export { get_user } from "./utils/get_user";
+export { range_date } from "./utils/ranged_date";
 export const _sum = sum;
 export const _get = __get;
 
 /** Generator */
-export { generateFilter as genereteFilter } from "lib/comps/filter/gen/gen-filter";
+export { generateFilter as generateFilter } from "lib/comps/filter/gen/gen-filter";
 export { generateRelation } from "lib/comps/form/gen/gen-rel";
 export { genTableEdit } from "lib/comps/form/gen/gen-table-edit";
 export { generateMasterDetail } from "lib/comps/md/gen/md-gen";
@@ -146,7 +154,7 @@ export { parseGenField } from "lib/gen/utils";
 
 /** ETC */
 export { filterModifier } from "lib/comps/filter/utils/filter-modifier";
-export { generateField } from "lib/comps/form/gen/gen-field";
+// export { generateField } from "lib/comps/form/gen/gen-field";
 export { generateForm } from "lib/comps/form/gen/gen-form";
 export { validate as validateField } from "lib/comps/form/utils/validate";
 export { sortTree, treePrefix } from "lib/comps/list/utils/sort-tree";

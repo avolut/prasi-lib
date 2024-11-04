@@ -58,7 +58,7 @@ export const FieldMoney: FC<{
             input.render();
           }
         }}
-        value={formatCurrency(input.value)}
+        value={formatCurrency(input.value) || 0}
         disabled={disabled}
         className={cx(
           "c-flex-1 c-bg-transparent c-outline-none c-px-2 c-text-sm c-w-full"

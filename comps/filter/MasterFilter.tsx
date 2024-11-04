@@ -43,11 +43,12 @@ export const MasterFilter: FC<FilterProps> = ({
     if (!isEditor) {
       const wf = getFilter(name);
       if (wf) {
-        if (wf.filter.ref[_item.id]) {
+        if (wf.filter.ref?.[_item.id]) {
           filter.data = wf.filter.ref[_item.id].data;
           filter.raw_status = "ready";
           filter.render();
         } else {
+          filter.data = {};
           if (mode === "raw" && onLoad) {
             if (filter.raw_status === "init") {
               filter.raw_status = "loading";
@@ -55,8 +56,24 @@ export const MasterFilter: FC<FilterProps> = ({
               if (data instanceof Promise) {
                 data.then((e) => {
                   filter.data = e;
+                  if (typeof onSubmit === "function") {
+                    const data = onSubmit({ data: e } as any);
+
+                    if (data instanceof Promise) {
+                      data.then((ex) => {
+                        filter.data = {
+                          __status: "submit",
+                          ...e,
+                          _where: ex,
+                        };
+                        filter.render();
+                      });
+                    }
+                    console.log({ data });
+                  }
                   filter.raw_status = "ready";
                   filter.render();
+                  
                 });
               } else {
                 filter.raw_status = "ready";
@@ -69,6 +86,9 @@ export const MasterFilter: FC<FilterProps> = ({
         wf.filter.ref[_item.id] = filter;
         wf.list.render();
       }
+    } else {
+      filter.raw_status = "ready";
+      filter.render();
     }
   }, []);
 

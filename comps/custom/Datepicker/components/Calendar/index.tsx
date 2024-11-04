@@ -45,6 +45,7 @@ interface Props {
   changeYear: (year: number) => void;
   mode?: "monthly" | "daily";
   onMark?: (day: number, date: Date) => any;
+  style?: string
 }
 
 const Calendar: React.FC<Props> = ({
@@ -57,6 +58,7 @@ const Calendar: React.FC<Props> = ({
   changeYear,
   onMark,
   mode = "daily",
+  style = "prasi"
 }) => {
   // Contexts
   const {
@@ -266,7 +268,7 @@ const Calendar: React.FC<Props> = ({
   );
 
   return (
-    <div className="c-w-full md:c-w-[296px] md:c-min-w-[296px]">
+    <div className="c-w-full md:c-w-[296px] md:c-min-w-[296px] calender">
       <div
         className={cx(
           "c-flex c-items-stretch c-space-x-1.5 c-px-2 c-py-1.5",
@@ -304,7 +306,7 @@ const Calendar: React.FC<Props> = ({
                 hideYears();
               }}
             >
-              <>{calendarData.date.locale(i18n).format("MMM")}</>
+              <>{calendarData.date.locale(i18n).format(style === "google" ? "MMMM" :"MMM")}</>
             </RoundedButton>
           </div>
 
@@ -341,11 +343,12 @@ const Calendar: React.FC<Props> = ({
           </div>
         )}
       </div>
-      <div className={cx("c-mt-0.5 c-min-h-[285px]")}>
+      <div className={cx("c-mt-0.5 c-min-h-[285px] calender-body")}>
         {showMonths && (
           <Months
             currentMonth={calendarData.date.month() + 1}
             clickMonth={clickMonth}
+            style={style}
           />
         )}
 
@@ -361,13 +364,14 @@ const Calendar: React.FC<Props> = ({
 
         {!showMonths && !showYears && (
           <>
-            <Week />
+            <Week style={style}/>
 
             <Days
               calendarData={calendarData}
               onClickPreviousDays={clickPreviousDays}
               onClickDay={clickDay}
               onClickNextDays={clickNextDays}
+              style={style}
               onIcon={(day, date) => {
                 if(typeof onMark === "function"){
                   return onMark(day, date)

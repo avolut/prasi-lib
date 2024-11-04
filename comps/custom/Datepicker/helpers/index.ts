@@ -174,7 +174,15 @@ export function getNumberOfDay(
     }
   }
 
-  [
+  isMobile ? [
+    "S",
+    "M",
+    "T",
+    "W",
+    "T",
+    "F",
+    "S",
+  ]: [
     "Sunday",
     "Monday",
     "Tuesday",

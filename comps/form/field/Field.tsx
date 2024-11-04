@@ -104,7 +104,15 @@ export const Field: FC<FieldProp> = (arg) => {
 
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
-  if (field.hidden) return <></>;
+    const show = 
+    typeof field.hidden === "function"
+      ? field.hidden()
+      : typeof field.hidden === "string"
+      ? field.hidden === "n"
+        ? false
+        : true
+      : typeof field.hidden === "boolean"? field.hidden : true;
+  if (!show) return <></>;
 
   return (
     <LabelDiv
@@ -145,7 +153,7 @@ export const Field: FC<FieldProp> = (arg) => {
       )}
       ref={typeof arg.field_ref === "function" ? arg.field_ref : undefined}
     >
-      {showlabel !== "n" && field.label && <Label field={field} fm={fm} />}
+      {showlabel !== "n" && field.label && <Label field={field} fm={fm} arg={arg}/>}
       <div className={cx("field-input c-flex c-flex-1 c-flex-col")}>
         <FieldInput
           field={field}

@@ -84,7 +84,7 @@ export const Import: FC<{
         task,
       }: {
         list: any[];
-        task: (e: any) => Promise<void>;
+        task: (e: any, index: number) => Promise<void>;
       }) => {
         let n = 0;
         while (n < list.length) {
@@ -99,7 +99,7 @@ export const Import: FC<{
             });
           }
 
-          await task(list[n]);
+          await task(list[n], n);
           await sleep(100);
           n++;
         }
@@ -108,9 +108,9 @@ export const Import: FC<{
       if (local.progress <= 0) {
         const res = startImport({
           list: local.data,
-          task: async (e) => {
+          task: async (e, index) => {
             if (typeof task === "function") {
-              const result = await task({data: e, excel});
+              const result = await task({data: e, excel, index, list: local.data, render: local.render});
               if (typeof result === "boolean") {
                 if (!result) {
                   local.recap.failed.push(e);

@@ -3,6 +3,7 @@ import { Button } from "lib/comps/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogOverlay,
   DialogTitle,
@@ -73,6 +74,7 @@ export const Pop: FC<{
         </DialogPrimitive.Close>
         <DialogHeader className="c-hidden">
           <DialogTitle></DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <PassProp
           pop={{

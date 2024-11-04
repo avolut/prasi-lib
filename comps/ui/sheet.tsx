@@ -59,7 +59,7 @@ const SheetContent = React.forwardRef<
   <SheetPortal>
     <SheetPrimitive.Content
       ref={ref}
-      className={cn(sheetVariants({ side }), className)}
+      className={cn(sheetVariants({ side }), className, "sheet-content")}
       {...props}
     >
       {children}
@@ -102,7 +102,7 @@ const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Title
     ref={ref}
-    className={cn("c-text-lg c-font-semibold c-text-foreground", className)}
+    className={cn("c-py-2 c-text-lg c-font-semibold c-text-foreground", className)}
     {...props}
   />
 ));

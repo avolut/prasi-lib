@@ -117,7 +117,6 @@ export const FieldTypeInput: FC<{
     case "toggle":
       return (
         <div className="c-px-2">
-          ad
           <div
             className={cx(
               "c-relative",
@@ -222,6 +221,10 @@ export const FieldTypeInput: FC<{
               ? new Date(value?.startDate)
               : null;
             renderOnChange();
+
+            if (prop.onChange) {
+              prop.onChange(fm.data[field.name]);
+            }
           }}
         />
       );

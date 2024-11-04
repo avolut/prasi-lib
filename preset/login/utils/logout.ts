@@ -11,6 +11,7 @@ export const logout = (url_login?: string) => {
   if (isEditor) return;
   if (typeof get(w, "user") === "object") {
     w.user = null;
+    localStorage.removeItem("expiry_date");
   }
 
   let id_site = "";

@@ -29,10 +29,10 @@ export const FieldButton: FC<{
   if (arg.type === "multi-option") {
     return (
       <>
-        <div className={cx("c-flex c-items-center c-w-full c-flex-row")}>
+        <div className={cx("c-flex c-items-center c-w-full c-flex-row c-max-w-full")}>
           <div
             className={cx(
-              `c-flex`,
+              `c-flex  c-flex-wrap`,
               css`
                 gap: 0.5rem;
               `
@@ -58,10 +58,11 @@ export const FieldButton: FC<{
                     } else {
                       selected.push(item);
                     }
+                    if(selected.length) selected = selected.filter((e) => e)
                     arg.opt_set_value({
                       fm,
                       name: field.name,
-                      selected: selected.map((e) => e.value),
+                      selected: selected.length ? selected.map((e) => e.value) : [],
                       options: local.list,
                       type: field.type,
                     });

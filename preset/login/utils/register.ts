@@ -31,6 +31,10 @@ export const registerSession = (session: RG) => {
   }
 
   localStorage.setItem("user" + id_site, JSON.stringify(data));
+  localStorage.setItem(
+    "expiry_date",
+    data.expired ? data.expired?.format("YYYY-MM-DD HH:mm:ss") : ""
+  );
   w.user = session.data;
   w.user.role = session.role;
 };

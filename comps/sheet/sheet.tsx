@@ -22,9 +22,11 @@ export const SheetCn: FC<{
   header: string;
   open: string;
   close?: string;
-  mode?: "full" | "normal";
+  mode?: "full" | "normal" | "1/3";
   direction?: "left" | "right" | "bottom" | "top";
   deps?: any;
+  _item?: PrasiItem;
+  onInit?: (e: any) => void;
 }> = ({
   child,
   PassProp,
@@ -35,10 +37,13 @@ export const SheetCn: FC<{
   close,
   mode,
   direction,
-  deps
+  deps,
+  _item,
+  onInit,
 }) => {
   const local = useLocal({
     open: false,
+    data: null as any,
   });
   useEffect(() => {
     if (isEditor) {
@@ -46,6 +51,25 @@ export const SheetCn: FC<{
       if (local.open !== op) {
         local.open = op;
         local.render();
+      }
+    } else {
+      console.log(typeof onInit)
+      if (typeof onInit === "function") {
+        onInit({
+          data: local,
+          deps,
+          open: () => {
+            local.open = true;
+            local.render();
+            setTimeout(() => {
+              document.body.style.pointerEvents = "auto";
+            }, 1000);
+          },
+          close: () => {
+            local.open = false;
+            local.render();
+          },
+        });
       }
     }
   }, [open]);
@@ -55,6 +79,7 @@ export const SheetCn: FC<{
         <div {...props} className={cx(props.className, "")}>
           <PassProp
             sheet={{
+              data: local,
               deps,
               open: () => {
                 local.open = true;
@@ -89,57 +114,79 @@ export const SheetCn: FC<{
       <SheetContent
         side={direction}
         className={cx(
-          mode === "full" ? "c-w-screen" : "sm:s-max-w-[425px]",
+          mode === "1/3"
+            ? css`
+                max-width: 500px !important;
+              `
+            : mode === "full"
+            ? "c-w-screen"
+            : "sm:s-max-w-[425px]",
           css`
             z-index: 2;
           `
         )}
       >
-        {close !== "n" ? (
-          <SheetPrimitive.Close
-            onClick={() => {
-              local.open = false;
-              local.render();
-            }}
-            className={cx(
-              "c-absolute c-right-4 c-top-4 c-rounded-sm c-opacity-70 c-ring-offset-background c-transition-opacity hover:c-opacity-100 focus:c-outline-none focus:c-ring-2 focus:c-ring-ring focus:c-ring-offset-2 disabled:c-pointer-events-none data-[state=open]:c-bg-accent data-[state=open]:c-text-muted-foreground",
-              css`
-                right: 1rem;
-                z-index: 99;
-              `
-            )}
-          >
-            <X className="c-h-4 c-w-4" />
-            <span className="c-sr-only">Close</span>
-          </SheetPrimitive.Close>
-        ) : (
-          <></>
-        )}
-        {header !== "" && header ? (
-          <SheetHeader
-            className={cx(
-              css`
-                padding: 0px 0px 0px 10px;
-              `
-            )}
-          >
-            <SheetTitle>{header}</SheetTitle>
-          </SheetHeader>
-        ) : (
-          <>
-           <SheetHeader
-            className={cx(
-              css`
-                padding: 0px;
-              `
-            )}
-          >
-            <SheetTitle></SheetTitle>
-          </SheetHeader></>
-        )}
+        <div className="c-relative">
+          {close !== "n" ? (
+            <SheetPrimitive.Close
+              onClick={() => {
+                local.open = false;
+                local.render();
+              }}
+              className={cx(
+                "c-absolute c-right-4  c-rounded-sm c-opacity-70 c-ring-offset-background c-transition-opacity hover:c-opacity-100 focus:c-outline-none focus:c-ring-2 focus:c-ring-ring focus:c-ring-offset-2 disabled:c-pointer-events-none data-[state=open]:c-bg-accent data-[state=open]:c-text-muted-foreground",
+                css`
+                  right: 1rem;
+                  z-index: 99;
+                  transform: translateY(50%);
+                `
+              )}
+            >
+              <X className="c-h-4 c-w-4" />
+              <span className="c-sr-only">Close</span>
+            </SheetPrimitive.Close>
+          ) : (
+            <></>
+          )}
+          {header !== "" && header ? (
+            <SheetHeader
+              className={cx(
+                "c-text-base",
+                css`
+                  padding: 0px 0px 0px 10px;
+                `
+              )}
+            >
+              <SheetTitle
+                className={cx(
+                  "c-text-base",
+                  css`
+                    font-size: 1rem !important;
+                    line-height: 1.5rem !important;
+                  `
+                )}
+              >
+                {header}
+              </SheetTitle>
+            </SheetHeader>
+          ) : (
+            <>
+              <SheetHeader
+                className={cx(
+                  css`
+                    padding: 0px;
+                  `
+                )}
+              >
+                <SheetTitle></SheetTitle>
+              </SheetHeader>
+            </>
+          )}
+        </div>
 
         <PassProp
           sheet={{
+            data: local,
             deps,
             open: () => {
               local.open = true;

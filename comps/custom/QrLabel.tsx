@@ -7,6 +7,7 @@ export const QrLabel: FC<{
     fgcolor: string,
     size: number
 }> = ({ value, bgcolor, fgcolor, size }) => {
+    console.log(value);
     return (
         <div>
             <QRCode value={value} size={size}

@@ -115,6 +115,13 @@ export const FilterContent: FC<{
           } catch (ex) {}
 
           if (mode === "raw" && fm) {
+            if (form && form.fm) {
+              Object.keys(form.fm.data).map((e) => {
+                if (!form?.fm.data?.[e]) {
+                  delete form.fm?.data[e];
+                }
+              });
+            }
             const submit = async (fm: FMLocal) => {
               fm.render();
               if (typeof onSubmit === "function") {

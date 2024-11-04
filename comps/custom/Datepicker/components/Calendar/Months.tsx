@@ -9,9 +9,10 @@ import { RoundedButton } from "../utils";
 interface Props {
   currentMonth: number;
   clickMonth: (month: number) => void;
+  style?: string
 }
 
-const Months: React.FC<Props> = ({ currentMonth, clickMonth }) => {
+const Months: React.FC<Props> = ({ currentMonth, clickMonth, style }) => {
   const { i18n } = useContext(DatepickerContext);
   loadLanguageModule(i18n);
   return (
@@ -25,7 +26,7 @@ const Months: React.FC<Props> = ({ currentMonth, clickMonth }) => {
           }}
           active={currentMonth === item}
         >
-          <>{dayjs(`2022-${item}-01`).locale(i18n).format("MMM")}</>
+          <>{dayjs(`2022-${item}-01`).locale(i18n).format(style === "google" ? "MMMM" :"MMM")}</>
         </RoundedButton>
       ))}
     </div>

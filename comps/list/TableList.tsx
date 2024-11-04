@@ -183,6 +183,7 @@ export const TableList: FC<TableListProp> = ({
       reloading: null as any,
       reload: (arg?: { toast: boolean }) => {
         if (local.reloading) return local.reloading;
+
         local.reloading = new Promise<void>(async (done) => {
           let should_toast = true;
           if (arg?.toast === false) should_toast = false;
@@ -217,101 +218,99 @@ export const TableList: FC<TableListProp> = ({
             }
 
             if (md) {
-              if (md.header.loading) {
-                await new Promise<void>((resolve) => {
-                  const ival = setInterval(() => {
-                    if (!md.header.loading) {
-                      clearInterval(ival);
-                      resolve();
+              await new Promise<void>((resolve) => {
+                const ival = setInterval(() => {
+                  if (!md.header.loading) {
+                    clearInterval(ival);
+                    resolve();
+                  }
+                }, 10);
+              });
+              if (Array.isArray(md?.params?.links) && md?.params?.links?.length) {
+                const last = md.params.links[md.params.links.length - 1];
+  
+                if (last && last.where) {
+                  if ((last.name && last.name === md.name) || !last.name) {
+                    for (const [k, v] of Object.entries(last.where)) {
+                      where[k] = v;
                     }
-                  }, 10);
-                });
-              }
-              const last = md.params.links[md.params.links.length - 1];
-
-              if (last && last.where) {
-                if ((last.name && last.name === md.name) || !last.name) {
-                  for (const [k, v] of Object.entries(last.where)) {
-                    where[k] = v;
                   }
                 }
               }
             }
+            
+          call_prasi_events("tablelist", "where", [__props?.gen__table, where]);
 
-            call_prasi_events("tablelist", "where", [
-              __props?.gen__table,
-              where,
-            ]);
+          const load_args: any = {
+            async reload() {},
+            orderBy,
+            where,
+            paging: {
+              take: local.paging.take > 0 ? local.paging.take : undefined,
+              skip: local.paging.skip,
+            },
+          };
 
-            const load_args: any = {
-              async reload() {},
-              orderBy,
-              where,
-              paging: {
-                take: local.paging.take > 0 ? local.paging.take : undefined,
-                skip: local.paging.skip,
-              },
-            };
-
-            if (id_parent) {
-              load_args.paging = {};
-            }
-            const result = on_load({ ...load_args, mode: "query" });
-            const callback = (data: any[]) => {
-              if (
-                id_parent ||
-                !local.paging ||
-                (local.paging && !local.paging.take) ||
-                local.paging.skip === 0
-              ) {
-                local.data = data;
-              } else {
-                local.data = [...local.data, ...data];
-              }
-
-              local.paging.last_length = local.data.length;
-
-              local.status = "ready";
-              local.reloading = null;
-              local.render();
-
-              done();
-              setTimeout(() => {
-                if (
-                  local.grid_ref &&
-                  !id_parent &&
-                  (paging !== undefined || paging)
-                ) {
-                  local.paging.scroll(local.grid_ref);
-                }
-              }, 100);
-            };
-
-            if (result instanceof Promise) {
-              (async () => {
-                try {
-                  callback(await result);
-                } catch (e) {
-                  console.error(e);
-                  local.status = "error";
-                  toast.dismiss();
-                  toast.error(
-                    <div className="c-flex c-text-red-600 c-items-center">
-                      <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
-                      Failed to load data
-                    </div>,
-                    {
-                      dismissible: true,
-                      className: css`
-                        background: #ffecec;
-                        border: 2px solid red;
-                      `,
-                    }
-                  );
-                }
-              })();
-            } else callback(result);
+          if (id_parent) {
+            load_args.paging = {};
           }
+          const result = on_load({ ...load_args, mode: "query" });
+          const callback = (data: any[]) => {
+            if (
+              id_parent ||
+              !local.paging ||
+              (local.paging && !local.paging.take) ||
+              local.paging.skip === 0
+            ) {
+              local.data = data;
+            } else {
+              local.data = [...local.data, ...data];
+            }
+
+            local.paging.last_length = local.data.length;
+
+            local.status = "ready";
+            local.reloading = null;
+            local.render();
+
+            done();
+            setTimeout(() => {
+              if (
+                local.grid_ref &&
+                !id_parent &&
+                (paging !== undefined || paging)
+              ) {
+                local.paging.scroll(local.grid_ref);
+              }
+            }, 100);
+          };
+
+          if (result instanceof Promise) {
+            (async () => {
+              try {
+                callback(await result);
+              } catch (e) {
+                console.error(e);
+                local.status = "error";
+                toast.dismiss();
+                toast.error(
+                  <div className="c-flex c-text-red-600 c-items-center">
+                    <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+                    Failed to load data
+                  </div>,
+                  {
+                    dismissible: true,
+                    className: css`
+                      background: #ffecec;
+                      border: 2px solid red;
+                    `,
+                  }
+                );
+              }
+            })();
+          } else callback(result);
+          }
+
         });
 
         return local.reloading;
@@ -557,7 +556,7 @@ export const TableList: FC<TableListProp> = ({
 
   if (typeof local.data === "string") {
     console.error(local.data);
-    local.data = []
+    local.data = [];
   }
 
   if (isEditor) {
@@ -579,163 +578,49 @@ export const TableList: FC<TableListProp> = ({
       return true;
     });
   }
-
-  if (childs.length && isCheckbox) {
-    columns.push({
-      key: SELECT_COLUMN_KEY,
-      name: "",
-      width: 35,
-      minWidth: 35,
-      maxWidth: 35,
-      resizable: false,
-      sortable: false,
-      frozen: true,
-      renderHeaderCell(props) {
-        return <input type="checkbox" onChange={headerCheckboxClick} />;
-      },
-      renderCell(props) {
-        // digunakan untuk mengecek apakah local selected rows memiliki pk dari props.row.id
-        const isChecked = local.selectedRows.some(
-          (checked) => checked.pk === props.row.id
-        );
-        return (
-          <div
-            onClick={checkboxClick(props.row.id)}
-            className={cx(
-              css`
-                width: 100%;
-                height: 100%;
-              `,
-              "c-flex c-items-center c-justify-center"
-            )}
-          >
-            <input
-              className="c-pointer-events-none"
-              type="checkbox"
-              checked={isChecked}
-            />
-          </div>
-        );
-      },
-      headerCellClass: selectCellClassname,
-      cellClass: selectCellClassname,
-    });
-  }
-
   let first = true;
   for (const child of childs) {
     let key = getProp(child, "name", {});
     const name = getProp(child, "title", "");
-    const type = getProp(child, "type", "");
-    const width = parseInt(getProp(child, "width", {}));
-    if (type === "checkbox") {
-      columns.push({
-        key,
-        name,
-        width: 35,
-        minWidth: 45,
-        resizable: true,
-        sortable: true,
-        frozen: true,
-        renderHeaderCell(props) {
-          return (
-            <div>
-              {/* <CheckboxList value={false} on_click={on_click} /> */}
-            </div>
-          );
-        },
-        renderCell(props) {
-          if (typeof render_col === "function")
-            return render_col({
-              props,
-              tbl: local,
-              child,
-            });
+    const sort = getProp(child, "sortir", "");
+    let show = getProp(child, "show", "");
+    if (typeof show === "function") {
+      show = show();
+      if (typeof show === "object" && show instanceof Promise) {
+        show.then((e) => {
+          show = e;
+        });
+      }
+    }
+    show = show === "n" ? false : show;
+    if (show) {
+      const type = getProp(child, "type", "");
+      const width = parseInt(getProp(child, "width", {}));
+      if (type === "checkbox") {
+        columns.push({
+          key,
+          name,
+          width: 35,
+          minWidth: 45,
+          resizable: true,
+          sortable: sort === "n" ? false : true,
+          frozen: true,
+          renderHeaderCell(props) {
+            return (
+              <div>
+                {/* <CheckboxList value={false} on_click={on_click} /> */}
+              </div>
+            );
+          },
+          renderCell(props) {
+            if (typeof render_col === "function")
+              return render_col({
+                props,
+                tbl: local,
+                child,
+              });
 
-          return (
-            <PassProp
-              idx={props.rowIdx}
-              row={props.row}
-              col={{
-                name: props.column.key,
-                value: get(props.row, props.column.key),
-                depth: props.row.__depth || 0,
-              }}
-              rows={local.data}
-            >
-              {child}
-            </PassProp>
-          );
-        },
-      });
-    } else {
-      columns.push({
-        key,
-        name,
-        width: width > 0 ? width : undefined,
-        resizable: true,
-        sortable: true,
-        renderCell(props) {
-          if (typeof render_col === "function")
-            return render_col({
-              props,
-              tbl: local,
-              child,
-            });
-
-          return (
-            <>
-              {isTree && local.firstKey === key && local.pk && (
-                <div
-                  className={cx(
-                    css`
-                      padding-left: ${3 + props.row.__depth * 8}px;
-                    `,
-                    "c-flex c-items-center c-cursor-pointer"
-                  )}
-                  onClick={(e) => {
-                    if (!local.pk) return;
-                    if (props?.row?.__children?.length > 0) {
-                      e.stopPropagation();
-                      if (!local.collapsed.has(props.row?.[local.pk.name])) {
-                        local.collapsed.add(props.row?.[local.pk.name]);
-                      } else {
-                        local.collapsed.delete(props.row?.[local.pk.name]);
-                      }
-                      local.render();
-                    }
-                  }}
-                >
-                  <div
-                    className={cx(
-                      css`
-                        width: 16px;
-                      `
-                    )}
-                  >
-                    {props.row?.__children?.length > 0 && (
-                      <>
-                        {local.collapsed.has(props.row?.[local.pk.name]) ? (
-                          <ChevronRight size={16} />
-                        ) : (
-                          <ChevronDown size={16} />
-                        )}
-                      </>
-                    )}
-                  </div>
-                  {props.row?.__parent &&
-                    (props.row?.__children || []).length === 0 && (
-                      <div
-                        className={cx(
-                          " c-border-l c-border-b c-border-black c-w-[10px] c-h-[15px]",
-                          css`
-                            margin-top: -10px;
-                          `
-                        )}
-                      ></div>
-                    )}
-                </div>
-              )}
+            return (
               <PassProp
                 idx={props.rowIdx}
                 row={props.row}
@@ -748,14 +633,160 @@ export const TableList: FC<TableListProp> = ({
               >
                 {child}
               </PassProp>
-            </>
-          );
-        },
-      });
+            );
+          },
+        });
+      } else {
+        columns.push({
+          key,
+          name,
+          width: width > 0 ? width : undefined,
+          resizable: true,
+          sortable: sort === "n" ? false : true,
+          renderHeaderCell(props) {
+            return (
+              <div
+                className="flex flex-row flex-grow items-center"
+                onClick={() => {
+                  const msg = `The ${props?.column?.name} column cannot be sorted!`;
+                  if (!props?.column?.sortable) {
+                    toast.dismiss();
+                    toast.error(
+                      <div className="c-flex c-text-red-600 c-items-center">
+                        <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+                        {msg}
+                      </div>,
+                      {
+                        dismissible: true,
+                        className: css`
+                          background: #ffecec;
+                          border: 2px solid red;
+                        `,
+                      }
+                    );
+                  }
+                }}
+              >
+                {props?.column?.name}
+                {props.sortDirection ? (
+                  <>
+                    {" "}
+                    <div className="px-1">
+                      {props.sortDirection === "ASC" ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M12.53 7.97a.75.75 0 0 0-1.06 0l-7 7A.75.75 0 0 0 5 16.25h14a.75.75 0 0 0 .53-1.28z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M5 7.75a.75.75 0 0 0-.53 1.28l7 7a.75.75 0 0 0 1.06 0l7-7A.75.75 0 0 0 19 7.75z"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </div>
+            );
+          },
+          renderCell(props) {
+            if (typeof render_col === "function")
+              return render_col({
+                props,
+                tbl: local,
+                child,
+              });
 
-      if (first) {
-        first = false;
-        local.firstKey = key;
+            return (
+              <>
+                {isTree && local.firstKey === key && local.pk && (
+                  <div
+                    className={cx(
+                      css`
+                        padding-left: ${3 + props.row.__depth * 8}px;
+                      `,
+                      "c-flex c-items-center c-cursor-pointer"
+                    )}
+                    onClick={(e) => {
+                      if (!local.pk) return;
+                      if (props?.row?.__children?.length > 0) {
+                        e.stopPropagation();
+                        if (!local.collapsed.has(props.row?.[local.pk.name])) {
+                          local.collapsed.add(props.row?.[local.pk.name]);
+                        } else {
+                          local.collapsed.delete(props.row?.[local.pk.name]);
+                        }
+                        local.render();
+                      }
+                    }}
+                  >
+                    <div
+                      className={cx(
+                        css`
+                          width: 16px;
+                        `
+                      )}
+                    >
+                      {props.row?.__children?.length > 0 && (
+                        <>
+                          {local.collapsed.has(props.row?.[local.pk.name]) ? (
+                            <ChevronRight size={16} />
+                          ) : (
+                            <ChevronDown size={16} />
+                          )}
+                        </>
+                      )}
+                    </div>
+                    {props.row?.__parent &&
+                      (props.row?.__children || []).length === 0 && (
+                        <div
+                          className={cx(
+                            " c-border-l c-border-b c-border-black c-w-[10px] c-h-[15px] rows",
+                            css`
+                              margin-top: -10px;
+                            `
+                          )}
+                        ></div>
+                      )}
+                  </div>
+                )}
+                <PassProp
+                  idx={props.rowIdx}
+                  row={props.row}
+                  col={{
+                    name: props.column.key,
+                    value: get(props.row, props.column.key),
+                    depth: props.row.__depth || 0,
+                  }}
+                  rows={local.data}
+                >
+                  {child}
+                </PassProp>
+              </>
+            );
+          },
+        });
+
+        if (first) {
+          first = false;
+          local.firstKey = key;
+        }
       }
     }
   }

@@ -25,9 +25,12 @@ export const generateTableList = async (
   )[];
   let pk = "";
   let pks: Record<string, string> = {};
+  // console.log(raw_fields)
   const fields = parseGenField(raw_fields);
   // convert ke bahasa prisma untuk select
   const res = generateSelect(fields);
+  console.log({res})
+  console.log({fields})
   pk = res.pk;
   const select = res.select as any;
   if (!pk) {

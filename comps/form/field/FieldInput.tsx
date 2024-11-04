@@ -7,6 +7,7 @@ import { FieldTypeInput, PropTypeInput } from "./type/TypeInput";
 import { FieldLink } from "./type/TypeLink";
 import { MultiOption } from "./type/TypeMultiOption";
 import { SingleOption } from "./type/TypeSingleOption";
+import { TableListEdit } from "app/comps/table-list-edit/TableListEdit";
 
 export const FieldInput: FC<{
   field: FieldLocal;
@@ -58,6 +59,7 @@ export const FieldInput: FC<{
       child: get(_item, "edit.props.child.value") as PrasiItem,
       bottom: childsTableEdit.find((e) => e.name === "bottom") as PrasiItem,
     };
+    console.log({ tableEdit });
     table_edit = (
       <TableEdit
         on_init={() => {
@@ -71,6 +73,35 @@ export const FieldInput: FC<{
         bottom={tableEdit.bottom}
         body={tableEdit.child}
       />
+    );
+  }
+
+  let table_list_edit = null;
+  if (type_field === "multi-option" && arg.sub_type === "table-list-edit") {
+    const childsTableEdit = get(
+      _item,
+      "edit.props.child.value.childs"
+    ) as unknown as Array<PrasiItem>;
+    const tableListEdit = {
+      child: get(_item, "edit.props.child.value") as PrasiItem,
+      bottom: childsTableEdit.find((e) => e.name === "bottom") as PrasiItem,
+    };
+    table_list_edit = (
+        <TableListEdit
+          on_init={() => {
+            return fm;
+          }}
+          field = {field}
+          arg={arg}
+          show_header={arg.tbl_show_header}
+          name={arg.name}
+          child={child}
+          PassProp={PassProp}
+          item={_item}
+          bottom={tableListEdit.bottom}
+          body={tableListEdit.child}
+          fm={fm}
+        />
     );
   }
 
@@ -184,6 +215,8 @@ export const FieldInput: FC<{
                     ) : ["multi-option"].includes(type_field) ? (
                       arg.sub_type === "table-edit" ? (
                         table_edit
+                      ) : arg.sub_type === "table-list-edit" ? (
+                        table_list_edit
                       ) : (
                         <MultiOption arg={arg} field={field} fm={fm} />
                       )

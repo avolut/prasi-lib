@@ -27,6 +27,7 @@ interface Props {
   onClickDay: (day: number) => void;
   onClickNextDays: (day: number) => void;
   onIcon?: (day: number, date: Date) => any;
+  style?: string;
 }
 
 const Days: React.FC<Props> = ({
@@ -35,6 +36,7 @@ const Days: React.FC<Props> = ({
   onClickDay,
   onClickNextDays,
   onIcon,
+  style,
 }) => {
   // Contexts
   const {
@@ -241,13 +243,18 @@ const Days: React.FC<Props> = ({
 
   const buttonClass = useCallback(
     (day: number, type: "current" | "next" | "previous") => {
-      const baseClass =
-        "c-flex c-items-center c-justify-center c-w-12 c-h-12 lg:c-w-10 lg:c-h-10 c-relative";
+      let baseClass = `calender-day c-flex c-items-center c-justify-center ${
+        style === "google"
+          ? " c-w-6 c-h-6 c-m-1"
+          : "c-w-12 c-h-12 lg:c-w-10 lg:c-h-10"
+      } c-relative`;
       if (type === "current") {
         return cn(
           baseClass,
           !activeDateData(day).active
             ? hoverClassByDay(day)
+            : style === "google"
+            ? ""
             : activeDateData(day).className,
           isDateDisabled(day, type) && "c-text-gray-400 c-cursor-not-allowed"
         );
@@ -403,62 +410,171 @@ const Days: React.FC<Props> = ({
     return typeof onIcon === "function" ? onIcon(day, res) : null;
   };
   return (
-    <div className="c-grid c-grid-cols-7 c-gap-y-0.5 c-my-1">
+    <div
+      className={cx(
+        "calender-days c-grid c-grid-cols-7 c-gap-y-0.5 c-my-1",
+        css`
+          grid-template-columns: repeat(
+            auto-fit,
+            minmax(0px, 1fr)
+          ); /* Grid fleksibel */
+
+          .calender-grid {
+            aspect-ratio: 1 / 1;
+          }
+        `
+      )}
+    >
       {calendarData.days.previous.map((item, index) => (
-        <button
-          type="button"
-          key={index}
-          disabled={isDateDisabled(item, "previous")}
-          className={`${buttonClass(item, "previous")}`}
-          onClick={() => handleClickDay(item, "previous")}
-          onMouseOver={() => {
-            hoverDay(item, "previous");
+        <div
+          className={cx(
+            "calender-grid c-flex c-flex-row",
+            style === "google" ? "hover:c-bg-gray-100  c-cursor-pointer" : ""
+          )}
+          onClick={() => {
+            if (style === "google") handleClickDay(item, "previous");
           }}
         >
-        <span className="c-relative">
-          {item}
-          {load_marker(item, "previous")}
-        </span>
-        </button>
+          <div className="c-flex c-flex-col c-flex-grow calender-day-wrap">
+            {style === "google" ? (
+              <>
+                <button
+                  type="button"
+                  key={index}
+                  disabled={isDateDisabled(item, "previous")}
+                  className={`${buttonClass(item, "previous")}`}
+                  onMouseOver={() => {
+                    hoverDay(item, "previous");
+                  }}
+                >
+                  <span className="c-relative">{item}</span>
+                </button>
+                <div>{load_marker(item, "previous")}</div>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  key={index}
+                  disabled={isDateDisabled(item, "previous")}
+                  className={`${buttonClass(item, "previous")}`}
+                  onClick={() => handleClickDay(item, "previous")}
+                  onMouseOver={() => {
+                    hoverDay(item, "previous");
+                  }}
+                >
+                  <span className="c-relative">
+                    {item}
+                    {load_marker(item, "previous")}
+                  </span>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       ))}
 
       {calendarData.days.current.map((item, index) => (
-        <button
-          type="button"
-          key={index}
-          disabled={isDateDisabled(item, "current")}
+        <div
           className={cx(
-            `${buttonClass(item, "current")}`,
-            item === 1 && "highlight"
+            "calender-grid c-flex c-flex-row",
+            style === "google"
+              ? activeDateData(item).active
+                ? "c-bg-blue-200/75 c-ring-1  c-cursor-pointer"
+                : "hover:c-bg-gray-100  c-cursor-pointer"
+              : ""
           )}
-          onClick={() => handleClickDay(item, "current")}
-          onMouseOver={() => {
-            hoverDay(item, "current");
+          onClick={() => {
+            if (style === "google") handleClickDay(item, "current");
           }}
         >
-          <span className="c-relative">
-            {item}
-            {load_marker(item, "current")}
-          </span>
-        </button>
+          <div className="c-flex c-flex-col c-flex-grow calender-day-wrap">
+            {style === "google" ? (
+              <>
+                <button
+                  type="button"
+                  key={index}
+                  disabled={isDateDisabled(item, "current")}
+                  className={`${buttonClass(item, "current")}`}
+                  // onClick={() => handleClickDay(item, "current")}
+                  onMouseOver={() => {
+                    hoverDay(item, "current");
+                  }}
+                >
+                  <span className="c-relative">{item}</span>
+                </button>
+                <div>{load_marker(item, "current")}</div>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  key={index}
+                  disabled={isDateDisabled(item, "current")}
+                  className={`${buttonClass(item, "current")}`}
+                  onClick={() => handleClickDay(item, "current")}
+                  onMouseOver={() => {
+                    hoverDay(item, "current");
+                  }}
+                >
+                  <span className="c-relative">
+                    {item}
+                    {load_marker(item, "current")}
+                  </span>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       ))}
 
       {calendarData.days.next.map((item, index) => (
-        <button
-          type="button"
-          key={index}
-          disabled={isDateDisabled(item, "next")}
-          className={`${buttonClass(item, "next")}`}
-          onClick={() => handleClickDay(item, "next")}
-          onMouseOver={() => {
-            hoverDay(item, "next");
+        <div
+          className={cx(
+            "calender-grid c-flex c-flex-row",
+            style === "google" ? "hover:c-bg-gray-100  c-cursor-pointer" : ""
+          )}
+          onClick={() => {
+            if (style === "google") handleClickDay(item, "next");
           }}
         >
-        <span className="c-relative">
-          {item}
-          {load_marker(item, "next")}
-        </span>
-        </button>
+          <div className="c-flex c-flex-col c-flex-grow calender-day-wrap">
+            {style === "google" ? (
+              <>
+                <button
+                  type="button"
+                  key={index}
+                  disabled={isDateDisabled(item, "next")}
+                  className={`${buttonClass(item, "next")}`}
+                  onMouseOver={() => {
+                    hoverDay(item, "next");
+                  }}
+                >
+                  <span className="c-relative">{item}</span>
+                </button>
+                <div>{load_marker(item, "next")}</div>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  key={index}
+                  disabled={isDateDisabled(item, "next")}
+                  className={`${buttonClass(item, "next")}`}
+                  onClick={() => handleClickDay(item, "next")}
+                  onMouseOver={() => {
+                    hoverDay(item, "next");
+                  }}
+                >
+                  <span className="c-relative">
+                    {item}
+                    {load_marker(item, "next")}
+                  </span>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       ))}
     </div>
   );

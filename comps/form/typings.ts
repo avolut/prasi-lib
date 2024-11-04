@@ -46,6 +46,7 @@ type FieldType =
 export type FieldProp = {
   name: string;
   label: string;
+  label_action: ReactNode;
   desc?: string;
   props?: any;
   mask?: string;
@@ -63,7 +64,7 @@ export type FieldProp = {
           field: FieldLocal;
           Link: FC<{ children: any }>;
         }) => Promise<string> | string);
-    url: string;
+    url: string | ((e?: any) => void);
     params: (field: FieldLocal) => { where: any } | Promise<{ where: any }>;
   };
   fm: FMLocal;
@@ -127,6 +128,8 @@ export type FieldProp = {
   max_date?: any;
   min_date?: any;
   upload_style?: "inline" | "full";
+  disabled_search?: (() => Promise<boolean> | boolean) | boolean | "y" | "n";
+  show?: (() => boolean) | boolean | "y" | "n";
 };
 
 export type FMInternal = {
@@ -170,13 +173,14 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   name: FieldProp["name"];
   type: T | (() => T);
   label: FieldProp["label"];
+  label_action: FieldProp["label_action"];
   desc: FieldProp["desc"];
   prefix: FieldProp["prefix"];
   suffix: FieldProp["suffix"];
   width: FieldProp["width"];
   required: boolean;
   focused: boolean;
-  hidden: boolean;
+  hidden: (() => boolean) | boolean | "y" | "n";
   disabled: boolean | (() => boolean);
   required_msg: FieldProp["required_msg"];
   col?: GFCol;
@@ -200,6 +204,7 @@ export type FieldInternal<T extends FieldProp["type"]> = {
   min_date?: FieldProp["min_date"];
   error?: any;
   table_fields?: any[];
+  disabled_search?: (() => Promise<boolean> | boolean) | boolean | "y" | "n";
 };
 export type FieldLocal = FieldInternal<any> & {
   render: () => void;

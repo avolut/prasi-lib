@@ -84,7 +84,8 @@ export interface DatepickerType {
     popoverDirection?: PopoverDirectionType;
     mode?: "daily" | "monthly";
     onMark?: (day: number, date: Date) => any;
-    onLoad?: () => Promise<void>
+    onLoad?: (day: any) => Promise<void>;
+    style?: "google" | "prasi"
 
 }
 

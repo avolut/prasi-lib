@@ -37,7 +37,7 @@ type LYTChild = {
   tablet?: ReactNode;
   child?: ReactNode;
   default_layout: ReactNode;
-  exception?: Array<string>;
+  exception?: ((path: string) => boolean) | Array<string>;
   blank_layout: ReactNode;
   login_url: string;
   PassProp: any;
@@ -66,28 +66,32 @@ export const Layout: FC<LYTChild> = (props) => {
   }, []);
 
   initResponsive();
-  const path = getPathname();
+  const path = getPathname({ hash: true });
   const no_layout = props.exception;
 
   overrideNav({ local });
 
   if (
     !isEditor &&
-    Array.isArray(no_layout) &&
-    no_layout.find((rule) => wildcardMatch(path, rule))
+    (typeof no_layout === "function"
+      ? no_layout!(path)
+      : Array.isArray(no_layout) &&
+        no_layout.find((rule) => wildcardMatch(path, rule)))
   ) {
     return <>{props.blank_layout}</>;
   } else {
     if (!w.user) {
       local.loading = true;
-      loadSession(props.login_url || "/auth/login");
+      isMobile
+        ? loadSession("/m/auth/login")
+        : loadSession(props.login_url || "/auth/login");
 
       local.loading = false;
     }
   }
 
   if (path === props.login_url) return props.blank_layout;
-  if (!w.user && !isEditor) {
+  if (!w.user && !isEditor && !isMobile) {
     return (
       <div
         className={cx(
