@@ -8,12 +8,16 @@ export const masterDetailParseHash = (md: MDLocal) => {
   md.params.hash = {};
   md.params.tabs = {};
 
+  let has_detail = false;
   for (const h of raw_hash.split("#")) {
     if (h) {
       if (h.includes("=")) {
         const [tab_name, tab_val] = h.split("=");
         if (tab_name && tab_val) {
           md.params.hash[tab_name] = tab_val;
+        }
+        if (tab_name === md.name) {
+          has_detail = true;
         }
       } else if (h.includes("~")) {
         const [tab_name, tab_val] = h.split("~");
@@ -22,6 +26,10 @@ export const masterDetailParseHash = (md: MDLocal) => {
         }
       }
     }
+  }
+
+  if (!has_detail) {
+    md.selected = null;
   }
 
   md.params.links = md.params.links.filter((e) => e);
@@ -69,9 +77,15 @@ export const masterDetailApplyParams = (md: MDLocal) => {
     delete md.params.hash[md.name];
   }
 
+  let has_detail = false;
   for (const [k, v] of Object.entries(md.params.hash)) {
+    if (k === md.name) {
+      has_detail = true;
+    }
+
     hash += `#${k}=${v}`;
   }
+
   for (const [k, v] of Object.entries(md.params.tabs)) {
     hash += `#${k}~${v}`;
   }
@@ -79,16 +93,20 @@ export const masterDetailApplyParams = (md: MDLocal) => {
   if (!isEditor) {
     location.hash = hash;
   }
-  if(!isEditor){
-    if(md.props.tab_mode === "v-tab" || md.props.tab_mode === "h-tab"){
-      try{
-        if(row && md?.childs?.form?.fm && md?.childs?.form?.fm?.status === "ready" && md.selected?.id){
+
+  if (!isEditor) {
+    if (md.props.tab_mode === "v-tab" || md.props.tab_mode === "h-tab") {
+      try {
+        if (
+          row &&
+          md?.childs?.form?.fm &&
+          md?.childs?.form?.fm?.status === "ready" &&
+          md.selected?.id
+        ) {
           md.childs.form.fm.reload();
           // console.log("MASUK???")
         }
-      }catch(ex){
-
-      }
+      } catch (ex) {}
     }
   }
 };

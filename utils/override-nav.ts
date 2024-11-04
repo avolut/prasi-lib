@@ -3,7 +3,7 @@ import { hashSum } from "lib/utils/hash-sum";
 import { getPathname } from "lib/utils/pathname";
 
 const w = window as any;
-
+ 
 export const overrideNav = (arg?: { local?: any }) => {
   if (isEditor) return;
   if (!w.prasi_menu || arg?.local) {

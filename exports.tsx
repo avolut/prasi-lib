@@ -20,9 +20,9 @@ export const Typeahead = lazify(
 );
 
 /** Master - Detail - List - Form */
-// export const MasterDetail = lazify(
-//   async () => (await import("lib/comps/md/MasterDetail")).MasterDetail
-// );
+export const MasterDetail = lazify(
+  async () => (await import("lib/comps/md/MasterDetail")).MasterDetail
+);
 export const MDRenderMaster = lazify(
   async () => (await import("lib/comps/md/parts/MDMaster")).MDRenderMaster
 );

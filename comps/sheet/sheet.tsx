@@ -53,7 +53,6 @@ export const SheetCn: FC<{
         local.render();
       }
     } else {
-      console.log(typeof onInit)
       if (typeof onInit === "function") {
         onInit({
           data: local,
