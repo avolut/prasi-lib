@@ -128,7 +128,7 @@ export const MasterDetail: FC<MDProps> = (arg) => {
       md.header.render();
     }, [title]);
   }
-  // return <>MD</>
+
   return (
     <div
       className={cx(
