@@ -24,6 +24,7 @@ export const FieldInput: FC<{
       : typeof field.prefix === "string"
       ? field.prefix
       : null;
+      
   const suffix =
     typeof field.suffix === "function"
       ? field.suffix()
