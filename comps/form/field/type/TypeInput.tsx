@@ -102,9 +102,9 @@ export const FieldTypeInput: FC<{
 
   const renderOnChange = () => {
     input.render();
-    if (field.on_change) {
-      field.on_change({ value: fm.data[field.name], name: field.name, fm });
-    }
+    // if (field.on_change) {
+    //   field.on_change({ value: fm.data[field.name], name: field.name, fm });
+    // }
 
     clearTimeout(input.change_timeout);
     input.change_timeout = setTimeout(fm.render, 300);
@@ -294,10 +294,6 @@ export const FieldTypeInput: FC<{
             onChange={(ev) => {
               fm.data[field.name] = ev.currentTarget.value.replace(/\D/g, "");
               renderOnChange();
-
-              if (prop.onChange) {
-                prop.onChange(fm.data[field.name]);
-              }
             }}
             value={format(value, {
               mask: mask,
