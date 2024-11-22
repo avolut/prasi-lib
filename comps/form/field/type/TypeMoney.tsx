@@ -74,9 +74,10 @@ export const FieldMoney: FC<{
         }}
         placeholder={arg.placeholder || ""}
         onBlur={(e) => {
-          field.focused = false;
-          input.render();
-          field.render();
+          if (field) {
+            input.render();
+            field.render();
+          }
           prop.onBlur?.(e);
         }}
       />

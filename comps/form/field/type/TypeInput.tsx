@@ -170,8 +170,10 @@ export const FieldTypeInput: FC<{
           }}
           placeholder={arg.placeholder || ""}
           onBlur={() => {
-            field.focused = false;
-            field.render();
+            if (field) {
+              field.focused = false;
+              field.render();
+            }
           }}
         />
       );
