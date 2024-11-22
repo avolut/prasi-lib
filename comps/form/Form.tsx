@@ -10,7 +10,7 @@ import { getPathname } from "lib/utils/pathname";
 import { sofDeleteField as softDeleteField } from "lib/utils/soft-del-rel";
 import { toast } from "../ui/toast";
 
-const editorFormWidth = {} as Record<string, { w: number; f: any }>;
+export const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
 export type { FMLocal } from "./typings";
 

@@ -1,8 +1,9 @@
 import { GFCol, parseGenField } from "lib/gen/utils";
 import { cn } from "lib/utils";
 import { fields_map } from "lib/utils/format-value";
-import { useLocal } from "lib/utils/use-local";
+import { call_prasi_events } from "lib/utils/prasi-events";
 import { set } from "lib/utils/set";
+import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
 import {
   AlertTriangle,
@@ -23,8 +24,7 @@ import DataGrid, {
   ColumnOrColumnGroup,
   RenderCellProps,
   Row,
-  SELECT_COLUMN_KEY,
-  SortColumn,
+  SortColumn
 } from "react-data-grid";
 import "react-data-grid/lib/styles.css";
 import { createPortal } from "react-dom";
@@ -38,7 +38,6 @@ import { TLList } from "./TLList";
 import { TLSlider } from "./TLSlider";
 import { sortTree } from "./utils/sort-tree";
 import { OnRowClick } from "./utils/type";
-import { call_prasi_events } from "lib/utils/prasi-events";
 
 let EMPTY_SET = new Set() as ReadonlySet<any>;
 

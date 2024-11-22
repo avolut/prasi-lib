@@ -19,18 +19,32 @@ export const BaseField = (prop: {
     typeof field.prefix === "function"
       ? field.prefix()
       : typeof field.prefix === "string"
-      ? field.prefix
-      : null;
+        ? field.prefix
+        : null;
   const suffix =
     typeof field.suffix === "function"
       ? field.suffix()
       : typeof field.suffix === "string"
-      ? field.prefix
-      : null;
+        ? field.prefix
+        : null;
   const name = field.name;
   const errors = fm.error.get(name);
 
   const showlabel = arg.show_label || "y";
+
+  const disabled =
+    typeof field.disabled === "function" ? field.disabled() : field.disabled;
+  const show =
+    typeof field.hidden === "function"
+      ? field.hidden()
+      : typeof field.hidden === "string"
+        ? field.hidden === "n"
+          ? false
+          : true
+        : typeof field.hidden === "boolean"
+          ? field.hidden
+          : true;
+
   return (
     <label
       className={cx(
@@ -48,6 +62,16 @@ export const BaseField = (prop: {
         w === "⅓" && "c-w-1/3",
         w === "¼" && "c-w-1/4",
         "c-flex-col c-space-y-1",
+        css`
+          .field-outer {
+            border: 1px solid ${disabled ? "#ececeb" : "#cecece"};
+
+            &.focused {
+              border: 1px solid #1c4ed8;
+              outline: 1px solid #1c4ed8;
+            }
+          }
+        `,
         field.focused && "focused",
         field.disabled && "disabled",
         typeof fm.data[name] !== "undefined" &&
@@ -56,8 +80,19 @@ export const BaseField = (prop: {
           "filled"
       )}
     >
-      {arg.show_label !== "n" && <Label field={field} fm={fm} arg={arg}/>}
-      <div className="field-input c-flex c-flex-1 c-flex-col">
+      {arg.show_label !== "n" && <Label field={field} fm={fm} arg={arg} />}
+      <div
+        className={cx(
+          "field-input c-flex c-flex-1 c-flex-col",
+          errors.length > 0 &&
+            css`
+              .field-outer {
+                border-color: red !important;
+                background: #fff0f0;
+              }
+            `
+        )}
+      >
         <div
           className={cx(
             !["toggle", "button", "radio", "checkbox"].includes(arg.sub_type)
@@ -71,12 +106,12 @@ export const BaseField = (prop: {
                   border-color: transparent;
                 `
               : field.disabled
-              ? "c-border-gray-100"
-              : errors.length > 0
-              ? field.focused
-                ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
-                : "c-border-red-600 c-bg-red-50"
-              : field.focused && "focused",
+                ? "c-border-gray-100"
+                : errors.length > 0
+                  ? field.focused
+                    ? "c-border-red-600 c-bg-red-50 c-outline c-outline-red-700"
+                    : "c-border-red-600 c-bg-red-50"
+                  : field.focused && "focused",
             css`
               & > .field-inner {
                 min-height: 35px;
