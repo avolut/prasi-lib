@@ -105,7 +105,7 @@ export const FilterContent: FC<{
     >
       <BaseForm
         data={filter.data}
-        on_submit={async (form) => {
+        onSubmit={async (form) => {
           const fm = form.fm;
           try {
             if (typeof form.fm?.data === "object") {

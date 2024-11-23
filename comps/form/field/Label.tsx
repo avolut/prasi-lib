@@ -17,8 +17,8 @@ export const Label: FC<{ field: FieldLocal; fm: FMLocal; arg: FieldProp }> = ({
     typeof arg.required === "string"
       ? arg.required === "y"
       : typeof arg.required === "function"
-      ? arg.required()
-      : false;
+        ? arg.required()
+        : false;
   if (typeof required === "boolean" && field.required !== required) {
     field.required = required;
     field.render();
@@ -28,9 +28,9 @@ export const Label: FC<{ field: FieldLocal; fm: FMLocal; arg: FieldProp }> = ({
       className={cx(
         "label c-text-sm c-flex c-items-center",
         "c-mt-3 c-w-full c-justify-between"
-      )}
+      )} 
     >
-      <div>
+      <div className="c-flex c-items-center">
         <span className={cx(errors.length > 0 && `c-text-red-600`)}>
           {field.label}
         </span>

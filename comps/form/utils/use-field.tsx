@@ -21,9 +21,11 @@ export const useField = (
 
   const name = typeof arg.name === "string" ? arg.name : arg.name();
   const label = typeof arg.label === "string" ? arg.label : arg.label();
-  
+
   const required =
-    typeof arg.required === "string" ? arg.required === "y" : arg.required();
+    (typeof arg.required === "string"
+      ? arg.required === "y"
+      : arg.required?.()) || "n";
   const update_field = {
     name: name.replace(/\s*/gi, ""),
     label: label,
@@ -43,9 +45,8 @@ export const useField = (
     min_date: arg.min_date,
     table_fields: [],
     disabled_search: arg.disabled_search,
-    hidden: arg.show
+    hidden: arg.show,
   };
-  
 
   if (field.status === "init" || isEditor) {
     for (const [k, v] of Object.entries(update_field)) {
@@ -67,7 +68,5 @@ export const useField = (
 
   field.prop = arg as any;
 
-  if(field.name === "complete_description") console.log(update_field);
-  if(field.name === "complete_description") console.log(field);
   return field;
 };

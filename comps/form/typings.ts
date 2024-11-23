@@ -46,7 +46,7 @@ type FieldType =
 export type FieldProp = {
   name: string;
   label: string;
-  label_action: ReactNode;
+  label_action?: ReactNode;
   desc?: string;
   props?: any;
   mask?: string;
@@ -57,7 +57,7 @@ export type FieldProp = {
     cover_text: string;
     cover_field: string;
   };
-  link: {
+  link?: {
     text:
       | string
       | ((arg: {
@@ -68,60 +68,60 @@ export type FieldProp = {
     params: (field: FieldLocal) => { where: any } | Promise<{ where: any }>;
   };
   fm: FMLocal;
-  type: FieldType | (() => FieldType);
-  required: ("y" | "n") | (() => "y" | "n");
+  type?: FieldType | (() => FieldType);
+  required?: ("y" | "n") | (() => "y" | "n");
   field_ref?: (ref: any) => void;
-  required_msg: (name: string) => string | ReactElement;
-  on_change: (arg: {
+  required_msg?: (name: string) => string | ReactElement;
+  on_change?: (arg: {
     value: any;
     name: string;
     fm: any;
   }) => void | Promise<void>;
-  PassProp: any;
-  disabled: ("y" | "n") | (() => true | false);
-  child: any;
-  selection: "single" | "multi";
-  prefix: any;
-  suffix: any;
-  width: "auto" | "full" | "¾" | "½" | "⅓" | "¼";
-  _item: PrasiItem;
-  __props: any;
+  PassProp?: any;
+  disabled?: ("y" | "n") | (() => true | false);
+  child?: any;
+  selection?: "single" | "multi";
+  prefix?: any;
+  suffix?: any;
+  width?: "auto" | "full" | "¾" | "½" | "⅓" | "¼";
+  _item?: PrasiItem;
+  __props?: any;
   custom?: () => CustomField;
-  on_load: (
+  on_load?: (
     arg?: any
   ) =>
     | { value: string; label: string }[]
     | Promise<{ value: string; label: string }[]>;
-  opt_get_label: (
+  opt_get_label?: (
     row: any,
     mode: "list" | "label",
     opt?: { next?: any; prev?: any }
   ) => string;
-  opt_get_value: (arg: {
+  opt_get_value?: (arg: {
     options: { label: string; value: string; item?: string }[];
     fm: FMLocal;
     name: string;
     type: string;
   }) => any;
   tbl_show_header?: "y" | "n";
-  opt_set_value: (arg: {
+  opt_set_value?: (arg: {
     selected: string[];
     options: { label: string; value: string; item?: string }[];
     fm: FMLocal;
     name: string;
     type: string;
   }) => any;
-  opt_selected: (arg: {
+  opt_selected?: (arg: {
     item: { value: string; label: string; item?: any };
     current: any;
     options: { value: string; label: string; item?: any }[];
   }) => boolean;
-  on_init: (arg: { field: any; name: string }) => void;
-  pk: string;
-  sub_type: string;
-  placeholder: string;
-  show_label: boolean | "y" | "n";
-  msg_error: string;
+  on_init?: (arg: { field: any; name: string }) => void;
+  pk?: string;
+  sub_type?: string;
+  placeholder?: string;
+  show_label?: boolean | "y" | "n";
+  msg_error?: string;
   gen_table?: string;
   gen_fields?: string;
   model_upload?: "upload" | "import";
@@ -154,8 +154,8 @@ export type FMInternal = {
   internal: {
     original_render?: () => void;
   };
-  props: Exclude<FMProps, "body" | "PassProp">;
-  size: {
+  props?: Exclude<FMProps, "body" | "PassProp">;
+  size?: {
     width: number;
     height: number;
     field: "full" | "half";

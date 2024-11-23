@@ -34,4 +34,5 @@ export type BaseFormLocal<T> = Omit<typeof default_base_form_local, "data"> & {
   };
   submit: () => Promise<any> | any;
   render: () => void;
+  init: boolean;
 };

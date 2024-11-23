@@ -1,20 +1,19 @@
-import { ReactNode } from "react";
-import { FMLocal, FieldLocal, FieldProp } from "../typings";
+import { FieldLoading } from "lib/comps/ui/field-loading";
 import { Label } from "../field/Label";
-import { FieldLoading } from "../../ui/field-loading";
+import { FMLocal, FieldLocal, FieldProp } from "../typings";
+import { useField } from "../utils/use-field";
+import { ReactNode } from "react";
 
-export const BaseField = (prop: {
-  field: FieldLocal;
-  fm: FMLocal;
-  arg: FieldProp;
-  children: (arg: {
-    field: FieldLocal;
-    fm: FMLocal;
-    arg: FieldProp;
-  }) => ReactNode;
-}) => {
-  const { field, fm, arg } = prop;
-  const w = field.width;
+export const BaseField = (
+  arg: FieldProp & {
+    children?: (arg: { fm: FMLocal; field: FieldLocal }) => ReactNode;
+  }
+) => {
+  const field = useField(arg);
+  const fm = arg.fm;
+  arg.fm.fields[arg.name] = field;
+
+  const w = field.width || "auto";
   const prefix =
     typeof field.prefix === "function"
       ? field.prefix()
@@ -29,9 +28,7 @@ export const BaseField = (prop: {
         : null;
   const name = field.name;
   const errors = fm.error.get(name);
-
   const showlabel = arg.show_label || "y";
-
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
   const show =
@@ -54,8 +51,8 @@ export const BaseField = (prop: {
         css`
           padding: 5px 0px 0px 10px;
         `,
-        w === "auto" && fm.size.field === "full" && "c-w-full",
-        w === "auto" && fm.size.field === "half" && "c-w-1/2",
+        w === "auto" && fm.size?.field === "full" && "c-w-full",
+        w === "auto" && fm.size?.field === "half" && "c-w-1/2",
         w === "full" && "c-w-full",
         w === "¾" && "c-w-3/4",
         w === "½" && "c-w-1/2",
@@ -65,7 +62,6 @@ export const BaseField = (prop: {
         css`
           .field-outer {
             border: 1px solid ${disabled ? "#ececeb" : "#cecece"};
-
             &.focused {
               border: 1px solid #1c4ed8;
               outline: 1px solid #1c4ed8;
@@ -95,7 +91,9 @@ export const BaseField = (prop: {
       >
         <div
           className={cx(
-            !["toggle", "button", "radio", "checkbox"].includes(arg.sub_type)
+            !["toggle", "button", "radio", "checkbox"].includes(
+              arg.sub_type || ""
+            )
               ? cx(
                   "field-outer c-overflow-hidden c-flex-1 c-flex c-flex-row c-text-sm c-bg-white",
                   "c-rounded "
@@ -139,7 +137,8 @@ export const BaseField = (prop: {
                 field.disabled && "c-pointer-events-none"
               )}
             >
-              {prop.children(prop)}
+              {typeof arg.children === "function" &&
+                arg.children({ fm, field })}
             </div>
           )}
           {suffix && suffix !== "" ? (
@@ -153,14 +152,11 @@ export const BaseField = (prop: {
             <></>
           )}
         </div>
-
-        {/* {JSON.stringify(errors)} */}
         {errors.length > 0 && (
           <div
             className={cx(
               "field-error c-p-2 c-pl-0 c-text-xs c-text-red-600",
               field.desc && "c-pt-0",
-
               css`
                 padding-left: 0px !important;
               `

@@ -78,16 +78,18 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ value, className }) => {
                         {cur?.label}
                       </h1>
                     ) : (
-                      <h1
+                      <a
+                        href={baseurl(cur.url || "")}
                         className="c-font-normal c-text-xs md:c-text-base hover:c-cursor-pointer hover:c-underline"
                         onClick={(ev) => {
+                          ev.preventDefault();
                           if (isEditor) return;
                           if (cur.url) navigate(cur.url || "");
                           if (cur.onClick) cur.onClick(ev);
                         }}
                       >
                         {cur?.label}
-                      </h1>
+                      </a>
                     )}
 
                     {index !== lastIndex && (

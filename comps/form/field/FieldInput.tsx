@@ -134,7 +134,7 @@ export const FieldInput: FC<{
   return (
     <div
       className={cx(
-        !["toggle", "button", "radio", "checkbox"].includes(arg.sub_type)
+        !["toggle", "button", "radio", "checkbox"].includes(arg.sub_type || "")
           ? cx(
               "field-outer c-overflow-hidden c-flex-1 c-flex c-flex-row c-text-sm c-bg-white",
               "c-rounded "
@@ -182,7 +182,7 @@ export const FieldInput: FC<{
               field.focused && "focused",
               arg.sub_type !== "upload" && disabled && "c-pointer-events-none",
               disabled &&
-                !["checkbox"].includes(arg.sub_type) &&
+                !["checkbox"].includes(arg.sub_type || '') &&
                 " c-bg-gray-50"
             )}
           >
