@@ -80,7 +80,7 @@ export const Layout: FC<LYTChild> = (props) => {
   ) {
     return <>{props.blank_layout}</>;
   } else {
-    if (!w.user) {
+    if (!w.user && !isEditor) {
       local.loading = true;
       isMobile
         ? loadSession(props.login_url || "/m/auth/login")
