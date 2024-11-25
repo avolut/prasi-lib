@@ -83,7 +83,7 @@ export const Layout: FC<LYTChild> = (props) => {
     if (!w.user) {
       local.loading = true;
       isMobile
-        ? loadSession("/m/auth/login")
+        ? loadSession(props.login_url || "/m/auth/login")
         : loadSession(props.login_url || "/auth/login");
 
       local.loading = false;

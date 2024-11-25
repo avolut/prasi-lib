@@ -58,6 +58,7 @@ export const FieldMoney: FC<{
             input.render();
           }
         }}
+        inputMode="decimal"
         value={formatCurrency(input.value) || 0}
         disabled={disabled}
         className={cx(
