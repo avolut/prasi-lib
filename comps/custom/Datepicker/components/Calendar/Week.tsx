@@ -11,8 +11,6 @@ const Week: React.FC<Props> = ({style}) => {
   const { i18n, startWeekOn } = useContext(DatepickerContext);
   loadLanguageModule(i18n);
   const startDateModifier = useMemo(() => {
-    console.log(startWeekOn);
-    
     if (startWeekOn) {
       switch (startWeekOn) {
         case "mon":
