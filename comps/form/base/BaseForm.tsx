@@ -51,7 +51,6 @@ export const BaseForm = <T extends Record<string, any>>({
       for (const [k, v] of Object.entries(data)) {
         local.fm.data[k] = v;
       }
-      console.log(local.fm.data, data)
       local.fm.render();
     }
   }, [data]);
