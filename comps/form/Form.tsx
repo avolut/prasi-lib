@@ -1,14 +1,13 @@
+import { getPathname } from "lib/utils/pathname";
+import { sofDeleteField as softDeleteField } from "lib/utils/soft-del-rel";
 import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Toaster } from "sonner";
+import { Toaster } from "../ui/toast";
 import { FMInternal, FMProps } from "./typings";
 import { editorFormData } from "./utils/ed-data";
 import { formInit } from "./utils/init";
 import { formReload } from "./utils/reload";
-import { getPathname } from "lib/utils/pathname";
-import { sofDeleteField as softDeleteField } from "lib/utils/soft-del-rel";
-import { toast } from "../ui/toast";
 
 export const editorFormWidth = {} as Record<string, { w: number; f: any }>;
 
@@ -86,7 +85,7 @@ export const Form: FC<FMProps> = (props) => {
   const ref = useRef({
     el: null as null | HTMLFormElement,
     rob: new ResizeObserver(([e]) => {
-      if (e.contentRect.width > 0) {
+      if (e.contentRect.width > 0 && fm.size && fm.props) {
         fm.size.height = e.contentRect.height;
         fm.size.width = e.contentRect.width;
 
@@ -188,8 +187,7 @@ export const Form: FC<FMProps> = (props) => {
         "form c-flex-1 c-w-full c-h-full c-relative c-overflow-auto"
       )}
     >
-      {toaster_el &&
-        createPortal(<Toaster position={toast.position} cn={cx} />, toaster_el)}
+      {toaster_el && createPortal(<Toaster />, toaster_el)}
       <div
         ref={form_inner_ref}
         className={cx(
@@ -211,7 +209,7 @@ export const Form: FC<FMProps> = (props) => {
         )}
       >
         <>
-          {fm.status !== "init" && fm.size.width > 0 && (
+          {fm.status !== "init" && (fm.size?.width || 0) > 0 && (
             <PassProp fm={fm} submit={fm.submit}>
               {!fm.data ? <>NO DATA</> : body}
             </PassProp>

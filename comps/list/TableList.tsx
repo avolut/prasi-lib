@@ -24,16 +24,15 @@ import DataGrid, {
   ColumnOrColumnGroup,
   RenderCellProps,
   Row,
-  SortColumn
+  SortColumn,
 } from "react-data-grid";
 import "react-data-grid/lib/styles.css";
 import { createPortal } from "react-dom";
-import { Toaster } from "sonner";
 import { filterWhere } from "../filter/parser/filter-where";
 import { getFilter } from "../filter/utils/get-filter";
 import { MDLocal } from "../md/utils/typings";
 import { Skeleton } from "../ui/skeleton";
-import { toast } from "../ui/toast";
+import { toast, Toaster } from "../ui/toast";
 import { TLList } from "./TLList";
 import { TLSlider } from "./TLSlider";
 import { sortTree } from "./utils/sort-tree";
@@ -225,9 +224,12 @@ export const TableList: FC<TableListProp> = ({
                   }
                 }, 10);
               });
-              if (Array.isArray(md?.params?.links) && md?.params?.links?.length) {
+              if (
+                Array.isArray(md?.params?.links) &&
+                md?.params?.links?.length
+              ) {
                 const last = md.params.links[md.params.links.length - 1];
-  
+
                 if (last && last.where) {
                   if ((last.name && last.name === md.name) || !last.name) {
                     for (const [k, v] of Object.entries(last.where)) {
@@ -237,79 +239,81 @@ export const TableList: FC<TableListProp> = ({
                 }
               }
             }
-            
-          call_prasi_events("tablelist", "where", [__props?.gen__table, where]);
 
-          const load_args: any = {
-            async reload() {},
-            orderBy,
-            where,
-            paging: {
-              take: local.paging.take > 0 ? local.paging.take : undefined,
-              skip: local.paging.skip,
-            },
-          };
+            call_prasi_events("tablelist", "where", [
+              __props?.gen__table,
+              where,
+            ]);
 
-          if (id_parent) {
-            load_args.paging = {};
-          }
-          const result = on_load({ ...load_args, mode: "query" });
-          const callback = (data: any[]) => {
-            if (
-              id_parent ||
-              !local.paging ||
-              (local.paging && !local.paging.take) ||
-              local.paging.skip === 0
-            ) {
-              local.data = data;
-            } else {
-              local.data = [...local.data, ...data];
+            const load_args: any = {
+              async reload() {},
+              orderBy,
+              where,
+              paging: {
+                take: local.paging.take > 0 ? local.paging.take : undefined,
+                skip: local.paging.skip,
+              },
+            };
+
+            if (id_parent) {
+              load_args.paging = {};
             }
-
-            local.paging.last_length = local.data.length;
-
-            local.status = "ready";
-            local.reloading = null;
-            local.render();
-
-            done();
-            setTimeout(() => {
+            const result = on_load({ ...load_args, mode: "query" });
+            const callback = (data: any[]) => {
               if (
-                local.grid_ref &&
-                !id_parent &&
-                (paging !== undefined || paging)
+                id_parent ||
+                !local.paging ||
+                (local.paging && !local.paging.take) ||
+                local.paging.skip === 0
               ) {
-                local.paging.scroll(local.grid_ref);
+                local.data = data;
+              } else {
+                local.data = [...local.data, ...data];
               }
-            }, 100);
-          };
 
-          if (result instanceof Promise) {
-            (async () => {
-              try {
-                callback(await result);
-              } catch (e) {
-                console.error(e);
-                local.status = "error";
-                toast.dismiss();
-                toast.error(
-                  <div className="c-flex c-text-red-600 c-items-center">
-                    <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
-                    Failed to load data
-                  </div>,
-                  {
-                    dismissible: true,
-                    className: css`
-                      background: #ffecec;
-                      border: 2px solid red;
-                    `,
-                  }
-                );
-              }
-            })();
-          } else callback(result);
+              local.paging.last_length = local.data.length;
+
+              local.status = "ready";
+              local.reloading = null;
+              local.render();
+
+              done();
+              setTimeout(() => {
+                if (
+                  local.grid_ref &&
+                  !id_parent &&
+                  (paging !== undefined || paging)
+                ) {
+                  local.paging.scroll(local.grid_ref);
+                }
+              }, 100);
+            };
+
+            if (result instanceof Promise) {
+              (async () => {
+                try {
+                  callback(await result);
+                } catch (e) {
+                  console.error(e);
+                  local.status = "error";
+                  toast.dismiss();
+                  toast.error(
+                    <div className="c-flex c-text-red-600 c-items-center">
+                      <AlertTriangle className="c-h-4 c-w-4 c-mr-1" />
+                      Failed to load data
+                    </div>,
+                    {
+                      dismissible: true,
+                      className: css`
+                        background: #ffecec;
+                        border: 2px solid red;
+                      `,
+                    }
+                  );
+                }
+              })();
+            } else callback(result);
           }
-
         });
 
         return local.reloading;
@@ -853,11 +857,7 @@ export const TableList: FC<TableListProp> = ({
               if (e) local.height = e.offsetHeight;
             }}
           >
-            {toaster_el &&
-              createPortal(
-                <Toaster position={toast.position} cn={cn} />,
-                toaster_el
-              )}
+            {toaster_el && createPortal(<Toaster />, toaster_el)}
             {local.status === "init" ? (
               <DataGrid
                 style={{ opacity: 0 }}
@@ -980,11 +980,7 @@ export const TableList: FC<TableListProp> = ({
   } else if (mode === "list") {
     return (
       <>
-        {toaster_el &&
-          createPortal(
-            <Toaster position={toast.position} cn={cn} />,
-            toaster_el
-          )}
+        {toaster_el && createPortal(<Toaster />, toaster_el)}
         {list.type !== "slider" && list.type !== "grid" && (
           <TLList
             row_click={row_click}

@@ -1,10 +1,10 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Toaster } from "sonner";
 import { editorFormWidth } from "../Form";
 import { FMLocal } from "../typings";
 import { createFm } from "./utils/create-fm";
 import { DivForm } from "./utils/DivForm";
+import { Toaster } from "lib/exports";
 
 export type BaseFormProps<T> = {
   name: string;
@@ -93,7 +93,7 @@ export const BaseForm = <T extends Record<string, any>>({
         className
       )}
     >
-      {toaster_el && createPortal(<Toaster cn={cx} />, toaster_el)}
+      {toaster_el && createPortal(<Toaster />, toaster_el)}
 
       <div
         className={cx(
