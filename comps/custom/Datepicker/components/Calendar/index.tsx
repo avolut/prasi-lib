@@ -377,15 +377,6 @@ const Calendar: React.FC<Props> = ({
                   return onMark(day, date)
                 }
                 return <></>
-                if (new Date().getDate() === day)
-                  return (
-                    <div className="c-absolute c-inset-y-0 c-left-0 -c-translate-y-1/2 -c-translate-x-1/2">
-                      <div className="c-w-full c-h-full c-flex c-flex-row c-items-center c-justif-center c-px-0.5">
-                       !
-                      </div>
-                    </div>
-                  );
-                return <></>
               }}
             />
           </>

@@ -73,7 +73,6 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
     async handle(arg: ServerContext | SessionContext<any>) {
       const { url, req, handle } = arg;
       const found = findRoute(rou, undefined, url.pathname);
-
       if (found) {
         const route = found.data;
 

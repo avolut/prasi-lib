@@ -144,7 +144,6 @@ export { get_user } from "./utils/get_user";
 export { range_date } from "./utils/ranged_date";
 export const _sum = sum;
 export const _get = __get;
-
 /** Generator */
 export { generateFilter as generateFilter } from "lib/comps/filter/gen/gen-filter";
 export { generateRelation } from "lib/comps/form/gen/gen-rel";
@@ -197,7 +196,7 @@ export * from "lib/comps/ui/input";
 export { ButtonUpload } from "lib/preset/profile/ButtonUpload";
 export { Profile } from "lib/preset/profile/Profile";
 export { generateProfile } from "lib/preset/profile/utils/generate";
-export { formatTime, longDate, shortDate, timeAgo } from "lib/utils/date";
+export { formatTime, longDate, shortDate, timeAgo, formatDay } from "lib/utils/date";
 export { getBasename, getPathname } from "lib/utils/pathname";
 
 export { formatMoney } from "lib/comps/form/field/type/TypeMoney";

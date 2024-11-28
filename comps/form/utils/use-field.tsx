@@ -67,6 +67,5 @@ export const useField = (
   }, []);
 
   field.prop = arg as any;
-
   return field;
 };

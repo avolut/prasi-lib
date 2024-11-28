@@ -242,7 +242,7 @@ export const navigateLink = async (
       if (prev_link) prev_link = prev_link + "+";
     }
 
-    navigate(`${link.url}#lnk=${prev_link + vhash}${prm}`);
+    navigate(`${link.url}#lnk=${prev_link + vhash}${prm ? prm : ""}`);
     return true;
   }
 };

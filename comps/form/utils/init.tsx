@@ -109,7 +109,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           </div>
         </div>,
         {
-          duration:3000,
+          duration: 3000,
           className: css`
             background: #e4ffed;
             border: 2px solid green;
@@ -134,7 +134,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
           </div>
         </div>,
         {
-          duration:3000,
+          duration: 3000,
           className: css`
             background: #e4ffed;
             border: 2px solid green;
@@ -147,10 +147,10 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
   fm.reload = async () => {
     fm.status = isEditor ? "ready" : "loading";
     fm.render();
-
+    let toastId = null as any;
     if (sonar === "on" && !isEditor) {
       toast.dismiss();
-      toast.loading(
+      toastId = toast.loading(
         <>
           <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
           Loading data...
@@ -158,7 +158,6 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         { dismissible: true }
       );
     }
-
     let should_load = true;
     if (isEditor) {
       const item_id = props.item.id;
@@ -204,7 +203,6 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
         }
       }
     }
-
     toast.dismiss();
 
     if (fm.is_newly_created) {
@@ -214,6 +212,11 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
 
     fm.status = "ready";
     fm.render();
+    setTimeout(() => {
+      
+      toast.dismiss();
+      
+    }, 2000)
   };
 
   fm.submit = async () => {
@@ -289,7 +292,6 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
             }
           );
         } else {
-          
           toastSuccess({ addNewText: lang.t("Add New") });
         }
       }

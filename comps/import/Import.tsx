@@ -95,12 +95,12 @@ export const Import: FC<{
                   clearInterval(interval);
                   resolve([]);
                 }
-              }, 100);
+              }, 50);
             });
           }
 
           await task(list[n], n);
-          await sleep(100);
+          await sleep(50);
           n++;
         }
       };

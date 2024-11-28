@@ -34,7 +34,7 @@ import {
   Plus,
   QrCode,
   Rocket,
-  Settings,
+Settings,
   Ship,
   Siren,
   StickyNote,

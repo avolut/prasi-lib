@@ -1,10 +1,10 @@
+import { Toaster } from "lib/exports";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { editorFormWidth } from "../Form";
 import { FMLocal } from "../typings";
 import { createFm } from "./utils/create-fm";
 import { DivForm } from "./utils/DivForm";
-import { Toaster } from "lib/exports";
+import { editorFormWidth } from "../Form";
 
 export type BaseFormProps<T> = {
   name: string;

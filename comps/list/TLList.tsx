@@ -35,7 +35,7 @@ export const TLList: FC<{
       ) : (
         <div
           className={cx(
-            "c-absolute c-inset-0",
+            "list-inner c-absolute c-inset-0",
             !isEditor &&
               css`
                 @keyframes flasher {

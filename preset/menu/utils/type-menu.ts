@@ -4,7 +4,7 @@ export type IMenu = [string, any, string | IMenu[]];
 export type MenuProp = {
   role: string;
   on_init: () => string;
-  menu: Array<Record<string, IMenu[]>>;
+  menu: Array<Record<string, IMenu[]>> | (() => Promise<any>);
   PassProp: any;
   child: ReactNode;
   mode: "full" | "mini";
@@ -12,7 +12,9 @@ export type MenuProp = {
   style: "navbar" | "sidebar";
   layout?: { current_menu: string; render: () => void };
   on_load?: (on_done: (exec: () => void) => void) => void;
-  get_menu?: (mn: Array<Record<string, IMenu[]>>) => Array<Record<string, IMenu[]>>
+  get_menu?: (
+    mn: Array<Record<string, IMenu[]>>
+  ) => Array<Record<string, IMenu[]>>;
 };
 export type MenuActive = {
   data: any;

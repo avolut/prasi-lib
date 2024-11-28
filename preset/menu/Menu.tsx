@@ -3,6 +3,8 @@ import { useLocal } from "lib/utils/use-local";
 import get from "lodash.get";
 import { FC, useEffect, useRef } from "react";
 import { IMenu, MenuProp } from "./utils/type-menu";
+import { icons } from "app/icons";
+import { FieldLoading } from "lib/exports";
 // import { icon } from "../../..";
 
 const local_default = {
@@ -14,19 +16,19 @@ const local_default = {
   pathname: "",
   loading: false,
   init: false,
+  ready: false,
+  menu: [] as any[],
 };
 type MLocal = typeof local_default & { render: () => void };
 
 export const Menu: FC<MenuProp> = (props) => {
-  const imenu = props.menu;
-  let role = props.role;
-  role = props.on_init();
-  let menu = get(imenu, role) || [];
   const ref = useRef<HTMLDivElement>(null);
   const local = useLocal({ ...local_default }, ({ setDelayedRender }) => {
     setDelayedRender(true);
   });
-
+  const imenu = props.menu;
+  // useEffect(() => {
+  // }, []);
   if (local.pathname !== getPathname()) {
     local.pathname = getPathname();
   }
@@ -37,9 +39,30 @@ export const Menu: FC<MenuProp> = (props) => {
 
   useEffect(() => {
     local.mode = props.mode;
-    local.render();
-  }, [props.mode]);
+      local.ready = false;
+      local.render();
+      if (typeof imenu === "function") {
+        const res = imenu();
+        if (res instanceof Promise) {
+          res.then((e) => {
+            local.menu = e;
+            local.render();
+          })
+        }else{
+          local.menu = res;
+          local.render();
 
+        }
+      } else {
+        let role = props.role;
+        role = props.on_init();
+        let menu = get(imenu, role) || [];
+        local.menu = menu;
+      }
+      local.ready = true;
+      local.render();
+  }, [props.mode]);
+  if (!local.ready) return <FieldLoading />;
   return (
     <div
       className={cx("c-overflow-y-auto c-relative c-h-full c-w-full c-flex-1")}
@@ -47,7 +70,7 @@ export const Menu: FC<MenuProp> = (props) => {
     >
       <div className="sidebar-menu c-absolute c-inset-0 c-flex c-flex-col c-flex-grow c-px-3 c-py-4 ">
         <SideBar
-          data={menu}
+          data={local.menu}
           local={local}
           pm={props}
           depth={0}
@@ -88,6 +111,9 @@ export const SideBar: FC<{
     pm,
   };
   const data: IMenu[] = (typeof _data[0] === "string" ? [_data] : _data) as any;
+  if (!data.length) {
+    return <></>;
+  }
   useEffect(() => {
     data.map((item) => {
       const menu = {

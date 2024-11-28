@@ -12,6 +12,8 @@ export const FieldRadio: FC<{
     list: [] as any[],
     value: [] as any[],
   });
+  const disabled =
+    typeof field.disabled === "function" ? field.disabled() : field.disabled;
   useEffect(() => {
     const callback = (res: any[]) => {
       local.list = res;
@@ -40,6 +42,7 @@ export const FieldRadio: FC<{
               <div
                 className="flex items-center mb-4"
                 onClick={() => {
+                  if(!disabled)
                   arg.opt_set_value({
                     fm,
                     name: field.name,

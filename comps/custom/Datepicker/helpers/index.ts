@@ -145,7 +145,6 @@ export function getNumberOfDay(
   let number = 0;
 
   let startDateModifier = 0;
-
   if (startWeekOn) {
     switch (startWeekOn) {
       case "mon":
@@ -173,16 +172,7 @@ export function getNumberOfDay(
         break;
     }
   }
-
-  isMobile ? [
-    "S",
-    "M",
-    "T",
-    "W",
-    "T",
-    "F",
-    "S",
-  ]: [
+  const days = [
     "Sunday",
     "Monday",
     "Tuesday",
@@ -190,7 +180,8 @@ export function getNumberOfDay(
     "Thursday",
     "Friday",
     "Saturday",
-  ].forEach((item, index) => {
+  ]
+  days.forEach((item, index) => {
     if (item.includes(dayString)) {
       number = (index + startDateModifier) % 7;
     }

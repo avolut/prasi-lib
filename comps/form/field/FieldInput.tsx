@@ -60,7 +60,6 @@ export const FieldInput: FC<{
       child: get(_item, "edit.props.child.value") as PrasiItem,
       bottom: childsTableEdit.find((e) => e.name === "bottom") as PrasiItem,
     };
-    console.log({ tableEdit });
     table_edit = (
       <TableEdit
         on_init={() => {

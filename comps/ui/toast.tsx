@@ -17,6 +17,7 @@ export const toast = {
           sonner.dismiss(t.id);
         }
       }
+      sonner.dismiss()
     } else {
       clearTimeout(timer.timeout);
       timer.timeout = null;

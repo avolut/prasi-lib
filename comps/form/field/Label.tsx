@@ -9,10 +9,6 @@ export const Label: FC<{ field: FieldLocal; fm: FMLocal; arg: FieldProp }> = ({
   const errors = fm.error.get(field.name);
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
-  useEffect(() => {
-    if (field.name === "complete_description")
-      console.log("log", field.required);
-  }, []);
   const required =
     typeof arg.required === "string"
       ? arg.required === "y"
@@ -30,12 +26,12 @@ export const Label: FC<{ field: FieldLocal; fm: FMLocal; arg: FieldProp }> = ({
         "c-mt-3 c-w-full c-justify-between"
       )} 
     >
-      <div className="c-flex c-items-center">
+      <div className="c-flex c-flex-row c-items-center">
         <span className={cx(errors.length > 0 && `c-text-red-600`)}>
           {field.label}
         </span>
         {required && !disabled && (
-          <span className="c-text-red-600 c-mb-2 c-ml-1">
+          <span className="c-text-red-600 c-ml-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="12"

@@ -40,7 +40,13 @@ import { OnRowClick } from "./utils/type";
 
 let EMPTY_SET = new Set() as ReadonlySet<any>;
 
-type SelectedRow = (arg: { row: any; rows: any[]; idx: any }) => boolean;
+type SelectedRow = (arg: {
+  row: any;
+  rows: any[];
+  idx: any;
+  select?: boolean;
+  data?: any[];
+}) => boolean;
 type TableListProp = {
   child: any;
   PassProp: any;
@@ -137,6 +143,7 @@ export const TableList: FC<TableListProp> = ({
       el: null as null | HTMLDivElement,
       width: 0,
       height: 0,
+      selectedAllRows: false as boolean,
       selectedRowIds: [] as (string | number)[],
       pk: null as null | GFCol,
       scrolled: false,
@@ -468,9 +475,11 @@ export const TableList: FC<TableListProp> = ({
           rows: data,
         });
       });
+      local.selectedAllRows = true;
       local.render();
     } else {
       // jika tidak, maka local selected rows akan dikosongkan
+      local.selectedAllRows = false;
       local.selectedRows = [];
       local.render();
     }
@@ -494,6 +503,7 @@ export const TableList: FC<TableListProp> = ({
       local.selectedRows = local.selectedRows.filter(
         (data) => data.pk !== rowId
       );
+      local.selectedAllRows = false;
       local.render();
     }
   };
@@ -610,8 +620,24 @@ export const TableList: FC<TableListProp> = ({
           frozen: true,
           renderHeaderCell(props) {
             return (
-              <div>
-                {/* <CheckboxList value={false} on_click={on_click} /> */}
+              <div
+                className={cx(
+                  css`
+                    width: 100%;
+                    height: 100%;
+                  `,
+                  "c-flex c-items-center c-justify-center"
+                )}
+              >
+                {isCheckbox ? (
+                  <input
+                    type="checkbox"
+                    checked={local.selectedAllRows}
+                    onChange={headerCheckboxClick}
+                  />
+                ) : (
+                  <></>
+                )}
               </div>
             );
           },
@@ -622,7 +648,29 @@ export const TableList: FC<TableListProp> = ({
                 tbl: local,
                 child,
               });
-
+            if (isCheckbox) {
+              const isChecked = local.selectedRows.some(
+                (checked) => checked.pk === props.row.id
+              );
+              return (
+                <div
+                  onClick={checkboxClick(props.row.id)}
+                  className={cx(
+                    css`
+                      width: 100%;
+                      height: 100%;
+                    `,
+                    "c-flex c-items-center c-justify-center"
+                  )}
+                >
+                  <input
+                    className="c-pointer-events-none"
+                    type="checkbox"
+                    checked={local.selectedAllRows ? true : isChecked}
+                  />
+                </div>
+              );
+            }
             return (
               <PassProp
                 idx={props.rowIdx}
@@ -908,11 +956,21 @@ export const TableList: FC<TableListProp> = ({
                             ) {
                               return local.cached_row.get(props.row);
                             }
-                            const isSelect = selected({
-                              idx: props.rowIdx,
-                              row: props.row,
-                              rows: local.data,
-                            });
+                            const isSelect = local.selectedAllRows
+                              ? true
+                              : selected({
+                                  idx: props.rowIdx,
+                                  row: props.row,
+                                  rows: local.data,
+                                  select: local.selectedAllRows
+                                    ? true
+                                    : local.selectedRows.some(
+                                        (checked) => checked.pk === props.row.id
+                                      ),
+                                  data: local.selectedAllRows
+                                    ? local.data
+                                    : local.selectedRows,
+                                });
                             const child_row = (
                               <Row
                                 key={key}
@@ -1008,23 +1066,29 @@ export const TableList: FC<TableListProp> = ({
 };
 const CheckboxList: FC<{
   on_click: (e: any) => void;
+  checked?: boolean;
   value?: boolean;
-}> = ({ value, on_click }) => {
+}> = ({ value, checked, on_click }) => {
   const local = useLocal({
+    checked: false as any,
     value: false as boolean,
   });
+  useEffect(() => {
+    local.checked = checked;
+    local.render();
+  }, []);
   return (
     <div className={cx("c-flex c-items-center c-w-full c-flex-row")}>
       <div className={cx(`c-flex c-flex-col c-space-y-1 c-p-0.5`)}>
         <div
           onClick={() => {
-            local.value = !local.value;
-            on_click(local.value);
+            local.checked = !local.checked;
+            on_click(typeof value === "boolean" ? !local.checked : value);
             local.render();
           }}
           className="c-flex c-flex-row c-space-x-1 cursor-pointer c-items-center rounded-full p-0.5"
         >
-          {local.value ? (
+          {local.checked ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

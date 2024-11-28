@@ -348,7 +348,7 @@ return (React.createElement(React.Fragment, null,
           props: {
             type,
             sub_type,
-            name: field.name,
+          name: field.name,
             label,
             link__text: [
               `

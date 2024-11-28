@@ -43,11 +43,11 @@ const Week: React.FC<Props> = ({style}) => {
         >
           {style === "google" ? dayjs(`2022-11-${6 + (item + startDateModifier)}`)
                 .locale(i18n)
-                .format("dddd") : ucFirst(
+                .format(isMobile ? "dd" :"dddd") : ucFirst(
                   shortString(
                     dayjs(`2022-11-${6 + (item + startDateModifier)}`)
                       .locale(i18n)
-                      .format("dddd")
+                      .format(isMobile ? "dd" :"dddd")
                   ),
                   
                 )}
