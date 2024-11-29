@@ -14,7 +14,7 @@ export type BaseFormProps<T> = {
   onSubmit?: (arg: { fm: FMLocal }) => Promise<boolean> | boolean;
   onChange?: (fm: FMLocal, name: string, new_value: any) => any;
   children: ReactNode | ((arg: { fm: FMLocal }) => ReactNode);
-  tag?: "form" | "div";
+  tag?: "form" | "div" | "blank";
 };
 
 export const BaseForm = <T extends Record<string, any>>({
@@ -72,6 +72,10 @@ export const BaseForm = <T extends Record<string, any>>({
     document.body.appendChild(elemDiv);
   }
   const toaster_el = document.getElementsByClassName("prasi-toaster")[0];
+
+  if (tag === "blank") {
+    return child;
+  }
 
   return (
     <DivForm

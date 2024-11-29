@@ -274,14 +274,14 @@ export const TableEdit: FC<{
                     <BaseForm
                       key={idx}
                       name={`tef-${idx}`}
-                      tag={"div"}
+                      tag={"blank"}
                       data={row}
                     >
                       {(form) => {
                         return (
                           <tr
                             className={cx(
-                              "c-border-b c-py-1",
+                              "c-border-t",
                               idx !== value.length - 1
                                 ? "c-border-gray-300"
                                 : ""
@@ -291,6 +291,7 @@ export const TableEdit: FC<{
                               return (
                                 <td
                                   className={cx(
+                                    "c-py-1",
                                     css`
                                       vertical-align: top;
                                     `,
