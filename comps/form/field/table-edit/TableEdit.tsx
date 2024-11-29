@@ -266,10 +266,17 @@ export const TableEdit: FC<{
               <>
                 {value.map((row: any, idx: number) => {
                   return (
-                    <BaseForm is_form={false} data={row}>
+                    <BaseForm name="table-edit-form" tag={"div"} data={row}>
                       {(form) => {
                         return (
-                          <tr className={cx("c-border-b 	", idx !== value.length -1 ? "c-border-gray-300" : "" )}>
+                          <tr
+                            className={cx(
+                              "c-border-b 	",
+                              idx !== value.length - 1
+                                ? "c-border-gray-300"
+                                : ""
+                            )}
+                          >
                             {columns.map((header) => {
                               return (
                                 <td
@@ -322,11 +329,11 @@ export const TableEdit: FC<{
           ext_fm={{
             add: (e: any) => {
               if (Array.isArray(fm.data[name])) {
-                fm.data[name].push({...e});
+                fm.data[name].push({ ...e });
               } else {
-                fm.data[name] = [{...e}];
+                fm.data[name] = [{ ...e }];
               }
-              console.log("CEKK")
+              console.log("CEKK");
               fm.render();
               setTimeout(() => {
                 const last = Array.from(
