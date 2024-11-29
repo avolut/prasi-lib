@@ -197,10 +197,15 @@ export const TableEdit: FC<{
             .typeahead-arrow {
               margin-right: 10px;
             }
+            tbody > .form {
+              overflow: visible;
+              & > .form-inner {
+                position: relative;
+              }
+            }
           `
         )}
       >
-        {/* {JSON.stringify(value.map((e) => e.id))} */}
         <table
           className={cx(
             "c-table-auto",
@@ -266,12 +271,17 @@ export const TableEdit: FC<{
               <>
                 {value.map((row: any, idx: number) => {
                   return (
-                    <BaseForm name="table-edit-form" tag={"div"} data={row}>
+                    <BaseForm
+                      key={idx}
+                      name={`tef-${idx}`}
+                      tag={"div"}
+                      data={row}
+                    >
                       {(form) => {
                         return (
                           <tr
                             className={cx(
-                              "c-border-b 	",
+                              "c-border-b c-py-1",
                               idx !== value.length - 1
                                 ? "c-border-gray-300"
                                 : ""
@@ -281,6 +291,9 @@ export const TableEdit: FC<{
                               return (
                                 <td
                                   className={cx(
+                                    css`
+                                      vertical-align: top;
+                                    `,
                                     header.width || 0 > 0
                                       ? css`
                                           width: ${header.width || 0}px;
@@ -288,27 +301,20 @@ export const TableEdit: FC<{
                                       : ""
                                   )}
                                 >
-                                  <div
-                                    className={cx(
-                                      "c-flex c-flex-row c-pb-1 c-w-full c-h-full",
-                                      idx === 0 && "c-pt-1"
-                                    )}
-                                  >
-                                    {header.renderCell({
-                                      props: {
-                                        row: row,
-                                        rowIdx: idx,
-                                        column: header,
-                                        fm: {
-                                          ...form.fm,
-                                          data: row,
-                                        },
+                                  {header.renderCell({
+                                    props: {
+                                      row: row,
+                                      rowIdx: idx,
+                                      column: header,
+                                      fm: {
+                                        ...form.fm,
+                                        data: row,
                                       },
-                                      tbl: {
-                                        data: value,
-                                      },
-                                    })}
-                                  </div>
+                                    },
+                                    tbl: {
+                                      data: value,
+                                    },
+                                  })}
                                 </td>
                               );
                             })}
@@ -333,7 +339,6 @@ export const TableEdit: FC<{
               } else {
                 fm.data[name] = [{ ...e }];
               }
-              console.log("CEKK");
               fm.render();
               setTimeout(() => {
                 const last = Array.from(

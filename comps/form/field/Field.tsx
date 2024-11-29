@@ -67,7 +67,7 @@ export const Field: FC<FieldProp> = (arg) => {
         arg.on_change({ value: fm.data?.[name], name, fm });
       }
 
-      if (fm.deps.md) {
+      if (fm.deps?.md) {
         fm.save_status = "unsaved";
       }
 
@@ -134,8 +134,8 @@ export const Field: FC<FieldProp> = (arg) => {
           : css`
               padding: 5px 0px 0px 10px;
             `,
-        w === "auto" && fm.size.field === "full" && "c-w-full",
-        w === "auto" && fm.size.field === "half" && "c-w-1/2",
+        w === "auto" && fm.size?.field === "full" && "c-w-full",
+        w === "auto" && fm.size?.field === "half" && "c-w-1/2",
         w === "full" && "c-w-full",
         w === "¾" && "c-w-3/4",
         w === "½" && "c-w-1/2",
@@ -175,7 +175,7 @@ export const Field: FC<FieldProp> = (arg) => {
           fm={fm}
           PassProp={arg.PassProp}
           child={arg.child}
-          _item={arg._item}
+          _item={arg._item!}
           arg={arg}
         />
         {field.desc && (

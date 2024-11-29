@@ -14,10 +14,10 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
     if (["PassProp", "body", "meta", "item"].includes(k)) continue;
     (fm.props as any)[k] = v;
   }
-  const { on_load, sonar } = fm.props;
+  const { on_load, sonar } = (fm.props || {});
   fm.error = formError(fm);
   fm.field_def = {};
-  const defs = parseGenField(fm.props.gen_fields);
+  const defs = parseGenField(fm.props?.gen_fields);
   for (const d of defs) {
     fm.field_def[d.name] = d;
   }
@@ -223,11 +223,11 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
     if (fm.status !== "ready") {
       return;
     }
-    if (typeof fm.props.on_submit === "function") {
+    if (typeof fm.props?.on_submit === "function") {
       fm.status = "saving";
       fm.render();
 
-      if (fm.props.sonar === "on" && !isEditor) {
+      if (fm.props?.sonar === "on" && !isEditor) {
         toast.loading(
           <>
             <Loader2 className="c-h-4 c-w-4 c-animate-spin" />
@@ -237,7 +237,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
       }
       const form = JSON.parse(JSON.stringify(fm.data));
 
-      if (fm.deps.md) {
+      if (fm.deps?.md) {
         const md = fm.deps.md;
         const last = md.params.links[md.params.links.length - 1];
         if (last) {
@@ -298,7 +298,7 @@ export const formInit = (fm: FMLocal, props: FMProps) => {
       return success;
     }
   };
-  if (typeof fm.props.on_init === "function") {
+  if (typeof fm.props?.on_init === "function") {
     fm.props.on_init({ fm, submit: fm.submit, reload: fm.reload });
   }
 };

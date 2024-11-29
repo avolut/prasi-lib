@@ -94,7 +94,6 @@ export const BaseForm = <T extends Record<string, any>>({
       )}
     >
       {toaster_el && createPortal(<Toaster />, toaster_el)}
-
       <div
         className={cx(
           "form-inner c-flex-1 c-flex c-flex-row c-flex-wrap c-items-start c-content-start c-absolute c-inset-0",

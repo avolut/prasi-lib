@@ -135,7 +135,7 @@ export type FieldProp = {
 export type FMInternal = {
   status: "init" | "resizing" | "loading" | "saving" | "ready";
   data: any;
-  deps: any;
+  deps?: any;
   reload: () => Promise<void>;
   submit: () => Promise<boolean>;
   events: {
