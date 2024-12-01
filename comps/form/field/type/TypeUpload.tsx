@@ -10,12 +10,11 @@ export const FieldUpload: FC<{
   prop: PropTypeInput;
   styling?: string;
   arg: FieldProp;
-  on_change: (e: any) => void | Promise<void>;
 }> = (pass) => {
-  const { field, fm, prop, on_change, arg } = pass;
+  const { field, fm, prop, arg } = pass;
   let mode = field.prop.upload?.mode || "single-file";
   if (mode === "single-file") {
     return <FieldUploadSingle {...pass} />;
   }
-  return  <FieldUploadMulti {...pass} />;
+  return <FieldUploadMulti {...pass} />;
 };

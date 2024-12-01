@@ -15,8 +15,7 @@ export const FieldUploadMulti: FC<{
   prop: PropTypeInput;
   styling?: string;
   arg: FieldProp;
-  on_change: (e: any) => void | Promise<void>;
-}> = ({ field, fm, prop, on_change, arg }) => {
+}> = ({ field, fm, prop, arg }) => {
   let value: string = (fm.data[field.name] || "").trim();
 
   const input = useLocal({

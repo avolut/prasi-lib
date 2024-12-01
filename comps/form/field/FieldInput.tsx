@@ -35,6 +35,7 @@ export const FieldInput: FC<{
   const errors = fm.error.get(name);
   let type_field: any = typeof arg.type === "function" ? arg.type() : arg.type; // tipe field
 
+
   const disabled =
     typeof field.disabled === "function" ? field.disabled() : field.disabled;
   let custom = <></>;

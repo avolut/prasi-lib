@@ -16,7 +16,11 @@ export const FieldUploadSingle: FC<{
   prop: PropTypeInput;
   styling?: string;
   arg: FieldProp;
-  on_change: (e: any) => void | Promise<void>;
+  on_change?: (arg: {
+    value: any;
+    name: string;
+    fm: any;
+  }) => void | Promise<void>;
 }> = ({ field, fm, prop, on_change, arg }) => {
   const styling = arg.upload_style ? arg.upload_style : "full";
   const disabled =
@@ -57,9 +61,9 @@ export const FieldUploadSingle: FC<{
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
           if (typeof on_change === "function") {
             on_change({
-              value: jsonData,
-              file: file,
-              binnary: e.target.result,
+              value: { jsonData, file: file, binary: e.target.result },
+              fm,
+              name: field.name,
             });
           }
         }

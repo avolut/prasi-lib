@@ -1,9 +1,9 @@
+import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "lib/comps/ui/input-otp";
 import { useLocal } from "lib/utils/use-local";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { FieldLocal, FieldProp, FMLocal } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "lib/comps/ui/input-otp";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 export const FieldOTP: FC<{
   digit: number;
@@ -11,7 +11,7 @@ export const FieldOTP: FC<{
   fm: FMLocal;
   prop: PropTypeInput;
   arg: FieldProp;
-}> = ({ digit, fm, field }) => {
+}> = ({ digit, fm, field, arg }) => {
   const local = useLocal({
     otp: "",
     ref: [] as HTMLInputElement[],
@@ -37,8 +37,8 @@ export const FieldOTP: FC<{
         onChange={(value) => {
           local.otp = value;
           local.render();
-          if (field.on_change) {
-            field.on_change({ value, name: field.name, fm });
+          if (arg.on_change) {
+            arg.on_change({ value: local.otp, fm, name: field.name });
           }
         }}
         pattern={REGEXP_ONLY_DIGITS}

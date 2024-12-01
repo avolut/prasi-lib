@@ -2,7 +2,6 @@ import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect } from "react";
 import { FMLocal, FieldLocal, FieldProp } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
-import { isEmptyString } from "lib/utils/is-empty-string";
 export const FieldMoney: FC<{
   field: FieldLocal;
   fm: FMLocal;
@@ -42,8 +41,11 @@ export const FieldMoney: FC<{
               formatCurrency(rawValue)
             );
             fm.render();
-            if (field.on_change) {
-              field.on_change({
+            input.value = formatCurrency(fm.data[field.name]);
+            input.render();
+
+            if (arg.on_change) {
+              arg.on_change({
                 value: convertionCurrencyNumber(
                   formatCurrency(fm.data[field.name])
                 ),
@@ -51,8 +53,6 @@ export const FieldMoney: FC<{
                 fm,
               });
             }
-            input.value = formatCurrency(fm.data[field.name]);
-            input.render();
           } else {
             input.value = rawValue;
             input.render();

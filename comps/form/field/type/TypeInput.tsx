@@ -38,8 +38,8 @@ export type PropTypeInput = {
   placeholder?: string;
   onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
-  onChange?: (val: any) => void;
   model_upload?: "upload" | "import";
+  onChange?: (value: any) => void;
 };
 
 const parse = parser.exportAsFunctionAny("en-US");
@@ -102,10 +102,9 @@ export const FieldTypeInput: FC<{
 
   const renderOnChange = () => {
     input.render();
-    // if (field.on_change) {
-    //   field.on_change({ value: fm.data[field.name], name: field.name, fm });
-    // }
-
+    if (prop.onChange) {
+      prop.onChange(fm.data[field.name]);
+    }
     clearTimeout(input.change_timeout);
     input.change_timeout = setTimeout(fm.render, 300);
   };
@@ -178,25 +177,9 @@ export const FieldTypeInput: FC<{
         />
       );
     case "upload":
-      return (
-        <FieldUpload
-          arg={arg}
-          field={field}
-          fm={fm}
-          prop={prop}
-          on_change={arg.on_change}
-        />
-      );
+      return <FieldUpload arg={arg} field={field} fm={fm} prop={prop} />;
     case "import":
-      return (
-        <FieldUpload
-          arg={arg}
-          field={field}
-          fm={fm}
-          prop={prop}
-          on_change={arg.on_change}
-        />
-      );
+      return <FieldUpload arg={arg} field={field} fm={fm} prop={prop} />;
     case "money":
       return (
         <>
@@ -223,10 +206,6 @@ export const FieldTypeInput: FC<{
               ? new Date(value?.startDate)
               : null;
             renderOnChange();
-
-            if (prop.onChange) {
-              prop.onChange(fm.data[field.name]);
-            }
           }}
         />
       );
@@ -255,10 +234,6 @@ export const FieldTypeInput: FC<{
             onChange={(ev) => {
               fm.data[field.name] = ev.currentTarget.value.replace(/\D/g, "");
               renderOnChange();
-
-              if (prop.onChange) {
-                prop.onChange(fm.data[field.name]);
-              }
             }}
             inputMode="decimal"
             value={format(value, {
@@ -369,9 +344,6 @@ export const FieldTypeInput: FC<{
             onChange={async (ev) => {
               fm.data[field.name] = ev.currentTarget.value;
               renderOnChange();
-              if (prop.onChange) {
-                await prop.onChange(fm.data[field.name]);
-              }
 
               clearTimeout(internal.search_timeout);
               internal.search_timeout = setTimeout(() => {
@@ -403,10 +375,6 @@ export const FieldTypeInput: FC<{
             fm.data[field.name] = parseInt(fm.data[field.name]);
           }
           renderOnChange();
-
-          if (prop.onChange) {
-            prop.onChange(fm.data[field.name]);
-          }
         }}
         placeholder={prop.placeholder || arg.placeholder || ""}
         value={value}

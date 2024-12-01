@@ -108,12 +108,12 @@ export const Field: FC<FieldProp> = (arg) => {
     typeof field.hidden === "function"
       ? field.hidden()
       : typeof field.hidden === "string"
-        ? field.hidden === "n"
-          ? false
-          : true
-        : typeof field.hidden === "boolean"
-          ? field.hidden
-          : true;
+      ? field.hidden === "n"
+        ? false
+        : true
+      : typeof field.hidden === "boolean"
+      ? field.hidden
+      : true;
   if (!show) return <></>;
 
   return (
