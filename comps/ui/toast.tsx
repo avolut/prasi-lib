@@ -17,7 +17,7 @@ export const toast = {
           sonner.dismiss(t.id);
         }
       }
-      sonner.dismiss()
+      sonner.dismiss();
     } else {
       clearTimeout(timer.timeout);
       timer.timeout = null;
@@ -31,6 +31,7 @@ export const toast = {
     timer.timeout = setTimeout(() => {
       toast.toasting.push(
         sonner.loading(el, {
+          dismissible: true,
           ...props,
           onDismiss: (t) => {
             toast.toasting = toast.toasting.filter((e) => e !== t.id);
@@ -42,12 +43,18 @@ export const toast = {
   },
   success: (
     el: ReactElement,
-    props?: { dismissible?: boolean; className?: string; duration?: number }
+    props?: {
+      dismissible?: boolean;
+      className?: string;
+      duration?: number;
+      onClick?: () => void;
+    }
   ) => {
     clearTimeout(timer.timeout);
     timer.timeout = setTimeout(() => {
       toast.toasting.push(
         sonner.success(el, {
+          dismissible: true,
           ...props,
           onDismiss: (t) => {
             toast.toasting = toast.toasting.filter((e) => e !== t.id);
@@ -65,6 +72,7 @@ export const toast = {
     timer.timeout = setTimeout(() => {
       toast.toasting.push(
         sonner.error(el, {
+          dismissible: true,
           ...props,
           onDismiss: (t) => {
             toast.toasting = toast.toasting.filter((e) => e !== t.id);

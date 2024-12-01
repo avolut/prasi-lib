@@ -237,24 +237,56 @@ export const FieldUploadSingle: FC<{
           <FilePreview url={value || ""} />
           {!disabled ? (
             <>
-              <div
-                onClick={(e) => {
-                  if (!disabled) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (confirm("Clear this file ?")) {
-                      input.fase = "start";
-                      fm.data[field.name] = null;
-                      fm.render();
+              {field.required !== true ? (
+                <div
+                  onClick={(e) => {
+                    if (!disabled) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (confirm("Clear this file ?")) {
+                        input.fase = "start";
+                        fm.data[field.name] = null;
+                        fm.render();
+                      }
                     }
-                  }
-                }}
-                className={cx(
-                  "c-flex c-flex-row c-items-center c-border c-px-2 c-rounded c-cursor-pointer hover:c-bg-red-100"
-                )}
-              >
-                <Trash2 className="c-text-red-500 c-h-4 c-w-4" />
-              </div>
+                  }}
+                  className={cx(
+                    "c-flex c-flex-row c-items-center c-border c-px-2 c-rounded c-cursor-pointer hover:c-bg-red-100"
+                  )}
+                >
+                  <Trash2 className="c-text-red-500 c-h-4 c-w-4" />
+                </div>
+              ) : (
+                <>
+                  <div
+                    onClick={() => {
+                      console.log(input.ref);
+                      if (input.ref) {
+                        input.ref.click();
+                      }
+                    }}
+                    className="c-items-center c-flex c-text-base c-px-1 c-outline-none c-rounded c-cursor-pointer "
+                  >
+                    <div className="c-flex c-flex-row c-items-center c-px-2">
+                      <Upload className="c-h-4 c-w-4" />
+                    </div>
+                    <div className="c-flex c-flex-row c-items-center  c-text-sm">
+                      Replace
+                    </div>
+                  </div>
+                  <input
+                    ref={(ref) => (input.ref = ref)}
+                    type="file"
+                    multiple={false}
+                    // accept={field.prop.upload?.accept}
+                    accept={"file/**"}
+                    onChange={on_upload}
+                    className={cx(
+                      "c-absolute c-w-full c-h-full c-cursor-pointer c-top-0 c-left-0 c-opacity-0"
+                    )}
+                  />
+                </>
+              )}
             </>
           ) : (
             <></>
