@@ -2,6 +2,8 @@ import { useLocal } from "lib/utils/use-local";
 import { FC, useEffect } from "react";
 import { FieldLocal, FieldProp, FMLocal } from "../../typings";
 import { PropTypeInput } from "./TypeInput";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "lib/comps/ui/input-otp";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 export const FieldOTP: FC<{
   digit: number;
@@ -11,81 +13,44 @@ export const FieldOTP: FC<{
   arg: FieldProp;
 }> = ({ digit, fm, field }) => {
   const local = useLocal({
-    otp: [] as string[],
+    otp: "",
     ref: [] as HTMLInputElement[],
   });
 
-  if (local.otp.length === 0 && digit) {
-    for (let i = 0; i < digit; i++) {
-      local.otp.push("");
-    }
-  }
-
   return (
-    <div className="c-flex-1 c-flex c-justify-center c-items-center">
-      {local.otp.map((item, idx) => (
-        <input
-          key={idx}
-          className={cx(
-            "c-rounded-md c-text-center",
-            css`
-              margin: 3px;
-              font-size: 3em;
-              padding: 0px 10px;
-              width: 60px;
-              height: 100px;
-              border: 1px solid #ddd;
-              background: white;
-            `
-          )}
-          inputMode="decimal"
-          pattern="[0-9]*"
-          value={item}
-          ref={(ref) => {
-            if (ref) local.ref[idx] = ref;
-          }}
-          onPaste={(e) => {
-            e.preventDefault();
-
-            var clipboardData =
-              e.clipboardData || (window as any).clipboardData;
-            var pastedData = clipboardData.getData("text");
-            for (let i = 0; i < pastedData.length; i++) {
-              if (i >= local.otp.length) break;
-              local.otp[i] = pastedData[i];
-            }
-            local.render();
-          }}
-          onKeyDown={async (e) => {
-            if (e.key === "Backspace") {
-              let _idx = idx;
-              if (local.otp[_idx].length === 0) {
-                _idx--;
-              }
-              local.otp[_idx] = "";
-              local.render();
-              const ref = local.ref[Math.max(0, _idx - 1)];
-              if (ref) {
-                ref.focus();
-              }
-            } else if (parseInt(e.key) || e.key === "0") {
-              local.otp[idx] = e.key;
-              local.render();
-              const ref = local.ref[idx + 1];
-              if (ref) {
-                ref.focus();
-              }
-            }
-
-            const otp = local.otp.join("");
-            fm.data[field.name] = otp;
-            if (otp.length === digit) {
-              fm.render();
-            }
-            // local.render();
-          }}
-        />
-      ))}
+    <div
+      className={cx(
+        "c-flex-1 c-flex c-justify-center c-items-center",
+        css`
+          height: 100px;
+          .otp-single {
+            height: 80px;
+            width: 50px;
+            font-size: 20px;
+          }
+        `
+      )}
+    >
+      <InputOTP
+        maxLength={4}
+        value={local.otp}
+        onChange={(value) => {
+          local.otp = value;
+          local.render();
+          if (field.on_change) {
+            field.on_change({ value, name: field.name, fm });
+          }
+        }}
+        pattern={REGEXP_ONLY_DIGITS}
+        inputMode="decimal"
+      >
+        <InputOTPGroup>
+          <InputOTPSlot index={0} className="otp-single" />
+          <InputOTPSlot index={1} className="otp-single" />
+          <InputOTPSlot index={2} className="otp-single" />
+          <InputOTPSlot index={3} className="otp-single" />
+        </InputOTPGroup>
+      </InputOTP>
     </div>
   );
 };
