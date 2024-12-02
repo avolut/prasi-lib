@@ -1,4 +1,4 @@
-import { FC, ReactNode, Suspense, lazy } from "react";
+import { FC, lazy } from "react";
 
 export const lazify = <T extends FC<any>>(fn: () => Promise<T>): T => {
   return lazy(async () => {

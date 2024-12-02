@@ -1,8 +1,8 @@
+import { FieldLoading } from "lib/comps/ui/field-loading";
+import { getBasename } from "lib/utils/pathname";
 import { useLocal } from "lib/utils/use-local";
 import { FC } from "react";
-import { FieldLoading } from "../../..";
 import { loadSession } from "./utils/load";
-import { getBasename } from "lib/utils/pathname";
 
 const w = window as unknown as {
   user: any;

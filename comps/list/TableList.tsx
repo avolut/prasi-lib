@@ -1,5 +1,4 @@
 import { GFCol, parseGenField } from "lib/gen/utils";
-import { cn } from "lib/utils";
 import { fields_map } from "lib/utils/format-value";
 import { call_prasi_events } from "lib/utils/prasi-events";
 import { set } from "lib/utils/set";

@@ -1,6 +1,5 @@
-import { FieldLocal } from "lib/comps/form/typings";
+import { FieldLocal, FMLocal } from "lib/comps/form/typings";
 import { MDLocal } from "lib/comps/md/utils/typings";
-import { FMLocal } from "../..";
 //@ts-ignore
 import { Prisma } from "../../typings/prisma";
 import { set } from "./set";
