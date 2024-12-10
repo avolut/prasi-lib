@@ -33,10 +33,6 @@ export const MDRenderMaster: FC<{
         size: width,
         min_size: min_width,
       });
-      // if (md.panel) {
-      //   md.panel.min_size = min_width;
-      //   md.panel.size = width;
-      // }
     }
   }, Object.values(md.deps || {}) || []);
 

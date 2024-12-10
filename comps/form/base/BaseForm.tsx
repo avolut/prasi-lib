@@ -43,6 +43,7 @@ export const BaseForm = <T extends Record<string, any>>({
       },
     });
   }
+
   useEffect(() => {
     if (local.fm && local.fm.data !== data) {
       for (const k of Object.keys(local.fm.data)) {
@@ -53,6 +54,9 @@ export const BaseForm = <T extends Record<string, any>>({
       }
       local.fm.render();
     }
+    return () => {
+      delete (local as any).fm;
+    };
   }, [data]);
 
   const fm = local.fm;

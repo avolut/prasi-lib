@@ -1,7 +1,8 @@
 import { BreadItem } from "lib/comps/custom/Breadcrumb";
-import { FMLocal } from "lib/comps/form/typings";
-import { GFCol } from "lib/gen/utils";
 import { LinkParam } from "lib/comps/form/field/type/TypeLink";
+import { FMLocal } from "lib/comps/form/typings";
+import { TableListLocal } from "lib/comps/list/TableListLocal";
+import { GFCol } from "lib/gen/utils";
 import { ReactNode } from "react";
 
 type ID_MASTER_DETAIL = string;
@@ -58,7 +59,7 @@ export type MDLocalInternal = {
   master: {
     reload: (arg?: { toast: boolean }) => void;
     render: () => void;
-    list?: any;
+    list?: TableListLocal;
     pk?: string;
   };
   params: {
@@ -68,6 +69,7 @@ export type MDLocalInternal = {
     parse: () => void;
     apply: () => void;
   };
+
   pk?: GFCol;
   props: {
     mode: "full" | "h-split" | "v-split";
