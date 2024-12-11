@@ -1,16 +1,16 @@
-/// <reference types="bun-types" />
-
 import { ServerWebSocket } from "bun";
 import { useServerRouter } from "../server/server-route";
 import { newSessionStore } from "./store/session-store";
 import { ServerContext } from "./type";
 
 type WS = ServerWebSocket<{ url: string }>;
-type SessionServerHandler = {
+export type SessionServerHandler = {
   cleanup: () => Promise<void>;
   handle: (
     arg: ServerContext,
-    opt?: { cache_accept?: string }
+    opt?: {
+      rewrite?: (arg: { body: Bun.BodyInit; headers: Headers }) => Bun.BodyInit;
+    }
   ) => Promise<Response>;
 };
 

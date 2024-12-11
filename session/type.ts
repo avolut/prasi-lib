@@ -71,7 +71,15 @@ export interface SessionContext<T> extends ServerContext {
 export type ServerContext = {
   req: Request;
   server: Server;
-  handle: (req: Request, opt?: { cache_accept?: string }) => Promise<Response>;
+  handle: (
+    req: Request,
+    opt?: {
+      rewrite?: (arg: {
+        body: Bun.BodyInit;
+        headers: Response["headers"];
+      }) => Bun.BodyInit;
+    }
+  ) => Promise<Response>;
   mode: "dev" | "prod";
   url: {
     raw: URL;
