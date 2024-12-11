@@ -13,7 +13,7 @@ export const FilterContent: FC<{
   child: any;
   _item: PrasiItem;
 }> = ({ mode, filter, PassProp, child, _item, onSubmit }) => {
-  const internal = useLocal({});
+  filter.PassProp = PassProp;
   return (
     <div
       className={cx(
@@ -94,7 +94,6 @@ export const FilterContent: FC<{
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1000;
-            /* Styles specific to popup */
           }
 
           .form-inner {
@@ -104,61 +103,100 @@ export const FilterContent: FC<{
       )}
     >
       <BaseForm
+        tag="blank"
         data={filter.data}
-        onSubmit={async (form) => {
-          const fm = form.fm;
+        name={filter.name}
+        onSubmit={async ({ fm }) => {
           try {
-            if (typeof form.fm?.data === "object") {
-              form.render();
-              form.fm.render();
+            if (typeof fm.data === "object") {
+              fm.render();
+            }
+
+            if (mode === "raw" && fm) {
+              const submit = async (fm: FMLocal) => {
+                fm.render();
+                if (typeof onSubmit === "function") {
+                  const data = await onSubmit(fm);
+                  if (typeof fm.data === "object") {
+                    fm.data = {
+                      __status: "submit",
+                      ...fm.data,
+                      _where: data,
+                    };
+                    fm.render();
+                    filter.data = {
+                      __status: "submit",
+                      ...fm.data,
+                      _where: data,
+                    };
+                    filter.render();
+                  }
+                }
+              };
+              await submit(fm);
+            }
+            const f = getFilter(filter.name);
+            if (f) {
+              for (const list of Object.values(f.list.ref)) {
+                list.reload();
+              }
             }
           } catch (ex) {}
-
-          if (mode === "raw" && fm) {
-            if (form && form.fm) {
-              Object.keys(form.fm.data).map((e) => {
-                if (!form?.fm.data?.[e]) {
-                  delete form.fm?.data[e];
-                }
-              });
-            }
-            const submit = async (fm: FMLocal) => {
-              fm.render();
-              if (typeof onSubmit === "function") {
-                const data = await onSubmit(fm);
-                if (typeof form.fm?.data === "object") {
-                  form.fm.data = {
-                    __status: "submit",
-                    ...form.fm.data,
-                    _where: data,
-                  };
-                  form.fm.render();
-                  filter.data = {
-                    __status: "submit",
-                    ...form.fm.data,
-                    _where: data,
-                  };
-                  filter.render();
-                }
-              }
-            };
-            await submit(fm);
-          }
-          const f = getFilter(filter.name);
-          if (f) {
-            for (const list of Object.values(f.list.ref)) {
-              list.reload();
-            }
-          }
+          return true;
         }}
-        render={internal.render}
+        // onSubmit={async (form) => {
+        //   const fm = form.fm;
+        //   try {
+        //     if (typeof form.fm?.data === "object") {
+        //       form.render();
+        //       form.fm.render();
+        //     }
+        //   } catch (ex) {}
+
+        //   if (mode === "raw" && fm) {
+        //     if (form && form.fm) {
+        //       Object.keys(form.fm.data).map((e) => {
+        //         if (!form?.fm.data?.[e]) {
+        //           delete form.fm?.data[e];
+        //         }
+        //       });
+        //     }
+        //     const submit = async (fm: FMLocal) => {
+        //       fm.render();
+        //       if (typeof onSubmit === "function") {
+        //         const data = await onSubmit(fm);
+        //         if (typeof form.fm?.data === "object") {
+        //           form.fm.data = {
+        //             __status: "submit",
+        //             ...form.fm.data,
+        //             _where: data,
+        //           };
+        //           form.fm.render();
+        //           filter.data = {
+        //             __status: "submit",
+        //             ...form.fm.data,
+        //             _where: data,
+        //           };
+        //           filter.render();
+        //         }
+        //       }
+        //     };
+        //     await submit(fm);
+        //   }
+        //   const f = getFilter(filter.name);
+        //   if (f) {
+        //     for (const list of Object.values(f.list.ref)) {
+        //       list.reload();
+        //     }
+        //   }
+        // }}
       >
-        {(form) => {
-          filter.form = form;
+        {({ fm }) => {
+          filter.fm = fm;
           return (
             <>
               {!!(PassProp && child) && (
-                <PassProp filter={filter} fm={form.fm}>
+                <PassProp filter={filter} fm={filter.fm}>
                   {child}
                 </PassProp>
               )}

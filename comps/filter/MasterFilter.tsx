@@ -73,7 +73,6 @@ export const MasterFilter: FC<FilterProps> = ({
                   }
                   filter.raw_status = "ready";
                   filter.render();
-                  
                 });
               } else {
                 filter.raw_status = "ready";
@@ -95,6 +94,7 @@ export const MasterFilter: FC<FilterProps> = ({
   if (mode === "raw" && filter.raw_status !== "ready") {
     return <FieldLoading />;
   }
+
   return (
     <>
       <FilterContent

@@ -1,5 +1,4 @@
-import { BaseFormLocal } from "../../form/base/types";
-import { GenField } from "../../form/typings";
+import { FMLocal, GenField } from "../../form/typings";
 
 export type FilterFieldType =
   | "search-all"
@@ -14,7 +13,8 @@ export const default_filter_local = {
   columns: [] as string[],
   fields: [] as GenField[],
   tableName: "",
-  form: null as null | BaseFormLocal<any>,
+  fm: null as null | FMLocal,
+  PassProp: null as null | any,
   modifiers: {} as Record<string, string>,
   types: {} as Record<string, FilterFieldType>,
   name: "",
