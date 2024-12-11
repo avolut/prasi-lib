@@ -70,7 +70,15 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
   }
 
   return {
-    async handle(arg: ServerContext | SessionContext<any>) {
+    async handle(
+      arg: ServerContext | SessionContext<any>,
+      opt?: {
+        rewrite?: (arg: {
+          body: Bun.BodyInit;
+          headers?: Record<string, string>;
+        }) => Bun.BodyInit;
+      }
+    ) {
       const { url, req, handle } = arg;
       const found = findRoute(rou, undefined, url.pathname);
       if (found) {
@@ -101,7 +109,7 @@ export const useServerRouter = <T extends ReturnType<typeof newServerRouter>>(
 
         return new Response(JSON.stringify(result));
       }
-      return handle(req);
+      return handle(req, opt);
     },
   };
 };

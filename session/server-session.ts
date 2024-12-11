@@ -9,7 +9,10 @@ export type SessionServerHandler = {
   handle: (
     arg: ServerContext,
     opt?: {
-      rewrite?: (arg: { body: Bun.BodyInit; headers: Headers }) => Bun.BodyInit;
+      rewrite?: (arg: {
+        body: Bun.BodyInit;
+        headers?: Record<string, string>;
+      }) => Bun.BodyInit;
     }
   ) => Promise<Response>;
 };
@@ -39,12 +42,12 @@ export const initSessionServer = <T>(
         };
 
         if (url.pathname.startsWith("/_session/")) {
-          const res = await session_router.handle(route_arg);
+          const res = await session_router.handle(route_arg, opt);
           if (res) return res;
         }
 
         if (arg.router) {
-          const res = await arg.router.handle(route_arg);
+          const res = await arg.router.handle(route_arg, opt);
           if (res) return res;
         }
 

@@ -76,7 +76,7 @@ export type ServerContext = {
     opt?: {
       rewrite?: (arg: {
         body: Bun.BodyInit;
-        headers: Response["headers"];
+        headers?: Record<string, string>;
       }) => Bun.BodyInit;
     }
   ) => Promise<Response>;
