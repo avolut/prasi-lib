@@ -8,7 +8,10 @@ import { ServerContext } from "./type";
 type WS = ServerWebSocket<{ url: string }>;
 type SessionServerHandler = {
   cleanup: () => Promise<void>;
-  handle: (arg: ServerContext) => Promise<Response>;
+  handle: (
+    arg: ServerContext,
+    opt?: { cache_accept?: string }
+  ) => Promise<Response>;
 };
 
 export const initSessionServer = <T>(
@@ -24,7 +27,7 @@ export const initSessionServer = <T>(
     const server_handler: SessionServerHandler = {
       async cleanup() {},
 
-      async handle(server_arg) {
+      async handle(server_arg, opt) {
         const { req, handle, url } = server_arg;
 
         const route_arg = {
@@ -45,7 +48,7 @@ export const initSessionServer = <T>(
           if (res) return res;
         }
 
-        return handle(req);
+        return handle(req, opt);
       },
     };
 

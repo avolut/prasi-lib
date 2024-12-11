@@ -71,7 +71,7 @@ export interface SessionContext<T> extends ServerContext {
 export type ServerContext = {
   req: Request;
   server: Server;
-  handle: (req: Request) => Promise<Response>;
+  handle: (req: Request, opt?: { cache_accept?: string }) => Promise<Response>;
   mode: "dev" | "prod";
   url: {
     raw: URL;
