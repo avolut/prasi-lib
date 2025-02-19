@@ -42,7 +42,7 @@ export const Typeahead: FC<{
   onChange,
   className,
   popupClassName,
-  disabledSearch
+  disabledSearch,
 }) => {
   const local = useLocal({
     value: [] as string[],
@@ -309,21 +309,23 @@ export const Typeahead: FC<{
     }
   }
 
-  const valueLabel = local.value?.map((value) => {
-    if (local.mode === "single") {
-      const item = options.find((item) => item.value === value);
+  const valueLabel = local.value
+    ?.map((value) => {
+      if (local.mode === "single") {
+        const item = options.find((item) => item.value === value);
 
-      if (!local.open && !allow_new) {
-        local.select = item || null;
+        if (!local.open && !allow_new) {
+          local.select = item || null;
 
-        local.search.input = item?.tag || item?.label || "";
+          local.search.input = item?.tag || item?.label || "";
+        }
+        return item;
       }
-      return item;
-    }
 
-    const item = local.options.find((e) => e.value === value);
-    return item;
-  });
+      const item = local.options.find((e) => e.value === value);
+      return item;
+    })
+    .filter((e) => e);
 
   let inputval = local.search.input;
 

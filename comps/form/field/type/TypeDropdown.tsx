@@ -26,11 +26,11 @@ export const TypeDropdown: FC<{
           if (Array.isArray(res)) {
             const list: any = res.map((e: any, idx: number) => {
               return {
-                label: arg.opt_get_label(e, "list", {
+                label: arg.opt_get_label?.(e, "list", {
                   prev: res[idx - 1],
                   next: res[idx + 1],
                 }),
-                tag: arg.opt_get_label(e, "label"),
+                tag: arg.opt_get_label?.(e, "label"),
                 value: e.value,
                 data: e.data,
               };
@@ -48,7 +48,7 @@ export const TypeDropdown: FC<{
               let f = list.find((ex: any) => ex.value === v);
 
               if (!f) {
-                arg.opt_set_value({
+                arg.opt_set_value?.({
                   fm,
                   name: field.name,
                   type: field.type,
@@ -75,7 +75,7 @@ export const TypeDropdown: FC<{
 
           if (field.type === "single-option") {
             if (!value && local.options.length > 0) {
-              arg.opt_set_value({
+              arg.opt_set_value?.({
                 fm,
                 name: field.name,
                 type: field.type,
@@ -83,7 +83,7 @@ export const TypeDropdown: FC<{
                 selected: [local.options[0]?.value],
               });
             } else if (value) {
-              arg.opt_set_value({
+              arg.opt_set_value?.({
                 fm,
                 name: field.name,
                 type: field.type,
@@ -191,7 +191,7 @@ export const TypeDropdown: FC<{
           popupClassName={popupClassName}
           onSelect={({ search, item }) => {
             if (item) {
-              arg.opt_set_value({
+              arg.opt_set_value?.({
                 fm,
                 name: field.name,
                 type: field.type,
@@ -226,7 +226,7 @@ export const TypeDropdown: FC<{
         note="dropdown"
         popupClassName={popupClassName}
         onChange={(values) => {
-          arg.opt_set_value({
+          arg.opt_set_value?.({
             fm,
             name: field.name,
             type: field.type,

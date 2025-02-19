@@ -27,7 +27,6 @@ export const ExportExcel: FC<{
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Sheet 1");
 
-      console.log(data);
       const columns = getAllKeys(data);
       worksheet.addRow(columns);
 
