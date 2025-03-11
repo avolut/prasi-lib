@@ -87,8 +87,16 @@ export type ServerContext = {
   };
 };
 
-export type SessionAuth = {
-  method: "user-pass";
-  username: string;
-  password: string;
-} & Record<string, any>;
+export type SessionAuth = (
+  | {
+      method: "user-pass";
+      username: string;
+      password: string;
+    }
+  | {
+      method: "user-otp";
+      uid: string;
+      otp: string;
+    }
+) &
+  Record<string, any>;
